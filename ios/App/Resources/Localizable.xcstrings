@@ -1249,38 +1249,6 @@
         }
       }
     },
-    "onboarding.done.message": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next we'll set up your consents and first lifts."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sırada onaylar ve ilk setlerin var."
-          }
-        }
-      }
-    },
-    "onboarding.done.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Training profile saved"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenman profilin kaydedildi"
-          }
-        }
-      }
-    },
     "onboarding.name.first": {
       "localizations": {
         "en": {
@@ -1533,22 +1501,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hangi birimleri kullanıyorsun?"
-          }
-        }
-      }
-    },
-    "onboarding.welcome.debugFinish": {
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geliştirici: onboarding'i bitir"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Developer: finish onboarding"
           }
         }
       }
@@ -2933,6 +2885,550 @@
           "stringUnit": {
             "state": "translated",
             "value": "Başlamadan önce"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your best sets"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En iyi setlerin"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter what you know and see your score right away. Skip anything you don't know or don't do."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildiklerini gir, skorunu hemen gör. Bilmediğin ya da yapmadığın hareketi atlayabilirsin."
+          }
+        }
+      }
+    },
+    "onboarding.lifts.dumbbellHint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the weight of one dumbbell; the score assumes you use a pair."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tek dumbbell'ın ağırlığını gir; skor çift kullandığını varsayar."
+          }
+        }
+      }
+    },
+    "onboarding.lifts.skipAll": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip for now"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdilik atla"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.seeScore": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See my score"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skorumu gör"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.skipped": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skipped. You can add this later."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atlandı. Bunu sonra ekleyebilirsin."
+          }
+        }
+      }
+    },
+    "onboarding.lifts.enter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a set"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set gir"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I don't know / I don't do this"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilmiyorum / yapmıyorum"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.weight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ağırlık"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.weightEach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weight (each)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ağırlık (her biri)"
+          }
+        }
+      }
+    },
+    "onboarding.lifts.reps": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reps"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekrar"
+          }
+        }
+      }
+    },
+    "onboarding.lift.benchPress": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bench press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bench press"
+          }
+        }
+      }
+    },
+    "onboarding.lift.squat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Squat"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Squat"
+          }
+        }
+      }
+    },
+    "onboarding.lift.deadlift": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadlift"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deadlift"
+          }
+        }
+      }
+    },
+    "onboarding.lift.overheadPress": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overhead press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overhead press"
+          }
+        }
+      }
+    },
+    "onboarding.lift.benchPress.barbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell bench press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell bench press"
+          }
+        }
+      }
+    },
+    "onboarding.lift.benchPress.dumbbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell bench press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell bench press"
+          }
+        }
+      }
+    },
+    "onboarding.lift.squat.barbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell back squat"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell squat"
+          }
+        }
+      }
+    },
+    "onboarding.lift.squat.dumbbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell squat"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell squat"
+          }
+        }
+      }
+    },
+    "onboarding.lift.deadlift.barbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell deadlift"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell deadlift"
+          }
+        }
+      }
+    },
+    "onboarding.lift.deadlift.dumbbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell deadlift"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell deadlift"
+          }
+        }
+      }
+    },
+    "onboarding.lift.overheadPress.barbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell overhead press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell overhead press"
+          }
+        }
+      }
+    },
+    "onboarding.lift.overheadPress.dumbbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell shoulder press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dumbbell omuz press"
+          }
+        }
+      }
+    },
+    "onboarding.result.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your first scores"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlk skorların"
+          }
+        }
+      }
+    },
+    "onboarding.result.disclaimer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a first estimate; it gets sharper as you log workouts."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu ilk tahmin; antrenman kaydettikçe netleşir."
+          }
+        }
+      }
+    },
+    "onboarding.result.start": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's go"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlayalım"
+          }
+        }
+      }
+    },
+    "onboarding.result.edit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change my sets"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setlerimi değiştir"
+          }
+        }
+      }
+    },
+    "onboarding.result.empty.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No scores yet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz skor yok"
+          }
+        }
+      }
+    },
+    "onboarding.result.empty.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You skipped the lifts. Log workouts and your Strength Scores will appear here."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareketleri atladın. Antrenman kaydettikçe Güç Skorların burada görünecek."
+          }
+        }
+      }
+    },
+    "onboarding.result.comment.beginner": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A solid starting point. Every lifter begins here."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sağlam bir başlangıç noktası; herkes buradan başlar."
+          }
+        }
+      }
+    },
+    "onboarding.result.comment.developing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Building nicely. Steady training moves this fast."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güzel ilerliyor; düzenli antrenmanla hızlı yükselir."
+          }
+        }
+      }
+    },
+    "onboarding.result.comment.intermediate": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solid strength for a gym regular."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salon müdavimi için sağlam bir kuvvet."
+          }
+        }
+      }
+    },
+    "onboarding.result.comment.advanced": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strong, well ahead of most gym-goers."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güçlü; çoğu salon kullanıcısının önünde."
+          }
+        }
+      }
+    },
+    "onboarding.result.comment.expert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exceptional strength."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olağanüstü kuvvet."
           }
         }
       }

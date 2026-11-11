@@ -94,7 +94,7 @@ final class OnboardingUITests: XCTestCase {
         // Consents (P020): terms first, then the opt-in contribution screen — no pre-ticked box.
         let accept = app.buttons["I agree and continue"]
         XCTAssertTrue(accept.waitForExistence(timeout: 10), app.debugDescription)
-        XCTAssertFalse(app.switches.firstMatch.exists && app.switches.count > 0, "No consent checkbox")
+        XCTAssertFalse(app.switches.firstMatch.exists, "No consent checkbox")
         accept.tap()
 
         let contribute = app.buttons["Contribute anonymously"]
@@ -106,6 +106,18 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Never shared"].waitForExistence(timeout: 5), app.debugDescription)
         contribute.tap()
 
-        XCTAssertTrue(app.staticTexts["Training profile saved"].waitForExistence(timeout: 10), app.debugDescription)
+        // First strength profile (P021): one set is enough for a score.
+        XCTAssertTrue(app.staticTexts["Your best sets"].waitForExistence(timeout: 10), app.debugDescription)
+        let weight = app.textFields.firstMatch
+        XCTAssertTrue(weight.waitForExistence(timeout: 5), app.debugDescription)
+        weight.tap()
+        weight.typeText("80")
+        let seeScore = app.buttons["See my score"]
+        XCTAssertTrue(seeScore.waitForExistence(timeout: 5), app.debugDescription)
+        seeScore.tap()
+
+        XCTAssertTrue(app.staticTexts["Your first scores"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["This is a first estimate; it gets sharper as you log workouts."].exists)
+        XCTAssertTrue(app.buttons["Let's go"].exists)
     }
 }
