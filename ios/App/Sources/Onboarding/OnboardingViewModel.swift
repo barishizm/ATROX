@@ -1,6 +1,7 @@
 import DataKit
 import Foundation
 import Observation
+import StrengthKit
 
 /// Drives onboarding part 1 (identity and body data): validation, navigation, draft persistence, final save.
 @MainActor
@@ -17,6 +18,8 @@ final class OnboardingViewModel {
     private let profiles: any ProfileRepository
     private let measurements: any MeasurementRepository
     private let consents: ConsentService
+    private let engine: any ScoreEngine
+    private let setStore: any OnboardingSetStore
     private let now: () -> Date
     private let calendar: Calendar
     private let localeCode: String
@@ -27,6 +30,8 @@ final class OnboardingViewModel {
         profiles: any ProfileRepository,
         measurements: any MeasurementRepository,
         consents: ConsentService,
+        engine: any ScoreEngine = PlaceholderScoreEngine(),
+        setStore: any OnboardingSetStore = UserDefaultsOnboardingSetStore(),
         deviceLocale: Locale = .current,
         localeCode: String = "en",
         now: @escaping () -> Date = { Date() },
@@ -37,6 +42,8 @@ final class OnboardingViewModel {
         self.profiles = profiles
         self.measurements = measurements
         self.consents = consents
+        self.engine = engine
+        self.setStore = setStore
         self.localeCode = localeCode
         self.now = now
         self.calendar = calendar
@@ -60,7 +67,7 @@ final class OnboardingViewModel {
     }
 
     var canGoBack: Bool {
-        isBlocked || (draft.step != .name && draft.step != .trainingDone)
+        isBlocked || (draft.step != .name && draft.step != .lifts)
     }
 
     var canAdvance: Bool {
@@ -75,7 +82,8 @@ final class OnboardingViewModel {
         case .equipment: return draft.equipment != nil
         case .limitations: return draft.noLimitations || !draft.limitations.isEmpty
         // The consent screens have their own buttons (see `acceptLegal`, `decideContribution`).
-        case .terms, .contribution, .trainingDone: return false
+        case .lifts: return true  // Every card may be skipped.
+        case .terms, .contribution, .result: return false
         }
     }
 
@@ -99,18 +107,14 @@ final class OnboardingViewModel {
             go(to: .birthDate)
         case .birthDate:
             confirmBirthDate()
-        case .sex:
-            go(to: .units)
-        case .units:
-            go(to: .body)
         case .body:
             await save()
-        case .experience: go(to: .goal)
-        case .goal: go(to: .frequency)
-        case .frequency: go(to: .equipment)
-        case .equipment: go(to: .limitations)
+        case .sex, .units, .experience, .goal, .frequency, .equipment:
+            // Plain questions: the next step is the next case (the enum order is persisted, so it is stable).
+            if let next = OnboardingStep(rawValue: draft.step.rawValue + 1) { go(to: next) }
         case .limitations: await save()
-        case .terms, .contribution, .trainingDone: break
+        case .lifts: saveLifts()
+        case .terms, .contribution, .result: break
         }
     }
 
@@ -127,7 +131,7 @@ final class OnboardingViewModel {
     func decideContribution(_ granted: Bool) async {
         guard draft.step == .contribution, !isSaving else { return }
         await run { [consents, userId] in try await consents.setContribution(granted, userId: userId) }
-        if !saveFailed { go(to: .trainingDone) }
+        if !saveFailed { go(to: .lifts) }
     }
 
     private func run(_ work: () async throws -> Void) async {
@@ -235,6 +239,79 @@ final class OnboardingViewModel {
             if !draft.limitationNote.isEmpty { draft.noLimitations = false }
         }
     }
+
+    // MARK: First strength profile (part 3)
+
+    var weightUnit: WeightUnit { draft.unitSystem == .metric ? .kilograms : .pounds }
+
+    var liftImplement: LiftImplement { OnboardingLifts.implement(for: draft.equipment) }
+
+    var liftEntries: [LiftEntry] { draft.lifts ?? OnboardingLifts.blank() }
+
+    func entry(for lift: BasicLift) -> LiftEntry {
+        liftEntries.first { $0.lift == lift } ?? LiftEntry(lift: lift)
+    }
+
+    /// `value` is in the user's unit; `nil` or a non-positive number clears the weight.
+    func setLiftWeight(_ lift: BasicLift, value: Double?) {
+        update(lift) { entry in
+            guard let value, value.isFinite, value > 0 else { return entry.weightKg = nil }
+            entry.weightKg = Swift.min(weightUnit.kilograms(from: value), OnboardingLifts.maximumWeightKg)
+        }
+    }
+
+    func setLiftReps(_ lift: BasicLift, reps: Int) {
+        update(lift) { $0.reps = Swift.min(Swift.max(reps, OnboardingLifts.repsRange.lowerBound), OnboardingLifts.repsRange.upperBound) }
+    }
+
+    func setLiftSkipped(_ lift: BasicLift, _ skipped: Bool) {
+        update(lift) { $0.skipped = skipped }
+    }
+
+    private func update(_ lift: BasicLift, _ change: (inout LiftEntry) -> Void) {
+        var entries = liftEntries
+        guard let index = entries.firstIndex(where: { $0.lift == lift }) else { return }
+        change(&entries[index])
+        draft.lifts = entries
+        persist()
+    }
+
+    /// Sets the score can be computed from, in card order.
+    var reportedSets: [LiftSet] {
+        let implement = liftImplement
+        return liftEntries.compactMap { entry in
+            guard entry.isComplete, let weight = entry.weightKg, let reps = entry.reps else { return nil }
+            return LiftSet(lift: entry.lift, implement: implement, weightKg: weight, reps: reps)
+        }
+    }
+
+    /// One score per reported lift; empty when every card was skipped.
+    var results: [LiftResult] {
+        let athlete = AthleteProfile(
+            sex: scoreSex, bodyweightKg: draft.weightKg,
+            ageYears: draft.birthDate.map { OnboardingRules.age(birthDate: $0, now: now(), calendar: calendar) } ?? 30
+        )
+        return reportedSets.compactMap { set in
+            engine.estimate(set, for: athlete).map { LiftResult(lift: $0.lift, score: $0.score) }
+        }
+    }
+
+    private var scoreSex: ScoreSex {
+        switch draft.sex {
+        case .male: .male
+        case .female: .female
+        case .unspecified: .unspecified
+        }
+    }
+
+    private func saveLifts() {
+        // Becomes one Workout (source = onboarding) in P032; see `OnboardingSetStore`.
+        setStore.save(reportedSets, userId: userId)
+        go(to: .result)
+    }
+
+    /// Onboarding is over: the resume draft is no longer needed.
+    func finish() { store.clear(userId: userId) }
 
     // MARK: Saving
 

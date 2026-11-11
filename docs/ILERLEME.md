@@ -33,7 +33,7 @@ Toplam: 104 adım.
 - [x] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P023** · HealthKit entegrasyonu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
@@ -194,8 +194,13 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P020) Ayarlardan katkıyı aç/kapat ve onay geçmişi P022'de `ConsentService` üzerinden bağlanacak. Onay satırları henüz sunucuya senkronize edilmiyor (`pending`).
 - (P020) Hukuki metinler ve bağlantılar (xcconfig `LEGAL_*_URL`) boşsa bağlantı satırı düz etiket olarak görünür; yayın öncesi hukukçu incelemesi P101'de.
 - (P020) TR çalışma zamanı görünümü elle doğrulanmadı.
+- (P021) StrengthKit'e `ScoreEngine` protokolü + `PlaceholderScoreEngine` (vücut ağırlığı oranı, Epley 1RM, yaş yok, kalibre DEĞİL; dosya P061–P062'de silinecek) eklendi. Dumbbell setleri çift kullanılır varsayılıp 0,85 katsayısıyla halter eşdeğerine çevrilir.
+- (P021) Onboarding'e `lifts` (4 hareket kartı, her biri atlanabilir) ve `result` (ScoreRing + tek cümlelik yorum + "ilk tahmin" notu, hepsi atlanırsa boş durum) adımları eklendi; `trainingDone` ekranı ve geçici DEBUG bitirme düğmesi kalktı. Ham değer 12 eskiden `trainingDone`'dı: orada kalan taslak `lifts`'ten devam eder.
+- (P021) Girilen setler `OnboardingSetStore` (UserDefaults, `onboarding.sets.<uid>`) içinde duruyor; TODO(P032): tek bir Workout (source = onboarding) olarak kaydedilip depo silinecek. Atlanan veya yarım kartlar saklanmaz.
+- (P021) Onboarding bitince taslak (`onboarding.draft.<uid>`) silinir. Ancak `onboardingComplete` hâlâ yalnızca `user_metadata` bayrağından okunuyor ve bitirince yazılmıyor: uygulama yeniden açılınca onboarding yeniden başlar. Gerçek kaynak (profil + onay kayıtları veya sunucu bayrağı) ayrı bir işte bağlanmalı.
+- (P021) Karttaki ağırlık alanı ondalık klavye + virgül/nokta kabul eder; üst sınır 500 kg, tekrar 1–30 (motor 12'den fazlasını 12 sayar). TR çalışma zamanı görünümü elle doğrulanmadı.
 - (P022) Profil sekmesi: özet, düzenleme, kilo geçmişi + Swift Charts grafiği, ayarlar (birim, dil, tema, bildirim yer tutucusu, katkı anahtarı, onay geçmişi), hesap (çıkış, dışa aktar, iki aşamalı silme), hakkında + lisanslar. `SettingsRepository` (DataKit) eklendi.
 - (P022) Dışa aktarma ve hesap silme `FakeAccountService` ile çalışır (yer tutucu JSON dosyası; silme yalnızca çıkış yaptırır). Gerçek Edge Function bağlantısı P045 sonrası; yerel veri temizliği (SwiftData satırları, onboarding taslağı) silmede henüz yapılmıyor.
 - (P022) Birim seçimi tek anahtar: `profiles.unit_system` ile `user_settings.weight_unit/length_unit` birlikte güncellenir. Tema cihazdaki `UserDefaults` değerini esas alır (varsayılan koyu), `user_settings.theme` buna eşlenir; senkronizasyon (Faz 11) gelince çakışma kuralı gözden geçirilmeli.
 - (P022) Bildirimler yer tutucu; model sürümü "Henüz indirilmedi" yer tutucusu (P061+). Lisans listesi elle tutuluyor (supabase-swift, GoogleSignIn-iOS); veri seti/atıflar eklendikçe güncellenmeli.
-- (P022) Yerelde yalnızca birim testleri (125) ve DataKit testleri geçti; `ProfileUITests` ve TR çalışma zamanı görünümü yerelde çalıştırılmadı, GitHub CI'a bırakıldı. P021 henüz birleşmediği için onboarding'in geçici DEBUG bitirme düğmesi hâlâ duruyor.
+- (P022) Yerelde yalnızca birim testleri (125) ve DataKit testleri geçti; `ProfileUITests` ve TR çalışma zamanı görünümü yerelde çalıştırılmadı, GitHub CI'a bırakıldı. (P021 ile birleşti.)
