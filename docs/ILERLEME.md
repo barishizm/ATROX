@@ -12,7 +12,7 @@ Toplam: 104 adım.
 - [x] **P003** · XcodeGen projesi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P004** · Yerel Swift paketleri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P005** · Tasarım sistemi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P006** · Uygulama kabuğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P006** · Uygulama kabuğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P007** · Yerelleştirme ve birimler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P008** · CI — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
