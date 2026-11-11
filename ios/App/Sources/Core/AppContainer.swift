@@ -1,6 +1,7 @@
 import DataKit
 import Foundation
 import Observation
+import SwiftData
 
 /// Composition root: holds the app's dependencies and is handed down via `Environment`.
 /// Tests build one with fakes through `init`.
@@ -15,13 +16,17 @@ final class AppContainer {
     let language: LanguageSettings
     let authFlow: AuthFlowModel
     let passwordRecovery: PasswordRecoveryModel
+    /// Local SwiftData store (app group container); nil only in tests that do not need persistence.
+    let modelContainer: ModelContainer?
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
         sessionService: any SessionService,
         authService: (any AuthService)? = nil,
-        language: LanguageSettings = LanguageSettings()
+        language: LanguageSettings = LanguageSettings(),
+        modelContainer: ModelContainer? = nil
     ) {
+        self.modelContainer = modelContainer
         self.featureFlags = featureFlags
         self.sessionService = sessionService
         self.authService = authService
@@ -42,19 +47,37 @@ final class AppContainer {
         // UI tests run against an in-memory auth service instead of a real backend.
         if ProcessInfo.processInfo.arguments.contains("-uitest-fake-auth") {
             let fake = FakeAuthService()
-            return AppContainer(sessionService: AuthSessionService(auth: fake), authService: fake)
+            return AppContainer(
+                sessionService: AuthSessionService(auth: fake), authService: fake,
+                modelContainer: try? DataStore.inMemory()
+            )
         }
         #endif
         let info = bundle.infoDictionary ?? [:]
+        let store = makeStore(appGroupID: info["AppGroupID"] as? String)
         guard let config = SupabaseConfiguration(
             infoDictionary: info, urlScheme: info["AppURLScheme"] as? String
         ) else {
             Log.app.error("Supabase is not configured; running signed out. See docs/KURULUM.md.")
-            return AppContainer(sessionService: PlaceholderSessionService())
+            return AppContainer(sessionService: PlaceholderSessionService(), modelContainer: store)
         }
         let auth = SupabaseAuthService(
             configuration: config, apple: AppleIDTokenProvider(), google: GoogleIDTokenProvider()
         )
-        return AppContainer(sessionService: AuthSessionService(auth: auth), authService: auth)
+        return AppContainer(
+            sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store
+        )
+    }
+
+    /// App group store; if the group is missing (unsigned build) fall back to the app's own sandbox.
+    private static func makeStore(appGroupID: String?) -> ModelContainer? {
+        do {
+            if let appGroupID { return try DataStore.production(appGroupID: appGroupID) }
+            Log.app.error("AppGroupID missing from Info.plist; using the app sandbox for local data.")
+            return try DataStore.onDisk(directory: URL.homeDirectory)
+        } catch {
+            Log.app.error("App group store unavailable (\(error)); using the app sandbox for local data.")
+            return try? DataStore.onDisk(directory: URL.homeDirectory)
+        }
     }
 }
