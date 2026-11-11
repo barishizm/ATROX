@@ -1,14 +1,19 @@
 import DataKit
 import Foundation
 
-/// Steps of onboarding part 1 (P018). One question per step. Raw values are persisted in the draft.
+/// Steps of onboarding parts 1–2 (P018, P019). One question per step. Raw values are persisted in the draft,
+/// so never reorder: new steps go before `trainingDone`. (Raw value 5 was P018's interim "part one done"
+/// screen; a draft saved there now resumes at the experience question.)
 enum OnboardingStep: Int, CaseIterable, Codable, Sendable {
     case name, birthDate, sex, units, body
-    /// Part 1 is saved; the next parts (P019+) continue from here.
-    case partOneDone
+    case experience, goal, frequency, equipment, limitations
+    /// Parts 1–2 are saved; the next part (P021) continues from here.
+    case trainingDone
 
     /// Question steps only (the progress bar counts these).
-    static let questions: [OnboardingStep] = [.name, .birthDate, .sex, .units, .body]
+    static let questions: [OnboardingStep] = [
+        .name, .birthDate, .sex, .units, .body, .experience, .goal, .frequency, .equipment, .limitations,
+    ]
 }
 
 /// What the user has entered so far. Saved after every step so a killed app resumes where it stopped.
@@ -22,6 +27,15 @@ struct OnboardingDraft: Codable, Equatable, Sendable {
     var unitSystem: UnitSystem = .metric
     var heightCm: Double = OnboardingRules.defaultHeightCm
     var weightKg: Double = OnboardingRules.defaultWeightKg
+    // Part 2 (training profile). `nil` = not answered yet.
+    var experience: Experience?
+    var goal: Goal?
+    var weeklyFrequency: Int = OnboardingRules.defaultWeeklyFrequency
+    var equipment: EquipmentAccess?
+    var limitations: [BodyLimitation] = []
+    /// "No limitations" was chosen explicitly (mutually exclusive with `limitations`).
+    var noLimitations = false
+    var limitationNote = ""
 }
 
 /// Persistence for the draft, keyed by user so two accounts on one device never mix.

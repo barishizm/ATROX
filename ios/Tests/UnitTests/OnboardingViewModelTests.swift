@@ -6,19 +6,19 @@ import Testing
 
 @MainActor
 struct OnboardingViewModelTests {
-    private static let calendar: Calendar = {
+    static let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC")!
         return calendar
     }()
     /// 2026-06-15 12:00 UTC.
-    private static let today = Date(timeIntervalSince1970: 1_781_524_800)
+    static let today = Date(timeIntervalSince1970: 1_781_524_800)
 
-    private static func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
+    static func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: 12))!
     }
 
-    private struct Harness {
+    struct Harness {
         let model: OnboardingViewModel
         let store: UserDefaultsOnboardingDraftStore
         let profiles: SwiftDataProfileRepository
@@ -26,7 +26,7 @@ struct OnboardingViewModelTests {
         let userId: UUID
     }
 
-    private static func harness(
+    static func harness(
         userId: UUID = UUID(), defaults: UserDefaults? = nil, locale: Locale = Locale(identifier: "tr_TR")
     ) throws -> Harness {
         let defaults = defaults ?? UserDefaults(suiteName: "onboarding-tests-\(UUID().uuidString)")!
@@ -174,7 +174,7 @@ struct OnboardingViewModelTests {
         env.model.setWeight(kg: WeightUnit.pounds.kilograms(from: 150))
         await env.model.advance()
 
-        #expect(env.model.step == .partOneDone)
+        #expect(env.model.step == .experience)
         let profile = try #require(try await env.profiles.profile(userId: env.userId)).input
         #expect(profile.firstName == "Ada")
         #expect(profile.lastName == "Lovelace")
@@ -195,13 +195,13 @@ struct OnboardingViewModelTests {
         env.model.setBirthDate(Self.date(1995, 3, 2))
         for _ in 0..<3 { await env.model.advance() }
         await env.model.advance()  // save
-        #expect(env.model.step == .partOneDone)
+        #expect(env.model.step == .experience)
         #expect(try await env.profiles.profile(userId: env.userId)?.input.lastName == nil)
 
         // Saving the same day again (retry after a failure): the measurement is updated, not duplicated.
         env.model.back()
         await env.model.advance()
-        #expect(env.model.step == .partOneDone)
+        #expect(env.model.step == .experience)
         #expect(try await env.measurements.all(userId: env.userId).count == 1)
     }
 

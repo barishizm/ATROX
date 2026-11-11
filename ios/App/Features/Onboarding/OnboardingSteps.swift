@@ -117,35 +117,8 @@ struct SexStepView: View {
     }
 
     private func option(_ value: Sex, _ title: LocalizedStringKey) -> some View {
-        ChoiceRow(title: title, isSelected: model.draft.sex == value) { model.setSex(value) }
+        SelectableCard(title, isSelected: model.draft.sex == value) { model.setSex(value) }
             .accessibilityIdentifier("onboarding-sex-\(value.rawValue)")
-    }
-}
-
-/// Full-width single-choice row.
-struct ChoiceRow: View {
-    let title: LocalizedStringKey
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Radius.md, style: .continuous)
-        Button(action: action) {
-            HStack {
-                Text(title).font(DSFont.body).foregroundStyle(DSColor.textPrimary)
-                Spacer()
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? DSColor.accent : DSColor.textTertiary)
-                    .accessibilityHidden(true)
-            }
-            .padding(.horizontal, Spacing.md)
-            .frame(minHeight: HitTarget.button)
-            .background(DSColor.surfaceRaised, in: shape)
-            .overlay(shape.strokeBorder(isSelected ? DSColor.accent : DSColor.separator, lineWidth: isSelected ? 2 : 1))
-            .contentShape(shape)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -157,11 +130,11 @@ struct UnitsStepView: View {
     var body: some View {
         OnboardingPage(title: "onboarding.units.title", subtitle: "onboarding.units.subtitle") {
             VStack(spacing: Spacing.sm) {
-                ChoiceRow(title: "onboarding.units.metric", isSelected: model.draft.unitSystem == .metric) {
+                SelectableCard("onboarding.units.metric", isSelected: model.draft.unitSystem == .metric) {
                     model.setUnitSystem(.metric)
                 }
                 .accessibilityIdentifier("onboarding-units-metric")
-                ChoiceRow(title: "onboarding.units.imperial", isSelected: model.draft.unitSystem == .imperial) {
+                SelectableCard("onboarding.units.imperial", isSelected: model.draft.unitSystem == .imperial) {
                     model.setUnitSystem(.imperial)
                 }
                 .accessibilityIdentifier("onboarding-units-imperial")
@@ -245,4 +218,203 @@ struct BodyStepView: View {
 
 private extension Int {
     func clamped(to range: ClosedRange<Int>) -> Int { Swift.min(Swift.max(self, range.lowerBound), range.upperBound) }
+}
+
+/// One selectable answer: the stored value plus its card texts.
+private struct Option<Value: Hashable>: Identifiable {
+    let value: Value
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
+    let icon: String?
+    var id: Value { value }
+
+    /// `key` is the title's string key; the description lives under `<key>.detail`.
+    init(_ value: Value, _ key: String, icon: String? = nil) {
+        self.value = value
+        self.title = LocalizedStringKey(key)
+        self.detail = LocalizedStringKey(key + ".detail")
+        self.icon = icon
+    }
+}
+
+// MARK: 6 · Experience
+
+struct ExperienceStepView: View {
+    @Bindable var model: OnboardingViewModel
+
+    private static let options: [Option<Experience>] = [
+        Option(.noExperience, "onboarding.experience.none"),
+        Option(.under6Months, "onboarding.experience.under6"),
+        Option(.sixMonthsToTwoYears, "onboarding.experience.6to24"),
+        Option(.twoToFiveYears, "onboarding.experience.2to5"),
+        Option(.over5Years, "onboarding.experience.over5"),
+    ]
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.experience.title", subtitle: "onboarding.experience.subtitle") {
+            VStack(spacing: Spacing.sm) {
+                ForEach(Self.options) { option in
+                    SelectableCard(option.title, subtitle: option.detail, isSelected: model.draft.experience == option.value) {
+                        model.setExperience(option.value)
+                    }
+                    .accessibilityIdentifier("onboarding-experience-\(option.value.rawValue)")
+                }
+            }
+        }
+    }
+}
+
+// MARK: 7 · Goal
+
+struct GoalStepView: View {
+    @Bindable var model: OnboardingViewModel
+
+    private static let options: [Option<Goal>] = [
+        Option(.strength, "onboarding.goal.strength", icon: "bolt.fill"),
+        Option(.muscleGain, "onboarding.goal.muscle", icon: "figure.strengthtraining.traditional"),
+        Option(.fatLoss, "onboarding.goal.fat", icon: "flame.fill"),
+        Option(.generalHealth, "onboarding.goal.health", icon: "heart.fill"),
+    ]
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.goal.title", subtitle: "onboarding.goal.subtitle") {
+            VStack(spacing: Spacing.sm) {
+                ForEach(Self.options) { option in
+                    SelectableCard(
+                        option.title, subtitle: option.detail, systemImage: option.icon,
+                        isSelected: model.draft.goal == option.value
+                    ) {
+                        model.setGoal(option.value)
+                    }
+                    .accessibilityIdentifier("onboarding-goal-\(option.value.rawValue)")
+                }
+            }
+        }
+    }
+}
+
+// MARK: 8 · Weekly training days
+
+struct FrequencyStepView: View {
+    @Bindable var model: OnboardingViewModel
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.frequency.title", subtitle: "onboarding.frequency.subtitle") {
+            VStack(spacing: Spacing.lg) {
+                Text("onboarding.frequency.days \(model.draft.weeklyFrequency)")
+                    .font(DSFont.display)
+                    .foregroundStyle(DSColor.accent)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("onboarding-frequency-value")
+                Stepper(
+                    "onboarding.frequency.title",
+                    value: Binding(get: { model.draft.weeklyFrequency }, set: { model.setWeeklyFrequency($0) }),
+                    in: OnboardingRules.weeklyFrequencyRange
+                )
+                .labelsHidden()
+                .accessibilityIdentifier("onboarding-frequency-stepper")
+                HStack(spacing: Spacing.xs) {
+                    ForEach(OnboardingRules.weeklyFrequencyRange, id: \.self) { day in
+                        Button {
+                            Haptics.play(.selection)
+                            model.setWeeklyFrequency(day)
+                        } label: {
+                            Text("\(day)")
+                                .font(DSFont.headline)
+                                .foregroundStyle(model.draft.weeklyFrequency == day ? DSColor.onAccent : DSColor.textPrimary)
+                                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
+                                .background(
+                                    model.draft.weeklyFrequency == day ? DSColor.accent : DSColor.surfaceRaised,
+                                    in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("onboarding.frequency.days \(day)")
+                        .accessibilityAddTraits(model.draft.weeklyFrequency == day ? .isSelected : [])
+                        .accessibilityIdentifier("onboarding-frequency-\(day)")
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: 9 · Equipment
+
+struct EquipmentStepView: View {
+    @Bindable var model: OnboardingViewModel
+
+    private static let options: [Option<EquipmentAccess>] = [
+        Option(.fullGym, "onboarding.equipment.gym", icon: "building.2.fill"),
+        Option(.homeBarbell, "onboarding.equipment.homeBarbell", icon: "house.fill"),
+        Option(.homeDumbbell, "onboarding.equipment.homeDumbbell", icon: "dumbbell.fill"),
+        Option(.bodyweightOnly, "onboarding.equipment.bodyweight", icon: "figure.core.training"),
+    ]
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.equipment.title", subtitle: "onboarding.equipment.subtitle") {
+            VStack(spacing: Spacing.sm) {
+                ForEach(Self.options) { option in
+                    SelectableCard(
+                        option.title, subtitle: option.detail, systemImage: option.icon,
+                        isSelected: model.draft.equipment == option.value
+                    ) {
+                        model.setEquipment(option.value)
+                    }
+                    .accessibilityIdentifier("onboarding-equipment-\(option.value.rawValue)")
+                }
+            }
+        }
+    }
+}
+
+// MARK: 10 · Limitations
+
+struct LimitationsStepView: View {
+    @Bindable var model: OnboardingViewModel
+    @FocusState private var noteFocused: Bool
+
+    private static let titles: [BodyLimitation: LocalizedStringKey] = [
+        .shoulder: "onboarding.limits.shoulder", .lowerBack: "onboarding.limits.lowerBack",
+        .knee: "onboarding.limits.knee", .elbow: "onboarding.limits.elbow",
+        .wrist: "onboarding.limits.wrist", .hip: "onboarding.limits.hip",
+    ]
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.limits.title", subtitle: "onboarding.limits.subtitle") {
+            VStack(spacing: Spacing.sm) {
+                ForEach(BodyLimitation.allCases, id: \.self) { area in
+                    SelectableCard(
+                        Self.titles[area] ?? "", isSelected: model.draft.limitations.contains(area), indicator: .checkbox
+                    ) { model.toggleLimitation(area) }
+                    .accessibilityIdentifier("onboarding-limits-\(area.rawValue)")
+                }
+                SelectableCard("onboarding.limits.none", isSelected: model.draft.noLimitations, indicator: .checkbox) {
+                    noteFocused = false
+                    model.toggleNoLimitations()
+                }
+                .accessibilityIdentifier("onboarding-limits-none")
+                note
+            }
+        }
+    }
+
+    private var note: some View {
+        let shape = RoundedRectangle(cornerRadius: Radius.md, style: .continuous)
+        return VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("onboarding.limits.note").font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
+                .accessibilityHidden(true)
+            TextField("", text: $model.limitationNote, axis: .vertical)
+                .lineLimit(2...4)
+                .focused($noteFocused)
+                .font(DSFont.body)
+                .foregroundStyle(DSColor.textPrimary)
+                .padding(Spacing.md)
+                .background(DSColor.surfaceRaised, in: shape)
+                .overlay(shape.strokeBorder(noteFocused ? DSColor.accent : DSColor.separator, lineWidth: noteFocused ? 2 : 1))
+                .accessibilityLabel("onboarding.limits.note")
+                .accessibilityIdentifier("onboarding-limits-note")
+        }
+        .padding(.top, Spacing.sm)
+    }
 }

@@ -11,6 +11,9 @@ enum OnboardingRules {
     static let weightRangeKg = 30.0...300.0
     static let defaultHeightCm = 170.0
     static let defaultWeightKg = 70.0
+    static let weeklyFrequencyRange = 1...7
+    static let defaultWeeklyFrequency = 3
+    static let limitationNoteLimit = LimitationCodec.noteLimit
 
     enum BirthDateCheck: Equatable { case valid, tooYoung, implausible }
 
