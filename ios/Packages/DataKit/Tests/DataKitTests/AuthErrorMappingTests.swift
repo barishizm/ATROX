@@ -54,15 +54,27 @@ struct AuthErrorMappingTests {
         #expect(AuthError.map(Boom()) == .unknown)
     }
 
-    @Test func everyCaseHasALocalizedMessage() {
-        let all: [AuthError] = [
-            .offline, .invalidCredentials, .emailNotConfirmed, .emailAlreadyRegistered, .weakPassword,
-            .rateLimited, .cancelled, .sessionExpired, .providerUnavailable, .notConfigured, .unknown,
+    /// `swift test` on CI toolchains doesn't compile String Catalogs, so check the catalog source itself:
+    /// every case needs an English and a Turkish translation under its `auth.error.*` key.
+    @Test func everyCaseHasEnglishAndTurkishTranslations() throws {
+        let catalogURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appending(path: "Sources/DataKit/Resources/Localizable.xcstrings")
+        let json = try JSONSerialization.jsonObject(with: Data(contentsOf: catalogURL)) as? [String: Any]
+        let strings = try #require(json?["strings"] as? [String: Any])
+        let keys = [
+            "offline", "invalidCredentials", "emailNotConfirmed", "emailAlreadyRegistered", "weakPassword",
+            "rateLimited", "cancelled", "sessionExpired", "providerUnavailable", "notConfigured", "unknown",
         ]
-        for error in all {
-            let message = error.errorDescription ?? ""
-            #expect(!message.isEmpty)
-            #expect(!message.hasPrefix("auth.error."), "missing translation for \(error)")
+        for key in keys {
+            let entry = strings["auth.error.\(key)"] as? [String: Any]
+            let localizations = entry?["localizations"] as? [String: Any]
+            for lang in ["en", "tr"] {
+                let language = localizations?[lang] as? [String: Any]
+                let unit = language?["stringUnit"] as? [String: Any]
+                let value = (unit?["value"] as? String) ?? ""
+                #expect(value.count > 0, "missing \(lang) for \(key)")
+            }
         }
     }
 }
