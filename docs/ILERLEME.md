@@ -30,7 +30,7 @@ Toplam: 104 adım.
 ## Faz 2 — Onboarding ve profil
 
 - [x] **P017** · Yerel veri katmanı (SwiftData) — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -179,3 +179,9 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P017) Uygulama grubu konteyneri açılamazsa (imzasız derleme) uygulama kendi sandbox'ına düşer; widget'lar o durumda veriyi göremez. Üretimde grubun varlığı release kontrol listesine eklenmeli.
 - (P017) `ProfileInput` doğum tarihi/yaş (16+) doğrulamasını yapmaz; bu P018 `OnboardingViewModel` sorumluluğunda (sunucu CHECK'i son savunma).
 - (P017) Depo kapsamı dışı eski SwiftLint ihlalleri (~59, çoğu test dosyalarında: tek harfli değişken adları, import sırası) `swiftlint --strict` ile hâlâ görünüyor; ayrı bir temizlik adımında düzeltilmeli.
+- (P018) Onboarding bölüm 1 bittiğinde profil + ilk kilo ölçümü yazılır ve "Temel bilgiler kaydedildi" ara ekranı çıkar; onboarding'i bitiren geçici (DEBUG) düğme P019–P021 gelene kadar orada kalır. Gerçek `onboardingComplete` kaynağı P021'de bağlanacak.
+- (P018) Taslak (adım + girilenler) `UserDefaults`'ta kullanıcı kimliğine bağlı saklanır (`onboarding.draft.<uid>`); P021 sonunda silinmeli, çıkışta silinmiyor.
+- (P018) "Apple Sağlık'tan doldur" düğmesi devre dışı yer tutucu; P023'te bağlanacak. Apple'dan gelen ad/soyad ön doldurması (P015 ertelemesi) hâlâ yapılmadı.
+- (P018) Ekranlar TR metinleriyle eklendi ama TR çalışma zamanı görünümü elle doğrulanmadı (karşılama ekranı simülatörde TR bölgede de İngilizce kaldı: dil ayarı sistemi izlemiyor olabilir; P016'dan beri var).
+- (P018) UI testlerinde `ContentView` içindeki toptan `root` erişilebilirlik kimliği düğmelerin kimliklerini eziyor; testler düğmeleri etiketle buluyor. Kimliğin kaldırılması/yeniden düşünülmesi gerekir.
+- (P018) 16 yaş altı için "Tarihi değiştir" dışında bir yol yok (çıkış/hesap silme ekranda yok); P022'de profil/çıkış gelince düşünülmeli.
