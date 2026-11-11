@@ -84,3 +84,50 @@ struct AppRootModelTests {
         #expect(m.state == .ready)
     }
 }
+
+// MARK: - Live session updates (P015)
+
+private final class ScriptedSessionService: SessionService, @unchecked Sendable {
+    let initial: SessionStatus
+    private let pair = AsyncStream<SessionStatus>.makeStream()
+    init(initial: SessionStatus) { self.initial = initial }
+    func restoreSession() async throws -> SessionStatus { initial }
+    func updates() -> AsyncStream<SessionStatus> { pair.stream }
+    func signOut() async {}
+    func emit(_ status: SessionStatus) { pair.continuation.yield(status) }
+}
+
+@MainActor
+struct AppRootModelUpdatesTests {
+    private func settle() async {
+        for _ in 0..<20 { await Task.yield() }
+    }
+
+    @Test func remoteSignOutReturnsToSignedOut() async {
+        let service = ScriptedSessionService(initial: .signedIn(onboardingComplete: true))
+        let model = AppContainer(sessionService: service).root
+        await model.start()
+        #expect(model.state == .ready)
+        service.emit(.signedOut)
+        await settle()
+        #expect(model.state == .signedOut)
+    }
+
+    @Test func signInEventMovesFromSignedOut() async {
+        let service = ScriptedSessionService(initial: .signedOut)
+        let model = AppContainer(sessionService: service).root
+        await model.start()
+        service.emit(.signedIn(onboardingComplete: false))
+        await settle()
+        #expect(model.state == .needsOnboarding)
+    }
+
+    @Test func refreshEventsDoNotDisturbTheScreen() async {
+        let service = ScriptedSessionService(initial: .signedIn(onboardingComplete: false))
+        let model = AppContainer(sessionService: service).root
+        await model.start()
+        service.emit(.signedIn(onboardingComplete: true))
+        await settle()
+        #expect(model.state == .needsOnboarding)
+    }
+}

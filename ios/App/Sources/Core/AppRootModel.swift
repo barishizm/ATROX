@@ -16,6 +16,7 @@ final class AppRootModel {
     private(set) var state: SessionState = .loading
 
     private let service: any SessionService
+    private var updatesTask: Task<Void, Never>?
 
     init(service: any SessionService) {
         self.service = service
@@ -24,6 +25,7 @@ final class AppRootModel {
     /// Restores the session. A failed restore falls back to signed out.
     func start() async {
         state = .loading
+        listenForUpdates()
         do {
             apply(try await service.restoreSession())
         } catch {
@@ -53,6 +55,29 @@ final class AppRootModel {
         }
         await service.signOut()
         state = .signedOut
+    }
+
+    /// Follows session changes that happen outside the UI (revoked or unrefreshable session, sign-in from a link).
+    private func listenForUpdates() {
+        updatesTask?.cancel()
+        let stream = service.updates()
+        updatesTask = Task { [weak self] in
+            for await status in stream {
+                guard let self, !Task.isCancelled else { return }
+                self.applyExternal(status)
+            }
+        }
+    }
+
+    private func applyExternal(_ status: SessionStatus) {
+        switch (status, state) {
+        case (.signedOut, .needsOnboarding), (.signedOut, .ready):
+            state = .signedOut
+        case (.signedIn(let complete), .signedOut):
+            apply(.signedIn(onboardingComplete: complete))
+        default:
+            break  // Token refreshes and duplicate events don't change the screen.
+        }
     }
 
     private func apply(_ status: SessionStatus) {

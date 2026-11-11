@@ -147,7 +147,7 @@ Bu akış için **Services ID ve `.p8` anahtarı gerekmez**; Supabase yalnızca 
 5. Supabase paneli → **Authentication → Sign In / Providers → Google**:
    - **Enable** açık; **Client IDs**: web Client ID **ilk** sırada, ardından iOS Client ID'leri (virgülle).
    - **Client Secret**: web istemcisinin secret'ı.
-   - **Skip nonce checks**: açık (GoogleSignIn SDK'sı P015'te nonce ile doğrulanırsa kapatılır). Save.
+   - **Skip nonce checks**: açık (uygulama nonce gönderiyor (P015); gerçek cihazda doğrulandıktan sonra kapat). Save.
 
 ### 3. E-posta ile giriş
 

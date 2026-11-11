@@ -6,7 +6,7 @@ import Testing
 struct AppConfigTests {
     @Test func bundleIdentifierComesFromConfig() {
         let id = Bundle.main.bundleIdentifier ?? ""
-        #expect(id.hasPrefix("com.barishizm.gymanalyzer"))
+        #expect(id.hasPrefix("com.barishizm.vesania"))
     }
 
     @Test func environmentKeyIsPresent() {
