@@ -37,6 +37,9 @@ packages:
     path: Packages/DesignSystem
   CoachKit:
     path: Packages/CoachKit
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    exactVersion: 10.1.0
 
 schemes:
   GymAnalyzer:
@@ -71,6 +74,8 @@ targets:
       - package: DataKit
       - package: DesignSystem
       - package: CoachKit
+      - package: GoogleSignIn
+        product: GoogleSignIn
     # Bundle ID and display name come from Config/Base.xcconfig
     # (APP_BUNDLE_ID_BASE / APP_DISPLAY_NAME) — nothing is hard-coded here.
     info:
@@ -82,6 +87,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
+        AppURLScheme: $(APP_URL_SCHEME)
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.

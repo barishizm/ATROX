@@ -1,0 +1,182 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "auth.error.offline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server. Check your connection and try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunucuya ulaşılamıyor. Bağlantını kontrol edip tekrar dene."
+          }
+        }
+      }
+    },
+    "auth.error.invalidCredentials": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incorrect email or password."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-posta veya şifre hatalı."
+          }
+        }
+      }
+    },
+    "auth.error.emailNotConfirmed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm your email first — we sent you a link."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önce e-postanı doğrula — sana bir bağlantı gönderdik."
+          }
+        }
+      }
+    },
+    "auth.error.emailAlreadyRegistered": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An account with this email already exists. Try signing in."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu e-postayla bir hesap zaten var. Giriş yapmayı dene."
+          }
+        }
+      }
+    },
+    "auth.error.weakPassword": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That password is too weak. Use at least 8 characters with letters and numbers."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu şifre çok zayıf. En az 8 karakter; harf ve rakam kullan."
+          }
+        }
+      }
+    },
+    "auth.error.rateLimited": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Wait a moment and try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene."
+          }
+        }
+      }
+    },
+    "auth.error.cancelled": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign-in was cancelled."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giriş iptal edildi."
+          }
+        }
+      }
+    },
+    "auth.error.sessionExpired": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your session has expired. Please sign in again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oturumun sona erdi. Lütfen tekrar giriş yap."
+          }
+        }
+      }
+    },
+    "auth.error.providerUnavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This sign-in method isn't available right now."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu giriş yöntemi şu anda kullanılamıyor."
+          }
+        }
+      }
+    },
+    "auth.error.notConfigured": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app isn't configured to reach the server."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama sunucuya bağlanacak şekilde yapılandırılmamış."
+          }
+        }
+      }
+    },
+    "auth.error.unknown": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong. Please try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir şeyler ters gitti. Lütfen tekrar dene."
+          }
+        }
+      }
+    }
+  }
+}

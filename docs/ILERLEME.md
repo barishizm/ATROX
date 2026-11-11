@@ -24,7 +24,7 @@ Toplam: 104 adım.
 - [x] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P015** · AuthService — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P015** · AuthService — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P016** · Giriş ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 2 — Onboarding ve profil
@@ -165,3 +165,8 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P014) Uzak projelerde özel SMTP sağlayıcısı bağlanacak (yerleşik e-posta servisinin saatlik limiti düşük); lansmandan önce.
 - (P014) Şablonları (TR/EN) uzak projelere yükle: önce özel SMTP + alan adı gerekir (docs/KURULUM.md → E-posta ile giriş).
 - (P014) Apple: Developer Program üyeliği, App ID'lerde Sign in with Apple, Supabase Apple sağlayıcısı (Client IDs = 3 bundle ID) ve DEVELOPMENT_TEAM — release öncesi (docs/KURULUM.md → Sign in with Apple).
+- (P015) Google "Skip nonce checks" açık kalıyor: uygulama Google'a hash'li nonce gönderip Supabase'e ham nonce veriyor; gerçek cihazda Google girişi doğrulandıktan sonra staging/prod panelinde kapat.
+- (P015) Apple yalnızca ilk girişte ad/soyad verir; `AppleIDTokenProvider` şimdilik yakalamıyor — profil adı P018+ (UserProfile) ile `signInWithIdToken` sonrası kaydedilmeli.
+- (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla.
+- (P015) Şifre sıfırlama bağlantısı `.passwordRecovery` durumunu yayar; yeni şifre ekranı P016'da (`AuthService.updatePassword` hazır).
+- (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_gymanalyzer`.

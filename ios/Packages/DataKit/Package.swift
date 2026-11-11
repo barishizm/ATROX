@@ -6,6 +6,7 @@ import PackageDescription
 
 let package = Package(
     name: "DataKit",
+    defaultLocalization: "en",
     platforms: [.iOS(.v26), .macOS(.v26)],
     products: [
         .library(name: "DataKit", targets: ["DataKit"])
@@ -19,6 +20,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Supabase", package: "supabase-swift")
             ],
+            resources: [.process("Resources")],
             swiftSettings: [.swiftLanguageMode(.v6), .enableUpcomingFeature("StrictConcurrency")]
         ),
         .testTarget(

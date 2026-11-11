@@ -6,13 +6,19 @@ enum SessionStatus: Sendable, Equatable {
     case signedIn(onboardingComplete: Bool)
 }
 
-/// Source of truth for the auth session. The real Supabase-backed one arrives with P015.
+/// Source of truth for the auth session (production: `AuthSessionService` over the Supabase `AuthService`).
 protocol SessionService: Sendable {
     func restoreSession() async throws -> SessionStatus
+    /// Live changes after the restore (sign-in, sign-out, revoked session). Defaults to none.
+    func updates() -> AsyncStream<SessionStatus>
     func signOut() async
 }
 
-/// Used until real auth exists: always starts signed out.
+extension SessionService {
+    func updates() -> AsyncStream<SessionStatus> { AsyncStream { $0.finish() } }
+}
+
+/// Fallback when the backend is not configured (see `AppContainer.live()`): always signed out.
 struct PlaceholderSessionService: SessionService {
     func restoreSession() async throws -> SessionStatus { .signedOut }
     func signOut() async {}
