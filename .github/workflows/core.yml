@@ -7,12 +7,18 @@ on:
       - "ios/Packages/StrengthKit/**"
       - "ml/**"
       - "supabase/functions/**"
+      - "supabase/migrations/**"
+      - "supabase/tests/**"
+      - "supabase/config.toml"
       - ".github/workflows/core.yml"
   pull_request:
     paths:
       - "ios/Packages/StrengthKit/**"
       - "ml/**"
       - "supabase/functions/**"
+      - "supabase/migrations/**"
+      - "supabase/tests/**"
+      - "supabase/config.toml"
       - ".github/workflows/core.yml"
   workflow_dispatch:
 
@@ -105,3 +111,21 @@ jobs:
       - name: deno test
         if: steps.detect.outputs.present == 'true'
         run: deno test --allow-env --allow-read supabase/functions
+
+  database:
+    name: Database (pgTAP + RLS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v3.2.0
+        with:
+          version: 2.120.0
+      - name: Start local database
+        run: supabase db start
+      - name: pgTAP tests (schema + RLS audit)
+        run: supabase test db
+      - name: Security advisors
+        run: |
+          supabase db advisors --local --type security --fail-on warn
