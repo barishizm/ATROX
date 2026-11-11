@@ -47,15 +47,7 @@ struct MainTabView: View {
                 }
             }
             Tab(AppTab.profile.title, systemImage: AppTab.profile.systemImage, value: AppTab.profile) {
-                NavigationStack(path: $profile.path) {
-                    ProfileRootView()
-                        .navigationDestination(for: ProfileRoute.self) { route in
-                            switch route {
-                            case .social: SocialPlaceholderView()
-                            case .paywall: PaywallPlaceholderView()
-                            }
-                        }
-                }
+                ProfileTabView(router: profile)
             }
         }
         .accessibilityIdentifier("main-tabs")

@@ -34,7 +34,7 @@ Toplam: 104 adım.
 - [x] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P023** · HealthKit entegrasyonu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 3 — Hareket kataloğu
@@ -199,3 +199,8 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P021) Girilen setler `OnboardingSetStore` (UserDefaults, `onboarding.sets.<uid>`) içinde duruyor; TODO(P032): tek bir Workout (source = onboarding) olarak kaydedilip depo silinecek. Atlanan veya yarım kartlar saklanmaz.
 - (P021) Onboarding bitince taslak (`onboarding.draft.<uid>`) silinir. Ancak `onboardingComplete` hâlâ yalnızca `user_metadata` bayrağından okunuyor ve bitirince yazılmıyor: uygulama yeniden açılınca onboarding yeniden başlar. Gerçek kaynak (profil + onay kayıtları veya sunucu bayrağı) ayrı bir işte bağlanmalı.
 - (P021) Karttaki ağırlık alanı ondalık klavye + virgül/nokta kabul eder; üst sınır 500 kg, tekrar 1–30 (motor 12'den fazlasını 12 sayar). TR çalışma zamanı görünümü elle doğrulanmadı.
+- (P022) Profil sekmesi: özet, düzenleme, kilo geçmişi + Swift Charts grafiği, ayarlar (birim, dil, tema, bildirim yer tutucusu, katkı anahtarı, onay geçmişi), hesap (çıkış, dışa aktar, iki aşamalı silme), hakkında + lisanslar. `SettingsRepository` (DataKit) eklendi.
+- (P022) Dışa aktarma ve hesap silme `FakeAccountService` ile çalışır (yer tutucu JSON dosyası; silme yalnızca çıkış yaptırır). Gerçek Edge Function bağlantısı P045 sonrası; yerel veri temizliği (SwiftData satırları, onboarding taslağı) silmede henüz yapılmıyor.
+- (P022) Birim seçimi tek anahtar: `profiles.unit_system` ile `user_settings.weight_unit/length_unit` birlikte güncellenir. Tema cihazdaki `UserDefaults` değerini esas alır (varsayılan koyu), `user_settings.theme` buna eşlenir; senkronizasyon (Faz 11) gelince çakışma kuralı gözden geçirilmeli.
+- (P022) Bildirimler yer tutucu; model sürümü "Henüz indirilmedi" yer tutucusu (P061+). Lisans listesi elle tutuluyor (supabase-swift, GoogleSignIn-iOS); veri seti/atıflar eklendikçe güncellenmeli.
+- (P022) Yerelde yalnızca birim testleri (125) ve DataKit testleri geçti; `ProfileUITests` ve TR çalışma zamanı görünümü yerelde çalıştırılmadı, GitHub CI'a bırakıldı. (P021 ile birleşti.)

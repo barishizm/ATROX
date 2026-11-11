@@ -145,3 +145,56 @@ public actor SwiftDataConsentRepository: ConsentRepository {
         return try modelContext.fetch(descriptor).map(\.snapshot)
     }
 }
+
+@ModelActor
+public actor SwiftDataSettingsRepository: SettingsRepository {
+    private var clock: @Sendable () -> Date = { Date() }
+
+    public init(modelContainer: ModelContainer, clock: @escaping @Sendable () -> Date) {
+        self.modelExecutor = DefaultSerialModelExecutor(modelContext: ModelContext(modelContainer))
+        self.modelContainer = modelContainer
+        self.clock = clock
+    }
+
+    @discardableResult
+    public func settings(userId: UUID) throws -> SettingsSnapshot {
+        if let existing = try fetch(userId: userId) {
+            if existing.isSoftDeleted {
+                existing.deletedAt = nil
+                existing.markPending(at: clock())
+                try modelContext.save()
+            }
+            return existing.snapshot
+        }
+        let model = UserSettings(userId: userId, now: clock())
+        modelContext.insert(model)
+        try modelContext.save()
+        return model.snapshot
+    }
+
+    @discardableResult
+    public func update(_ input: SettingsInput, userId: UUID) throws -> SettingsSnapshot {
+        guard (10...600).contains(input.restTimerSeconds) else { throw DataError.invalidValue("restTimerSeconds") }
+        guard (0...50).contains(input.defaultBarKg) else { throw DataError.invalidValue("defaultBarKg") }
+        let now = clock()
+        let model: UserSettings
+        if let existing = try fetch(userId: userId) {
+            existing.apply(input)
+            existing.deletedAt = nil
+            existing.markPending(at: now)
+            model = existing
+        } else {
+            model = UserSettings(userId: userId, now: now)
+            model.apply(input)
+            modelContext.insert(model)
+        }
+        try modelContext.save()
+        return model.snapshot
+    }
+
+    private func fetch(userId: UUID) throws -> UserSettings? {
+        var descriptor = FetchDescriptor<UserSettings>(predicate: #Predicate { $0.userId == userId })
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
+    }
+}

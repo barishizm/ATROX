@@ -103,4 +103,9 @@ public struct ConsentService: Sendable {
     public func isContributing(userId: UUID) async throws -> Bool {
         try await status(of: .mlContribution, userId: userId).isGranted
     }
+
+    /// Every recorded decision, newest first (the settings "consent history").
+    public func history(userId: UUID) async throws -> [ConsentSnapshot] {
+        try await repository.history(userId: userId).reversed()
+    }
 }

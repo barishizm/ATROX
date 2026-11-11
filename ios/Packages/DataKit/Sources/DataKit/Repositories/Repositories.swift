@@ -31,3 +31,11 @@ public protocol ConsentRepository: Sendable {
     /// Oldest first.
     func history(userId: UUID) async throws -> [ConsentSnapshot]
 }
+
+public protocol SettingsRepository: Sendable {
+    /// The user's settings; the row is created with the defaults on first read.
+    @discardableResult
+    func settings(userId: UUID) async throws -> SettingsSnapshot
+    @discardableResult
+    func update(_ input: SettingsInput, userId: UUID) async throws -> SettingsSnapshot
+}

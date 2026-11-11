@@ -98,4 +98,19 @@ import Testing
         try await service.setContribution(true, userId: testUser)
         #expect(try await repo.current(kind: .aiSharing, userId: testUser) == nil)
     }
+
+    @Test func historyIsNewestFirstAndKeepsWithdrawals() async throws {
+        let (service, _) = try make()
+        try await service.acceptLegal(userId: testUser)
+        clock.advance(by: 10)
+        try await service.setContribution(true, userId: testUser)
+        clock.advance(by: 10)
+        try await service.withdrawContribution(userId: testUser)
+        let history = try await service.history(userId: testUser)
+        #expect(history.count == 4)
+        #expect(history.first?.kind == .mlContribution)
+        #expect(history.first?.granted == false)
+        #expect(history[1].granted)
+        #expect(try await service.history(userId: otherUser).isEmpty)
+    }
 }
