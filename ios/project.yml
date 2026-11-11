@@ -1,0 +1,102 @@
+name: GymAnalyzer
+
+options:
+  bundleIdPrefix: com.barishizm
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+configs:
+  Debug: debug
+  Staging: release
+  Release: release
+
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Staging: Config/Staging.xcconfig
+  Release: Config/Release.xcconfig
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+schemes:
+  GymAnalyzer:
+    build:
+      targets:
+        GymAnalyzer: all
+    test:
+      config: Debug
+      targets:
+        - GymAnalyzerTests
+        - GymAnalyzerUITests
+    run:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+targets:
+  GymAnalyzer:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/Sources
+      - path: App/Resources
+        optional: true
+    # Bundle ID and display name come from Config/Base.xcconfig
+    # (APP_BUNDLE_ID_BASE / APP_DISPLAY_NAME) — nothing is hard-coded here.
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        AppEnvironment: $(APP_ENVIRONMENT)
+        SupabaseURL: $(SUPABASE_URL)
+        SupabaseAnonKey: $(SUPABASE_ANON_KEY)
+    # Capabilities: intentionally empty for now. To be added in later steps
+    # (entitlements + Apple Developer portal App ID):
+    #   - Sign in with Apple            (P010x auth)
+    #   - HealthKit                     (body weight / workout import)
+    #   - In-App Purchase               (StoreKit 2 subscriptions)
+    #   - Push Notifications            (rest timer / coach reminders)
+    #   - App Groups                    (share data with Widgets target)
+    #   - Associated Domains            (universal links / Google sign-in callback)
+    #   - Background Modes              (background sync, Live Activity updates)
+    # Also later: Widgets extension target (WidgetKit + Live Activity), local packages.
+
+  GymAnalyzerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests/UnitTests
+    dependencies:
+      - target: GymAnalyzer
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX).tests
+
+  GymAnalyzerUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Tests/UITests
+    dependencies:
+      - target: GymAnalyzer
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX).uitests

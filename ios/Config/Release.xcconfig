@@ -1,0 +1,4 @@
+// Release — production.
+#include "Base.xcconfig"
+
+APP_ENVIRONMENT = production
