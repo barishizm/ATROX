@@ -7,6 +7,8 @@ public struct ComponentGalleryView: View {
     @State private var score: Double = 73
     @State private var ringID = 0
     @State private var isLoadingButton = false
+    @State private var cardChoice = 0
+    @State private var cardMulti: Set<Int> = [1]
 
     public init() {}
 
@@ -42,6 +44,22 @@ public struct ComponentGalleryView: View {
                         }
                     }
                     SecondaryButton("Şablon Seç", systemImage: "list.bullet") {}
+                }
+
+                section("Seçim Kartları") {
+                    VStack(spacing: Spacing.sm) {
+                        SelectableCard(
+                            "Kuvvet", subtitle: "Daha ağır kaldır", systemImage: "bolt.fill", isSelected: cardChoice == 0
+                        ) { cardChoice = 0 }
+                        SelectableCard(
+                            "Kas kazanımı", systemImage: "figure.strengthtraining.traditional", isSelected: cardChoice == 1
+                        ) { cardChoice = 1 }
+                        ForEach([1, 2], id: \.self) { id in
+                            SelectableCard(id == 1 ? "Omuz" : "Diz", isSelected: cardMulti.contains(id), indicator: .checkbox) {
+                                if !cardMulti.insert(id).inserted { cardMulti.remove(id) }
+                            }
+                        }
+                    }
                 }
 
                 section("Metrikler") {

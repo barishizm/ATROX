@@ -32,6 +32,31 @@ public enum EquipmentAccess: String, Sendable, Codable, CaseIterable {
     case bodyweightOnly = "bodyweight_only"
 }
 
+/// Body areas a user can flag as limiting. Stored in `UserProfile.limitations` (text[]) by raw value;
+/// a free-text note is stored in the same array as `note:<text>` (see `LimitationCodec`).
+public enum BodyLimitation: String, Sendable, Codable, CaseIterable {
+    case shoulder, lowerBack = "lower_back", knee, elbow, wrist, hip
+}
+
+/// Encodes limitation areas plus an optional free note into / out of `UserProfile.limitations`.
+public enum LimitationCodec {
+    public static let notePrefix = "note:"
+    public static let noteLimit = 200
+
+    public static func encode(_ areas: [BodyLimitation], note: String) -> [String] {
+        var result = BodyLimitation.allCases.filter(areas.contains).map(\.rawValue)
+        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty { result.append(notePrefix + String(trimmed.prefix(noteLimit))) }
+        return result
+    }
+
+    public static func decode(_ stored: [String]) -> (areas: [BodyLimitation], note: String) {
+        let areas = stored.compactMap(BodyLimitation.init(rawValue:))
+        let note = stored.first { $0.hasPrefix(notePrefix) }.map { String($0.dropFirst(notePrefix.count)) } ?? ""
+        return (areas, note)
+    }
+}
+
 public enum MeasurementSource: String, Sendable, Codable, CaseIterable {
     case manual, healthkit
     case imported = "import"

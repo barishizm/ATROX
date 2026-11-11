@@ -1254,13 +1254,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next we'll ask about your training."
+            "value": "Next we'll set up your consents and first lifts."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sırada antrenmanınla ilgili sorular var."
+            "value": "Sırada onaylar ve ilk setlerin var."
           }
         }
       }
@@ -1270,13 +1270,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Basics saved"
+            "value": "Training profile saved"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Temel bilgiler kaydedildi"
+            "value": "Antrenman profilin kaydedildi"
           }
         }
       }
@@ -1749,6 +1749,726 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "onboarding.experience.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How long have you been training?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne zamandır antrenman yapıyorsun?"
+          }
+        }
+      }
+    },
+    "onboarding.experience.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Be honest — it helps us read your scores fairly."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dürüst ol; skorlarını adil yorumlamamıza yardım eder."
+          }
+        }
+      }
+    },
+    "onboarding.experience.none": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiç"
+          }
+        }
+      }
+    },
+    "onboarding.experience.none.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm just getting started."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni başlıyorum."
+          }
+        }
+      }
+    },
+    "onboarding.experience.under6": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Under 6 months"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 aydan az"
+          }
+        }
+      }
+    },
+    "onboarding.experience.under6.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Learning the basic lifts."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temel hareketleri öğreniyorum."
+          }
+        }
+      }
+    },
+    "onboarding.experience.6to24": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 months – 2 years"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 ay – 2 yıl"
+          }
+        }
+      }
+    },
+    "onboarding.experience.6to24.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training regularly, still progressing fast."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Düzenli antrenman yapıyorum, hızlı ilerliyorum."
+          }
+        }
+      }
+    },
+    "onboarding.experience.2to5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 – 5 years"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 – 5 yıl"
+          }
+        }
+      }
+    },
+    "onboarding.experience.2to5.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solid base, progress is slower now."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sağlam bir temel var, ilerleme yavaşladı."
+          }
+        }
+      }
+    },
+    "onboarding.experience.over5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5+ years"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 yıl+"
+          }
+        }
+      }
+    },
+    "onboarding.experience.over5.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Years of consistent, structured training."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıllardır düzenli ve planlı antrenman."
+          }
+        }
+      }
+    },
+    "onboarding.goal.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What's your main goal?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ana hedefin ne?"
+          }
+        }
+      }
+    },
+    "onboarding.goal.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick the one that matters most right now."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şu an en önemli olanı seç."
+          }
+        }
+      }
+    },
+    "onboarding.goal.strength": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kuvvet"
+          }
+        }
+      }
+    },
+    "onboarding.goal.strength.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lift heavier over time."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zamanla daha ağır kaldır."
+          }
+        }
+      }
+    },
+    "onboarding.goal.muscle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle gain"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas kazanımı"
+          }
+        }
+      }
+    },
+    "onboarding.goal.muscle.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Build size and muscle."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas kütlesi ve hacim kazan."
+          }
+        }
+      }
+    },
+    "onboarding.goal.fat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fat loss"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yağ kaybı"
+          }
+        }
+      }
+    },
+    "onboarding.goal.fat.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get leaner and keep your muscle."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasını koruyarak yağ oranını düşür."
+          }
+        }
+      }
+    },
+    "onboarding.goal.health": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General health"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel sağlık"
+          }
+        }
+      }
+    },
+    "onboarding.goal.health.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stay fit, active and healthy."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formda, aktif ve sağlıklı kal."
+          }
+        }
+      }
+    },
+    "onboarding.frequency.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How many days a week do you train?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftada kaç gün antrenman yapıyorsun?"
+          }
+        }
+      }
+    },
+    "onboarding.frequency.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The number you can realistically keep up."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerçekçi şekilde sürdürebileceğin sayı."
+          }
+        }
+      }
+    },
+    "onboarding.frequency.days %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld gün"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What equipment do you have?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hangi ekipmana erişimin var?"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We'll suggest exercises you can actually do."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerçekten yapabileceğin hareketleri önereceğiz."
+          }
+        }
+      }
+    },
+    "onboarding.equipment.gym": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full gym"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tam donanımlı salon"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.gym.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Machines, cables, barbells and dumbbells."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makineler, kablolar, barlar ve dumbbell'lar."
+          }
+        }
+      }
+    },
+    "onboarding.equipment.homeBarbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home (barbell)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ev (barbell)"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.homeBarbell.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barbell, plates and a rack or bench."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar, plakalar ve rack ya da bench."
+          }
+        }
+      }
+    },
+    "onboarding.equipment.homeDumbbell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home (dumbbells)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ev (dumbbell)"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.homeDumbbell.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pair or set of dumbbells."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir çift ya da set dumbbell."
+          }
+        }
+      }
+    },
+    "onboarding.equipment.bodyweight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bodyweight only"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca vücut ağırlığı"
+          }
+        }
+      }
+    },
+    "onboarding.equipment.bodyweight.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No equipment needed."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekipman gerekmez."
+          }
+        }
+      }
+    },
+    "onboarding.limits.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any areas we should protect?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dikkat etmemiz gereken bölgeler var mı?"
+          }
+        }
+      }
+    },
+    "onboarding.limits.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select all that apply. We'll take them into account."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçerli olanların hepsini seç. Bunları hesaba katacağız."
+          }
+        }
+      }
+    },
+    "onboarding.limits.shoulder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoulder"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omuz"
+          }
+        }
+      }
+    },
+    "onboarding.limits.lowerBack": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lower back"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bel"
+          }
+        }
+      }
+    },
+    "onboarding.limits.knee": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knee"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diz"
+          }
+        }
+      }
+    },
+    "onboarding.limits.elbow": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elbow"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dirsek"
+          }
+        }
+      }
+    },
+    "onboarding.limits.wrist": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrist"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilek"
+          }
+        }
+      }
+    },
+    "onboarding.limits.hip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hip"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalça"
+          }
+        }
+      }
+    },
+    "onboarding.limits.none": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No limitations"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yok"
+          }
+        }
+      }
+    },
+    "onboarding.limits.note": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anything else? (optional)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eklemek istediğin bir şey var mı? (isteğe bağlı)"
           }
         }
       }

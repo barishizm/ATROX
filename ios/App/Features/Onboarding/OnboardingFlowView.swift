@@ -33,7 +33,7 @@ private struct OnboardingContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if model.step != .partOneDone {
+            if model.step != .trainingDone {
                 header
             }
             ZStack {
@@ -57,7 +57,7 @@ private struct OnboardingContent: View {
         }
     }
 
-    private var showsFooter: Bool { !model.isBlocked && model.step != .partOneDone }
+    private var showsFooter: Bool { !model.isBlocked && model.step != .trainingDone }
 
     private var header: some View {
         HStack(spacing: Spacing.md) {
@@ -89,7 +89,12 @@ private struct OnboardingContent: View {
         case .sex: SexStepView(model: model)
         case .units: UnitsStepView(model: model)
         case .body: BodyStepView(model: model)
-        case .partOneDone: PartOneDoneView { container.root.didCompleteOnboarding() }
+        case .experience: ExperienceStepView(model: model)
+        case .goal: GoalStepView(model: model)
+        case .frequency: FrequencyStepView(model: model)
+        case .equipment: EquipmentStepView(model: model)
+        case .limitations: LimitationsStepView(model: model)
+        case .trainingDone: TrainingDoneView { container.root.didCompleteOnboarding() }
         }
     }
 
@@ -158,7 +163,7 @@ struct OnboardingPage<Content: View>: View {
     }
 }
 
-private struct PartOneDoneView: View {
+private struct TrainingDoneView: View {
     let finish: () -> Void
 
     var body: some View {
@@ -175,12 +180,12 @@ private struct PartOneDoneView: View {
                 .multilineTextAlignment(.center)
             Spacer()
             #if DEBUG
-            // Temporary until P019–P021 add the remaining parts; then onboarding completes after the last one.
+            // Temporary until P020–P021 add the remaining parts; then onboarding completes after the last one.
             Button("onboarding.welcome.debugFinish", action: finish)
                 .accessibilityIdentifier("onboarding-debug-finish")
             #endif
         }
         .padding(Spacing.lg)
-        .accessibilityIdentifier("onboarding-part-one-done")
+        .accessibilityIdentifier("onboarding-training-done")
     }
 }

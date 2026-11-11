@@ -31,7 +31,7 @@ Toplam: 104 adım.
 
 - [x] **P017** · Yerel veri katmanı (SwiftData) — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -185,3 +185,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P018) Ekranlar TR metinleriyle eklendi ama TR çalışma zamanı görünümü elle doğrulanmadı (karşılama ekranı simülatörde TR bölgede de İngilizce kaldı: dil ayarı sistemi izlemiyor olabilir; P016'dan beri var).
 - (P018) UI testlerinde `ContentView` içindeki toptan `root` erişilebilirlik kimliği düğmelerin kimliklerini eziyor; testler düğmeleri etiketle buluyor. Kimliğin kaldırılması/yeniden düşünülmesi gerekir.
 - (P018) 16 yaş altı için "Tarihi değiştir" dışında bir yol yok (çıkış/hesap silme ekranda yok); P022'de profil/çıkış gelince düşünülmeli.
+- (P019) Serbest kısıt notu için ayrı sütun yok: `profiles.limitations` (text[]) içinde bölge kodları + `note:<metin>` girdisi olarak saklanır (`LimitationCodec`, DataKit). Koç bağlamı (Faz 9) bu kodlamayı çözmeli; istenirse ayrı `limitation_note` sütunu migrasyonla eklenir.
+- (P019) P018'in "Temel bilgiler kaydedildi" ara ekranı kaldırıldı; vücut adımı profili kaydedip doğrudan deneyim sorusuna geçer, son adımda (kısıtlar) tüm profil yeniden yazılır. Ara ekran artık "Antrenman profilin kaydedildi" (geçici DEBUG bitirme düğmesi P021'e kadar duruyor). Eski taslaklarda `partOneDone` (5) artık deneyim adımına denk gelir.
+- (P019) `ChoiceRow` yerine DesignSystem `SelectableCard` (radyo/onay kutusu göstergeli) kullanılıyor; bileşen galerisine eklendi.
+- (P019) "10 adım 2 dakikadan kısa" kabulü elle zamanlanmadı; akış UI testiyle uçtan uca doğrulandı. TR çalışma zamanı görünümü yine elle doğrulanmadı.

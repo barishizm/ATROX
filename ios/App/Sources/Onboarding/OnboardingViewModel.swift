@@ -57,7 +57,7 @@ final class OnboardingViewModel {
     }
 
     var canGoBack: Bool {
-        isBlocked || (draft.step != .name && draft.step != .partOneDone)
+        isBlocked || (draft.step != .name && draft.step != .trainingDone)
     }
 
     var canAdvance: Bool {
@@ -66,7 +66,12 @@ final class OnboardingViewModel {
         case .name: return OnboardingRules.isValidFirstName(draft.firstName) && OnboardingRules.isValidLastName(draft.lastName)
         case .birthDate, .sex, .units: return true
         case .body: return OnboardingRules.isValidHeight(cm: draft.heightCm) && OnboardingRules.isValidWeight(kg: draft.weightKg)
-        case .partOneDone: return false
+        case .experience: return draft.experience != nil
+        case .goal: return draft.goal != nil
+        case .frequency: return OnboardingRules.weeklyFrequencyRange.contains(draft.weeklyFrequency)
+        case .equipment: return draft.equipment != nil
+        case .limitations: return draft.noLimitations || !draft.limitations.isEmpty
+        case .trainingDone: return false
         }
     }
 
@@ -96,8 +101,12 @@ final class OnboardingViewModel {
             go(to: .body)
         case .body:
             await save()
-        case .partOneDone:
-            break
+        case .experience: go(to: .goal)
+        case .goal: go(to: .frequency)
+        case .frequency: go(to: .equipment)
+        case .equipment: go(to: .limitations)
+        case .limitations: await save()
+        case .trainingDone: break
         }
     }
 
@@ -155,6 +164,46 @@ final class OnboardingViewModel {
 
     func setWeight(kg: Double) { draft.weightKg = kg }
 
+    // MARK: Training profile (part 2)
+
+    func setExperience(_ value: Experience) { draft.experience = value }
+
+    func setGoal(_ value: Goal) { draft.goal = value }
+
+    func setWeeklyFrequency(_ days: Int) {
+        draft.weeklyFrequency = Swift.min(Swift.max(days, OnboardingRules.weeklyFrequencyRange.lowerBound),
+                                          OnboardingRules.weeklyFrequencyRange.upperBound)
+    }
+
+    func setEquipment(_ value: EquipmentAccess) { draft.equipment = value }
+
+    /// Toggles one body area; picking an area clears "no limitations".
+    func toggleLimitation(_ area: BodyLimitation) {
+        draft.noLimitations = false
+        if let index = draft.limitations.firstIndex(of: area) {
+            draft.limitations.remove(at: index)
+        } else {
+            draft.limitations.append(area)
+        }
+    }
+
+    /// "No limitations" is exclusive: it clears the areas and the note.
+    func toggleNoLimitations() {
+        draft.noLimitations.toggle()
+        if draft.noLimitations {
+            draft.limitations = []
+            draft.limitationNote = ""
+        }
+    }
+
+    var limitationNote: String {
+        get { draft.limitationNote }
+        set {
+            draft.limitationNote = String(newValue.prefix(OnboardingRules.limitationNoteLimit))
+            if !draft.limitationNote.isEmpty { draft.noLimitations = false }
+        }
+    }
+
     // MARK: Saving
 
     private func save() async {
@@ -172,19 +221,30 @@ final class OnboardingViewModel {
             locale: localeCode
         )
         do {
-            // Keep the training fields of a profile that already exists (re-run after a crash, or later parts).
-            let existing = try await profiles.profile(userId: userId)
+            // Part 1 (saved after the body step) must not wipe training answers already on file, and the
+            // final save writes the whole profile at once.
             var merged = input
-            if let old = existing?.input {
+            if let old = try await profiles.profile(userId: userId)?.input {
                 merged.experience = old.experience
                 merged.goal = old.goal
                 merged.weeklyFrequency = old.weeklyFrequency
                 merged.equipmentAccess = old.equipmentAccess
                 merged.limitations = old.limitations
             }
+            if draft.step == .limitations {
+                merged.experience = draft.experience ?? merged.experience
+                merged.goal = draft.goal ?? merged.goal
+                merged.weeklyFrequency = draft.weeklyFrequency
+                merged.equipmentAccess = draft.equipment ?? merged.equipmentAccess
+                merged.limitations = LimitationCodec.encode(draft.limitations, note: draft.limitationNote)
+            }
             try await profiles.upsert(merged, userId: userId)
-            try await saveWeight()
-            go(to: .partOneDone)
+            if draft.step == .body {
+                try await saveWeight()
+                go(to: .experience)
+            } else {
+                go(to: .trainingDone)
+            }
         } catch {
             Log.app.error("Onboarding save failed: \(error)")
             saveFailed = true
