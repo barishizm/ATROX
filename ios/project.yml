@@ -90,6 +90,9 @@ targets:
         AppURLScheme: $(APP_URL_SCHEME)
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
+        # Terms of Use / Privacy Policy links on the welcome screen (URLs live in the xcconfig files).
+        LegalTermsURL: $(LEGAL_TERMS_URL)
+        LegalPrivacyURL: $(LEGAL_PRIVACY_URL)
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
         GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
         GIDServerClientID: $(GOOGLE_WEB_CLIENT_ID)
@@ -104,6 +107,10 @@ targets:
             CFBundleTypeRole: Editor
             CFBundleURLSchemes:
               - $(GOOGLE_REVERSED_CLIENT_ID)
+    settings:
+      base:
+        # No app icon yet (asset catalog currently holds only the Google logo); remove when the icon lands.
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
     entitlements:
       path: App/GymAnalyzer.entitlements
       properties:
