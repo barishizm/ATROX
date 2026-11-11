@@ -27,6 +27,16 @@ settings:
     TARGETED_DEVICE_FAMILY: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
 
+packages:
+  StrengthKit:
+    path: Packages/StrengthKit
+  DataKit:
+    path: Packages/DataKit
+  DesignSystem:
+    path: Packages/DesignSystem
+  CoachKit:
+    path: Packages/CoachKit
+
 schemes:
   GymAnalyzer:
     build:
@@ -54,6 +64,11 @@ targets:
       - path: App/Sources
       - path: App/Resources
         optional: true
+    dependencies:
+      - package: StrengthKit
+      - package: DataKit
+      - package: DesignSystem
+      - package: CoachKit
     # Bundle ID and display name come from Config/Base.xcconfig
     # (APP_BUNDLE_ID_BASE / APP_DISPLAY_NAME) — nothing is hard-coded here.
     info:
@@ -75,7 +90,7 @@ targets:
     #   - App Groups                    (share data with Widgets target)
     #   - Associated Domains            (universal links / Google sign-in callback)
     #   - Background Modes              (background sync, Live Activity updates)
-    # Also later: Widgets extension target (WidgetKit + Live Activity), local packages.
+    # Also later: Widgets extension target (WidgetKit + Live Activity).
 
   GymAnalyzerTests:
     type: bundle.unit-test
