@@ -1,0 +1,70 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+build/
+xcuserdata/
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcarchive
+
+# XcodeGen / xcconfig sırları
+ios/Config/Secrets.xcconfig
+**/Secrets.xcconfig
+!**/Secrets.example.xcconfig
+
+# SwiftPM
+.build/
+.swiftpm/
+Packages/*/.build/
+Package.resolved
+
+# Python / uv
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+
+# ML verisi ve çalıştırma çıktıları
+ml/data/raw/
+ml/runs/
+
+# Deno
+.deno/
+deno.lock.bak
+
+# Supabase yerel dosyaları
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+supabase/functions/.env
+supabase/functions/**/.env
+
+# Ortam ve gizli dosyalar
+.env
+.env.*
+!.env.example
+
+# Editör
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Claude Code yerel durumu
+.claude/worktrees/
+.claude/settings.local.json
