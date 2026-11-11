@@ -20,7 +20,7 @@ Toplam: 104 adım.
 
 - [x] **P009** · Supabase projesi ve yerel yığın — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P010** · Şema 1 — profil, ayarlar, onaylar, ölçümler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -155,3 +155,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist.
 - P010 enum values (experience, goal, equipment_access, user_settings fields) were chosen from the onboarding prompt (P021); align them with the Swift enums when P012/P021 land, via a new migration.
 - Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged.
+- P011: `movement_pattern` values (squat, hinge, lunge, horizontal/vertical push/pull, carry, core, rotation, isolation, cardio, mobility, other) are our own taxonomy since the docs do not define them; confirm when `scoring_taxonomy.yaml` lands (P025/P056). Equipment/muscle/level/category values follow free-exercise-db verbatim (e.g. `body only`).
+- P011: `search_exercises` searches the shared catalog only; extend it to the caller's `custom_exercises` when the coach tool (P075) needs it.
+- Apply the P011 migration to staging/prod (`supabase db push`) once the PR is merged.
