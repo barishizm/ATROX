@@ -62,6 +62,7 @@ targets:
     platform: iOS
     sources:
       - path: App/Sources
+      - path: App/Features
       - path: App/Resources
         optional: true
     dependencies:
