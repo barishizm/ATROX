@@ -107,6 +107,10 @@ targets:
             CFBundleTypeRole: Editor
             CFBundleURLSchemes:
               - $(GOOGLE_REVERSED_CLIENT_ID)
+    settings:
+      base:
+        # No app icon yet (asset catalog currently holds only the Google logo); remove when the icon lands.
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
     entitlements:
       path: App/GymAnalyzer.entitlements
       properties:

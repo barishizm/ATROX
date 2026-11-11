@@ -170,7 +170,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla.
 - (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_gymanalyzer`.
 - (P016) Kullanım Koşulları / Gizlilik Politikası bağlantıları `example.com` yer tutucusu (`LEGAL_TERMS_URL`, `LEGAL_PRIVACY_URL`, `ios/Config/Base.xcconfig`); gerçek sayfalar P101'de yayınlanınca değiştir.
-- (P016) Google düğmesinde resmi "G" logosu yok (yalnızca metin); marka kılavuzuna uygun varlık eklenmeli (release öncesi).
 - (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür.
 - (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir.
 - (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır.

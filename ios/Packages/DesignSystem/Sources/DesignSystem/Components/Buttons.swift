@@ -27,12 +27,15 @@ struct DSButtonStyle: ButtonStyle {
 private struct ButtonLabel: View {
     let title: Text
     let systemImage: String?
+    var icon: Image?
     let isLoading: Bool
 
     var body: some View {
         HStack(spacing: Spacing.sm) {
             if isLoading {
                 ProgressView().tint(.primary)
+            } else if let icon {
+                icon.resizable().scaledToFit().frame(width: 20, height: 20).accessibilityHidden(true)
             } else if let systemImage {
                 Image(systemName: systemImage).accessibilityHidden(true)
             }
@@ -76,6 +79,7 @@ public struct PrimaryButton: View {
 public struct SecondaryButton: View {
     private let title: Text
     private let systemImage: String?
+    private let icon: Image?
     private let isLoading: Bool
     private let action: @MainActor () -> Void
 
@@ -88,6 +92,20 @@ public struct SecondaryButton: View {
         self.init(title: Text(title), systemImage: systemImage, isLoading: isLoading, action: action)
     }
 
+    /// With a custom (e.g. brand) icon instead of an SF Symbol; the icon is drawn as-is, not tinted.
+    public init(
+        _ title: LocalizedStringKey,
+        icon: Image,
+        isLoading: Bool = false,
+        action: @escaping @MainActor () -> Void
+    ) {
+        self.title = Text(title)
+        self.systemImage = nil
+        self.icon = icon
+        self.isLoading = isLoading
+        self.action = action
+    }
+
     public init(
         title: Text,
         systemImage: String?,
@@ -96,6 +114,7 @@ public struct SecondaryButton: View {
     ) {
         self.title = title
         self.systemImage = systemImage
+        self.icon = nil
         self.isLoading = isLoading
         self.action = action
     }
@@ -105,7 +124,7 @@ public struct SecondaryButton: View {
             Haptics.play(.light)
             action()
         } label: {
-            ButtonLabel(title: title, systemImage: systemImage, isLoading: isLoading)
+            ButtonLabel(title: title, systemImage: systemImage, icon: icon, isLoading: isLoading)
         }
         .buttonStyle(DSButtonStyle(kind: .secondary))
         .disabled(isLoading)

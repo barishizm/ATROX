@@ -65,7 +65,7 @@ struct WelcomeView: View {
                 .disabled(model.isBusy)
                 .overlay { if model.busy == .apple { ProgressView().tint(.gray) } }
                 .accessibilityIdentifier("welcome-apple")
-            SecondaryButton("auth.welcome.google", isLoading: model.busy == .google) {
+            SecondaryButton("auth.welcome.google", icon: Image("GoogleLogo"), isLoading: model.busy == .google) {
                 Task { await model.signInWithGoogle() }
             }
             .disabled(model.isBusy)
