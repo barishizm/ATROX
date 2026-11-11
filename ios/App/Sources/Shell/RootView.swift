@@ -12,7 +12,7 @@ struct RootView: View {
             switch root.state {
             case .loading: LoadingState()
             case .signedOut: AuthFlowView(model: container.authFlow)
-            case .needsOnboarding: OnboardingPlaceholderView()
+            case .needsOnboarding: OnboardingFlowView()
             case .ready: MainTabView()
             }
         }

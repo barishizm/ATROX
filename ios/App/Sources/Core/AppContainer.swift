@@ -41,6 +41,23 @@ final class AppContainer {
         self.passwordRecovery = PasswordRecoveryModel(service: authService)
     }
 
+    /// Builds the onboarding model for the signed-in user; nil when there is no user or no local store.
+    func makeOnboardingModel() async -> OnboardingViewModel? {
+        guard let modelContainer, let authService else { return nil }
+        let user: AuthUser
+        switch await authService.restoreSession() {
+        case .signedIn(let signedIn), .passwordRecovery(let signedIn): user = signedIn
+        case .signedOut: return nil
+        }
+        return OnboardingViewModel(
+            userId: user.id,
+            store: UserDefaultsOnboardingDraftStore(),
+            profiles: SwiftDataProfileRepository(modelContainer: modelContainer),
+            measurements: SwiftDataMeasurementRepository(modelContainer: modelContainer),
+            localeCode: language.effectiveLocale().language.languageCode?.identifier ?? "en"
+        )
+    }
+
     /// Production wiring.
     static func live(bundle: Bundle = .main) -> AppContainer {
         #if DEBUG
