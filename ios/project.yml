@@ -88,6 +88,7 @@ targets:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
         AppURLScheme: $(APP_URL_SCHEME)
+        AppGroupID: $(APP_GROUP_ID)
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
         # Terms of Use / Privacy Policy links on the welcome screen (URLs live in the xcconfig files).
@@ -116,12 +117,15 @@ targets:
       properties:
         com.apple.developer.applesignin:
           - Default
-    # Capabilities enabled so far: Sign in with Apple (P014). Still to be added in later steps
+        # P017: shared container for the SwiftData store (and Widgets later). Value from Config/Base.xcconfig.
+        # The group must also be registered in the Apple Developer portal before a device build.
+        com.apple.security.application-groups:
+          - $(APP_GROUP_ID)
+    # Capabilities enabled so far: Sign in with Apple (P014), App Groups (P017). Still to be added in later steps
     # (entitlements + Apple Developer portal App ID):
     #   - HealthKit                     (body weight / workout import)
     #   - In-App Purchase               (StoreKit 2 subscriptions)
     #   - Push Notifications            (rest timer / coach reminders)
-    #   - App Groups                    (share data with Widgets target)
     #   - Associated Domains            (universal links / Google sign-in callback)
     #   - Background Modes              (background sync, Live Activity updates)
     # Also later: Widgets extension target (WidgetKit + Live Activity).

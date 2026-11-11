@@ -29,7 +29,7 @@ Toplam: 104 adım.
 
 ## Faz 2 — Onboarding ve profil
 
-- [ ] **P017** · Yerel veri katmanı (SwiftData) — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P017** · Yerel veri katmanı (SwiftData) — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -173,3 +173,9 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür.
 - (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir.
 - (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır.
+- (P017) App Group (`group.com.barishizm.vesania[.debug|.staging]`) Apple Developer portalında App ID'lere eklenip provisioning profile'a girmeli; simülatörde sorunsuz, gerçek cihaz/release öncesi `[MANUEL]`. Widgets hedefi (P0xx) aynı `APP_GROUP_ID`'yi kullanmalı.
+- (P017) `UserSettings` modeli var ama deposu yok; P022 (Profil ve ayarlar) ile `SettingsRepository` eklenecek.
+- (P017) Depolar kayıtları `pending` bırakır; itme/çekme ve `syncState` geçişleri (synced/failed) senkronizasyon motoruna (Faz 11) ait.
+- (P017) Uygulama grubu konteyneri açılamazsa (imzasız derleme) uygulama kendi sandbox'ına düşer; widget'lar o durumda veriyi göremez. Üretimde grubun varlığı release kontrol listesine eklenmeli.
+- (P017) `ProfileInput` doğum tarihi/yaş (16+) doğrulamasını yapmaz; bu P018 `OnboardingViewModel` sorumluluğunda (sunucu CHECK'i son savunma).
+- (P017) Depo kapsamı dışı eski SwiftLint ihlalleri (~59, çoğu test dosyalarında: tek harfli değişken adları, import sırası) `swiftlint --strict` ile hâlâ görünüyor; ayrı bir temizlik adımında düzeltilmeli.
