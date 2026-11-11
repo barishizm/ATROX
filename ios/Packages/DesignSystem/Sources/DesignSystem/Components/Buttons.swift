@@ -76,19 +76,27 @@ public struct PrimaryButton: View {
 public struct SecondaryButton: View {
     private let title: Text
     private let systemImage: String?
+    private let isLoading: Bool
     private let action: @MainActor () -> Void
 
     public init(
         _ title: LocalizedStringKey,
         systemImage: String? = nil,
+        isLoading: Bool = false,
         action: @escaping @MainActor () -> Void
     ) {
-        self.init(title: Text(title), systemImage: systemImage, action: action)
+        self.init(title: Text(title), systemImage: systemImage, isLoading: isLoading, action: action)
     }
 
-    init(title: Text, systemImage: String?, action: @escaping @MainActor () -> Void) {
+    public init(
+        title: Text,
+        systemImage: String?,
+        isLoading: Bool = false,
+        action: @escaping @MainActor () -> Void
+    ) {
         self.title = title
         self.systemImage = systemImage
+        self.isLoading = isLoading
         self.action = action
     }
 
@@ -97,9 +105,10 @@ public struct SecondaryButton: View {
             Haptics.play(.light)
             action()
         } label: {
-            ButtonLabel(title: title, systemImage: systemImage, isLoading: false)
+            ButtonLabel(title: title, systemImage: systemImage, isLoading: isLoading)
         }
         .buttonStyle(DSButtonStyle(kind: .secondary))
+        .disabled(isLoading)
     }
 }
 

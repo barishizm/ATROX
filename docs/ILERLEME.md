@@ -25,7 +25,7 @@ Toplam: 104 adım.
 - [x] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P015** · AuthService — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P016** · Giriş ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P016** · Giriş ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 2 — Onboarding ve profil
 
@@ -168,5 +168,9 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P015) Google "Skip nonce checks" açık kalıyor: uygulama Google'a hash'li nonce gönderip Supabase'e ham nonce veriyor; gerçek cihazda Google girişi doğrulandıktan sonra staging/prod panelinde kapat.
 - (P015) Apple yalnızca ilk girişte ad/soyad verir; `AppleIDTokenProvider` şimdilik yakalamıyor — profil adı P018+ (UserProfile) ile `signInWithIdToken` sonrası kaydedilmeli.
 - (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla.
-- (P015) Şifre sıfırlama bağlantısı `.passwordRecovery` durumunu yayar; yeni şifre ekranı P016'da (`AuthService.updatePassword` hazır).
 - (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_gymanalyzer`.
+- (P016) Kullanım Koşulları / Gizlilik Politikası bağlantıları `example.com` yer tutucusu (`LEGAL_TERMS_URL`, `LEGAL_PRIVACY_URL`, `ios/Config/Base.xcconfig`); gerçek sayfalar P101'de yayınlanınca değiştir.
+- (P016) Google düğmesinde resmi "G" logosu yok (yalnızca metin); marka kılavuzuna uygun varlık eklenmeli (release öncesi).
+- (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür.
+- (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir.
+- (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır.

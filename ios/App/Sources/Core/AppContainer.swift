@@ -13,6 +13,8 @@ final class AppContainer {
     let authService: (any AuthService)?
     let root: AppRootModel
     let language: LanguageSettings
+    let authFlow: AuthFlowModel
+    let passwordRecovery: PasswordRecoveryModel
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -24,11 +26,25 @@ final class AppContainer {
         self.sessionService = sessionService
         self.authService = authService
         self.language = language
-        self.root = AppRootModel(service: sessionService)
+        let root = AppRootModel(service: sessionService)
+        self.root = root
+        self.authFlow = AuthFlowModel(
+            service: authService ?? NotConfiguredAuthService(),
+            localeCode: { [language] in language.effectiveLocale().language.languageCode?.identifier },
+            onSignedIn: { user in root.didSignIn(onboardingComplete: user.onboardingComplete) }
+        )
+        self.passwordRecovery = PasswordRecoveryModel(service: authService)
     }
 
     /// Production wiring.
     static func live(bundle: Bundle = .main) -> AppContainer {
+        #if DEBUG
+        // UI tests run against an in-memory auth service instead of a real backend.
+        if ProcessInfo.processInfo.arguments.contains("-uitest-fake-auth") {
+            let fake = FakeAuthService()
+            return AppContainer(sessionService: AuthSessionService(auth: fake), authService: fake)
+        }
+        #endif
         let info = bundle.infoDictionary ?? [:]
         guard let config = SupabaseConfiguration(
             infoDictionary: info, urlScheme: info["AppURLScheme"] as? String

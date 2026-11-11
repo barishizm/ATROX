@@ -26,5 +26,11 @@ GOOGLE_IOS_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com
 GOOGLE_WEB_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com
 GOOGLE_REVERSED_CLIENT_ID = com.googleusercontent.apps.PLACEHOLDER
 
+// ---- Legal links (welcome screen). Placeholders until P101 publishes the real pages. ----
+// "//" starts a comment in xcconfig, so URLs are written as https:/$(SLASH)host.
+SLASH = /
+LEGAL_TERMS_URL = https:/$(SLASH)example.com/terms
+LEGAL_PRIVACY_URL = https:/$(SLASH)example.com/privacy
+
 // ---- Secrets (gitignored). Optional so a fresh clone still builds. ----
 #include? "Secrets.xcconfig"

@@ -56,6 +56,10 @@
 	<string>$(GOOGLE_IOS_CLIENT_ID)</string>
 	<key>GIDServerClientID</key>
 	<string>$(GOOGLE_WEB_CLIENT_ID)</string>
+	<key>LegalPrivacyURL</key>
+	<string>$(LEGAL_PRIVACY_URL)</string>
+	<key>LegalTermsURL</key>
+	<string>$(LEGAL_TERMS_URL)</string>
 	<key>SupabaseAnonKey</key>
 	<string>$(SUPABASE_ANON_KEY)</string>
 	<key>SupabaseURL</key>

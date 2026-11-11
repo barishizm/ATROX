@@ -185,7 +185,17 @@ Yerelde aynı değerler `supabase/config.toml` içindedir (`site_url`, `addition
 ile `vesania://auth-callback#…` bağlantılarını yakalayıp Supabase istemcisine verir (P015).
 Debug ve Staging aynı şemayı paylaşır; aynı cihazda ikisi birden kuruluysa iOS birini seçer — test ederken birini sil.
 
-### 5. Doğrulama
+### 5. Hukuki bağlantılar (P016)
+
+Karşılama ekranındaki Kullanım Koşulları ve Gizlilik Politikası bağlantıları yapılandırmadan okunur:
+`LEGAL_TERMS_URL` ve `LEGAL_PRIVACY_URL` (`ios/Config/Base.xcconfig` → `Info.plist` anahtarları `LegalTermsURL`,
+`LegalPrivacyURL`). Şimdilik `example.com` yer tutucusu; P101'de gerçek sayfalarla değiştirilir. Boş veya geçersiz
+değer bağlantıyı gizler. xcconfig'te `//` yorum başlattığı için URL `https:/$(SLASH)host/yol` biçiminde yazılır.
+
+UI testleri gerçek backend yerine bellek içi sahte servisle çalışır: uygulama `-uitest-fake-auth` başlatma
+argümanıyla (yalnızca Debug derlemesinde) `FakeAuthService` kullanır.
+
+### 6. Doğrulama
 
 ```bash
 cd ios && xcodegen generate
