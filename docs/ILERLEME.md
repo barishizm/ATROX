@@ -21,7 +21,7 @@ Toplam: 104 adım.
 - [x] **P009** · Supabase projesi ve yerel yığın — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P010** · Şema 1 — profil, ayarlar, onaylar, ölçümler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P015** · AuthService — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -158,3 +158,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - P011: `movement_pattern` values (squat, hinge, lunge, horizontal/vertical push/pull, carry, core, rotation, isolation, cardio, mobility, other) are our own taxonomy since the docs do not define them; confirm when `scoring_taxonomy.yaml` lands (P025/P056). Equipment/muscle/level/category values follow free-exercise-db verbatim (e.g. `body only`).
 - P011: `search_exercises` searches the shared catalog only; extend it to the caller's `custom_exercises` when the coach tool (P075) needs it.
 - Apply the P011 migration to staging/prod (`supabase db push`) once the PR is merged.
+- Apply the P012 migration to staging/prod (`supabase db push`) once the PR is merged.
+- P012: `sets` has no UNIQUE (workout_exercise_id, position) on purpose (offline reorder + soft-deleted rows would cause spurious sync failures); the client must renumber positions.
+- P012: `purge_soft_deleted()` is service-role only and not scheduled yet; schedule it (pg_cron or Edge Function) with the sync work. It does not cover `profiles`/`user_settings`/`consents`.
+- P012: `personal_records.date` is a `date`; confirm vs. a timestamp when the PR-detection logic (client) is written.
