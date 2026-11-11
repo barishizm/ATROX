@@ -2,7 +2,7 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// Onboarding parts 1–3 (identity, training profile, consents): one question per screen, progress bar on top, back button, resumable.
+/// Onboarding parts 1–4 (identity, training profile, consents, first strength profile): one question per screen, progress bar on top, back button, resumable.
 struct OnboardingFlowView: View {
     @Environment(AppContainer.self) private var container
     @State private var model: OnboardingViewModel?
@@ -33,7 +33,7 @@ private struct OnboardingContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if model.step != .trainingDone {
+            if model.step != .result {
                 header
             }
             ZStack {
@@ -59,7 +59,7 @@ private struct OnboardingContent: View {
 
     /// The consent screens bring their own buttons.
     private var showsFooter: Bool {
-        !model.isBlocked && ![.trainingDone, .terms, .contribution].contains(model.step)
+        !model.isBlocked && ![.lifts, .result, .terms, .contribution].contains(model.step)
     }
 
     private var header: some View {
@@ -99,7 +99,8 @@ private struct OnboardingContent: View {
         case .limitations: LimitationsStepView(model: model)
         case .terms: TermsStepView(model: model)
         case .contribution: ContributionStepView(model: model)
-        case .trainingDone: TrainingDoneView { container.root.didCompleteOnboarding() }
+        case .lifts: LiftsStepView(model: model)
+        case .result: ResultStepView(model: model) { container.root.didCompleteOnboarding() }
         }
     }
 
@@ -165,32 +166,5 @@ struct OnboardingPage<Content: View>: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollBounceBehavior(.basedOnSize)
-    }
-}
-
-private struct TrainingDoneView: View {
-    let finish: () -> Void
-
-    var body: some View {
-        VStack(spacing: Spacing.lg) {
-            Spacer()
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(DSColor.accent)
-                .accessibilityHidden(true)
-            Text("onboarding.done.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
-            Text("onboarding.done.message")
-                .font(DSFont.callout)
-                .foregroundStyle(DSColor.textSecondary)
-                .multilineTextAlignment(.center)
-            Spacer()
-            #if DEBUG
-            // Temporary until P021 adds the last part; then onboarding completes after the last one.
-            Button("onboarding.welcome.debugFinish", action: finish)
-                .accessibilityIdentifier("onboarding-debug-finish")
-            #endif
-        }
-        .padding(Spacing.lg)
-        .accessibilityIdentifier("onboarding-training-done")
     }
 }
