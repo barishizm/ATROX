@@ -91,7 +91,7 @@ struct OnboardingTrainingTests {
         env.model.limitationNote = "  disc issue  "
         await env.model.advance()
 
-        #expect(env.model.step == .trainingDone)
+        #expect(env.model.step == .terms)  // consents come next (P020)
         let profile = try #require(try await env.profiles.profile(userId: env.userId)).input
         #expect(profile.experience == .sixMonthsToTwoYears)
         #expect(profile.goal == .fatLoss)

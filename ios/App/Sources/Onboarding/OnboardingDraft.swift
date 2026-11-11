@@ -1,13 +1,16 @@
 import DataKit
 import Foundation
 
-/// Steps of onboarding parts 1–2 (P018, P019). One question per step. Raw values are persisted in the draft,
+/// Steps of onboarding parts 1–3 (P018–P020). One question per step. Raw values are persisted in the draft,
 /// so never reorder: new steps go before `trainingDone`. (Raw value 5 was P018's interim "part one done"
-/// screen; a draft saved there now resumes at the experience question.)
+/// screen; a draft saved there now resumes at the experience question. Raw value 10 was `trainingDone` before
+/// the consent steps existed; such a draft now resumes at `terms`, which is where that user has to continue.)
 enum OnboardingStep: Int, CaseIterable, Codable, Sendable {
     case name, birthDate, sex, units, body
     case experience, goal, frequency, equipment, limitations
-    /// Parts 1–2 are saved; the next part (P021) continues from here.
+    /// Consent screens (P020): terms + privacy, then the optional model-contribution question.
+    case terms, contribution
+    /// Profile and consents are saved; the next part (P021) continues from here.
     case trainingDone
 
     /// Question steps only (the progress bar counts these).

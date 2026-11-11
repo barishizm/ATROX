@@ -54,6 +54,7 @@ final class AppContainer {
             store: UserDefaultsOnboardingDraftStore(),
             profiles: SwiftDataProfileRepository(modelContainer: modelContainer),
             measurements: SwiftDataMeasurementRepository(modelContainer: modelContainer),
+            consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
             localeCode: language.effectiveLocale().language.languageCode?.identifier ?? "en"
         )
     }
