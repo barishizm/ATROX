@@ -1,0 +1,6 @@
+// Staging — separate Supabase project, internal TestFlight.
+#include "Base.xcconfig"
+
+APP_ENVIRONMENT = staging
+APP_BUNDLE_ID_SUFFIX = .staging
+APP_DISPLAY_NAME_SUFFIX = -Staging

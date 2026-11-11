@@ -1,0 +1,6 @@
+// Debug — local development (supabase start).
+#include "Base.xcconfig"
+
+APP_ENVIRONMENT = local
+APP_BUNDLE_ID_SUFFIX = .debug
+APP_DISPLAY_NAME_SUFFIX = -Dev

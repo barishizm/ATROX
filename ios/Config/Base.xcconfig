@@ -1,0 +1,21 @@
+// Base.xcconfig — shared by every configuration. Committed; contains no secrets.
+
+// ---- Working name (change ONLY here; bundle IDs and display name derive from it) ----
+APP_DISPLAY_NAME = GymAnalyzer
+APP_BUNDLE_ID_BASE = com.barishizm.gymanalyzer
+
+// Per-configuration suffixes (overridden in Debug/Staging/Release.xcconfig)
+APP_BUNDLE_ID_SUFFIX =
+APP_DISPLAY_NAME_SUFFIX =
+
+PRODUCT_BUNDLE_IDENTIFIER = $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX)
+INFOPLIST_KEY_CFBundleDisplayName = $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
+
+MARKETING_VERSION = 0.1.0
+CURRENT_PROJECT_VERSION = 1
+
+// ---- Non-secret environment values (overridden per configuration) ----
+APP_ENVIRONMENT = local
+
+// ---- Secrets (gitignored). Optional so a fresh clone still builds. ----
+#include? "Secrets.xcconfig"
