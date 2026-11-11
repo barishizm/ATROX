@@ -7,10 +7,12 @@ struct DebugMenuView: View {
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink("Bileşen Galerisi") { ComponentGalleryView() }
+                NavigationLink("debug.menu.gallery") { ComponentGalleryView() }
                     .accessibilityIdentifier("debug-gallery-link")
+                NavigationLink("debug.menu.localization") { LocalizationDebugView() }
+                    .accessibilityIdentifier("debug-l10n-link")
             }
-            .navigationTitle("Debug")
+            .navigationTitle("debug.menu.title")
         }
     }
 }

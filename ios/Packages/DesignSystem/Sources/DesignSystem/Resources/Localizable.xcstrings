@@ -1,16 +1,166 @@
 {
-  "sourceLanguage" : "tr",
-  "strings" : {
-    "score.level.beginner" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başlangıç" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Beginner" } } } },
-    "score.level.developing" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Gelişen" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Developing" } } } },
-    "score.level.intermediate" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Orta" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Intermediate" } } } },
-    "score.level.advanced" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "İleri" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Advanced" } } } },
-    "score.level.expert" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Uzman" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Expert" } } } },
-    "score.level.elite" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Elit" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Elite" } } } },
-    "score.a11y.label" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Güç Skoru" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Strength Score" } } } },
-    "state.loading" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Yükleniyor…" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Loading…" } } } },
-    "state.error.title" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bir şeyler ters gitti" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Something went wrong" } } } },
-    "state.error.retry" : { "localizations" : { "tr" : { "stringUnit" : { "state" : "translated", "value" : "Tekrar dene" } }, "en" : { "stringUnit" : { "state" : "translated", "value" : "Try again" } } } }
+  "sourceLanguage": "en",
+  "strings": {
+    "ds.errorState.retry": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekrar dene"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "ds.errorState.title": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir şeyler ters gitti"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.advanced": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İleri"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.beginner": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlangıç"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beginner"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.developing": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Developing"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.elite": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elite"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.expert": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uzman"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expert"
+          }
+        }
+      }
+    },
+    "ds.scoreLevel.intermediate": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intermediate"
+          }
+        }
+      }
+    },
+    "ds.scoreRing.a11yLabel": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç Skoru"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength Score"
+          }
+        }
+      }
+    },
+    "ds.state.loading": {
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yükleniyor…"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading…"
+          }
+        }
+      }
+    }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

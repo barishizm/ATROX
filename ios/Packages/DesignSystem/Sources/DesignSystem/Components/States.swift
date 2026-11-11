@@ -77,7 +77,7 @@ public struct LoadingState: View {
         VStack(spacing: Spacing.md) {
             ProgressView().controlSize(.large).tint(DSColor.accent)
             Group {
-                if let message { Text(message) } else { Text("state.loading", bundle: .module) }
+                if let message { Text(message) } else { Text("ds.state.loading", bundle: .module) }
             }
             .font(DSFont.callout)
             .foregroundStyle(DSColor.textSecondary)
@@ -110,7 +110,7 @@ public struct ErrorState: View {
                 .accessibilityHidden(true)
             VStack(spacing: Spacing.xs) {
                 Group {
-                    if let title { Text(title) } else { Text("state.error.title", bundle: .module) }
+                    if let title { Text(title) } else { Text("ds.errorState.title", bundle: .module) }
                 }
                 .font(DSFont.headline)
                 .foregroundStyle(DSColor.textPrimary)
@@ -119,7 +119,7 @@ public struct ErrorState: View {
             }
             .multilineTextAlignment(.center)
             if let retry {
-                SecondaryButton(title: Text("state.error.retry", bundle: .module), systemImage: "arrow.clockwise", action: retry)
+                SecondaryButton(title: Text("ds.errorState.retry", bundle: .module), systemImage: "arrow.clockwise", action: retry)
                     .frame(maxWidth: 280)
             }
         }

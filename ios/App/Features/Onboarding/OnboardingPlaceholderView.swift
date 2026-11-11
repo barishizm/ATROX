@@ -7,9 +7,9 @@ struct OnboardingPlaceholderView: View {
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
-            FeaturePlaceholderView(title: "onboarding.title", systemImage: "figure.strengthtraining.traditional")
+            FeaturePlaceholderView(title: "onboarding.welcome.title", systemImage: "figure.strengthtraining.traditional")
             #if DEBUG
-            Button("onboarding.debug.finish") {
+            Button("onboarding.welcome.debugFinish") {
                 container.root.didCompleteOnboarding()
             }
             .accessibilityIdentifier("onboarding-debug-finish")

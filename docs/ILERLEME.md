@@ -13,7 +13,7 @@ Toplam: 104 adım.
 - [x] **P004** · Yerel Swift paketleri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P005** · Tasarım sistemi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P006** · Uygulama kabuğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P007** · Yerelleştirme ve birimler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P007** · Yerelleştirme ve birimler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P008** · CI — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 1 — Backend temeli ve kimlik
@@ -149,4 +149,5 @@ Toplam: 104 adım.
 
 Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya yazılır.
 
-- (boş)
+- Persist weight/height unit preferences (WeightUnit/LengthUnit defaults per locale) in settings — P007 only added the types.
+- Re-localize on-screen navigation titles on in-app language change.

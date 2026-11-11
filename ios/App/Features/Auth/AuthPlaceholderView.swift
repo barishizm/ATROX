@@ -8,9 +8,9 @@ struct AuthPlaceholderView: View {
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
-            FeaturePlaceholderView(title: "auth.title", systemImage: "person.crop.circle")
+            FeaturePlaceholderView(title: "auth.signin.title", systemImage: "person.crop.circle")
             #if DEBUG
-            Button("auth.debug.continue") {
+            Button("auth.signin.debugContinue") {
                 container.root.didSignIn(onboardingComplete: false)
             }
             .accessibilityIdentifier("auth-debug-continue")

@@ -66,12 +66,12 @@ public enum ScoreLevel: Int, CaseIterable, Sendable {
     /// String Catalog key (table: Localizable, bundle: DesignSystem).
     public var localizationKey: String {
         switch self {
-        case .beginner: "score.level.beginner"
-        case .developing: "score.level.developing"
-        case .intermediate: "score.level.intermediate"
-        case .advanced: "score.level.advanced"
-        case .expert: "score.level.expert"
-        case .elite: "score.level.elite"
+        case .beginner: "ds.scoreLevel.beginner"
+        case .developing: "ds.scoreLevel.developing"
+        case .intermediate: "ds.scoreLevel.intermediate"
+        case .advanced: "ds.scoreLevel.advanced"
+        case .expert: "ds.scoreLevel.expert"
+        case .elite: "ds.scoreLevel.elite"
         }
     }
 }

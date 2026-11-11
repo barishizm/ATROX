@@ -7,7 +7,7 @@ struct FeaturePlaceholderView: View {
     let systemImage: String
 
     var body: some View {
-        EmptyState(systemImage: systemImage, title: title, message: "placeholder.message")
+        EmptyState(systemImage: systemImage, title: title, message: "common.placeholder.message")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(DSColor.background)
     }

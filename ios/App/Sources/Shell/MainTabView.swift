@@ -15,7 +15,7 @@ struct MainTabView: View {
                 NavigationStack(path: $today.path) {
                     TodayRootView()
                         .navigationDestination(for: TodayRoute.self) { _ in
-                            FeaturePlaceholderView(title: "tab.today", systemImage: "sun.max")
+                            FeaturePlaceholderView(title: "shell.tabbar.today", systemImage: "sun.max")
                         }
                 }
             }
@@ -25,7 +25,7 @@ struct MainTabView: View {
                         .navigationDestination(for: WorkoutRoute.self) { route in
                             switch route {
                             case .exerciseLibrary: LibraryPlaceholderView()
-                            case .activeWorkout: FeaturePlaceholderView(title: "tab.workout", systemImage: "dumbbell")
+                            case .activeWorkout: FeaturePlaceholderView(title: "shell.tabbar.workout", systemImage: "dumbbell")
                             }
                         }
                 }
@@ -34,7 +34,7 @@ struct MainTabView: View {
                 NavigationStack(path: $analysis.path) {
                     AnalysisRootView()
                         .navigationDestination(for: AnalysisRoute.self) { _ in
-                            FeaturePlaceholderView(title: "tab.analysis", systemImage: "chart.line.uptrend.xyaxis")
+                            FeaturePlaceholderView(title: "shell.tabbar.analysis", systemImage: "chart.line.uptrend.xyaxis")
                         }
                 }
             }
@@ -42,7 +42,7 @@ struct MainTabView: View {
                 NavigationStack(path: $coach.path) {
                     CoachRootView()
                         .navigationDestination(for: CoachRoute.self) { _ in
-                            FeaturePlaceholderView(title: "tab.coach", systemImage: "bubble.left.and.text.bubble.right")
+                            FeaturePlaceholderView(title: "shell.tabbar.coach", systemImage: "bubble.left.and.text.bubble.right")
                         }
                 }
             }
