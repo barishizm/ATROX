@@ -72,11 +72,21 @@ jobs:
       - name: Package tests
         run: |
           set -euo pipefail
-          for pkg in StrengthKit DataKit DesignSystem CoachKit; do
+          for pkg in StrengthKit DataKit CoachKit; do
             echo "::group::swift test $pkg"
             swift test --package-path "ios/Packages/$pkg"
             echo "::endgroup::"
           done
+
+      # DesignSystem ships a String Catalog (.xcstrings). `swift test` does not compile
+      # catalogs on the runner's toolchain, so its localization tests fail there; xcodebuild does.
+      - name: DesignSystem tests (iPhone simulator)
+        working-directory: ios/Packages/DesignSystem
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme DesignSystem \
+            -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}"
 
       - name: Generate Xcode project
         working-directory: ios
