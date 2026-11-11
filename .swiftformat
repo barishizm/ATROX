@@ -1,0 +1,13 @@
+--swiftversion 6.0
+--indent 4
+--maxwidth 140
+--linebreaks lf
+--trimwhitespace always
+--commas always
+--self remove
+--importgrouping alpha
+--wraparguments before-first
+--wrapcollections before-first
+--stripunusedargs closure-only
+--header strip
+--exclude **/.build,**/DerivedData,**/*.generated.swift

@@ -7,8 +7,8 @@ Toplam: 104 adım.
 
 ## Faz 0 — Kurulum ve temeller
 
-- [ ] **P001** · Hesaplar ve araç zinciri `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P002** · Monorepo iskeleti — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P001** · Hesaplar ve araç zinciri `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P002** · Monorepo iskeleti — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P003** · XcodeGen projesi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P004** · Yerel Swift paketleri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P005** · Tasarım sistemi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
