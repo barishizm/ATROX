@@ -8,10 +8,16 @@ final class AppContainer {
     let featureFlags: FeatureFlags
     let sessionService: any SessionService
     let root: AppRootModel
+    let language: LanguageSettings
 
-    init(featureFlags: FeatureFlags = FeatureFlags(), sessionService: any SessionService) {
+    init(
+        featureFlags: FeatureFlags = FeatureFlags(),
+        sessionService: any SessionService,
+        language: LanguageSettings = LanguageSettings()
+    ) {
         self.featureFlags = featureFlags
         self.sessionService = sessionService
+        self.language = language
         self.root = AppRootModel(service: sessionService)
     }
 

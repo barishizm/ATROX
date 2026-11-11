@@ -13,6 +13,7 @@ public struct ScoreRing: View {
     @ScaledMetric(relativeTo: .largeTitle) private var diameter: CGFloat = 160
     @State private var shown: Double = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.locale) private var locale
 
     public init(score: Double, diameter: CGFloat = 160, lineWidth: CGFloat = 14, showsLevel: Bool = true) {
         self.score = Self.clamped(score)
@@ -37,7 +38,7 @@ public struct ScoreRing: View {
                     .foregroundStyle(DSColor.textPrimary)
                     .lineLimit(1)
                 if showsLevel {
-                    Text(verbatim: level.localizedName)
+                    Text(verbatim: level.localizedName(locale: locale))
                         .font(DSFont.footnote.weight(.semibold))
                         .foregroundStyle(color)
                 }
@@ -50,8 +51,8 @@ public struct ScoreRing: View {
         .onAppear { update(animated: true) }
         .onChange(of: score) { update(animated: true) }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("score.a11y.label", bundle: .module))
-        .accessibilityValue(Text(verbatim: "\(Int(score.rounded())) / 100, \(level.localizedName)"))
+        .accessibilityLabel(Text("ds.scoreRing.a11yLabel", bundle: .module))
+        .accessibilityValue(Text(verbatim: "\(Int(score.rounded())) / 100, \(level.localizedName(locale: locale))"))
     }
 
     private func update(animated: Bool) {

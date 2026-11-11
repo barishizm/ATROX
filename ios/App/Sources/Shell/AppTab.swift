@@ -5,11 +5,11 @@ enum AppTab: String, CaseIterable, Hashable, Sendable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .today: "tab.today"
-        case .workout: "tab.workout"
-        case .analysis: "tab.analysis"
-        case .coach: "tab.coach"
-        case .profile: "tab.profile"
+        case .today: "shell.tabbar.today"
+        case .workout: "shell.tabbar.workout"
+        case .analysis: "shell.tabbar.analysis"
+        case .coach: "shell.tabbar.coach"
+        case .profile: "shell.tabbar.profile"
         }
     }
 
