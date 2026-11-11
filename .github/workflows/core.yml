@@ -1,0 +1,107 @@
+name: Core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ios/Packages/StrengthKit/**"
+      - "ml/**"
+      - "supabase/functions/**"
+      - ".github/workflows/core.yml"
+  pull_request:
+    paths:
+      - "ios/Packages/StrengthKit/**"
+      - "ml/**"
+      - "supabase/functions/**"
+      - ".github/workflows/core.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: core-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  strengthkit:
+    name: StrengthKit (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container: swift:6.2-noble
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache SwiftPM
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ios/Packages/StrengthKit/.build
+          key: spm-linux-strengthkit-${{ hashFiles('ios/Packages/StrengthKit/Package.swift', 'ios/Packages/StrengthKit/Package.resolved') }}
+          restore-keys: |
+            spm-linux-strengthkit-
+      - name: swift test
+        run: swift test --package-path ios/Packages/StrengthKit
+
+  ml:
+    name: ML (uv + pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Detect ML project
+        id: detect
+        run: |
+          if [ -f ml/pyproject.toml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "ml/pyproject.toml not found; skipping."
+          fi
+      - name: Set up uv
+        if: steps.detect.outputs.present == 'true'
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: ml/uv.lock
+      - name: Sync dependencies
+        if: steps.detect.outputs.present == 'true'
+        working-directory: ml
+        run: uv sync --frozen
+      - name: pytest
+        if: steps.detect.outputs.present == 'true'
+        working-directory: ml
+        run: uv run pytest
+
+  edge-functions:
+    name: Edge Functions (deno)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Detect functions
+        id: detect
+        run: |
+          if find supabase/functions -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' \) 2>/dev/null | grep -q .; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No Edge Function sources found; skipping."
+          fi
+      - name: Set up Deno
+        if: steps.detect.outputs.present == 'true'
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+      - name: Cache Deno
+        if: steps.detect.outputs.present == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/deno
+          key: deno-${{ hashFiles('supabase/functions/**/deno.json', 'supabase/functions/**/deno.lock') }}
+          restore-keys: |
+            deno-
+      - name: deno lint
+        if: steps.detect.outputs.present == 'true'
+        run: deno lint supabase/functions
+      - name: deno test
+        if: steps.detect.outputs.present == 'true'
+        run: deno test --allow-env --allow-read supabase/functions
