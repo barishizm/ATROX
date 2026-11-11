@@ -84,9 +84,27 @@ targets:
         AppEnvironment: $(APP_ENVIRONMENT)
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
-    # Capabilities: intentionally empty for now. To be added in later steps
+        # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
+        GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
+        GIDServerClientID: $(GOOGLE_WEB_CLIENT_ID)
+        # URL schemes: (1) app deep link, used by Supabase email/OAuth redirects;
+        # (2) Google reversed iOS client ID, used by GoogleSignIn to return to the app.
+        CFBundleURLTypes:
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER).deeplink
+            CFBundleTypeRole: Editor
+            CFBundleURLSchemes:
+              - $(APP_URL_SCHEME)
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER).google
+            CFBundleTypeRole: Editor
+            CFBundleURLSchemes:
+              - $(GOOGLE_REVERSED_CLIENT_ID)
+    entitlements:
+      path: App/GymAnalyzer.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
+    # Capabilities enabled so far: Sign in with Apple (P014). Still to be added in later steps
     # (entitlements + Apple Developer portal App ID):
-    #   - Sign in with Apple            (P010x auth)
     #   - HealthKit                     (body weight / workout import)
     #   - In-App Purchase               (StoreKit 2 subscriptions)
     #   - Push Notifications            (rest timer / coach reminders)

@@ -23,7 +23,7 @@ Toplam: 104 adım.
 - [x] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P014** · Kimlik sağlayıcılarının yapılandırılması `[MANUEL]` — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P015** · AuthService — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P016** · Giriş ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
@@ -162,3 +162,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - P012: `sets` has no UNIQUE (workout_exercise_id, position) on purpose (offline reorder + soft-deleted rows would cause spurious sync failures); the client must renumber positions.
 - P012: `purge_soft_deleted()` is service-role only and not scheduled yet; schedule it (pg_cron or Edge Function) with the sync work. It does not cover `profiles`/`user_settings`/`consents`.
 - P012: `personal_records.date` is a `date`; confirm vs. a timestamp when the PR-detection logic (client) is written.
+- (P014) Uzak projelerde özel SMTP sağlayıcısı bağlanacak (yerleşik e-posta servisinin saatlik limiti düşük); lansmandan önce.
+- (P014) Şablonları (TR/EN) uzak projelere yükle: önce özel SMTP + alan adı gerekir (docs/KURULUM.md → E-posta ile giriş).
+- (P014) Apple: Developer Program üyeliği, App ID'lerde Sign in with Apple, Supabase Apple sağlayıcısı (Client IDs = 3 bundle ID) ve DEVELOPMENT_TEAM — release öncesi (docs/KURULUM.md → Sign in with Apple).
