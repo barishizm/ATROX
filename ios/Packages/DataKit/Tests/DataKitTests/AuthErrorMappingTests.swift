@@ -73,7 +73,7 @@ struct AuthErrorMappingTests {
                 let language = localizations?[lang] as? [String: Any]
                 let unit = language?["stringUnit"] as? [String: Any]
                 let value = (unit?["value"] as? String) ?? ""
-                #expect(value.count > 0, "missing \(lang) for \(key)")
+                #expect(value != "", "missing \(lang) for \(key)")
             }
         }
     }

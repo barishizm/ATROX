@@ -5,9 +5,9 @@ import Testing
 
 struct NonceAndConfigTests {
     @Test func nonceIsRandomWithRequestedLength() {
-        let a = Nonce.random(length: 32), b = Nonce.random(length: 32)
-        #expect(a.raw.count == 32)
-        #expect(a != b)
+        let first = Nonce.random(length: 32), second = Nonce.random(length: 32)
+        #expect(first.raw.count == 32)
+        #expect(first != second)
         #expect(Nonce.random(length: 5).raw.count == 5)
     }
 
