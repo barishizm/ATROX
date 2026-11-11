@@ -1,0 +1,102 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ios/**"
+      - ".swiftlint.yml"
+      - ".swiftformat"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+      - ".swiftlint.yml"
+      - ".swiftformat"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+# Cancel superseded runs of the same ref.
+concurrency:
+  group: ios-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  SIMULATOR_NAME: iPhone 17
+
+jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install SwiftLint
+        run: brew install swiftlint
+      - name: Lint
+        # Not --strict: 54 pre-existing warnings are deferred (docs/ILERLEME.md). Errors fail the job.
+        run: swiftlint lint --reporter github-actions-logging
+
+  test:
+    name: Build & test
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache SwiftPM
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+            ios/Packages/*/.build
+          key: spm-${{ runner.os }}-${{ hashFiles('ios/Packages/*/Package.swift', 'ios/Packages/*/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      # Secrets.xcconfig is gitignored; Base.xcconfig includes it optionally.
+      # CI never has real keys, so fall back to the checked-in example.
+      - name: Provide Secrets.xcconfig
+        run: |
+          if [ ! -f ios/Config/Secrets.xcconfig ]; then
+            cp ios/Config/Secrets.example.xcconfig ios/Config/Secrets.xcconfig
+          fi
+
+      - name: Package tests
+        run: |
+          set -euo pipefail
+          for pkg in StrengthKit DataKit DesignSystem CoachKit; do
+            echo "::group::swift test $pkg"
+            swift test --package-path "ios/Packages/$pkg"
+            echo "::endgroup::"
+          done
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: App tests (iPhone simulator)
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project ios/GymAnalyzer.xcodeproj \
+            -scheme GymAnalyzer \
+            -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
+            -resultBundlePath "$RUNNER_TEMP/GymAnalyzer.xcresult" \
+            -skipPackagePluginValidation \
+            | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: xcresult
+          path: ${{ runner.temp }}/GymAnalyzer.xcresult
+          retention-days: 7

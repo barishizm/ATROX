@@ -14,7 +14,7 @@ Toplam: 104 adım.
 - [x] **P005** · Tasarım sistemi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P006** · Uygulama kabuğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P007** · Yerelleştirme ve birimler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P008** · CI — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P008** · CI — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 1 — Backend temeli ve kimlik
 
@@ -151,3 +151,5 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 
 - Persist weight/height unit preferences (WeightUnit/LengthUnit defaults per locale) in settings — P007 only added the types.
 - Re-localize on-screen navigation titles on in-app language change.
+- Fix the 54 pre-existing SwiftLint warnings (line length, identifier names, sorted imports), then switch the CI lint step to `--strict`.
+- After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist.
