@@ -2,7 +2,7 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// Onboarding part 1: one question per screen, progress bar on top, back button, resumable.
+/// Onboarding parts 1–3 (identity, training profile, consents): one question per screen, progress bar on top, back button, resumable.
 struct OnboardingFlowView: View {
     @Environment(AppContainer.self) private var container
     @State private var model: OnboardingViewModel?
@@ -57,7 +57,10 @@ private struct OnboardingContent: View {
         }
     }
 
-    private var showsFooter: Bool { !model.isBlocked && model.step != .trainingDone }
+    /// The consent screens bring their own buttons.
+    private var showsFooter: Bool {
+        !model.isBlocked && ![.trainingDone, .terms, .contribution].contains(model.step)
+    }
 
     private var header: some View {
         HStack(spacing: Spacing.md) {
@@ -94,6 +97,8 @@ private struct OnboardingContent: View {
         case .frequency: FrequencyStepView(model: model)
         case .equipment: EquipmentStepView(model: model)
         case .limitations: LimitationsStepView(model: model)
+        case .terms: TermsStepView(model: model)
+        case .contribution: ContributionStepView(model: model)
         case .trainingDone: TrainingDoneView { container.root.didCompleteOnboarding() }
         }
     }
@@ -180,7 +185,7 @@ private struct TrainingDoneView: View {
                 .multilineTextAlignment(.center)
             Spacer()
             #if DEBUG
-            // Temporary until P020–P021 add the remaining parts; then onboarding completes after the last one.
+            // Temporary until P021 adds the last part; then onboarding completes after the last one.
             Button("onboarding.welcome.debugFinish", action: finish)
                 .accessibilityIdentifier("onboarding-debug-finish")
             #endif

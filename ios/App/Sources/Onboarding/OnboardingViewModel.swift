@@ -16,6 +16,7 @@ final class OnboardingViewModel {
     private let store: any OnboardingDraftStore
     private let profiles: any ProfileRepository
     private let measurements: any MeasurementRepository
+    private let consents: ConsentService
     private let now: () -> Date
     private let calendar: Calendar
     private let localeCode: String
@@ -25,6 +26,7 @@ final class OnboardingViewModel {
         store: any OnboardingDraftStore,
         profiles: any ProfileRepository,
         measurements: any MeasurementRepository,
+        consents: ConsentService,
         deviceLocale: Locale = .current,
         localeCode: String = "en",
         now: @escaping () -> Date = { Date() },
@@ -34,6 +36,7 @@ final class OnboardingViewModel {
         self.store = store
         self.profiles = profiles
         self.measurements = measurements
+        self.consents = consents
         self.localeCode = localeCode
         self.now = now
         self.calendar = calendar
@@ -71,7 +74,8 @@ final class OnboardingViewModel {
         case .frequency: return OnboardingRules.weeklyFrequencyRange.contains(draft.weeklyFrequency)
         case .equipment: return draft.equipment != nil
         case .limitations: return draft.noLimitations || !draft.limitations.isEmpty
-        case .trainingDone: return false
+        // The consent screens have their own buttons (see `acceptLegal`, `decideContribution`).
+        case .terms, .contribution, .trainingDone: return false
         }
     }
 
@@ -106,7 +110,35 @@ final class OnboardingViewModel {
         case .frequency: go(to: .equipment)
         case .equipment: go(to: .limitations)
         case .limitations: await save()
-        case .trainingDone: break
+        case .terms, .contribution, .trainingDone: break
+        }
+    }
+
+    // MARK: Consents (P020)
+
+    /// "Kabul ediyorum ve devam et": stores terms + privacy with their versions, then asks about contribution.
+    func acceptLegal() async {
+        guard draft.step == .terms, !isSaving else { return }
+        await run { [consents, userId] in try await consents.acceptLegal(userId: userId) }
+        if !saveFailed { go(to: .contribution) }
+    }
+
+    /// Answers "Modeli birlikte geliştirelim". Both answers are stored; only the explicit button grants.
+    func decideContribution(_ granted: Bool) async {
+        guard draft.step == .contribution, !isSaving else { return }
+        await run { [consents, userId] in try await consents.setContribution(granted, userId: userId) }
+        if !saveFailed { go(to: .trainingDone) }
+    }
+
+    private func run(_ work: () async throws -> Void) async {
+        isSaving = true
+        saveFailed = false
+        defer { isSaving = false }
+        do {
+            try await work()
+        } catch {
+            Log.app.error("Onboarding consent save failed: \(error)")
+            saveFailed = true
         }
     }
 
@@ -243,7 +275,7 @@ final class OnboardingViewModel {
                 try await saveWeight()
                 go(to: .experience)
             } else {
-                go(to: .trainingDone)
+                go(to: .terms)
             }
         } catch {
             Log.app.error("Onboarding save failed: \(error)")

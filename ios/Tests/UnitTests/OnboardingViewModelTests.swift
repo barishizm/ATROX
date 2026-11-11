@@ -23,6 +23,7 @@ struct OnboardingViewModelTests {
         let store: UserDefaultsOnboardingDraftStore
         let profiles: SwiftDataProfileRepository
         let measurements: SwiftDataMeasurementRepository
+        let consentRepository: SwiftDataConsentRepository
         let userId: UUID
     }
 
@@ -34,11 +35,16 @@ struct OnboardingViewModelTests {
         let store = UserDefaultsOnboardingDraftStore(defaults: defaults)
         let profiles = SwiftDataProfileRepository(modelContainer: container)
         let measurements = SwiftDataMeasurementRepository(modelContainer: container)
+        let consentRepository = SwiftDataConsentRepository(modelContainer: container)
         let model = OnboardingViewModel(
             userId: userId, store: store, profiles: profiles, measurements: measurements,
+            consents: ConsentService(repository: consentRepository),
             deviceLocale: locale, localeCode: "tr", now: { today }, calendar: calendar
         )
-        return Harness(model: model, store: store, profiles: profiles, measurements: measurements, userId: userId)
+        return Harness(
+            model: model, store: store, profiles: profiles, measurements: measurements,
+            consentRepository: consentRepository, userId: userId
+        )
     }
 
     // MARK: Rules

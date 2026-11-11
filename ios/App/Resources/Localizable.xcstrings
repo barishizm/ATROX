@@ -2472,6 +2472,470 @@
           }
         }
       }
+    },
+    "onboarding.contribution.accept": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribute anonymously"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anonim olarak katkı sağla"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.assure.anytime": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can turn it off at any time."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstediğin an kapatabilirsin."
+          }
+        }
+      }
+    },
+    "onboarding.contribution.assure.data": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only age range, weight, sex and your best sets."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca yaş aralığı, kilo, cinsiyet ve en iyi setlerin."
+          }
+        }
+      }
+    },
+    "onboarding.contribution.assure.identity": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name and email are never sent."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İsmin ve e-postan asla gönderilmez."
+          }
+        }
+      }
+    },
+    "onboarding.contribution.details.cadence": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you turn it off later, we ask for your data to be deleted."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha sonra kapatırsan, verilerinin silinmesini isteriz."
+          }
+        }
+      }
+    },
+    "onboarding.contribution.details.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once a month, a summary like this is sent:"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayda bir kez şu özet gönderilir:"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.details.neverTitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never shared"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asla paylaşılmaz"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.details.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is shared?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neler paylaşılır?"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.age": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Age in a 5-year range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 yıllık aralık olarak yaş"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.experience": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experience level, as a range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deneyim düzeyi (aralık olarak)"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.frequency": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training days per week, as a range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık antrenman günü (aralık olarak)"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.height": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Height in a 5 cm range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 cm'lik aralık olarak boy"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.key": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A random key made on your device, not linked to your account, renewed every 12 months"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cihazında üretilen, hesabınla eşlenmeyen ve 12 ayda bir yenilenen rastgele anahtar"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.lifts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per exercise: best estimated 1RM, best set reps, sessions that month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket başına: en iyi tahmini 1TM, en iyi set tekrarı, o ayki antrenman sayısı"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.month": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The month (year-month)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ay (yıl-ay)"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.sex": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sex"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cinsiyet"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.field.weight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Body weight, rounded to a whole kg"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vücut ağırlığı (tam kg'a yuvarlı)"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.never.account": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anything that links the data to your account"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verileri hesabına bağlayan hiçbir şey"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.never.name": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name, email or user ID"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İsmin, e-postan veya kullanıcı kimliğin"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.never.notes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your notes, photos or coach chats"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notların, fotoğrafların veya koç sohbetlerin"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdi değil"
+          }
+        }
+      }
+    },
+    "onboarding.contribution.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your anonymous numbers help make everyone's Strength Score more accurate."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anonim verilerin, herkesin Güç Skoru'nu daha doğru yapmamıza yardım eder."
+          }
+        }
+      }
+    },
+    "onboarding.contribution.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's improve the model together"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modeli birlikte geliştirelim"
+          }
+        }
+      }
+    },
+    "onboarding.terms.accept": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I agree and continue"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kabul ediyorum ve devam et"
+          }
+        }
+      }
+    },
+    "onboarding.terms.age": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app is for people aged 16 and over."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulama 16 yaş ve üzeri içindir."
+          }
+        }
+      }
+    },
+    "onboarding.terms.privacyLink": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gizlilik Politikası"
+          }
+        }
+      }
+    },
+    "onboarding.terms.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please read how we handle your data and what the rules are."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verilerini nasıl işlediğimizi ve kuralları lütfen oku."
+          }
+        }
+      }
+    },
+    "onboarding.terms.termsLink": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kullanım Koşulları"
+          }
+        }
+      }
+    },
+    "onboarding.terms.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before we start"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlamadan önce"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

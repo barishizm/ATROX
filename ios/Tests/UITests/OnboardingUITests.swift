@@ -91,6 +91,21 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(next.isEnabled)
         next.tap()
 
+        // Consents (P020): terms first, then the opt-in contribution screen — no pre-ticked box.
+        let accept = app.buttons["I agree and continue"]
+        XCTAssertTrue(accept.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.switches.firstMatch.exists && app.switches.count > 0, "No consent checkbox")
+        accept.tap()
+
+        let contribute = app.buttons["Contribute anonymously"]
+        XCTAssertTrue(contribute.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.buttons["Not now"].exists)
+        let details = app.buttons["What is shared?"]
+        XCTAssertTrue(details.exists)
+        details.tap()
+        XCTAssertTrue(app.staticTexts["Never shared"].waitForExistence(timeout: 5), app.debugDescription)
+        contribute.tap()
+
         XCTAssertTrue(app.staticTexts["Training profile saved"].waitForExistence(timeout: 10), app.debugDescription)
     }
 }

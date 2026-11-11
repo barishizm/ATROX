@@ -32,7 +32,7 @@ Toplam: 104 adım.
 - [x] **P017** · Yerel veri katmanı (SwiftData) — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P018** · Onboarding 1 — kimlik ve vücut bilgileri — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P019** · Onboarding 2 — antrenman profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P023** · HealthKit entegrasyonu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -189,3 +189,8 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P019) P018'in "Temel bilgiler kaydedildi" ara ekranı kaldırıldı; vücut adımı profili kaydedip doğrudan deneyim sorusuna geçer, son adımda (kısıtlar) tüm profil yeniden yazılır. Ara ekran artık "Antrenman profilin kaydedildi" (geçici DEBUG bitirme düğmesi P021'e kadar duruyor). Eski taslaklarda `partOneDone` (5) artık deneyim adımına denk gelir.
 - (P019) `ChoiceRow` yerine DesignSystem `SelectableCard` (radyo/onay kutusu göstergeli) kullanılıyor; bileşen galerisine eklendi.
 - (P019) "10 adım 2 dakikadan kısa" kabulü elle zamanlanmadı; akış UI testiyle uçtan uca doğrulandı. TR çalışma zamanı görünümü yine elle doğrulanmadı.
+- (P020) Onay ekranları `OnboardingStep.terms` / `.contribution` olarak akışa eklendi; `trainingDone` (ham değer 10 → 12) hâlâ geçici son ekran. Eski taslak 10'da kalan kullanıcı `terms`'ten devam eder.
+- (P020) `ConsentService` (DataKit) sürüm sürümlerini `ConsentVersions.current` içinde tutar; sürüm artınca "evet" ve "hayır" cevapları da yeniden sorulur. Katkıyı geri alma yalnızca `granted: false` satırı yazar; sunucuya `contribution_key` silme isteği `contribute` fonksiyonu/senkronizasyon (Faz 11) ile bağlanacak.
+- (P020) Ayarlardan katkıyı aç/kapat ve onay geçmişi P022'de `ConsentService` üzerinden bağlanacak. Onay satırları henüz sunucuya senkronize edilmiyor (`pending`).
+- (P020) Hukuki metinler ve bağlantılar (xcconfig `LEGAL_*_URL`) boşsa bağlantı satırı düz etiket olarak görünür; yayın öncesi hukukçu incelemesi P101'de.
+- (P020) TR çalışma zamanı görünümü elle doğrulanmadı.
