@@ -8,7 +8,7 @@ struct ContentView: View {
     var body: some View {
         RootView()
             .environment(\.locale, container.language.effectiveLocale(system: systemLocale))
-            .dsRootTheme()
+            .dsRootTheme(container.appearance.preference)
             .accessibilityIdentifier("root")
     }
 }

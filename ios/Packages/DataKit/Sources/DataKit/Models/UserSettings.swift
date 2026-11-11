@@ -55,5 +55,16 @@ extension SchemaV1 {
             self.defaultBarKg = 20
             self.availablePlatesKg = [1.25, 2.5, 5, 10, 15, 20, 25]
         }
+
+        func apply(_ input: SettingsInput) {
+            theme = input.theme
+            weightUnit = input.weightUnit
+            lengthUnit = input.lengthUnit
+            referenceGroup = input.referenceGroup
+            rirEnabled = input.rirEnabled
+            restTimerSeconds = input.restTimerSeconds
+            defaultBarKg = input.defaultBarKg
+            availablePlatesKg = input.availablePlatesKg
+        }
     }
 }
