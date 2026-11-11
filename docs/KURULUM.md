@@ -40,3 +40,57 @@ Saklama yerleri:
 1. Depoya yalnızca `*.example` şablonları girer; gerçek `*.xcconfig` ve `.env*` dosyaları `.gitignore`'dadır.
 2. Her ortam (staging / prod) için ayrı anahtar kullan; anahtarları ortamlar arasında paylaşma.
 3. Bir anahtar sohbete, ekran görüntüsüne veya commit'e sızarsa hemen yenile (rotate) ve eskisini iptal et.
+
+## Supabase kurulumu (P009)
+
+### Ön koşullar
+
+- Supabase CLI (`brew install supabase/tap/supabase`) ve Docker uyumlu bir çalışma zamanı (Docker Desktop, OrbStack veya Colima).
+- Yerel yığın için Docker en az ~7 GB bellek ile çalışmalıdır.
+
+### Yerel yığın
+
+```bash
+supabase start        # yığını başlatır; URL ve yerel anahtarları yazdırır
+supabase status       # çalışan servisler ve adresler
+supabase db reset     # veritabanını sıfırlar: göçler + supabase/seed/*.sql
+supabase test db      # pgTAP testleri (supabase/tests/)
+supabase stop         # durdurur (veriyi korur); --no-backup ile veriyi de siler
+```
+
+Yerel portlar (`supabase/config.toml`): API `54321`, DB `54322`, Studio `54323`, e-posta test kutusu (Mailpit) `54324`.
+Yerel kayıt e-postaları Mailpit'te okunur: <http://127.0.0.1:54324>.
+
+Auth ayarları: e-posta doğrulaması **açık** (`enable_confirmations = true`); Apple ve Google sağlayıcıları
+`enabled = false` yer tutucusudur. Sırlar `env(SUPABASE_AUTH_EXTERNAL_*_SECRET)` ile okunur, dosyaya yazılmaz.
+Sağlayıcı açılırken: ilgili `client_id` doldurulur, `enabled = true` yapılır ve sır `supabase/.env` içine konur (gitignored).
+
+### Uzak projeler
+
+| Ortam | Proje adı | Proje referansı | Bölge |
+|---|---|---|---|
+| staging | `gymanalyzer-staging` | `yjcfdntilceqndkwiwdn` | eu-central-1 (Frankfurt) |
+| prod | `gymanalyzer-prod` | `wafbrnsfxrwknczgkjkh` | eu-central-1 (Frankfurt) |
+
+Referanslar gizli değildir; anahtarlar ve veritabanı parolaları yalnızca şifre yöneticisinde tutulur (yukarıdaki tablo).
+
+```bash
+supabase login                              # jeton macOS anahtar zincirine yazılır
+supabase link --project-ref <STAGING_REF>   # staging'e bağla (parola sorulur)
+supabase link --project-ref <PROD_REF>      # prod'a bağlamak için aynı komut; bağlantı tek seferde birine yapılır
+```
+
+Aynı anda tek proje bağlı olur (`supabase/.temp/`, gitignored). Push öncesi `supabase projects list` ile
+bağlı projenin doğru olduğunu doğrula.
+
+### Göç (migration) iş akışı
+
+1. **Yerelde yaz:** `supabase migration new <ad>` → `supabase/migrations/<zaman>_<ad>.sql` düzenle.
+2. **Yerelde dene:** `supabase db reset && supabase test db`. Hata varsa göçü düzelt (henüz push edilmediyse yerinde düzenlenebilir).
+3. **Staging'e push:** `supabase link --project-ref <STAGING_REF>` → `supabase db push --dry-run` → `supabase db push`.
+4. **Staging'de doğrula** (uygulama + RLS testleri).
+5. **Prod'a push:** `supabase link --project-ref <PROD_REF>` → `supabase db push --dry-run` → `supabase db push`.
+
+Kurallar: push edilmiş bir göç asla düzenlenmez, yeni göç eklenir. Tüm tablolarda RLS zorunludur.
+Panelden elle şema değişikliği yapılmaz. Prod push'ları yalnızca staging'de doğrulanmış göçler için yapılır.
+
