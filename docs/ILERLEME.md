@@ -19,7 +19,7 @@ Toplam: 104 adım.
 ## Faz 1 — Backend temeli ve kimlik
 
 - [x] **P009** · Supabase projesi ve yerel yığın — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P010** · Şema 1 — profil, ayarlar, onaylar, ölçümler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P010** · Şema 1 — profil, ayarlar, onaylar, ölçümler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P013** · RLS test paketi — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
@@ -153,3 +153,5 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - Re-localize on-screen navigation titles on in-app language change.
 - Fix the 54 pre-existing SwiftLint warnings (line length, identifier names, sorted imports), then switch the CI lint step to `--strict`.
 - After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist.
+- P010 enum values (experience, goal, equipment_access, user_settings fields) were chosen from the onboarding prompt (P021); align them with the Swift enums when P012/P021 land, via a new migration.
+- Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged.
