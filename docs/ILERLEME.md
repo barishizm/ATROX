@@ -18,7 +18,7 @@ Toplam: 104 adım.
 
 ## Faz 1 — Backend temeli ve kimlik
 
-- [ ] **P009** · Supabase projesi ve yerel yığın — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P009** · Supabase projesi ve yerel yığın — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P010** · Şema 1 — profil, ayarlar, onaylar, ölçümler — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P011** · Şema 2 — hareket kataloğu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [ ] **P012** · Şema 3 — program ve antrenman — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
