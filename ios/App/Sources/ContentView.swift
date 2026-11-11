@@ -1,9 +1,17 @@
+import DesignSystem
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Color.clear
-            .accessibilityIdentifier("root")
+        Group {
+            #if DEBUG
+            DebugMenuView()
+            #else
+            Color.clear
+            #endif
+        }
+        .dsRootTheme()
+        .accessibilityIdentifier("root")
     }
 }
 
