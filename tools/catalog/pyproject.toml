@@ -11,6 +11,7 @@ dependencies = [
 [project.scripts]
 catalog-import = "catalog.cli:main"
 catalog-taxonomy = "catalog.taxonomy_cli:main"
+catalog-translate = "catalog.translate:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]
