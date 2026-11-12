@@ -25,6 +25,8 @@ final class AppContainer {
     let health: any HealthService
     /// Exercise catalog import and sync (P028); nil when there is no local store.
     let catalog: CatalogService?
+    /// Public Storage bucket with the exercise images (P027); nil without Supabase.
+    let exerciseImageBaseURL: URL?
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -35,8 +37,10 @@ final class AppContainer {
         accountService: any AccountService = FakeAccountService(),
         modelContainer: ModelContainer? = nil,
         health: any HealthService = UnavailableHealthService(),
-        catalog: CatalogService? = nil
+        catalog: CatalogService? = nil,
+        exerciseImageBaseURL: URL? = nil
     ) {
+        self.exerciseImageBaseURL = exerciseImageBaseURL
         self.health = health
         self.catalog = catalog
         self.modelContainer = modelContainer
@@ -113,6 +117,19 @@ final class AppContainer {
         )
     }
 
+    /// Builds the exercise library's model; nil when there is no local store. The default equipment filter comes from
+    /// the user's profile (full gym when there is none yet).
+    func makeLibraryModel() async -> LibraryModel? {
+        guard let modelContainer else { return nil }
+        var access = EquipmentAccess.fullGym
+        if let user = await currentUser(),
+           let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id) {
+            access = profile.input.equipmentAccess
+        }
+        await ThumbnailLoader.shared.configure(storageBaseURL: exerciseImageBaseURL)
+        return LibraryModel(modelContainer: modelContainer, equipmentAccess: access)
+    }
+
     func makeAccountModel(userId: UUID) -> AccountModel {
         AccountModel(
             userId: userId,
@@ -156,7 +173,8 @@ final class AppContainer {
         return AppContainer(
             sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store,
             health: HealthKitService(),
-            catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) }
+            catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) },
+            exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images")
         )
     }
 

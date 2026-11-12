@@ -24,7 +24,7 @@ struct MainTabView: View {
                     WorkoutRootView()
                         .navigationDestination(for: WorkoutRoute.self) { route in
                             switch route {
-                            case .exerciseLibrary: LibraryPlaceholderView()
+                            case .exerciseLibrary: LibraryView()
                             case .activeWorkout: FeaturePlaceholderView(title: "shell.tabbar.workout", systemImage: "dumbbell")
                             }
                         }
