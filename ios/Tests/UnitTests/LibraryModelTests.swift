@@ -94,6 +94,6 @@ import Testing
         let model = try await makeModel()
         model.languageCode = "tr"
         #expect(model.sections.last?.items.first?.nameTr == "Bench Press")
-        #expect(model.sections.last?.items.map(\.id) == ["bench", "plank", "curl", "pushup"])
+        #expect(model.sections.last?.items.map(\.id) == ["bench", "curl", "plank", "pushup"])
     }
 }
