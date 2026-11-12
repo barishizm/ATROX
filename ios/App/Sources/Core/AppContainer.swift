@@ -137,7 +137,8 @@ final class AppContainer {
     private static func uiTestHealth() -> any HealthService {
         guard ProcessInfo.processInfo.arguments.contains("-uitest-fake-health") else { return UnavailableHealthService() }
         let birth = Calendar.current.date(byAdding: .year, value: -31, to: Date()) ?? Date()
-        let weighIn = Date().addingTimeInterval(-86_400)
+        // Today, so it is not older than the seeded weigh-in (imports start at the newest local day).
+        let weighIn = Date()
         return FakeHealthService(
             profile: HealthBodyProfile(heightCm: 182, weightKg: 84.5, birthDate: birth, sex: .male),
             samples: [HealthWeightSample(date: weighIn, weightKg: 84.5, isFromThisApp: false)]
