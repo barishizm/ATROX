@@ -9,6 +9,7 @@ struct ActiveWorkoutView: View {
     let presenter: ActiveWorkoutPresenter
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
+    @Environment(\.scenePhase) private var scenePhase
     @State private var confirmsFinish = false
     @State private var confirmsCancel = false
     @State private var adding = false
@@ -50,13 +51,22 @@ struct ActiveWorkoutView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                if let editing = model.editing { WorkoutKeypadView(model: model, editing: editing) }
+                VStack(spacing: 0) {
+                    RestTimerView(timer: model.rest)
+                    if let editing = model.editing { WorkoutKeypadView(model: model, editing: editing) }
+                }
             }
             .navigationDestination(for: WorkoutRoute.self) { route in
                 if case .exerciseDetail(let id) = route { ExerciseDetailView(exerciseID: id) }
             }
         }
         .task { await model.load() }
+        .onChange(of: scenePhase) {
+            Task { await model.rest.scenePhaseChanged(active: scenePhase == .active) }
+        }
+        .sheet(isPresented: Binding(
+            get: { model.rest.showsPermissionPrimer }, set: { if !$0 { model.rest.declinePrimer() } }
+        )) { RestNotificationPrimerView(timer: model.rest) }
         .onAppear { applyKeepAwake() }
         .onChange(of: keepAwake) { applyKeepAwake() }
         .onDisappear { WorkoutPreferences.setIdleTimerDisabled(false) }
@@ -288,7 +298,9 @@ struct ActiveWorkoutView: View {
     static func ref(_ id: String) -> ExerciseRef {
         UUID(uuidString: id).map(ExerciseRef.custom) ?? .catalog(id)
     }
+}
 
+extension ActiveWorkoutView {
     // MARK: Sheets
 
     private func replaceSheet(_ card: ActiveWorkoutModel.ExerciseCard) -> some View {

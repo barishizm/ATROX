@@ -7,10 +7,16 @@ import UIKit
 enum WorkoutPreferences {
     static let showRirKey = "workout.showRir"
     static let keepAwakeKey = "workout.keepAwake"
+    static let restAutoStartKey = "workout.rest.autoStart"
 
     /// RIR picker is on by default; the user can turn it off in Settings.
     static func showsRir(_ defaults: UserDefaults = .standard) -> Bool {
         defaults.object(forKey: showRirKey) as? Bool ?? true
+    }
+
+    /// The rest timer starts by itself after each completed set; on by default.
+    static func autoStartsRest(_ defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: restAutoStartKey) as? Bool ?? true
     }
 
     @MainActor

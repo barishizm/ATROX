@@ -34,6 +34,8 @@ final class ActiveWorkoutModel {
     struct CatalogEntry: Sendable {
         let item: ExerciseListItem
         let pattern: String?
+        /// "compound" / "isolation" (catalog); decides the default rest.
+        var mechanic: String?
     }
 
     struct Editing: Equatable {
@@ -44,6 +46,9 @@ final class ActiveWorkoutModel {
     let session: WorkoutSession
     var unit: WeightUnit
     var showsRir: Bool
+    /// Starts a rest countdown when a set is completed.
+    var autoStartsRest: Bool
+    let rest: RestTimerController
     private(set) var editing: Editing?
     /// Localization key of the last failed action, shown once.
     var errorKey: String?
@@ -51,16 +56,20 @@ final class ActiveWorkoutModel {
     @ObservationIgnored private let itemsProvider: @Sendable () async -> [CatalogEntry]
     @ObservationIgnored private var items: [String: ExerciseListItem] = [:]
     @ObservationIgnored private var patterns: [String: String] = [:]
+    @ObservationIgnored private var mechanics: [String: String] = [:]
     @ObservationIgnored let languageCode: String
     @ObservationIgnored let decimalSeparator: String
 
     init(
-        session: WorkoutSession, unit: WeightUnit, showsRir: Bool = true, languageCode: String = "en",
+        session: WorkoutSession, unit: WeightUnit, showsRir: Bool = true, autoStartsRest: Bool = true,
+        rest: RestTimerController? = nil, languageCode: String = "en",
         decimalSeparator: String = ".", itemsProvider: @escaping @Sendable () async -> [CatalogEntry]
     ) {
         self.session = session
         self.unit = unit
         self.showsRir = showsRir
+        self.autoStartsRest = autoStartsRest
+        self.rest = rest ?? RestTimerController(notifications: FakeNotificationService(status: .denied))
         self.languageCode = languageCode
         self.decimalSeparator = decimalSeparator
         self.itemsProvider = itemsProvider
@@ -69,7 +78,12 @@ final class ActiveWorkoutModel {
     func load() async {
         let fetched = await itemsProvider()
         items = Dictionary(fetched.map { ($0.item.id, $0.item) }, uniquingKeysWith: { first, _ in first })
-        patterns = Dictionary(fetched.compactMap { entry in entry.pattern.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first })
+        patterns = Dictionary(
+            fetched.compactMap { entry in entry.pattern.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first }
+        )
+        mechanics = Dictionary(
+            fetched.compactMap { entry in entry.mechanic.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first }
+        )
     }
 
     // MARK: Display
@@ -150,8 +164,29 @@ final class ActiveWorkoutModel {
                 try await self.session.uncompleteSet(setId)
             } else {
                 try await self.session.completeSet(setId)
+                await self.startRestAfter(setId)
             }
         }
+    }
+
+    // MARK: Rest
+
+    /// Seconds of rest after a set of this workout exercise: the routine's value, else by movement type.
+    func restSeconds(forExercise exerciseId: UUID) -> Int {
+        let ref = session.exercise(exerciseId)?.ref
+        let mechanic = ref.flatMap { mechanics[Self.id(of: $0)] }
+        return RestDefaults.seconds(program: session.programRest[exerciseId], mechanic: mechanic)
+    }
+
+    /// Starts the countdown after a completed set, unless that was the last open set of the workout.
+    private func startRestAfter(_ setId: UUID) async {
+        guard autoStartsRest, nextOpenSet(after: setId) != nil,
+              let exercise = session.workout?.exercises.first(where: { $0.sets.contains { $0.id == setId } })
+        else { return }
+        await rest.start(
+            seconds: restSeconds(forExercise: exercise.id),
+            title: String(localized: "workout.rest.done.title"), body: String(localized: "workout.rest.done.body")
+        )
     }
 
     // MARK: Keypad
@@ -286,6 +321,7 @@ final class ActiveWorkoutModel {
     func finish() async -> WorkoutSession.FinishResult? {
         await commit()
         editing = nil
+        await rest.skip()
         do {
             return try await session.finish()
         } catch {
@@ -296,6 +332,7 @@ final class ActiveWorkoutModel {
 
     func cancel() async {
         editing = nil
+        await rest.skip()
         await run { try await self.session.cancel() }
     }
 

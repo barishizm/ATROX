@@ -31,6 +31,8 @@ public final class WorkoutSession {
     public private(set) var workout: WorkoutSnapshot?
     /// "Last time" values per workout exercise id: the completed sets of the exercise's previous finished session.
     public private(set) var previous: [UUID: [SetInput]] = [:]
+    /// Rest seconds the routine plans per workout exercise id (only for workouts started from a routine day).
+    public private(set) var programRest: [UUID: Int] = [:]
 
     @ObservationIgnored private let workouts: any WorkoutRepository
     @ObservationIgnored private let routines: (any RoutineRepository)?
@@ -86,6 +88,17 @@ public final class WorkoutSession {
         for exercise in active.exercises {
             previous[exercise.id] = try await lastTime(exercise.ref)
         }
+        programRest = [:]
+        if let routineId = active.routineId, let dayId = active.routineDayId,
+           let day = try await routines?.routine(id: routineId)?.days.first(where: { $0.id == dayId }) {
+            // Match rows to exercises in order by reference (the user may have added or removed exercises).
+            var rows = day.exercises[...]
+            for exercise in active.exercises {
+                guard let index = rows.firstIndex(where: { $0.ref == exercise.ref }) else { continue }
+                programRest[exercise.id] = rows[index].input.restSeconds
+                rows = rows[(index + 1)...]
+            }
+        }
         return true
     }
 
@@ -97,6 +110,7 @@ public final class WorkoutSession {
         )
         workout = started
         previous = [:]
+        programRest = [:]
         phase = .active
     }
 
@@ -128,6 +142,10 @@ public final class WorkoutSession {
         )
         workout = started
         previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), lastTimes))
+        programRest = [:]
+        for (exercise, row) in zip(started.exercises, day.exercises) {
+            programRest[exercise.id] = row.input.restSeconds
+        }
         phase = .active
     }
 
@@ -291,6 +309,7 @@ public final class WorkoutSession {
         self.phase = phase
         workout = nil
         previous = [:]
+        programRest = [:]
     }
 
     // MARK: Helpers

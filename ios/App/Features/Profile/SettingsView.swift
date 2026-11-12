@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var confirmsSignOut = false
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
+    @AppStorage(WorkoutPreferences.restAutoStartKey) private var restAutoStart = true
 
     var body: some View {
         @Bindable var language = container.language
@@ -43,6 +44,7 @@ struct SettingsView: View {
             Section("settings.section.workout") {
                 Toggle("settings.workout.rir", isOn: $showsRir).accessibilityIdentifier("settings-workout-rir")
                 Toggle("settings.workout.keepAwake", isOn: $keepAwake).accessibilityIdentifier("settings-workout-awake")
+                Toggle("settings.workout.restAuto", isOn: $restAutoStart).accessibilityIdentifier("settings-workout-rest")
             }
             privacy
             accountSection

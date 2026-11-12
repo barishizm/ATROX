@@ -29,6 +29,12 @@ final class AppContainer {
     let exerciseImageBaseURL: URL?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
+    /// One rest timer for the app; it outlives the workout screen (minimizing keeps it running).
+    let restTimer: RestTimerController = {
+        let timer = RestTimerController(notifications: UserNotificationService())
+        timer.onFinished = { RestCue.play() }
+        return timer
+    }()
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -203,15 +209,19 @@ final class AppContainer {
         let userId = user.id
         return ActiveWorkoutModel(
             session: session, unit: unit, showsRir: WorkoutPreferences.showsRir(),
+            autoStartsRest: WorkoutPreferences.autoStartsRest(),
+            rest: restTimer,
             languageCode: locale.language.languageCode?.identifier == "tr" ? "tr" : "en",
             decimalSeparator: locale.decimalSeparator ?? "."
         ) {
             let context = ModelContext(modelContainer)
             var entries = ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
-                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: $0.movementPattern)
+                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: $0.movementPattern, mechanic: $0.mechanic)
             }
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
-            entries += ((try? context.fetch(own)) ?? []).map { ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil) }
+            entries += ((try? context.fetch(own)) ?? []).map {
+                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil, mechanic: nil)
+            }
             return entries
         }
     }
