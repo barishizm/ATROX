@@ -1,0 +1,22 @@
+{
+ "exercise_count": 876,
+ "images_per_exercise": {
+  "0": 3,
+  "2": 873
+ },
+ "exercises_without_images": [
+  "kettlebell-halo",
+  "kettlebell-halo-with-overhead-extension",
+  "kettlebell-overhead-triceps-extension"
+ ],
+ "core_without_images": [],
+ "missing_source_files": [],
+ "unique_files": 3442,
+ "thumb_total_bytes": 13369384,
+ "full_total_bytes": 50866654,
+ "total_bytes": 64236038,
+ "bundle_files": 309,
+ "bundle_bytes": 2610826,
+ "bundle_budget_bytes": 15728640,
+ "bundle_within_budget": true
+}
