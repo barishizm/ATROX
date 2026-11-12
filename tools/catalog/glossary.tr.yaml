@@ -18,9 +18,11 @@ terms:
   - {en: [squat], tr: squat, note: "kept; 'çömelme' is not used in gyms"}
   - {en: [lunge], tr: lunge, note: "kept; alias 'hamle'"}
   - {en: [deadlift], tr: deadlift, note: "kept; alias 'ölü kaldırış'"}
-  - {en: [calf raise], tr: baldır, note: "e.g. Standing Calf Raise → Ayakta Baldır Kaldırma"}
+  - {en: [calf raise], tr: baldır kaldırma, note: "e.g. Standing Calf Raise → Ayakta Baldır Kaldırma"}
+  - {en: [calf], tr: baldır}
+  - {en: [hamstring], tr: hamstring, note: "kept"}
   - {en: [shrug], tr: omuz silkme}
-  - {en: [dip], tr: dips, note: "kept as 'dips'"}
+  - {en: [dip], tr: dip, note: "exercise is called 'dips'; 'dip' also matches e.g. 'Jerk Dip Squat'"}
   - {en: [plank], tr: plank}
   - {en: [stretch], tr: esneme}
   - {en: [curl], tr: curl, note: "kept: 'biceps curl', 'hammer curl'; alias 'bükme'"}

@@ -36,7 +36,7 @@ def test_glossary_file_is_approved():
 
 @pytest.mark.parametrize("name,expect", [
     ("Pullups", ["barfiks"]), ("Wide-Grip Pull-Up", ["barfiks", "geniş tutuş"]),
-    ("Pushups", ["şınav"]), ("Standing Calf Raise", ["baldır", "ayakta"]),
+    ("Pushups", ["şınav"]), ("Standing Calf Raise", ["baldır kaldırma", "ayakta"]),
     ("Barbell Bench Press", ["bench press", "barbell"]), ("Wide-Grip Lat Pulldown", ["lat pulldown", "geniş tutuş"]),
 ])
 def test_glossary_matching(name, expect):
@@ -47,7 +47,7 @@ def test_glossary_matching(name, expect):
 
 def test_longest_match_consumes_overlapping_terms():
     got = [t["tr"] for t in GLOSSARY.match("Standing Calf Raise")]
-    assert "baldır" in got and "kaldırma" not in got
+    assert "baldır kaldırma" in got and "kaldırma" not in got
 
 
 def test_glossary_violations_detected():
@@ -192,3 +192,9 @@ def test_end_to_end_with_fake_llm(tmp_path, monkeypatch):
     en = json.loads((tmp_path / "out" / "exercises.en.json").read_text(encoding="utf-8"))
     assert len(tr) == len(en) == 12
     assert all(len(a["instructions"]) == len(b["instructions"]) for a, b in zip(tr, small))
+
+
+def test_violation_check_is_not_turkish_dotless_i():
+    assert GLOSSARY.violations("Incline Dumbbell Press", "Incline Dumbbell Press") == []
+    assert GLOSSARY.violations("Jerk Dip Squat", "Jerk Dip Squat") == []
+    assert GLOSSARY.violations("Donkey Calf Raises", "Donkey Baldır Kaldırma") == []

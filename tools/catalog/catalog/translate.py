@@ -29,7 +29,7 @@ PROVIDERS = {  # name -> (chat-completions URL, API-key env var, default model)
     "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY", MODEL),
     "deepseek": ("https://api.deepseek.com/chat/completions", "DEEPSEEK_API_KEY", "deepseek-flash"),
 }
-PROMPT_VERSION = 1
+PROMPT_VERSION = 2
 APPROVED_VALUES = {"1", "yes", "y", "true", "x", "evet", "e"}
 CSV_COLUMNS = ["id", "name_en", "name_tr", "aliases_tr", "aliases_en", "instructions_tr", "approved"]
 
@@ -59,7 +59,11 @@ Rules:
 1. The GLOSSARY lists mandatory terms. If an English name contains a glossary `en` term, the Turkish name MUST
    contain the glossary `tr` text. Use the instruction_terms wording in instructions.
 2. Use Title Case for names (Turkish casing: İ/ı). Keep numbers and proper nouns (Arnold, Smith, Zottman).
-3. `instructions_tr` MUST have exactly the same number of items, in the same order, as the source `instructions`.
+3. Instructions: address the reader with the informal singular imperative ("sen": "otur", "tut", "kaldır"), never the
+   formal/plural form ("oturun", "tutun"). Use "halter" and "dambıl" for barbell/dumbbell inside instructions
+   (names keep the glossary form). Translate every English word that has a normal Turkish equivalent
+   (stretch → esneme, raise → kaldırma); keep only glossary terms that stay English.
+   `instructions_tr` MUST have exactly the same number of items, in the same order, as the source `instructions`.
    Translate each step as one natural, imperative Turkish sentence. Do not merge, split or add steps.
 4. `aliases_tr`: other Turkish names people search for (max 3). `aliases_en`: common alternative English names or
    spellings of the same exercise (max 3, e.g. "Pull-up" for "Pullups"). Never repeat the main name.
@@ -80,7 +84,8 @@ def fold_ascii(text: str) -> str:
 
 
 def tr_lower(text: str) -> str:
-    return text.replace("İ", "i").replace("I", "ı").lower()
+    """Case-insensitive comparison key. Plain I -> i (not Turkish dotless ı) so English terms like 'Incline' match."""
+    return text.replace("İ", "i").replace("ı", "i").lower()
 
 
 def _stem(token: str) -> str:
