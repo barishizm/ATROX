@@ -102,6 +102,7 @@ class Glossary:
     def __init__(self, data: dict):
         self.approved = bool(data.get("approved"))
         self.version = data.get("version", 1)
+        self.keep_english_names = bool(data.get("keep_english_names"))
         self.terms = data.get("terms") or []
         self.instruction_terms = data.get("instruction_terms") or []
         self._patterns: list[tuple[tuple[str, ...], dict]] = []
@@ -309,7 +310,7 @@ def aliases_for(name_en: str, tr: dict, own_name: str) -> list[str]:
     return _dedupe(cands, own_name)
 
 
-def assemble(exercises: list[dict], resolved: dict[str, dict]) -> tuple[list[dict], list[dict], list[str]]:
+def assemble(exercises: list[dict], resolved: dict[str, dict], keep_english_names: bool = False) -> tuple[list[dict], list[dict], list[str]]:
     tr_out, en_out, problems = [], [], []
     for ex in exercises:
         tr = resolved.get(ex["id"])
@@ -319,7 +320,9 @@ def assemble(exercises: list[dict], resolved: dict[str, dict]) -> tuple[list[dic
         if len(tr["instructions_tr"]) != len(ex["instructions"]):
             problems.append(f"{ex['id']}: instruction count {len(tr['instructions_tr'])} != {len(ex['instructions'])}")
             continue
-        tr_out.append({"id": ex["id"], "name": tr["name_tr"], "aliases": aliases_for(ex["name"], tr, tr["name_tr"]),
+        # keep_english_names: the TR catalog shows the English name; the Turkish name stays as a search alias
+        tr_name = ex["name"] if keep_english_names else tr["name_tr"]
+        tr_out.append({"id": ex["id"], "name": tr_name, "aliases": aliases_for(ex["name"], tr, tr_name),
                        "instructions": tr["instructions_tr"]})
         en_out.append({"id": ex["id"], "name": ex["name"], "aliases": aliases_for(ex["name"], tr, ex["name"]),
                        "instructions": ex["instructions"]})
@@ -402,7 +405,7 @@ def main(argv: list[str] | None = None) -> int:
                                    batch_size=a.batch_size, log=print)
             print(f"requested={st['requested']} calls={st['calls']} failed={len(st['failed'])}")
         resolved = resolve_all(base, glossary, cache, locked, a.model)
-        tr_out, en_out, problems = assemble(base, resolved)
+        tr_out, en_out, problems = assemble(base, resolved, glossary.keep_english_names)
         viol = [i for i, r in resolved.items() if r.get("glossary_violations")]
         if viol:
             print(f"{len(viol)} translations violate the glossary (see cache 'glossary_violations'): {viol[:5]}...")
@@ -421,7 +424,7 @@ def main(argv: list[str] | None = None) -> int:
         missing = [i for i in core_ids if i not in resolved]
         print(f"{review_csv}: {len(core_ids)} core ids, {n} approved/locked, {len(missing)} not yet translated")
         return 0
-    tr_out, en_out, problems = assemble(base, resolved)
+    tr_out, en_out, problems = assemble(base, resolved, glossary.keep_english_names)
     if a.command == "sample":
         if problems:
             print("incomplete translations; run `run` first", file=sys.stderr)

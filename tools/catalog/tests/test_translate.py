@@ -198,3 +198,10 @@ def test_violation_check_is_not_turkish_dotless_i():
     assert GLOSSARY.violations("Incline Dumbbell Press", "Incline Dumbbell Press") == []
     assert GLOSSARY.violations("Jerk Dip Squat", "Jerk Dip Squat") == []
     assert GLOSSARY.violations("Donkey Calf Raises", "Donkey Baldır Kaldırma") == []
+
+
+def test_keep_english_names_keeps_turkish_as_alias():
+    tr = {"name_tr": "Barfiks", "aliases_tr": [], "aliases_en": [], "instructions_tr": ["1", "2"]}
+    out, _, _ = T.assemble([ex("a", "Pullups")], {"a": tr}, keep_english_names=True)
+    assert out[0]["name"] == "Pullups" and "Barfiks" in out[0]["aliases"] and "Pullups" not in out[0]["aliases"]
+    assert GLOSSARY.keep_english_names is True

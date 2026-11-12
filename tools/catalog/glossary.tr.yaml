@@ -6,6 +6,9 @@
 #
 # STATUS: approved by the product owner (crunch, cable, machine, band, front/rear/side kept in English).
 approved: true
+# Product decision: exercise NAMES stay in English in the TR catalog (the Turkish name is only a search alias);
+# instructions are still translated. Set to false to publish Turkish names.
+keep_english_names: true
 version: 1
 
 # name terms: matched against the exercise name, hyphen/plural-insensitive, lowercase.
