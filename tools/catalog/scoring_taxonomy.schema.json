@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://atrox.app/schemas/scoring_taxonomy.schema.json",
+  "title": "ATROX scoring taxonomy",
+  "description": "Per-exercise scoring metadata (docs/03-ML-MODEL.md §6). anchor/ratio/tau/ratio_confidence/bw_fraction are null until P056.",
+  "type": "object",
+  "required": ["version", "exercises"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "source_exercises_sha256": {"type": ["string", "null"]},
+    "exercises": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "movement_pattern", "scoring_type", "load_convention", "is_unilateral", "is_core",
+                   "anchor", "ratio", "tau", "ratio_confidence", "bw_fraction", "assignment", "rule",
+                   "needs_review", "review_notes"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+        "name": {"type": "string", "minLength": 1},
+        "movement_pattern": {"enum": [
+          "horizontal_push", "vertical_push", "horizontal_pull", "vertical_pull", "squat", "hip_hinge", "core",
+          "isolation_biceps", "isolation_triceps", "isolation_forearms", "isolation_shoulders", "isolation_chest",
+          "isolation_back", "isolation_quads", "isolation_hamstrings", "isolation_glutes", "isolation_calves",
+          "isolation_hips", "isolation_neck", "olympic", "carry", "plyometric", "cardio", "mobility", "other"]},
+        "scoring_type": {"enum": ["weighted", "bodyweight_loaded", "reps_only", "time", "none"]},
+        "load_convention": {"enum": ["total", "per_hand", "per_side", "machine_stack", "bodyweight_plus", null]},
+        "is_unilateral": {"type": "boolean"},
+        "is_core": {"type": "boolean"},
+        "anchor": {"enum": ["squat", "bench", "deadlift", null]},
+        "ratio": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "tau": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "ratio_confidence": {"enum": ["A", "B", "C", null]},
+        "bw_fraction": {"type": ["number", "null"], "minimum": 0, "maximum": 1.5},
+        "assignment": {"enum": ["rule", "manual"]},
+        "rule": {"type": "string"},
+        "needs_review": {"type": "boolean"},
+        "review_notes": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

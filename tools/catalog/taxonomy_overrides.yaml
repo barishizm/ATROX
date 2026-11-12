@@ -1,0 +1,207 @@
+# Hand decisions for scoring_taxonomy.yaml (P025). Rules in catalog/taxonomy.py run first; entries here win.
+#
+# core:      exercises that make up the ~150 "core" set (docs/CEKIRDEK-HAREKETLER.md). Order follows the table.
+# overrides: per-exercise field replacements (movement_pattern, scoring_type, load_convention, is_unilateral) plus an
+#            optional `note`. An override marks the entry as reviewed (`needs_review: false`) unless `still_unsure`.
+core:
+  - barbell-full-squat
+  - front-barbell-squat
+  - goblet-squat
+  - dumbbell-squat
+  - leg-press
+  - hack-squat
+  - smith-machine-squat
+  - barbell-lunge
+  - dumbbell-lunges
+  - barbell-walking-lunge
+  - dumbbell-rear-lunge
+  - split-squat-with-dumbbells
+  - barbell-step-ups
+  - bodyweight-squat
+  - barbell-deadlift
+  - sumo-deadlift
+  - romanian-deadlift
+  - stiff-legged-barbell-deadlift
+  - stiff-legged-dumbbell-deadlift
+  - trap-bar-deadlift
+  - good-morning
+  - barbell-hip-thrust
+  - hyperextensions-back-extensions
+  - glute-ham-raise
+  - one-arm-kettlebell-swings
+  - rack-pulls
+  - barbell-bench-press-medium-grip
+  - barbell-incline-bench-press-medium-grip
+  - decline-barbell-bench-press
+  - close-grip-barbell-bench-press
+  - wide-grip-barbell-bench-press
+  - dumbbell-bench-press
+  - incline-dumbbell-press
+  - decline-dumbbell-bench-press
+  - machine-bench-press
+  - leverage-chest-press
+  - cable-chest-press
+  - smith-machine-bench-press
+  - smith-machine-incline-bench-press
+  - pushups
+  - push-ups-with-feet-elevated
+  - dips-chest-version
+  - dips-triceps-version
+  - parallel-bar-dip
+  - standing-military-press
+  - barbell-shoulder-press
+  - seated-barbell-military-press
+  - push-press
+  - dumbbell-shoulder-press
+  - arnold-dumbbell-press
+  - seated-dumbbell-press
+  - standing-dumbbell-press
+  - dumbbell-one-arm-shoulder-press
+  - machine-shoulder-military-press
+  - leverage-shoulder-press
+  - pullups
+  - chin-up
+  - wide-grip-lat-pulldown
+  - close-grip-front-lat-pulldown
+  - underhand-cable-pulldowns
+  - v-bar-pulldown
+  - straight-arm-pulldown
+  - one-arm-lat-pulldown
+  - band-assisted-pull-up
+  - upright-barbell-row
+  - bent-over-barbell-row
+  - one-arm-dumbbell-row
+  - bent-over-two-dumbbell-row
+  - seated-cable-rows
+  - t-bar-row-with-handle
+  - lying-t-bar-row
+  - leverage-high-row
+  - leverage-iso-row
+  - inverted-row
+  - reverse-grip-bent-over-rows
+  - dumbbell-incline-row
+  - face-pull
+  - side-lateral-raise
+  - front-two-dumbbell-raise
+  - seated-side-lateral-raise
+  - cable-seated-lateral-raise
+  - reverse-flyes
+  - reverse-machine-flyes
+  - cable-rear-delt-fly
+  - bent-over-low-pulley-side-lateral
+  - dumbbell-flyes
+  - incline-dumbbell-flyes
+  - cable-crossover
+  - low-cable-crossover
+  - butterfly
+  - incline-cable-flye
+  - bent-arm-dumbbell-pullover
+  - barbell-curl
+  - ez-bar-curl
+  - dumbbell-bicep-curl
+  - dumbbell-alternate-bicep-curl
+  - hammer-curls
+  - incline-dumbbell-curl
+  - preacher-curl
+  - concentration-curls
+  - standing-biceps-cable-curl
+  - high-cable-curls
+  - machine-bicep-curl
+  - cross-body-hammer-curl
+  - reverse-barbell-curl
+  - zottman-curl
+  - machine-preacher-curls
+  - triceps-pushdown
+  - triceps-pushdown-rope-attachment
+  - triceps-pushdown-v-bar-attachment
+  - reverse-grip-triceps-pushdown
+  - standing-overhead-barbell-triceps-extension
+  - cable-rope-overhead-triceps-extension
+  - standing-dumbbell-triceps-extension
+  - lying-dumbbell-tricep-extension
+  - dumbbell-one-arm-triceps-extension
+  - cable-one-arm-tricep-extension
+  - machine-triceps-extension
+  - tricep-dumbbell-kickback
+  - dip-machine
+  - leg-extensions
+  - lying-leg-curls
+  - seated-leg-curl
+  - standing-leg-curl
+  - standing-calf-raises
+  - seated-calf-raise
+  - standing-barbell-calf-raise
+  - calf-press-on-the-leg-press-machine
+  - donkey-calf-raises
+  - thigh-abductor
+  - thigh-adductor
+  - barbell-shrug
+  - dumbbell-shrug
+  - palms-up-barbell-wrist-curl-over-a-bench
+  - palms-down-wrist-curl-over-a-bench
+  - seated-dumbbell-palms-up-wrist-curl
+  - crunches
+  - cable-crunch
+  - hanging-leg-raise
+  - plank
+  - ab-roller
+  - barbell-ab-rollout
+  - reverse-crunch
+  - russian-twist
+  - sit-up
+  - ab-crunch-machine
+  - oblique-crunches
+  - flat-bench-lying-leg-raise
+  - pallof-press
+  - barbell-side-bend
+  - power-clean
+  - hang-clean
+  - clean-and-jerk
+  - snatch
+  - farmers-walk
+overrides:
+  dips-chest-version:
+    movement_pattern: vertical_push
+    still_unsure: true
+    note: "Dips load chest and triceps together; filed under vertical push (hands travel past the torso). Confirm."
+  dips-triceps-version:
+    movement_pattern: vertical_push
+    still_unsure: true
+    note: "Same movement as the chest version with a more upright torso; filed under vertical push. Confirm."
+  parallel-bar-dip:
+    movement_pattern: vertical_push
+    still_unsure: true
+    note: "Same dip family as above. Confirm."
+  dip-machine:
+    movement_pattern: vertical_push
+    note: "Machine dip; pattern follows the free dip."
+  straight-arm-pulldown:
+    movement_pattern: isolation_back
+    note: "Straight-arm pulldown is a lat isolation, not a vertical pull."
+  farmers-walk:
+    load_convention: per_hand
+    note: "Farmer's walk is loaded per hand."
+  hyperextensions-back-extensions:
+    scoring_type: bodyweight_loaded
+    load_convention: bodyweight_plus
+    note: "Done with body weight, optionally holding a plate."
+  barbell-ab-rollout:
+    scoring_type: reps_only
+    load_convention: null
+    note: "Rollout is bodyweight; the barbell is only the roller."
+  trap-bar-deadlift:
+    note: "Trap bar counts as total load including the bar."
+  goblet-squat:
+    note: "Single implement; total load equals the one kettlebell/dumbbell."
+  one-arm-kettlebell-swings:
+    note: "Single implement; total load equals the one kettlebell."
+  t-bar-row-with-handle:
+    note: "Landmine-style T-bar row; total load including the bar."
+  butterfly:
+    note: "Pec deck / butterfly machine; chest isolation."
+  bent-over-low-pulley-side-lateral:
+    note: "Rear/lateral delt isolation on a low pulley."
+  face-pull:
+    note: "Filed as shoulder isolation (rear delt / external rotation emphasis)."
+  donkey-calf-raises:
+    note: "Loaded with a partner or belt; total load."

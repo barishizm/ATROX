@@ -3,10 +3,14 @@ name = "atrox-catalog"
 version = "0.1.0"
 description = "free-exercise-db import pipeline for the ATROX exercise catalog"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "jsonschema>=4.26.0",
+    "pyyaml>=6.0.3",
+]
 
 [project.scripts]
 catalog-import = "catalog.cli:main"
+catalog-taxonomy = "catalog.taxonomy_cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]
