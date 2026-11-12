@@ -8,6 +8,7 @@ enum WorkoutPreferences {
     static let showRirKey = "workout.showRir"
     static let keepAwakeKey = "workout.keepAwake"
     static let restAutoStartKey = "workout.rest.autoStart"
+    static let liveActivityKey = "workout.liveActivity"
 
     /// RIR picker is on by default; the user can turn it off in Settings.
     static func showsRir(_ defaults: UserDefaults = .standard) -> Bool {
@@ -17,6 +18,11 @@ enum WorkoutPreferences {
     /// The rest timer starts by itself after each completed set; on by default.
     static func autoStartsRest(_ defaults: UserDefaults = .standard) -> Bool {
         defaults.object(forKey: restAutoStartKey) as? Bool ?? true
+    }
+
+    /// The workout Live Activity / Dynamic Island is on by default; the user can turn it off in Settings.
+    static func showsLiveActivity(_ defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: liveActivityKey) as? Bool ?? true
     }
 
     @MainActor

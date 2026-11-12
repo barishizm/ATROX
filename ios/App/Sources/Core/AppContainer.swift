@@ -36,6 +36,9 @@ final class AppContainer {
         return timer
     }()
 
+    /// Workout Live Activity (P038); created together with the active-workout model.
+    @ObservationIgnored private(set) var liveActivity: LiveActivityCoordinator?
+
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
         sessionService: any SessionService,
@@ -66,6 +69,17 @@ final class AppContainer {
             onSignedIn: { user in root.didSignIn(onboardingComplete: user.onboardingComplete) }
         )
         self.passwordRecovery = PasswordRecoveryModel(service: authService)
+        installRestIntentHandler()
+    }
+
+    /// Lets the Live Activity buttons ("skip", "+15 s") drive the rest timer (P038).
+    private func installRestIntentHandler() {
+        RestCommandCenter.shared.handler = { [restTimer] command in
+            switch command {
+            case .skip: await restTimer.skip()
+            case .adjust(let seconds): await restTimer.adjust(by: TimeInterval(seconds))
+            }
+        }
     }
 
     /// Installs the bundled catalog on first launch (or after an app update), then pulls newer exercises from the
@@ -207,7 +221,7 @@ final class AppContainer {
         let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
         let locale = language.effectiveLocale()
         let userId = user.id
-        return ActiveWorkoutModel(
+        let model = ActiveWorkoutModel(
             session: session, unit: unit, showsRir: WorkoutPreferences.showsRir(),
             autoStartsRest: WorkoutPreferences.autoStartsRest(),
             rest: restTimer,
@@ -224,6 +238,15 @@ final class AppContainer {
             }
             return entries
         }
+        let coordinator = LiveActivityCoordinator(
+            session: session, rest: restTimer, service: ActivityKitLiveActivityService(),
+            fallbackName: String(localized: "liveactivity.workout.fallback"),
+            exerciseName: { [weak model] ref in model?.name(of: ref) ?? "" },
+            isEnabled: { WorkoutPreferences.showsLiveActivity() }
+        )
+        liveActivity = coordinator
+        Task { await coordinator.start() }
+        return model
     }
 
     private func planStore(for userId: UUID) -> RoutinePlanStore {

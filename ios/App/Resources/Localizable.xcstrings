@@ -8960,6 +8960,70 @@
           }
         }
       }
+    },
+    "liveactivity.intent.skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip rest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinlenmeyi atla"
+          }
+        }
+      }
+    },
+    "liveactivity.intent.extend": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add 15 seconds of rest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinlenmeye 15 sn ekle"
+          }
+        }
+      }
+    },
+    "liveactivity.workout.fallback": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workout"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman"
+          }
+        }
+      }
+    },
+    "settings.workout.liveActivity": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show workout on Lock Screen and Dynamic Island"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenmanı kilit ekranında ve Dynamic Island'da göster"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

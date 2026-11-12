@@ -8,5 +8,6 @@
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
 CODE_SIGN_STYLE = Automatic
 APP_ENTITLEMENTS_FILE = App/ATROX-Personal.entitlements
+WIDGET_ENTITLEMENTS_FILE = Widgets/ATROXWidgets-Personal.entitlements
 // Must be globally unique for a free account; change the suffix if Xcode says the ID is taken.
 APP_BUNDLE_ID_BASE = com.barishizm.atrox.personal

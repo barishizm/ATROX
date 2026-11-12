@@ -11,6 +11,7 @@ struct SettingsView: View {
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.restAutoStartKey) private var restAutoStart = true
+    @AppStorage(WorkoutPreferences.liveActivityKey) private var liveActivity = true
 
     var body: some View {
         @Bindable var language = container.language
@@ -45,6 +46,9 @@ struct SettingsView: View {
                 Toggle("settings.workout.rir", isOn: $showsRir).accessibilityIdentifier("settings-workout-rir")
                 Toggle("settings.workout.keepAwake", isOn: $keepAwake).accessibilityIdentifier("settings-workout-awake")
                 Toggle("settings.workout.restAuto", isOn: $restAutoStart).accessibilityIdentifier("settings-workout-rest")
+                Toggle("settings.workout.liveActivity", isOn: $liveActivity)
+                    .accessibilityIdentifier("settings-workout-live-activity")
+                    .onChange(of: liveActivity) { Task { await container.liveActivity?.preferenceChanged() } }
             }
             privacy
             accountSection
