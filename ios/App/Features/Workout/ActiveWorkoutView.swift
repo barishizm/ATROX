@@ -298,7 +298,9 @@ struct ActiveWorkoutView: View {
     static func ref(_ id: String) -> ExerciseRef {
         UUID(uuidString: id).map(ExerciseRef.custom) ?? .catalog(id)
     }
+}
 
+extension ActiveWorkoutView {
     // MARK: Sheets
 
     private func replaceSheet(_ card: ActiveWorkoutModel.ExerciseCard) -> some View {

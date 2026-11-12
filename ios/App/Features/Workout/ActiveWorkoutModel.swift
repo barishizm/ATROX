@@ -78,8 +78,12 @@ final class ActiveWorkoutModel {
     func load() async {
         let fetched = await itemsProvider()
         items = Dictionary(fetched.map { ($0.item.id, $0.item) }, uniquingKeysWith: { first, _ in first })
-        patterns = Dictionary(fetched.compactMap { entry in entry.pattern.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first })
-        mechanics = Dictionary(fetched.compactMap { entry in entry.mechanic.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first })
+        patterns = Dictionary(
+            fetched.compactMap { entry in entry.pattern.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first }
+        )
+        mechanics = Dictionary(
+            fetched.compactMap { entry in entry.mechanic.map { (entry.item.id, $0) } }, uniquingKeysWith: { first, _ in first }
+        )
     }
 
     // MARK: Display

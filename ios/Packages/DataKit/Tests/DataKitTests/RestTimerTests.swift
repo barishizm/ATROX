@@ -18,9 +18,10 @@ import Testing
 @Suite struct RestTimerControllerTests {
     private let t0 = Date(timeIntervalSince1970: 1_800_000_000)
 
-    private func make(
-        status: NotificationAuthorization = .authorized, grants: Bool = true
-    ) -> (RestTimerController, TestClock, FakeNotificationService, UserDefaults) {
+    // swiftlint:disable:next large_tuple
+    private func make(status: NotificationAuthorization = .authorized, grants: Bool = true) -> (
+        RestTimerController, TestClock, FakeNotificationService, UserDefaults
+    ) {
         let clock = TestClock(t0)
         let service = FakeNotificationService(status: status, grantsOnRequest: grants)
         let defaults = UserDefaults(suiteName: "rest-timer-\(UUID().uuidString)")!

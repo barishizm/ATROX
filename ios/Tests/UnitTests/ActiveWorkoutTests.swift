@@ -162,7 +162,9 @@ import Testing
     private let user = UUID()
     private let t0 = Date(timeIntervalSince1970: 1_800_000_000)
 
-    private func makeModel(mechanic: String?, autoStart: Bool = true, sets: Int = 3) async throws -> (ActiveWorkoutModel, FakeNotificationService) {
+    private func makeModel(mechanic: String?, autoStart: Bool = true, sets: Int = 3) async throws -> (
+        ActiveWorkoutModel, FakeNotificationService
+    ) {
         let repo = SwiftDataWorkoutRepository(modelContainer: try DataStore.inMemory())
         let session = WorkoutSession(userId: user, workouts: repo)
         try await session.startEmpty()
@@ -176,7 +178,9 @@ import Testing
             item: ExerciseListItem(id: "bench", nameEn: "Bench Press", nameTr: "Bench Press", primaryMuscles: ["chest"]),
             pattern: "push", mechanic: mechanic
         )
-        let model = ActiveWorkoutModel(session: session, unit: .kilograms, autoStartsRest: autoStart, rest: rest, itemsProvider: { [entry] })
+        let model = ActiveWorkoutModel(
+            session: session, unit: .kilograms, autoStartsRest: autoStart, rest: rest, itemsProvider: { [entry] }
+        )
         await model.load()
         return (model, service)
     }

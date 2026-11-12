@@ -219,7 +219,9 @@ final class AppContainer {
                 ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: $0.movementPattern, mechanic: $0.mechanic)
             }
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
-            entries += ((try? context.fetch(own)) ?? []).map { ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil, mechanic: nil) }
+            entries += ((try? context.fetch(own)) ?? []).map {
+                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil, mechanic: nil)
+            }
             return entries
         }
     }
