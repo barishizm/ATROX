@@ -53,3 +53,10 @@ yaşar.
 4. **Aykırı değer.** Önceki en iyiden ~%15 fazla e1RM'li set: "Bu seti doğru mu girdin?" sorusu. Evet → rozet; Düzelt → ağırlık tuş takımı açılır.
 5. **Silme.** Rekoru taşıyan antrenmanı iptal et/sil: bir sonraki daha hafif set önceki en iyiye göre yeniden değerlendirilir.
 
+## P041 — Antrenman özeti ve Sağlık kaydı (elle doğrulama)
+1. **Tam akış.** Birkaç set tamamla, Bitir: onay → özet ekranı (süre, hacim, set, kas haritası, rekor varsa liste). Ad/not/yıldız gir, Bitti: Antrenman sekmesine dönülür.
+2. **Açık setler.** Bir setı boş bırak, Bitir: "N set tamamlanmadı" → "Sil ve bitir" / "Geri dön".
+3. **Kısa/boş.** Hiç set tamamlamadan Bitir: yalnızca "Antrenmanı sil". 2 dakikadan kısa antrenman: Kaydet / Sil / Geri dön.
+4. **Sağlık.** Sağlık izni verilmişse Sağlık → Gezin → Egzersiz: "Güç Antrenmanı" kaydı başlangıç/bitişle görünür; aynı antrenman ikinci kez yazılmaz. İzin kapalıysa hata göstermeden atlanır.
+5. **Karşılaştırma.** Aynı gün programından ikinci antrenman: özet "… tarihli antrenmanla karşılaştırıldı" ve hacim farkını gösterir.
+

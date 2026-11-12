@@ -159,6 +159,10 @@ public struct WorkoutSnapshot: Sendable, Equatable, Identifiable {
     public let routineDayId: UUID?
     public let notes: String?
     public let source: WorkoutSource
+    /// 1–5 "how did it feel" (P041).
+    public let rating: Int?
+    /// The Apple Health workout written for this one; nil until written.
+    public let healthKitUUID: UUID?
     public let createdAt: Date
     public let updatedAt: Date
     public let syncState: SyncState

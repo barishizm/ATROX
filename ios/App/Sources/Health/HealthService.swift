@@ -25,7 +25,7 @@ struct HealthWeightSample: Sendable, Equatable {
 ///
 /// No method throws: a missing HealthKit, a denied permission or a failed query all end as "no data", so callers
 /// fall back to manual entry without special cases. (Health hides whether *read* access was granted.)
-protocol HealthService: Sendable {
+protocol HealthService: HealthWorkoutWriting {
     /// False on devices without Health (and in tests that stub it out).
     var isAvailable: Bool { get }
     /// Shows the system permission sheet if the user has not decided yet. Call it only after a button press.
@@ -48,6 +48,8 @@ struct UnavailableHealthService: HealthService {
     func bodyProfile() async -> HealthBodyProfile { HealthBodyProfile() }
     func weightSamples(since: Date) async -> [HealthWeightSample] { [] }
     func saveWeight(kilograms: Double, date: Date) async -> Bool { false }
+    func saveWorkout(id: UUID, start: Date, end: Date) async -> UUID? { nil }
+    func deleteWorkout(uuid: UUID) async -> Bool { false }
 }
 
 /// In-memory Health for tests and UI tests (`-uitest-fake-health`).
@@ -57,6 +59,8 @@ actor FakeHealthService: HealthService {
     private var profile: HealthBodyProfile
     private var samples: [HealthWeightSample]
     private(set) var saved: [HealthWeightSample] = []
+    /// App workout id -> Health UUID of the workouts written.
+    private(set) var workouts: [UUID: UUID] = [:]
     private(set) var authorizationRequests = 0
 
     init(
@@ -88,6 +92,19 @@ actor FakeHealthService: HealthService {
         let sample = HealthWeightSample(date: date, weightKg: kilograms, isFromThisApp: true)
         saved.append(sample)
         samples.append(sample)
+        return true
+    }
+
+    func saveWorkout(id: UUID, start: Date, end: Date) async -> UUID? {
+        guard await canWriteWeight() else { return nil }
+        if let existing = workouts[id] { return existing }
+        let uuid = UUID()
+        workouts[id] = uuid
+        return uuid
+    }
+
+    func deleteWorkout(uuid: UUID) async -> Bool {
+        workouts = workouts.filter { $0.value != uuid }
         return true
     }
 }

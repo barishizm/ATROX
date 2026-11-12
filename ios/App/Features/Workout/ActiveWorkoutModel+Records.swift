@@ -8,6 +8,7 @@ extension ActiveWorkoutModel {
     /// Shows the best record a just-completed set broke. A suspicious e1RM jump asks first and shows nothing until
     /// the user confirms it.
     func show(_ hits: [PersonalRecordHit], for setId: UUID) {
+        recordHits.append(contentsOf: hits)
         guard let top = hits.min(by: { Self.rank($0.kind) < Self.rank($1.kind) }), let input = session.set(setId)?.input else { return }
         if hits.contains(where: \.needsConfirmation) {
             recordToConfirm = hits.first(where: \.needsConfirmation)
@@ -20,6 +21,11 @@ extension ActiveWorkoutModel {
     func confirmRecord() {
         guard let hit = recordToConfirm, let input = session.set(hit.setId)?.input else { recordToConfirm = nil; return }
         recordToConfirm = nil
+        recordHits.append(
+            PersonalRecordHit(
+                ref: hit.ref, kind: hit.kind, value: hit.value, setId: hit.setId, previousValue: hit.previousValue
+            )
+        )
         celebrate(.e1rm, setId: hit.setId, input: input)
     }
 

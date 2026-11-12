@@ -17,8 +17,11 @@ import Testing
         let v4 = SchemaV4.models.map { String(describing: $0) }.sorted()
         #expect(v4 == (v3 + ["PersonalRecord", "Routine", "RoutineDay", "RoutineExercise", "SetEntry", "Workout", "WorkoutExercise"]).sorted())
         #expect(SchemaV4.versionIdentifier == Schema.Version(4, 0, 0))
-        #expect(DataMigrationPlan.schemas.count == 4)
-        #expect(DataMigrationPlan.stages.count == 3)
+        let v5 = SchemaV5.models.map { String(describing: $0) }.sorted()
+        #expect(v5 == v4)
+        #expect(SchemaV5.versionIdentifier == Schema.Version(5, 0, 0))
+        #expect(DataMigrationPlan.schemas.count == 5)
+        #expect(DataMigrationPlan.stages.count == 4)
     }
 
     @Test func onDiskStorePersistsAcrossContainers() async throws {

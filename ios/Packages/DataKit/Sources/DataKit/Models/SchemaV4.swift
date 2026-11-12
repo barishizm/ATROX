@@ -17,7 +17,6 @@ public enum SchemaV4: VersionedSchema {
 public typealias Routine = SchemaV4.Routine
 public typealias RoutineDay = SchemaV4.RoutineDay
 public typealias RoutineExercise = SchemaV4.RoutineExercise
-public typealias Workout = SchemaV4.Workout
 public typealias WorkoutExercise = SchemaV4.WorkoutExercise
 public typealias SetEntry = SchemaV4.SetEntry
 public typealias PersonalRecord = SchemaV4.PersonalRecord

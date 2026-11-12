@@ -56,6 +56,65 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
         try modelContext.save()
     }
 
+    public func setRating(id: UUID, rating: Int?) throws {
+        let model = try live(Workout.self, id: id)
+        if let rating, !(1...5).contains(rating) { throw DataError.invalidValue("rating") }
+        model.rating = rating
+        model.markPending(at: clock())
+        try modelContext.save()
+    }
+
+    public func setHealthKitUUID(id: UUID, uuid: UUID?) throws {
+        let model = try live(Workout.self, id: id)
+        model.healthKitUUID = uuid
+        model.markPending(at: clock())
+        try modelContext.save()
+    }
+
+    public func restore(id: UUID) throws {
+        var descriptor = FetchDescriptor<Workout>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        guard let model = try modelContext.fetch(descriptor).first, let deletedAt = model.deletedAt else { return }
+        let now = clock()
+        // Only rows deleted *with* the workout come back; a set removed earlier stays removed.
+        let rows = try modelContext.fetch(
+            FetchDescriptor<WorkoutExercise>(predicate: #Predicate { $0.workoutId == id && $0.deletedAt == deletedAt })
+        )
+        let rowIds = rows.map(\.id)
+        let sets = rowIds.isEmpty ? [] : try modelContext.fetch(
+            FetchDescriptor<SetEntry>(
+                predicate: #Predicate { rowIds.contains($0.workoutExerciseId) && $0.deletedAt == deletedAt }
+            )
+        )
+        for set in sets { set.deletedAt = nil; set.markPending(at: now) }
+        for row in rows { row.deletedAt = nil; row.markPending(at: now) }
+        model.deletedAt = nil
+        model.markPending(at: now)
+        try modelContext.save()
+    }
+
+    public func finishedWorkouts(userId: UUID, before: Date?, limit: Int) throws -> [WorkoutSnapshot] {
+        guard limit > 0 else { return [] }
+        let cutoff = before ?? .distantFuture
+        var descriptor = FetchDescriptor<Workout>(
+            predicate: #Predicate {
+                $0.userId == userId && $0.deletedAt == nil && $0.endedAt != nil && $0.startedAt < cutoff
+            },
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return try modelContext.fetch(descriptor).map(snapshot(of:))
+    }
+
+    public func finishedDates(userId: UUID) throws -> [Date] {
+        try modelContext.fetch(
+            FetchDescriptor<Workout>(
+                predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.endedAt != nil },
+                sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+            )
+        ).map(\.startedAt)
+    }
+
     // MARK: Exercises and sets
 
     @discardableResult
@@ -293,7 +352,8 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
         WorkoutSnapshot(
             id: workout.id, userId: workout.userId, name: workout.name, startedAt: workout.startedAt,
             endedAt: workout.endedAt, routineId: workout.routineId, routineDayId: workout.routineDayId,
-            notes: workout.notes, source: workout.source, createdAt: workout.createdAt, updatedAt: workout.updatedAt,
+            notes: workout.notes, source: workout.source, rating: workout.rating,
+            healthKitUUID: workout.healthKitUUID, createdAt: workout.createdAt, updatedAt: workout.updatedAt,
             syncState: workout.syncState, exercises: try exercises(of: workout.id).map(exerciseSnapshot)
         )
     }

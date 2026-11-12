@@ -65,7 +65,9 @@ struct MainTabView: View {
         .environment(workoutPresenter)
         .task { await workoutPresenter.prepare(container: container) }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
-            if let model = workoutPresenter.model {
+            if let summary = workoutPresenter.summary {
+                WorkoutSummaryView(model: summary) { workoutPresenter.summaryDone() }
+            } else if let model = workoutPresenter.model {
                 ActiveWorkoutView(model: model, presenter: workoutPresenter)
                     .environment(container)
             }
