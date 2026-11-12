@@ -28,6 +28,7 @@ final class AppContainer {
     /// Public Storage bucket with the exercise images (P027); nil without Supabase.
     let exerciseImageBaseURL: URL?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
+    @ObservationIgnored private var workoutSession: WorkoutSession?
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -177,6 +178,20 @@ final class AppContainer {
             userId: user.id, templates: library.templates, catalog: catalog, profile: profile?.input,
             repository: SwiftDataRoutineRepository(modelContainer: modelContainer), plan: planStore(for: user.id)
         )
+    }
+
+    /// The active workout engine (P035), shared by every screen. On first use it restores the user's active workout
+    /// from the store, so a workout survives an app kill. nil when there is no user or no local store.
+    func activeWorkoutSession() async -> WorkoutSession? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        if let workoutSession, workoutSession.userId == user.id { return workoutSession }
+        let session = WorkoutSession(
+            userId: user.id, workouts: SwiftDataWorkoutRepository(modelContainer: modelContainer),
+            routines: SwiftDataRoutineRepository(modelContainer: modelContainer)
+        )
+        _ = try? await session.restore()
+        workoutSession = session
+        return session
     }
 
     private func planStore(for userId: UUID) -> RoutinePlanStore {

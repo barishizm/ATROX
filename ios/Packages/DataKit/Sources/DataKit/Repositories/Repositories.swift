@@ -109,6 +109,8 @@ public protocol WorkoutRepository: Sendable {
     func addExercise(workoutId: UUID, ref: ExerciseRef, supersetGroup: Int?) async throws -> WorkoutExerciseSnapshot
     func moveExercise(id: UUID, to position: Int) async throws
     func removeExercise(id: UUID) async throws
+    /// Sets the note of one exercise in a workout (`nil` clears it).
+    func updateExerciseNotes(id: UUID, notes: String?) async throws
 
     @discardableResult
     func addSet(workoutExerciseId: UUID, input: SetInput) async throws -> SetSnapshot

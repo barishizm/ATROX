@@ -86,6 +86,14 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
         try modelContext.save()
     }
 
+    public func updateExerciseNotes(id: UUID, notes: String?) throws {
+        let model = try live(WorkoutExercise.self, id: id)
+        guard (notes?.count ?? 0) <= 2000 else { throw DataError.invalidValue("notes") }
+        model.notes = notes
+        model.markPending(at: clock())
+        try modelContext.save()
+    }
+
     @discardableResult
     public func addSet(workoutExerciseId: UUID, input: SetInput) throws -> SetSnapshot {
         let exercise = try live(WorkoutExercise.self, id: workoutExerciseId)

@@ -31,6 +31,10 @@ extension SchemaV4 {
 
         public var isActive: Bool { endedAt == nil && deletedAt == nil }
 
+        /// The active workout is locked for sync (docs/02-MIMARI.md §2.3): a pull never overwrites it until it ends.
+        /// The sync engine (P044) must skip pulled rows of a locked workout and of its exercises and sets.
+        public var isSyncLocked: Bool { isActive }
+
         public init(
             id: UUID = UUID(), userId: UUID, name: String? = nil, startedAt: Date, endedAt: Date? = nil,
             routineId: UUID? = nil, routineDayId: UUID? = nil, notes: String? = nil, source: WorkoutSource = .manual,

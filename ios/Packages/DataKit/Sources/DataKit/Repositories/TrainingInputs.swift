@@ -166,6 +166,8 @@ public struct WorkoutSnapshot: Sendable, Equatable, Identifiable {
     public let exercises: [WorkoutExerciseSnapshot]
 
     public var isActive: Bool { endedAt == nil }
+    /// Same rule as `Workout.isSyncLocked`: an active workout is never overwritten by a sync pull.
+    public var isSyncLocked: Bool { isActive }
     public var duration: TimeInterval? { endedAt.map { $0.timeIntervalSince(startedAt) } }
     /// Sets that count towards scores: completed, not warm-up, at least one rep.
     public var scoringSets: [SetSnapshot] { exercises.flatMap(\.sets).filter(\.input.countsForScore) }
