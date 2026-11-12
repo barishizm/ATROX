@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 @Suite struct WeightUnitTests {
     private let en = Locale(identifier: "en_US")

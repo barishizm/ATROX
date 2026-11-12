@@ -1,6 +1,6 @@
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 struct AuthValidationTests {
     @Test(arguments: ["a@b.co", "  Name.Surname+tag@Example.COM ", "x@sub.domain.org"])

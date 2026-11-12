@@ -38,7 +38,7 @@ Son güncelleme: 2026-11-11. Bu dosya projenin "anayasası"dır; buradaki bir ka
 | 17 | Skorlanan türler | Ağırlıklı + vücut ağırlığı hareketleri; kardiyo yalnızca kaydedilir |
 | 18 | Veri katkısı | İsteğe bağlı, anonim, güven veren dille (uygulama biçimi için §4'e bak) |
 | 19 | Sosyal | Paylaşılabilir skor kartı + arkadaş sıralaması |
-| 20 | Ad | Çalışma adı `GymAnalyzer`; görünen ad tek yerden değişir |
+| 20 | Ad | Ad `ATROX`; görünen ad tek yerden değişir |
 
 ## 3. Benim verdiğim mühendislik kararları (gerekçeli)
 

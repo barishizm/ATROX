@@ -1,7 +1,7 @@
 import DataKit
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 @MainActor
 struct AuthFlowModelTests {

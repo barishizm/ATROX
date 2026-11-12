@@ -96,7 +96,7 @@ public actor FakeAuthService: AuthService {
         publish(.signedOut)
     }
 
-    public func handle(url: URL) async -> Bool { url.scheme == "vesania" }
+    public func handle(url: URL) async -> Bool { url.scheme == "atrox" }
 
     // MARK: Internals
 

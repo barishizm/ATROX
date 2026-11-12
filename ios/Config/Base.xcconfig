@@ -1,8 +1,8 @@
 // Base.xcconfig — shared by every configuration. Committed; contains no secrets.
 
 // ---- Working name (change ONLY here; bundle IDs and display name derive from it) ----
-APP_DISPLAY_NAME = Vesania
-APP_BUNDLE_ID_BASE = com.barishizm.vesania
+APP_DISPLAY_NAME = ATROX
+APP_BUNDLE_ID_BASE = com.barishizm.atrox
 
 // Per-configuration suffixes (overridden in Debug/Staging/Release.xcconfig)
 APP_BUNDLE_ID_SUFFIX =
@@ -22,7 +22,7 @@ APP_ENVIRONMENT = local
 // ---- Auth (non-secret; real values go in Secrets.xcconfig, see docs/KURULUM.md) ----
 // Deep link scheme. Must match auth.site_url / additional_redirect_urls in supabase/config.toml
 // and the redirect URLs in the Supabase dashboards.
-APP_URL_SCHEME = vesania
+APP_URL_SCHEME = atrox
 // Placeholders so a fresh clone still generates a valid Info.plist; Secrets.xcconfig overrides them.
 GOOGLE_IOS_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com
 GOOGLE_WEB_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com

@@ -3,12 +3,12 @@ import Foundation
 import SwiftData
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 struct LocalStoreTests {
     @Test func appGroupIDDerivesFromBundleID() throws {
         let group = try #require(Bundle.main.infoDictionary?["AppGroupID"] as? String)
-        #expect(group.hasPrefix("group.com.barishizm.vesania"))
+        #expect(group.hasPrefix("group.com.barishizm.atrox"))
     }
 
     @Test func appGroupContainerOpensAndPersists() async throws {

@@ -13,7 +13,7 @@ enum LogCategory: String, CaseIterable, Sendable {
 struct AppLogger: Sendable {
     enum Privacy: Sendable { case `private`, `public` }
 
-    static let subsystem = Bundle.main.bundleIdentifier ?? "com.barishizm.gymanalyzer"
+    static let subsystem = Bundle.main.bundleIdentifier ?? "com.barishizm.atrox"
 
     let category: LogCategory
     private let logger: Logger

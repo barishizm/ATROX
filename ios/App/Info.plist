@@ -63,9 +63,9 @@
 	<key>LegalTermsURL</key>
 	<string>$(LEGAL_TERMS_URL)</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>GymAnalyzer reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.</string>
+	<string>ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>GymAnalyzer saves your weigh-ins and workouts to Apple Health.</string>
+	<string>ATROX saves your weigh-ins and workouts to Apple Health.</string>
 	<key>SupabaseAnonKey</key>
 	<string>$(SUPABASE_ANON_KEY)</string>
 	<key>SupabaseURL</key>

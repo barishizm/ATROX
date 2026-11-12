@@ -15,7 +15,7 @@ struct LocalSupabaseIntegrationTests {
     private func makeService() throws -> SupabaseAuthService {
         let config = try #require(SupabaseConfiguration(
             infoDictionary: ["SupabaseURL": env["SUPABASE_LOCAL_URL"]!, "SupabaseAnonKey": env["SUPABASE_LOCAL_ANON_KEY"]!],
-            urlScheme: "vesania"
+            urlScheme: "atrox"
         ))
         return SupabaseAuthService(configuration: config)
     }

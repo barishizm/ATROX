@@ -2,7 +2,7 @@ import DataKit
 import Foundation
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 struct AuthSessionServiceTests {
     private let user = AuthUser(id: UUID(), email: "a@b.co", isEmailConfirmed: true, onboardingComplete: true)

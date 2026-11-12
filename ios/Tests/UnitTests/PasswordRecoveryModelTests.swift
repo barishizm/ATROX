@@ -2,7 +2,7 @@ import DataKit
 import Foundation
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 @MainActor
 struct PasswordRecoveryModelTests {

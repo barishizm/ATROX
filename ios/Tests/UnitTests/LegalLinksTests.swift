@@ -1,6 +1,6 @@
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 struct LegalLinksTests {
     @Test func readsConfiguredURLs() {

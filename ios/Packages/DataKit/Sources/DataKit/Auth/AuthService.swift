@@ -19,7 +19,7 @@ public protocol AuthService: Sendable {
     func updatePassword(_ newPassword: String) async throws
     func signOut() async
 
-    /// Hands a `vesania://auth-callback…` link (email confirmation / password reset) to the SDK.
+    /// Hands a `atrox://auth-callback…` link (email confirmation / password reset) to the SDK.
     /// Returns false when the URL is not an auth link.
     func handle(url: URL) async -> Bool
 }

@@ -101,9 +101,9 @@ Panelden elle şema değişikliği yapılmaz. Prod push'ları yalnızca staging'
 
 | Ne | Değer |
 |---|---|
-| Bundle ID'ler | Release `com.barishizm.vesania` · Staging `com.barishizm.vesania.staging` · Debug `com.barishizm.vesania.debug` |
-| Derin bağlantı şeması | `vesania` (`APP_URL_SCHEME`, `ios/Config/Base.xcconfig`) |
-| Auth dönüş URL'si | `vesania://auth-callback` |
+| Bundle ID'ler | Release `com.barishizm.atrox` · Staging `com.barishizm.atrox.staging` · Debug `com.barishizm.atrox.debug` |
+| Derin bağlantı şeması | `atrox` (`APP_URL_SCHEME`, `ios/Config/Base.xcconfig`) |
+| Auth dönüş URL'si | `atrox://auth-callback` |
 | Supabase Auth callback (Google web istemcisi için) | `https://<PROJE_REF>.supabase.co/auth/v1/callback` |
 | Uzak ortamlar | staging `yjcfdntilceqndkwiwdn`, prod `wafbrnsfxrwknczgkjkh` — **her adım iki projede de yapılır** |
 
@@ -124,7 +124,7 @@ Bu akış için **Services ID ve `.p8` anahtarı gerekmez**; Supabase yalnızca 
    **Capabilities** listesinde **Sign in with Apple**'ı işaretle → **Edit** → *Enable as a primary App ID* → Save → Continue → Register.
 3. Supabase paneli (her proje için) → **Authentication** → **Sign In / Providers** → **Apple**:
    - **Enable Sign in with Apple** açık.
-   - **Client IDs**: üç bundle ID'yi virgülle yaz (`com.barishizm.vesania,com.barishizm.vesania.staging,com.barishizm.vesania.debug`).
+   - **Client IDs**: üç bundle ID'yi virgülle yaz (`com.barishizm.atrox,com.barishizm.atrox.staging,com.barishizm.atrox.debug`).
    - **Secret Key** boş kalır (yalnızca web OAuth için gerekir). Save.
 4. Xcode imzalaması için Team ID gerekir: developer.apple.com → **Membership details** → *Team ID*. Değeri `ios/Config/Base.xcconfig`
    içine `DEVELOPMENT_TEAM = <TEAM_ID>` olarak ekle (gizli değil, commit edilir).
@@ -178,11 +178,11 @@ her birine ilgili dosyanın içeriğini ve konu satırını (config.toml'daki `s
 
 Her uzak projede **Authentication → URL Configuration**:
 
-- **Site URL**: `vesania://auth-callback`
-- **Redirect URLs**: `vesania://auth-callback`
+- **Site URL**: `atrox://auth-callback`
+- **Redirect URLs**: `atrox://auth-callback`
 
 Yerelde aynı değerler `supabase/config.toml` içindedir (`site_url`, `additional_redirect_urls`). Uygulama `onOpenURL`
-ile `vesania://auth-callback#…` bağlantılarını yakalayıp Supabase istemcisine verir (P015).
+ile `atrox://auth-callback#…` bağlantılarını yakalayıp Supabase istemcisine verir (P015).
 Debug ve Staging aynı şemayı paylaşır; aynı cihazda ikisi birden kuruluysa iOS birini seçer — test ederken birini sil.
 
 ### 5. Hukuki bağlantılar (P016)
@@ -199,7 +199,7 @@ argümanıyla (yalnızca Debug derlemesinde) `FakeAuthService` kullanır.
 
 ```bash
 cd ios && xcodegen generate
-xcodebuild build -project ios/GymAnalyzer.xcodeproj -scheme GymAnalyzer \
+xcodebuild build -project ios/ATROX.xcodeproj -scheme ATROX \
   -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
 ```
 
