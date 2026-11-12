@@ -12,13 +12,15 @@ let package = Package(
         .library(name: "DataKit", targets: ["DataKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.6")
+        .package(url: "https://github.com/supabase/supabase-swift.git", exact: "2.55.6"),
+        .package(path: "../StrengthKit")
     ],
     targets: [
         .target(
             name: "DataKit",
             dependencies: [
-                .product(name: "Supabase", package: "supabase-swift")
+                .product(name: "Supabase", package: "supabase-swift"),
+                .product(name: "StrengthKit", package: "StrengthKit")
             ],
             resources: [.process("Resources")],
             swiftSettings: [.swiftLanguageMode(.v6), .enableUpcomingFeature("StrictConcurrency")]

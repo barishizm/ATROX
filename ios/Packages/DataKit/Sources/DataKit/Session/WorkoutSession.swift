@@ -155,9 +155,11 @@ public final class WorkoutSession {
 
     // MARK: Sets
 
-    public func completeSet(_ setId: UUID) async throws {
+    /// Completes a set. Returns the personal records it broke (best first), also sent as `.prAchieved` events.
+    @discardableResult
+    public func completeSet(_ setId: UUID) async throws -> [PersonalRecordHit] {
         let (exercise, set) = try locate(setId)
-        guard !set.input.isCompleted else { return }
+        guard !set.input.isCompleted else { return [] }
         var input = set.input
         input.isCompleted = true
         try await workouts.updateSet(id: setId, with: input)
@@ -166,11 +168,10 @@ public final class WorkoutSession {
         if let updated = self.exercise(exercise.id), !updated.sets.isEmpty, updated.sets.allSatisfy(\.input.isCompleted) {
             send(.exerciseCompleted(workoutExerciseId: exercise.id))
         }
-        if let records, let workout, let stored = self.set(setId) {
-            for hit in try await records.records(for: stored, ref: exercise.ref, userId: userId, workoutId: workout.id) {
-                send(.prAchieved(hit))
-            }
-        }
+        guard let records, let workout, let stored = self.set(setId) else { return [] }
+        let hits = try await records.records(for: stored, ref: exercise.ref, userId: userId, workoutId: workout.id)
+        for hit in hits { send(.prAchieved(hit)) }
+        return hits
     }
 
     /// Undo of `completeSet`.
@@ -196,12 +197,18 @@ public final class WorkoutSession {
 
     /// Any change to one set's values (validated by the repository; invalid values throw and change nothing).
     public func editSet(_ setId: UUID, _ change: (inout SetInput) -> Void) async throws {
-        let (_, set) = try locate(setId)
+        let (exercise, set) = try locate(setId)
         var input = set.input
         change(&input)
         guard input != set.input else { return }
         try await workouts.updateSet(id: setId, with: input)
         try await reload()
+        if set.input.countsForScore || input.countsForScore { try await recordsChanged(exercise.ref) }
+    }
+
+    /// History of the exercise changed: let the record engine rebuild its records.
+    private func recordsChanged(_ ref: ExerciseRef) async throws {
+        try await records?.exerciseChanged(ref: ref, userId: userId)
     }
 
     /// Appends a set copied from the exercise's last one (not completed).
@@ -239,9 +246,10 @@ public final class WorkoutSession {
 
     /// Removes a set; removing the last one leaves the exercise in place with no sets.
     public func removeSet(_ setId: UUID) async throws {
-        _ = try locate(setId)
+        let (exercise, set) = try locate(setId)
         try await workouts.removeSet(id: setId)
         try await reload()
+        if set.input.countsForScore { try await recordsChanged(exercise.ref) }
     }
 
     // MARK: Exercises
@@ -254,10 +262,11 @@ public final class WorkoutSession {
     }
 
     public func removeExercise(_ workoutExerciseId: UUID) async throws {
-        guard exercise(workoutExerciseId) != nil else { throw activeOr(.unknownExercise) }
+        guard let removed = exercise(workoutExerciseId) else { throw activeOr(.unknownExercise) }
         try await workouts.removeExercise(id: workoutExerciseId)
         previous[workoutExerciseId] = nil
         try await reload()
+        if removed.sets.contains(where: \.input.countsForScore) { try await recordsChanged(removed.ref) }
     }
 
     /// Swaps an exercise for another at the same position; its sets are replaced by the new exercise's pre-fill.
@@ -270,6 +279,7 @@ public final class WorkoutSession {
         try await workouts.moveExercise(id: newId, to: old.position)
         previous[workoutExerciseId] = nil
         try await reload()
+        if old.sets.contains(where: \.input.countsForScore) { try await recordsChanged(old.ref) }
         return newId
     }
 
@@ -325,6 +335,9 @@ public final class WorkoutSession {
         guard let workout, phase == .active else { throw WorkoutSessionError.notActive }
         try await workouts.delete(id: workout.id)
         end(.cancelled)
+        for ref in Set(workout.exercises.filter { $0.sets.contains(where: \.input.countsForScore) }.map(\.ref)) {
+            try await recordsChanged(ref)
+        }
     }
 
     private func end(_ phase: Phase) {

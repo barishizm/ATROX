@@ -20,6 +20,14 @@ final class ActiveWorkoutModel {
         let previousText: String?
         let rir: Int?
         let isCompleted: Bool
+        /// The most important record this completed set broke (weight > e1RM > volume > reps); nil if none.
+        var record: RecordKind?
+    }
+
+    /// A record shown on a set. It holds only while the set still has the values that earned it.
+    struct RecordBadge {
+        let kind: RecordKind
+        let input: SetInput
     }
 
     struct ExerciseCard: Identifiable, Equatable {
@@ -51,6 +59,11 @@ final class ActiveWorkoutModel {
     var autoStartsRest: Bool
     let rest: RestTimerController
     private(set) var editing: Editing?
+    /// An e1RM record that jumped more than 12% above the previous best, waiting for "Did you enter this set correctly?".
+    var recordToConfirm: PersonalRecordHit?
+    /// Bumped on every celebrated record; the view plays its animation and haptic on change.
+    var recordCelebrations = 0
+    @ObservationIgnored var recordBadges: [UUID: RecordBadge] = [:]
     /// Localization key of the last failed action, shown once.
     var errorKey: String?
 
@@ -106,7 +119,7 @@ final class ActiveWorkoutModel {
                     badge: Self.badge(entry.input.setType, workingNumber: working),
                     weightText: weightText(kg: entry.input.weightKg), repsText: String(entry.input.reps),
                     previousText: index < last.count ? previousText(last[index]) : nil,
-                    rir: entry.input.rir, isCompleted: entry.input.isCompleted
+                    rir: entry.input.rir, isCompleted: entry.input.isCompleted, record: recordBadge(for: entry)
                 )
             }
             return ExerciseCard(
@@ -164,7 +177,8 @@ final class ActiveWorkoutModel {
             if self.session.set(setId)?.input.isCompleted == true {
                 try await self.session.uncompleteSet(setId)
             } else {
-                try await self.session.completeSet(setId)
+                let hits = try await self.session.completeSet(setId)
+                self.show(hits, for: setId)
                 await self.startRestAfter(setId)
             }
         }
