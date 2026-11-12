@@ -4,9 +4,10 @@ import XCTest
 /// Buttons are found by label: the app's root view sets a blanket `root` identifier that overrides them.
 final class ProfileUITests: XCTestCase {
     @MainActor
-    private func launch() -> XCUIApplication {
+    private func launch(extra: [String] = []) -> XCUIApplication {
         continueAfterFailure = false
         let app = XCUIApplication()
+        app.launchArguments += extra
         app.launchArguments += ["-uitest-fake-auth", "-uitest-onboarded", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
         let profileTab = app.tabBars.buttons["Profile"]
@@ -93,5 +94,25 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Version"].waitForExistence(timeout: 10), app.debugDescription)
         open(app, "Open-source licenses")
         XCTAssertTrue(app.staticTexts["supabase-swift"].waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    func testHealthSyncImportsSampleReadingsOnlyWhenPressed() throws {
+        let app = launch(extra: ["-uitest-fake-health"])
+        open(app, "Body measurements")
+        let sync = app.buttons["Sync with Apple Health"]
+        XCTAssertTrue(sync.waitForExistence(timeout: 10), app.debugDescription)
+        sync.tap()
+        XCTAssertTrue(app.staticTexts["Imported 1 measurement from Apple Health."].waitForExistence(timeout: 10), app.debugDescription)
+        sync.tap()
+        XCTAssertTrue(app.staticTexts["Nothing new in Apple Health."].waitForExistence(timeout: 10), app.debugDescription)
+    }
+
+    @MainActor
+    func testHealthButtonIsHiddenWithoutHealth() throws {
+        let app = launch()
+        open(app, "Body measurements")
+        XCTAssertTrue(app.otherElements["weight-chart"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.buttons["Sync with Apple Health"].exists)
     }
 }

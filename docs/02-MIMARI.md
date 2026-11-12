@@ -139,6 +139,7 @@ Cihaz, katkıya izin veren kullanıcı için ayda bir kez **özet** üretir ve `
 - Edge Function'lar girdi şemasını doğrular (Zod), kullanıcı başına hız sınırı uygular.
 - Model paketleri Ed25519 ile imzalanır; açık anahtar uygulamaya gömülüdür. İmza tutmazsa paket reddedilir ve gömülü model kullanılır.
 - LLM'e giden veride ad, soyad, e-posta, kullanıcı kimliği bulunmaz.
+- HealthKit verisi (boy, kilo, doğum tarihi, cinsiyet, Sağlık'taki kilo geçmişi) cihazda kalır: ham haliyle ne LLM'e (AI Koç bağlamı) ne de anonim katkıya (`contribute`) gider. Yalnızca kullanıcının onayıyla profile/ölçümlere kopyalanan değerler (kaynak = `healthkit`) o akışların normal kurallarına tabidir (LLM'de bantlama/yuvarlama, katkıda `bodyweight_kg` tam sayı ve `age_band`/`height_band`).
 - İsteğe bağlı sertleştirme (P102): App Attest ile yalnızca gerçek uygulamadan gelen isteklerin kabulü.
 
 ## 4. Ortamlar

@@ -35,7 +35,7 @@ Toplam: 104 adım.
 - [x] **P020** · Onay ekranları — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P021** · Onboarding 3 — ilk güç profili — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 - [x] **P022** · Profil ve ayarlar — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
-- [ ] **P023** · HealthKit entegrasyonu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
+- [x] **P023** · HealthKit entegrasyonu — [`01-temel-backend-onboarding.md`](prompts/01-temel-backend-onboarding.md)
 
 ## Faz 3 — Hareket kataloğu
 
@@ -204,3 +204,10 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P022) Birim seçimi tek anahtar: `profiles.unit_system` ile `user_settings.weight_unit/length_unit` birlikte güncellenir. Tema cihazdaki `UserDefaults` değerini esas alır (varsayılan koyu), `user_settings.theme` buna eşlenir; senkronizasyon (Faz 11) gelince çakışma kuralı gözden geçirilmeli.
 - (P022) Bildirimler yer tutucu; model sürümü "Henüz indirilmedi" yer tutucusu (P061+). Lisans listesi elle tutuluyor (supabase-swift, GoogleSignIn-iOS); veri seti/atıflar eklendikçe güncellenmeli.
 - (P022) Yerelde yalnızca birim testleri (125) ve DataKit testleri geçti; `ProfileUITests` ve TR çalışma zamanı görünümü yerelde çalıştırılmadı, GitHub CI'a bırakıldı. (P021 ile birleşti.)
+- (P023) HealthKit yeteneği `project.yml` entitlements'ında; Apple Developer portalında App ID'lere HealthKit eklenip provisioning profile yenilenmeli, gerçek cihaz/release öncesi `[MANUEL]`. Simülatörde sorunsuz. Kullanım açıklamaları `Info.plist` (EN) + `InfoPlist.xcstrings` (TR/EN).
+- (P023) Sağlık'tan doldur: boy, kilo, doğum tarihi ve cinsiyet okunur; onay penceresi bulunanları listeler, "Kullan" denmeden taslak değişmez. Doğum tarihi yalnızca 16–100 yaş aralığındaysa, değerler tekerlek adımlarına (1 cm / 0,5 kg) yuvarlanarak önerilir. Apple'dan ad/soyad ön doldurması (P015) hâlâ yapılmadı.
+- (P023) Kilo ekranı: "Apple Sağlık ile eşitle" düğmesi izni ilk basışta ister, bir günün son okumasını alır; aynı gün ve ±0,05 kg olan kayıt yinelenen sayılır, uygulamanın kendi yazdığı okumalar (`HKSource.default()`) içe alınmaz. Ölçüm eklerken Sağlık'a yazma, yalnızca yazma izni verilmişse (onay sorulmadan) yapılır. Silinen ölçüm Sağlık'tan silinmez; Sağlık'ta silinen yerelden silinmez. Arka planda otomatik içe aktarma (HKObserverQuery) yok.
+- (P023) İzin düzeltme: kullanıcı reddederse iOS izin penceresini bir daha göstermez; Ayarlar > Sağlık'a yönlendiren bir ipucu yok (okuma izni gizlidir, reddi ayırt edemeyiz). Düğme "yeni ölçüm yok" der.
+- (P023) Antrenman yazma izni (HKWorkoutType) istendi ama antrenman kaydı P041'de yazılacak. Sağlık verisinin LLM'e/katkıya ham gitmemesi `docs/02-MIMARI.md` §3.4'e not edildi; Faz 9/Faz 11 bağlam ve özet üreticileri bu kurala uymalı.
+- (P023) Simülatörde elle Sağlık verisiyle "kilo Sağlık'ta görünüyor" kabulü doğrulanmadı; sahte `HealthService` ile birim/UI testleri geçer (`-uitest-fake-health`).
+- (P023) Eklenen UI testleri (`testAppleHealthShortcut…`, `testHealthSync…`) yazıldı ama çalıştırılmadı (kullanıcı testi atlattı). Birim testleri (HealthTests, 12) lint yeniden adlandırmasından (`saveWeight(kilograms:)`) önce geçti; sonrasında yeniden çalıştırılmadı.

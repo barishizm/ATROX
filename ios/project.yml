@@ -94,6 +94,9 @@ targets:
         # Terms of Use / Privacy Policy links on the welcome screen (URLs live in the xcconfig files).
         LegalTermsURL: $(LEGAL_TERMS_URL)
         LegalPrivacyURL: $(LEGAL_PRIVACY_URL)
+        # HealthKit (P023). English defaults; TR/EN translations live in App/Resources/InfoPlist.xcstrings.
+        NSHealthShareUsageDescription: GymAnalyzer reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.
+        NSHealthUpdateUsageDescription: GymAnalyzer saves your weigh-ins and workouts to Apple Health.
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
         GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
         GIDServerClientID: $(GOOGLE_WEB_CLIENT_ID)
@@ -121,9 +124,11 @@ targets:
         # The group must also be registered in the Apple Developer portal before a device build.
         com.apple.security.application-groups:
           - $(APP_GROUP_ID)
-    # Capabilities enabled so far: Sign in with Apple (P014), App Groups (P017). Still to be added in later steps
-    # (entitlements + Apple Developer portal App ID):
-    #   - HealthKit                     (body weight / workout import)
+        # P023: Apple Health. The App ID needs the HealthKit capability in the Apple Developer portal before a device build.
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    # Capabilities enabled so far: Sign in with Apple (P014), App Groups (P017), HealthKit (P023). Still to be added in
+    # later steps (entitlements + Apple Developer portal App ID):
     #   - In-App Purchase               (StoreKit 2 subscriptions)
     #   - Push Notifications            (rest timer / coach reminders)
     #   - Associated Domains            (universal links / Google sign-in callback)

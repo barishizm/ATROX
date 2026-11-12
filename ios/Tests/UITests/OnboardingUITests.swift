@@ -11,9 +11,10 @@ final class OnboardingUITests: XCTestCase {
     }
 
     @MainActor
-    private func launchIntoOnboarding() -> XCUIApplication {
+    private func launchIntoOnboarding(extra: [String] = []) -> XCUIApplication {
         continueAfterFailure = false
         let app = XCUIApplication()
+        app.launchArguments += extra
         app.launchArguments += ["-uitest-fake-auth", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
         return app
@@ -119,5 +120,48 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Your first scores"].waitForExistence(timeout: 10), app.debugDescription)
         XCTAssertTrue(app.staticTexts["This is a first estimate; it gets sharper as you log workouts."].exists)
         XCTAssertTrue(app.buttons["Let's go"].exists)
+    }
+
+    /// P023: the Health shortcut proposes sample values; nothing changes until the user says yes.
+    @MainActor
+    func testAppleHealthShortcutProposesValuesAndAppliesThemOnYes() throws {
+        let app = launchIntoOnboarding(extra: ["-uitest-fake-health"])
+        app.buttons["welcome-apple"].tap()
+        let first = app.textFields["onboarding-first-name"]
+        XCTAssertTrue(first.waitForExistence(timeout: 10), app.debugDescription)
+        first.tap()
+        first.typeText("Ada")
+        let next = app.buttons["Continue"]
+        for _ in 0..<4 {
+            XCTAssertTrue(next.waitForExistence(timeout: 5))
+            next.tap()
+        }
+        let health = app.buttons["Fill in from Apple Health"]
+        XCTAssertTrue(health.waitForExistence(timeout: 10), app.debugDescription)
+        health.tap()
+        let alert = app.alerts["Use these from Apple Health?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 10), app.debugDescription)
+        alert.buttons["Not now"].tap()
+        health.tap()
+        XCTAssertTrue(alert.waitForExistence(timeout: 10))
+        alert.buttons["Use"].tap()
+        XCTAssertTrue(app.pickerWheels["182 cm"].waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    func testAppleHealthShortcutIsHiddenWhenHealthIsMissing() throws {
+        let app = launchIntoOnboarding()
+        app.buttons["welcome-apple"].tap()
+        let first = app.textFields["onboarding-first-name"]
+        XCTAssertTrue(first.waitForExistence(timeout: 10), app.debugDescription)
+        first.tap()
+        first.typeText("Ada")
+        let next = app.buttons["Continue"]
+        for _ in 0..<4 {
+            XCTAssertTrue(next.waitForExistence(timeout: 5))
+            next.tap()
+        }
+        XCTAssertTrue(app.pickerWheels.firstMatch.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.buttons["Fill in from Apple Health"].exists)
     }
 }
