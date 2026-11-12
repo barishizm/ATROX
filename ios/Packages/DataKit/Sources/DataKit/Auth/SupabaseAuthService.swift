@@ -155,6 +155,14 @@ public final class SupabaseAuthService: AuthService {
         }
     }
 
+    public func markOnboardingComplete() async throws {
+        do {
+            try await client.auth.update(user: UserAttributes(data: ["onboarding_complete": .bool(true)]))
+        } catch {
+            throw AuthError.map(error)
+        }
+    }
+
     public func signOut() async {
         do {
             try await client.auth.signOut(scope: .local)
