@@ -215,6 +215,28 @@ public final class WorkoutSession {
         return added.id
     }
 
+    /// Puts warm-up sets (not completed) in front of the exercise's existing sets. Existing sets keep their values and
+    /// completion; they only move down, so the stored order stays warm-ups first.
+    public func insertWarmups(_ warmups: [SetInput], into workoutExerciseId: UUID) async throws {
+        guard let exercise = exercise(workoutExerciseId) else { throw activeOr(.unknownExercise) }
+        guard !warmups.isEmpty else { return }
+        let desired = warmups.map { input -> SetInput in
+            var input = input
+            input.setType = .warmup
+            input.isCompleted = false
+            return input
+        } + exercise.sets.map(\.input)
+        for _ in warmups.indices {
+            _ = try await workouts.addSet(workoutExerciseId: workoutExerciseId, input: SetInput())
+        }
+        try await reload()
+        guard let sets = self.exercise(workoutExerciseId)?.sets, sets.count == desired.count else { return }
+        for (entry, input) in zip(sets, desired) where entry.input != input {
+            try await workouts.updateSet(id: entry.id, with: input)
+        }
+        try await reload()
+    }
+
     /// Removes a set; removing the last one leaves the exercise in place with no sets.
     public func removeSet(_ setId: UUID) async throws {
         _ = try locate(setId)

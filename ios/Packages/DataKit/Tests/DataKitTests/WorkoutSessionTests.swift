@@ -395,3 +395,26 @@ private func done(_ kg: Double, _ reps: Int, type: SetType = .working) -> SetInp
         await #expect(throws: WorkoutSessionError.notActive) { try await session.addExercise(bench) }
     }
 }
+
+extension WorkoutSessionTests {
+    @Test func warmupsGoInFrontAndKeepExistingSets() async throws {
+        let env = try makeEnv()
+        let session = env.session()
+        try await session.startEmpty()
+        let exerciseId = try await session.addExercise(bench)
+        let before = try #require(session.exercise(exerciseId)?.sets)
+        try await session.setWeight(before[0].id, kg: 100)
+        try await session.completeSet(before[0].id)
+
+        try await session.insertWarmups(
+            [SetInput(weightKg: 20, reps: 10), SetInput(weightKg: 60, reps: 5, isCompleted: true)], into: exerciseId
+        )
+        let sets = try #require(session.exercise(exerciseId)?.sets)
+        #expect(sets.count == before.count + 2)
+        #expect(sets.prefix(2).map(\.input.setType) == [.warmup, .warmup])
+        #expect(sets.prefix(2).map(\.input.weightKg) == [20, 60])
+        #expect(sets.prefix(2).allSatisfy { !$0.input.isCompleted })
+        #expect(sets[2].input.weightKg == 100 && sets[2].input.isCompleted)
+        #expect(sets.map(\.position) == Array(0..<sets.count))
+    }
+}

@@ -1,6 +1,7 @@
 import DataKit
 import Foundation
 import Observation
+import StrengthKit
 
 /// Screen state of the active workout (P036): turns `WorkoutSession` snapshots into display rows and drives the
 /// numeric keypad. Every change is written through the session (and so to SwiftData) immediately.
@@ -335,6 +336,41 @@ final class ActiveWorkoutModel {
         await rest.skip()
         await run { try await self.session.cancel() }
     }
+
+    // MARK: Warm-ups
+
+    /// The warm-up ramp for an exercise: built from its first working set with a weight, rounded to the plate step.
+    /// Barbell exercises start from the empty bar; the result is in the display unit.
+    func warmupPreview(forExercise exerciseId: UUID, defaults: UserDefaults = .standard) -> [WarmupSet] {
+        guard let exercise = session.exercise(exerciseId),
+              let working = exercise.sets.first(where: { $0.input.setType != .warmup && $0.input.weightKg > 0 })
+        else { return [] }
+        let isBarbell = session.exercise(exerciseId).map { items[Self.id(of: $0.ref)]?.equipment == "barbell" } ?? false
+        return WarmupGenerator.sets(
+            workingWeight: unit.value(fromKilograms: working.input.weightKg),
+            bar: isBarbell ? PlatePreferences.barWeight(unit: unit, defaults: defaults) : 0, increment: plateStep
+        )
+    }
+
+    /// Adds the warm-up ramp in front of the exercise's sets.
+    func addWarmups(to exerciseId: UUID, defaults: UserDefaults = .standard) async {
+        let sets = warmupPreview(forExercise: exerciseId, defaults: defaults)
+        guard !sets.isEmpty else { return }
+        editing = nil
+        let inputs = sets.map { warmup in
+            SetInput(weightKg: (unit.kilograms(from: warmup.weight) * 1000).rounded() / 1000, reps: warmup.reps, setType: .warmup)
+        }
+        await run { try await self.session.insertWarmups(inputs, into: exerciseId) }
+    }
+
+    /// Writes a weight chosen in the plate calculator to a set.
+    func applyPlateWeight(_ setId: UUID, displayWeight: Double) async {
+        if editing?.setId == setId { editing = nil }
+        let kg = (unit.kilograms(from: displayWeight) * 1000).rounded() / 1000
+        await run { try await self.session.setWeight(setId, kg: kg) }
+    }
+
+    func currentWeightKg(_ setId: UUID) -> Double { session.set(setId)?.input.weightKg ?? 0 }
 
     private func run(_ work: @MainActor () async throws -> Void) async {
         do { try await work() } catch { errorKey = "workout.error.generic" }

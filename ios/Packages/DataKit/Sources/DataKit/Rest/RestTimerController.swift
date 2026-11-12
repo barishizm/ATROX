@@ -15,6 +15,12 @@ public final class RestTimerController {
         public var endsAt: Date
         /// Length of the ring: grows and shrinks with ±15 s.
         public var total: TimeInterval
+
+        public init(startedAt: Date, endsAt: Date, total: TimeInterval) {
+            self.startedAt = startedAt
+            self.endsAt = endsAt
+            self.total = total
+        }
     }
 
     /// The running countdown; nil when idle.

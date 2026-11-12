@@ -5,6 +5,13 @@ import SwiftUI
 /// The active workout screen (P036), built for one hand in the gym: pre-filled sets finish with one tap, numbers
 /// come from a custom keypad, and the whole screen can be minimized while the workout keeps running.
 struct ActiveWorkoutView: View {
+    /// The set whose weight was long-pressed; opens the plate calculator.
+    struct PlateTarget: Identifiable {
+        let setId: UUID
+        let weight: Double
+        var id: UUID { setId }
+    }
+
     let model: ActiveWorkoutModel
     let presenter: ActiveWorkoutPresenter
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
@@ -17,6 +24,7 @@ struct ActiveWorkoutView: View {
     @State private var noting: ActiveWorkoutModel.ExerciseCard?
     @State private var noteText = ""
     @State private var history: ActiveWorkoutModel.ExerciseCard?
+    @State private var plateTarget: PlateTarget?
 
     var body: some View {
         NavigationStack {
@@ -99,6 +107,12 @@ struct ActiveWorkoutView: View {
         }
         .sheet(item: $replacing) { card in replaceSheet(card) }
         .sheet(item: $history) { card in historySheet(card) }
+        .sheet(item: $plateTarget) { target in
+            PlateCalculatorView(unit: model.unit, initialWeight: target.weight) { weight in
+                Task { await model.applyPlateWeight(target.setId, displayWeight: weight) }
+            }
+            .presentationDetents([.large])
+        }
         .alert("workout.note.title", isPresented: Binding(get: { noting != nil }, set: { if !$0 { noting = nil } })) {
             TextField("workout.note.placeholder", text: $noteText)
             Button("workout.note.save") {
@@ -167,6 +181,10 @@ struct ActiveWorkoutView: View {
                     NavigationLink(value: WorkoutRoute.exerciseDetail(id: ActiveWorkoutModel.id(of: card.ref))) {
                         Label("workout.exercise.detail", systemImage: "info.circle")
                     }
+                    Button { Task { await model.addWarmups(to: card.id) } } label: {
+                        Label("warmup.add", systemImage: "flame")
+                    }
+                    .disabled(model.warmupPreview(forExercise: card.id).isEmpty)
                     Button { history = card } label: { Label("workout.exercise.history", systemImage: "clock.arrow.circlepath") }
                     Button { replacing = card } label: { Label("workout.exercise.replace", systemImage: "arrow.triangle.2.circlepath") }
                     Button {
@@ -214,6 +232,10 @@ struct ActiveWorkoutView: View {
                 .frame(maxWidth: .infinity)
             field(editingWeight ? liveText(model.editing) : row.weightText, active: editingWeight, tint: tint, width: 72)
                 .onTapGesture { Task { await model.beginEditing(row.id, field: .weight) } }
+                .onLongPressGesture(minimumDuration: 0.4) {
+                    Haptics.play(.medium)
+                    plateTarget = PlateTarget(setId: row.id, weight: model.unit.value(fromKilograms: model.currentWeightKg(row.id)))
+                }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("workout.field.weight \(model.unit.symbol)")
                 .accessibilityValue(row.weightText)

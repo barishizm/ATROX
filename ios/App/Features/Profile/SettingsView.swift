@@ -1,5 +1,6 @@
 import DataKit
 import DesignSystem
+import StrengthKit
 import SwiftUI
 
 /// Units, language, theme, notifications (placeholder), privacy and the account actions.
@@ -50,6 +51,7 @@ struct SettingsView: View {
                     .accessibilityIdentifier("settings-workout-live-activity")
                     .onChange(of: liveActivity) { Task { await container.liveActivity?.preferenceChanged() } }
             }
+            PlateSettingsSection(unit: model.unitSystem == .imperial ? .pounds : .kilograms)
             privacy
             accountSection
         }
@@ -149,5 +151,62 @@ struct ConsentHistoryView: View {
         case .aiSharing: Text("consent.kind.aiSharing")
         case .mlContribution: Text("consent.kind.mlContribution")
         }
+    }
+}
+
+/// Default bar and the plates the user owns (used by the plate calculator and warm-up sets).
+struct PlateSettingsSection: View {
+    let unit: PlateUnit
+    @AppStorage(PlatePreferences.barTypeKey) private var barTypeRaw = BarType.olympic20.rawValue
+    @AppStorage(PlatePreferences.customBarKgKey) private var customBarKg = 20.0
+    @AppStorage(PlatePreferences.ownedKey(.kilograms))
+    private var ownedKg = PlatePreferences.encode(PlateDefaults.denominations(for: .kilograms))
+    @AppStorage(PlatePreferences.ownedKey(.pounds))
+    private var ownedLb = PlatePreferences.encode(PlateDefaults.denominations(for: .pounds))
+
+    private var symbol: String { unit == .kilograms ? "kg" : "lb" }
+    private var owned: Binding<String> { unit == .kilograms ? $ownedKg : $ownedLb }
+
+    var body: some View {
+        Section {
+            Picker("settings.workout.bar", selection: $barTypeRaw) {
+                ForEach(BarType.allCases, id: \.rawValue) { type in
+                    Text(verbatim: Self.name(type, unit: unit)).tag(type.rawValue)
+                }
+            }
+            .accessibilityIdentifier("settings-bar")
+            if barTypeRaw == BarType.custom.rawValue {
+                Stepper(value: $customBarKg, in: 0...50, step: 0.5) {
+                    Text(verbatim: "\(PlateCalculatorView.format(unit == .kilograms ? customBarKg : customBarKg * 2.2046226218)) \(symbol)")
+                }
+            }
+            ForEach(PlateDefaults.denominations(for: unit), id: \.self) { plate in
+                Toggle(isOn: Binding(
+                    get: { PlatePreferences.decode(owned.wrappedValue).contains(plate) },
+                    set: { isOn in
+                        var plates = Set(PlatePreferences.decode(owned.wrappedValue))
+                        if isOn { plates.insert(plate) } else { plates.remove(plate) }
+                        owned.wrappedValue = PlatePreferences.encode(plates.sorted(by: >))
+                    }
+                )) {
+                    Text(verbatim: "\(PlateCalculatorView.format(plate)) \(symbol)")
+                }
+            }
+        } header: {
+            Text("settings.section.plates")
+        } footer: {
+            Text("settings.plates.footer")
+        }
+    }
+
+    private static func name(_ type: BarType, unit: PlateUnit) -> String {
+        let name = switch type {
+        case .olympic20: String(localized: "plates.bar.olympic20")
+        case .olympic15: String(localized: "plates.bar.olympic15")
+        case .ez: String(localized: "plates.bar.ez")
+        case .custom: String(localized: "plates.bar.custom")
+        }
+        guard let weight = type.weight(in: unit) else { return name }
+        return "\(name) · \(PlateCalculatorView.format(weight)) \(unit == .kilograms ? "kg" : "lb")"
     }
 }
