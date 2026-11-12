@@ -12,10 +12,13 @@ protocol SessionService: Sendable {
     /// Live changes after the restore (sign-in, sign-out, revoked session). Defaults to none.
     func updates() -> AsyncStream<SessionStatus>
     func signOut() async
+    /// Persists that onboarding is finished, so a cold start goes straight to the app.
+    func markOnboardingComplete() async
 }
 
 extension SessionService {
     func updates() -> AsyncStream<SessionStatus> { AsyncStream { $0.finish() } }
+    func markOnboardingComplete() async {}
 }
 
 /// Fallback when the backend is not configured (see `AppContainer.live()`): always signed out.

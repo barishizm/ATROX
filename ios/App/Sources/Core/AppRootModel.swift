@@ -17,6 +17,8 @@ final class AppRootModel {
 
     private let service: any SessionService
     private var updatesTask: Task<Void, Never>?
+    /// The pending write of the completion flag; tests await it.
+    private(set) var completionTask: Task<Void, Never>?
 
     init(service: any SessionService) {
         self.service = service
@@ -47,6 +49,7 @@ final class AppRootModel {
             return Log.app.info("Ignored didCompleteOnboarding in state \(state)", privacy: .public)
         }
         state = .ready
+        completionTask = Task { [service] in await service.markOnboardingComplete() }
     }
 
     func signOut() async {

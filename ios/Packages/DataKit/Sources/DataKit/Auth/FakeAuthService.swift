@@ -91,6 +91,22 @@ public actor FakeAuthService: AuthService {
         guard newPassword.count >= 8 else { throw AuthError.weakPassword }
     }
 
+    public private(set) var onboardingCompleteCount = 0
+
+    public func markOnboardingComplete() async throws {
+        try failIfScripted()
+        onboardingCompleteCount += 1
+        switch state {
+        case .signedIn(let user): state = .signedIn(Self.completed(user))
+        case .passwordRecovery(let user): state = .passwordRecovery(Self.completed(user))
+        case .signedOut: break
+        }
+    }
+
+    private static func completed(_ user: AuthUser) -> AuthUser {
+        AuthUser(id: user.id, email: user.email, isEmailConfirmed: user.isEmailConfirmed, onboardingComplete: true)
+    }
+
     public func signOut() async {
         signOutCount += 1
         publish(.signedOut)

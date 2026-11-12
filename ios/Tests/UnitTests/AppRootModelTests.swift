@@ -8,12 +8,37 @@ private struct FakeSessionService: SessionService {
     func signOut() async {}
 }
 
+private final class RecordingSessionService: SessionService, @unchecked Sendable {
+    private(set) var completions = 0
+    func restoreSession() async throws -> SessionStatus { .signedIn(onboardingComplete: false) }
+    func signOut() async {}
+    func markOnboardingComplete() async { completions += 1 }
+}
+
 private struct Boom: Error {}
 
 @MainActor
 struct AppRootModelTests {
     private func model(_ result: Result<SessionStatus, any Error>) -> AppRootModel {
         AppContainer(sessionService: FakeSessionService(result: result)).root
+    }
+
+    @Test func finishingOnboardingPersistsTheFlag() async {
+        let service = RecordingSessionService()
+        let m = AppContainer(sessionService: service).root
+        await m.start()
+        m.didCompleteOnboarding()
+        await m.completionTask?.value
+        #expect(m.state == .ready)
+        #expect(service.completions == 1)
+    }
+
+    @Test func completionIsNotPersistedOutsideOnboarding() async {
+        let service = RecordingSessionService()
+        let m = AppContainer(sessionService: service).root
+        m.didCompleteOnboarding()  // still .loading
+        #expect(m.completionTask == nil)
+        #expect(service.completions == 0)
     }
 
     @Test func startsLoading() {

@@ -19,6 +19,9 @@ public protocol AuthService: Sendable {
     func updatePassword(_ newPassword: String) async throws
     func signOut() async
 
+    /// Records on the server (`user_metadata.onboarding_complete`) that the signed-in user finished onboarding.
+    func markOnboardingComplete() async throws
+
     /// Hands a `vesania://auth-callback…` link (email confirmation / password reset) to the SDK.
     /// Returns false when the URL is not an auth link.
     func handle(url: URL) async -> Bool

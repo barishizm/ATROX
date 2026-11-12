@@ -15,6 +15,7 @@ struct NotConfiguredAuthService: AuthService {
     func resendConfirmation(email: String) async throws { throw AuthError.notConfigured }
     func sendPasswordReset(email: String) async throws { throw AuthError.notConfigured }
     func updatePassword(_ newPassword: String) async throws { throw AuthError.notConfigured }
+    func markOnboardingComplete() async throws { throw AuthError.notConfigured }
     func signOut() async {}
     func handle(url: URL) async -> Bool { false }
 }
