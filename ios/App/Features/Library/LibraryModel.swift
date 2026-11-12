@@ -39,14 +39,25 @@ final class LibraryModel {
     let lists: ExerciseLists
     private let modelContainer: ModelContainer
     private let equipmentAccess: EquipmentAccess
+    /// The signed-in user; nil hides custom exercises (and creating them).
+    let userId: UUID?
+    /// Catalog exercises only (the "similar to" picker).
+    let catalogOnly: Bool
     private var items: [ExerciseListItem] = []
     private var byID: [String: ExerciseListItem] = [:]
 
-    init(modelContainer: ModelContainer, equipmentAccess: EquipmentAccess = .fullGym, lists: ExerciseLists = ExerciseLists()) {
+    init(
+        modelContainer: ModelContainer, equipmentAccess: EquipmentAccess = .fullGym, userId: UUID? = nil,
+        catalogOnly: Bool = false, lists: ExerciseLists = ExerciseLists()
+    ) {
         self.modelContainer = modelContainer
         self.equipmentAccess = equipmentAccess
+        self.userId = userId
+        self.catalogOnly = catalogOnly
         self.lists = lists
     }
+
+    var canCreateCustom: Bool { userId != nil && !catalogOnly }
 
     var suggestedFilter: ExerciseFilter { .suggested(for: equipmentAccess) }
     var hasEquipmentSuggestion: Bool { suggestedFilter.isActive }
@@ -59,12 +70,10 @@ final class LibraryModel {
     func load() async {
         loadState = .loading
         do {
-            let context = ModelContext(modelContainer)
-            var descriptor = FetchDescriptor<Exercise>(predicate: #Predicate { !$0.isArchived })
-            descriptor.sortBy = [SortDescriptor(\.id)]
-            items = try context.fetch(descriptor).map(ExerciseListItem.init)
-            byID = Dictionary(uniqueKeysWithValues: items.map { ($0.id, $0) })
-            if hasEquipmentSuggestion {
+            try fetchItems()
+            if catalogOnly {
+                filter.scorableOnly = true
+            } else if hasEquipmentSuggestion {
                 filter = suggestedFilter
                 isEquipmentSuggestion = true
             }
@@ -73,6 +82,37 @@ final class LibraryModel {
         } catch {
             loadState = .failed
         }
+    }
+
+    private func fetchItems() throws {
+        let context = ModelContext(modelContainer)
+        var descriptor = FetchDescriptor<Exercise>(predicate: #Predicate { !$0.isArchived })
+        descriptor.sortBy = [SortDescriptor(\.id)]
+        var fetched = try context.fetch(descriptor).map(ExerciseListItem.init)
+        if let userId, !catalogOnly {
+            let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
+            fetched += try context.fetch(own).map(ExerciseListItem.init)
+        }
+        items = fetched
+        byID = Dictionary(fetched.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    }
+
+    /// Re-reads the exercises after a custom exercise was created, edited or deleted; keeps query and filters.
+    func reload() {
+        guard loadState == .loaded else { return }
+        try? fetchItems()
+        let stillThere = Set(items.map(\.id))
+        selectionOrder.removeAll { !stillThere.contains($0) }
+        refresh()
+    }
+
+    /// A custom exercise was just created: show it (clear the search and filters that could hide it) and, in
+    /// selection mode, pick it.
+    func didCreateCustom(id: String, select: Bool) {
+        query = ""
+        clearFilters()
+        reload()
+        if select, byID[id] != nil, !isSelected(id) { selectionOrder.append(id) }
     }
 
     // MARK: Filters
