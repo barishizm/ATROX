@@ -8,6 +8,8 @@ struct MainTabView: View {
     @State private var analysis = TabRouter<AnalysisRoute>()
     @State private var coach = TabRouter<CoachRoute>()
     @State private var profile = TabRouter<ProfileRoute>()
+    @State private var workoutPresenter = ActiveWorkoutPresenter()
+    @Environment(AppContainer.self) private var container
 
     var body: some View {
         TabView(selection: $selection) {
@@ -53,6 +55,19 @@ struct MainTabView: View {
             }
             Tab(AppTab.profile.title, systemImage: AppTab.profile.systemImage, value: AppTab.profile) {
                 ProfileTabView(router: profile)
+            }
+        }
+        .tabViewBottomAccessory {
+            if let model = workoutPresenter.model, model.isActive, !workoutPresenter.isPresented {
+                MiniWorkoutBar(model: model) { workoutPresenter.resume() }
+            }
+        }
+        .environment(workoutPresenter)
+        .task { await workoutPresenter.prepare(container: container) }
+        .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
+            if let model = workoutPresenter.model {
+                ActiveWorkoutView(model: model, presenter: workoutPresenter)
+                    .environment(container)
             }
         }
         .accessibilityIdentifier("main-tabs")

@@ -8,6 +8,7 @@ struct RoutineDayView: View {
     let routineId: UUID
     let dayId: UUID
     @Environment(AppContainer.self) private var container
+    @Environment(ActiveWorkoutPresenter.self) private var presenter
     @Environment(\.locale) private var locale
     @State private var model: RoutineEditorModel?
     @State private var failed = false
@@ -125,6 +126,13 @@ struct RoutineDayView: View {
 
     @ToolbarContentBuilder
     private func toolbar(_ model: RoutineEditorModel) -> some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                Task { await presenter.start(routineId: routineId, dayId: dayId, container: container) }
+            } label: { Image(systemName: "play.fill") }
+                .accessibilityLabel("workout.start.day")
+                .accessibilityIdentifier("routine-day-start")
+        }
         ToolbarItem(placement: .topBarTrailing) {
             Button { Task { await model.undo() } } label: { Image(systemName: "arrow.uturn.backward") }
                 .disabled(!model.canUndo)

@@ -8,6 +8,8 @@ struct SettingsView: View {
     let account: AccountModel
     @Environment(AppContainer.self) private var container
     @State private var confirmsSignOut = false
+    @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
+    @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
 
     var body: some View {
         @Bindable var language = container.language
@@ -37,6 +39,10 @@ struct SettingsView: View {
                 }
                 .accessibilityIdentifier("settings-theme")
                 LabeledContent("settings.notifications") { Text("settings.notifications.soon").foregroundStyle(DSColor.textSecondary) }
+            }
+            Section("settings.section.workout") {
+                Toggle("settings.workout.rir", isOn: $showsRir).accessibilityIdentifier("settings-workout-rir")
+                Toggle("settings.workout.keepAwake", isOn: $keepAwake).accessibilityIdentifier("settings-workout-awake")
             }
             privacy
             accountSection
