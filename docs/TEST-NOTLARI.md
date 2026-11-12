@@ -31,3 +31,15 @@ görünümü vardır) ya da gerçek cihaz. Cihaz ayarı: Ayarlar → ATROX → C
 
 Bilinen sınır: uygulama tamamen kapalıyken (öldürülmüş) kilit ekranı düğmeleri çalışmaz, çünkü dinlenme sayacı bellekte
 yaşar.
+
+## P039 — Plaka hesaplayıcı ve ısınma setleri (elle doğrulama)
+
+1. **Hesaplayıcıyı aç.** Aktif antrenmanda bir setin ağırlığına uzun bas: "Plaka hesaplayıcı" açılır, hedef o setin
+   ağırlığıdır. 100 kg, 20 kg olimpik bar için tek taraf `25 + 15` (ya da `20 + 20`) görünür; çizimde bar iki yanda simetrik.
+2. **Alt/üst seçenekler.** Hedefi 101 kg yap: "Tam eşleşme" kaybolur, alt (100) ve üst (102,5) seçenekleri çıkar; satıra
+   dokununca hedef o yüke gider. Hedefi bardan hafif yap: "Bardan hafif" uyarısı.
+3. **Bar türleri.** Olimpik 20/15, EZ, özel arasında geç; özel barda ağırlığı değiştir. lb biriminde 45 lb bar ve lb plakaları.
+4. **Sete uygula.** "Bu sete uygula" setin ağırlığını günceller.
+5. **Ayarlar.** Ayarlar → Bar ve plakalar: bir plakayı kapat (ör. 25 kg), hesaplayıcıda artık kullanılmadığını doğrula.
+6. **Isınma.** Bir hareketin ilk setine çalışma ağırlığı yaz (ör. 100 kg), hareket menüsünden "Isınma setleri ekle": bar ×10,
+   40 ×8, 60 ×5, 80 ×3 ısınma (W) setleri en üste eklenir, çalışma setleri aşağı kayar. Ağırlık yokken menü öğesi pasif.
