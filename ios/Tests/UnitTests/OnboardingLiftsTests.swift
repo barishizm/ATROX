@@ -52,7 +52,7 @@ struct OnboardingLiftsTests {
         await env.model.advance()
         #expect(env.model.step == .result)
         #expect(env.model.results.isEmpty)
-        #expect(env.setStore.load(userId: env.userId).isEmpty)
+        #expect(try await env.workouts.workouts(userId: env.userId, from: .distantPast, to: .distantFuture).isEmpty)
     }
 
     @Test func advancingWithoutTypingAnythingIsTheSameAsSkipping() async throws {
@@ -74,8 +74,11 @@ struct OnboardingLiftsTests {
         let result = try #require(env.model.results.first)
         #expect(env.model.results.count == 1 && result.lift == .benchPress)
         #expect(abs(result.score - 50) < 1e-9)  // 1.0 x bodyweight against the placeholder's 2.0
-        let stored = env.setStore.load(userId: env.userId)
-        #expect(stored == [LiftSet(lift: .benchPress, implement: .barbell, weightKg: 80, reps: 1)])
+        let stored = try await env.workouts.workouts(userId: env.userId, from: .distantPast, to: .distantFuture)
+        let workout = try #require(stored.first)
+        #expect(stored.count == 1 && workout.source == .onboarding && !workout.isActive)
+        #expect(workout.exercises.map(\.ref) == [.catalog("barbell-bench-press-medium-grip")])
+        #expect(workout.scoringSets.map(\.input.weightKg) == [80] && workout.scoringSets.map(\.input.reps) == [1])
     }
 
     @Test func unfinishedCardsAreIgnored() async throws {
@@ -169,5 +172,31 @@ struct OnboardingLiftsTests {
     @Test func liftStepsAreNotQuestions() {
         #expect(!OnboardingStep.questions.contains(.lifts))
         #expect(OnboardingStep.lifts.rawValue < OnboardingStep.result.rawValue)
+    }
+}
+
+@Suite struct OnboardingWorkoutTests {
+    @Test func everyBasicLiftMapsToADistinctCatalogExercise() {
+        let ids = BasicLift.allCases.flatMap { lift in LiftImplement.allCases.map { OnboardingWorkout.catalogId(lift: lift, implement: $0) } }
+        #expect(Set(ids).count == 8)
+    }
+
+    @Test func nothingReportedMeansNoWorkout() {
+        #expect(OnboardingWorkout.draft(from: [], at: Date()) == nil)
+    }
+}
+
+@MainActor
+extension OnboardingLiftsTests {
+    @Test func comingBackAndChangingTheAnswersKeepsOneWorkout() async throws {
+        let env = try Base.harness()
+        await Self.atLifts(env)
+        env.model.setLiftWeight(.benchPress, value: 60)
+        await env.model.advance()
+        env.model.back()
+        env.model.setLiftWeight(.benchPress, value: 70)
+        await env.model.advance()
+        let stored = try await env.workouts.workouts(userId: env.userId, from: .distantPast, to: .distantFuture)
+        #expect(stored.count == 1 && stored[0].scoringSets.map(\.input.weightKg) == [70])
     }
 }

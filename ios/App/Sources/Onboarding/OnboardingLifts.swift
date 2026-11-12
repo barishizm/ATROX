@@ -38,28 +38,31 @@ struct LiftResult: Equatable, Identifiable, Sendable {
     var id: BasicLift { lift }
 }
 
-/// Temporary home of the onboarding sets until workouts exist.
-/// TODO(P032): save these as one Workout with source = onboarding and delete this store.
-protocol OnboardingSetStore: Sendable {
-    func load(userId: UUID) -> [LiftSet]
-    func save(_ sets: [LiftSet], userId: UUID)
-}
-
-/// `UserDefaults` is documented as thread-safe, hence `@unchecked`.
-struct UserDefaultsOnboardingSetStore: OnboardingSetStore, @unchecked Sendable {
-    let defaults: UserDefaults
-
-    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
-
-    private func key(_ userId: UUID) -> String { "onboarding.sets.\(userId.uuidString)" }
-
-    func load(userId: UUID) -> [LiftSet] {
-        guard let data = defaults.data(forKey: key(userId)) else { return [] }
-        return (try? JSONDecoder().decode([LiftSet].self, from: data)) ?? []
+/// Turns the sets reported in onboarding into the single finished workout (source = onboarding) kept in the history.
+enum OnboardingWorkout {
+    /// Catalog exercise behind each basic lift. Dumbbell sets use the one-dumbbell weight (`LiftSet` convention).
+    static func catalogId(lift: BasicLift, implement: LiftImplement) -> String {
+        switch (lift, implement) {
+        case (.benchPress, .barbell): "barbell-bench-press-medium-grip"
+        case (.benchPress, .dumbbell): "dumbbell-bench-press"
+        case (.squat, .barbell): "barbell-squat"
+        case (.squat, .dumbbell): "dumbbell-squat"
+        case (.deadlift, .barbell): "barbell-deadlift"
+        case (.deadlift, .dumbbell): "stiff-legged-dumbbell-deadlift"
+        case (.overheadPress, .barbell): "barbell-shoulder-press"
+        case (.overheadPress, .dumbbell): "dumbbell-shoulder-press"
+        }
     }
 
-    func save(_ sets: [LiftSet], userId: UUID) {
-        guard let data = try? JSONEncoder().encode(sets) else { return }
-        defaults.set(data, forKey: key(userId))
+    /// `nil` when there is nothing to store (every card skipped).
+    static func draft(from sets: [LiftSet], at date: Date) -> WorkoutDraft? {
+        guard !sets.isEmpty else { return nil }
+        let exercises = sets.map { set in
+            WorkoutExerciseDraft(
+                ref: .catalog(catalogId(lift: set.lift, implement: set.implement)),
+                sets: [SetInput(weightKg: set.weightKg, reps: set.reps, setType: .working, isCompleted: true)]
+            )
+        }
+        return WorkoutDraft(startedAt: date, endedAt: date, source: .onboarding, exercises: exercises)
     }
 }

@@ -5,6 +5,9 @@ import Foundation
 public enum DataError: Error, Equatable, Sendable {
     case notFound
     case invalidValue(String)
+    /// A second workout cannot start while one is still active (P032 invariant).
+    case activeWorkoutExists
+    case alreadyFinished
 }
 
 public struct ProfileInput: Sendable, Equatable {

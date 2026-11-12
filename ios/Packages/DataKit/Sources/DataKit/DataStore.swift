@@ -8,7 +8,7 @@ public enum DataStore {
         case appGroupUnavailable(String)
     }
 
-    public static let schema = Schema(versionedSchema: SchemaV3.self)
+    public static let schema = Schema(versionedSchema: SchemaV4.self)
 
     /// In-memory container for tests and SwiftUI previews.
     public static func inMemory() throws -> ModelContainer {

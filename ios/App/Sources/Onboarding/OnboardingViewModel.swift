@@ -25,7 +25,7 @@ final class OnboardingViewModel {
     private let consents: ConsentService
     private let engine: any ScoreEngine
     private let health: any HealthService
-    private let setStore: any OnboardingSetStore
+    private let workouts: any WorkoutRepository
     private let now: () -> Date
     private let calendar: Calendar
     private let localeCode: String
@@ -38,7 +38,7 @@ final class OnboardingViewModel {
         consents: ConsentService,
         engine: any ScoreEngine = PlaceholderScoreEngine(),
         health: any HealthService = UnavailableHealthService(),
-        setStore: any OnboardingSetStore = UserDefaultsOnboardingSetStore(),
+        workouts: any WorkoutRepository,
         deviceLocale: Locale = .current,
         localeCode: String = "en",
         now: @escaping () -> Date = { Date() },
@@ -51,7 +51,7 @@ final class OnboardingViewModel {
         self.consents = consents
         self.engine = engine
         self.health = health
-        self.setStore = setStore
+        self.workouts = workouts
         self.localeCode = localeCode
         self.now = now
         self.calendar = calendar
@@ -121,7 +121,7 @@ final class OnboardingViewModel {
             // Plain questions: the next step is the next case (the enum order is persisted, so it is stable).
             if let next = OnboardingStep(rawValue: draft.step.rawValue + 1) { go(to: next) }
         case .limitations: await save()
-        case .lifts: saveLifts()
+        case .lifts: await saveLifts()
         case .terms, .contribution, .result: break
         }
     }
@@ -342,10 +342,11 @@ final class OnboardingViewModel {
         }
     }
 
-    private func saveLifts() {
-        // Becomes one Workout (source = onboarding) in P032; see `OnboardingSetStore`.
-        setStore.save(reportedSets, userId: userId)
-        go(to: .result)
+    /// Stores the reported sets as one finished workout (replacing an earlier one if the user came back).
+    private func saveLifts() async {
+        let draft = OnboardingWorkout.draft(from: reportedSets, at: now())
+        await run { [workouts, userId] in try await workouts.replaceOnboardingWorkout(draft, userId: userId) }
+        if !saveFailed { go(to: .result) }
     }
 
     /// Onboarding is over: the resume draft is no longer needed.
