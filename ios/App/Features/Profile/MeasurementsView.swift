@@ -11,6 +11,7 @@ struct MeasurementsView: View {
 
     var body: some View {
         List {
+            if model.isHealthAvailable { healthSection }
             if model.trendPoints.isEmpty {
                 Section {
                     EmptyState(
@@ -48,6 +49,33 @@ struct MeasurementsView: View {
         }
         .sheet(isPresented: $showingAdd) { AddMeasurementSheet(model: model) }
         .accessibilityIdentifier("measurements-screen")
+    }
+
+    /// Apple Health (P023): importing is an explicit button; the permission sheet appears on its first press.
+    private var healthSection: some View {
+        Section {
+            Button {
+                Task { await model.syncWithHealth() }
+            } label: {
+                Label("measurements.health.sync", systemImage: "heart.text.square")
+            }
+            .disabled(model.isSyncingHealth)
+            .accessibilityIdentifier("measurements-health-sync")
+        } footer: {
+            if let message = healthMessage {
+                Text(message).accessibilityIdentifier("measurements-health-result")
+            }
+        }
+        .listRowBackground(DSColor.surface)
+    }
+
+    private var healthMessage: LocalizedStringKey? {
+        switch model.healthSync {
+        case .imported(let count) where count > 0: "measurements.health.imported \(count)"
+        case .imported: "measurements.health.none"
+        case .failed: "measurements.health.failed"
+        case nil: nil
+        }
     }
 
     private func changeRow(_ kilograms: Double) -> some View {

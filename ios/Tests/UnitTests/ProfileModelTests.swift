@@ -17,7 +17,7 @@ struct ProfileModelTests {
 
     private static let now = Date(timeIntervalSince1970: 1_800_000_000)
 
-    private static func harness(profile: Bool = true) async throws -> Harness {
+    static func makeHarness(profile: Bool = true, health: any HealthService = UnavailableHealthService()) async throws -> Harness {
         let container = try DataStore.inMemory()
         let defaults = UserDefaults(suiteName: "ProfileModelTests-\(UUID())")!
         let appearance = AppearanceSettings(defaults: defaults)
@@ -34,13 +34,13 @@ struct ProfileModelTests {
         let model = ProfileModel(
             userId: userId, email: "ada@example.com", profiles: profiles, measurements: measurements,
             settings: SwiftDataSettingsRepository(modelContainer: container), consents: consentService,
-            appearance: appearance, now: { now }, calendar: Calendar(identifier: .gregorian)
+            appearance: appearance, health: health, now: { now }, calendar: Calendar(identifier: .gregorian)
         )
         return Harness(model: model, appearance: appearance, consents: consentService, measurements: measurements, userId: userId)
     }
 
     @Test func loadReadsProfileMeasurementsAndSettings() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         try await env.measurements.add(MeasurementInput(date: Self.now, weightKg: 70), userId: env.model.userId)
         await env.model.load()
         #expect(env.model.loadState == .loaded)
@@ -51,7 +51,7 @@ struct ProfileModelTests {
     }
 
     @Test func loadWithoutProfileStillLoads() async throws {
-        let env = try await Self.harness(profile: false)
+        let env = try await Self.makeHarness(profile: false)
         await env.model.load()
         #expect(env.model.loadState == .loaded)
         #expect(env.model.profile == nil)
@@ -59,7 +59,7 @@ struct ProfileModelTests {
     }
 
     @Test func savingProfileKeepsEditsAndPending() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         var input = try #require(env.model.profile?.input)
         input.firstName = "Augusta"
@@ -71,7 +71,7 @@ struct ProfileModelTests {
     }
 
     @Test func invalidProfileIsNotSavedAndFlagsFailure() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         var input = try #require(env.model.profile?.input)
         input.heightCm = 20
@@ -81,7 +81,7 @@ struct ProfileModelTests {
     }
 
     @Test func measurementsAreAddedDeletedAndRangeChecked() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         #expect(await env.model.addMeasurement(weightKg: 71, date: Self.now.addingTimeInterval(-86_400)))
         #expect(await env.model.addMeasurement(weightKg: 69.5, date: Self.now))
@@ -95,7 +95,7 @@ struct ProfileModelTests {
     }
 
     @Test func unitSwitchUpdatesProfileAndSettingsTogether() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         #expect(env.model.weightUnit == .kilograms)
         await env.model.setUnitSystem(.imperial)
@@ -110,7 +110,7 @@ struct ProfileModelTests {
     }
 
     @Test func themeIsAppliedAndStored() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         #expect(env.appearance.theme == .dark)  // product default before anything is stored
         #expect(env.model.settings.theme == .dark)  // the stored row follows the device choice
@@ -121,7 +121,7 @@ struct ProfileModelTests {
     }
 
     @Test func contributionToggleKeepsTheAuditTrail() async throws {
-        let env = try await Self.harness()
+        let env = try await Self.makeHarness()
         await env.model.load()
         #expect(!env.model.isContributing)
         await env.model.setContribution(true)

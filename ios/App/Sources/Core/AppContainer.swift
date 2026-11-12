@@ -21,6 +21,8 @@ final class AppContainer {
     let passwordRecovery: PasswordRecoveryModel
     /// Local SwiftData store (app group container); nil only in tests that do not need persistence.
     let modelContainer: ModelContainer?
+    /// Apple Health (P023); `UnavailableHealthService` where Health does not exist.
+    let health: any HealthService
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -29,8 +31,10 @@ final class AppContainer {
         language: LanguageSettings = LanguageSettings(),
         appearance: AppearanceSettings = AppearanceSettings(),
         accountService: any AccountService = FakeAccountService(),
-        modelContainer: ModelContainer? = nil
+        modelContainer: ModelContainer? = nil,
+        health: any HealthService = UnavailableHealthService()
     ) {
+        self.health = health
         self.modelContainer = modelContainer
         self.featureFlags = featureFlags
         self.sessionService = sessionService
@@ -66,6 +70,7 @@ final class AppContainer {
             profiles: SwiftDataProfileRepository(modelContainer: modelContainer),
             measurements: SwiftDataMeasurementRepository(modelContainer: modelContainer),
             consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
+            health: health,
             localeCode: language.effectiveLocale().language.languageCode?.identifier ?? "en"
         )
     }
@@ -80,7 +85,8 @@ final class AppContainer {
             measurements: SwiftDataMeasurementRepository(modelContainer: modelContainer),
             settings: SwiftDataSettingsRepository(modelContainer: modelContainer),
             consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
-            appearance: appearance
+            appearance: appearance,
+            health: health
         )
     }
 
@@ -105,7 +111,7 @@ final class AppContainer {
             if onboarded, let store { seedUITestData(in: store, userId: user.id) }
             return AppContainer(
                 sessionService: AuthSessionService(auth: fake), authService: fake,
-                accountService: FakeAccountService(), modelContainer: store
+                accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth()
             )
         }
         #endif
@@ -121,11 +127,23 @@ final class AppContainer {
             configuration: config, apple: AppleIDTokenProvider(), google: GoogleIDTokenProvider()
         )
         return AppContainer(
-            sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store
+            sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store,
+            health: HealthKitService()
         )
     }
 
     #if DEBUG
+    /// `-uitest-fake-health`: a Health with sample data; otherwise Health is absent and its buttons stay hidden.
+    private static func uiTestHealth() -> any HealthService {
+        guard ProcessInfo.processInfo.arguments.contains("-uitest-fake-health") else { return UnavailableHealthService() }
+        let birth = Calendar.current.date(byAdding: .year, value: -31, to: Date()) ?? Date()
+        let weighIn = Date().addingTimeInterval(-86_400)
+        return FakeHealthService(
+            profile: HealthBodyProfile(heightCm: 182, weightKg: 84.5, birthDate: birth, sex: .male),
+            samples: [HealthWeightSample(date: weighIn, weightKg: 84.5, isFromThisApp: false)]
+        )
+    }
+
     /// A profile and two weigh-ins for UI tests (inserted directly: the repositories are async).
     private static func seedUITestData(in container: ModelContainer, userId: UUID) {
         let context = ModelContext(container)

@@ -12,6 +12,11 @@ final class OnboardingViewModel {
     private(set) var isBlocked = false
     private(set) var isSaving = false
     private(set) var saveFailed = false
+    /// Values read from Apple Health, waiting for the user's yes (P023). nil when nothing is pending.
+    private(set) var healthSuggestion: HealthBodyProfile?
+    /// The last Health lookup found nothing usable (denied, empty or unavailable); the screen says so quietly.
+    private(set) var healthFoundNothing = false
+    private(set) var isReadingHealth = false
 
     let userId: UUID
     private let store: any OnboardingDraftStore
@@ -19,6 +24,7 @@ final class OnboardingViewModel {
     private let measurements: any MeasurementRepository
     private let consents: ConsentService
     private let engine: any ScoreEngine
+    private let health: any HealthService
     private let setStore: any OnboardingSetStore
     private let now: () -> Date
     private let calendar: Calendar
@@ -31,6 +37,7 @@ final class OnboardingViewModel {
         measurements: any MeasurementRepository,
         consents: ConsentService,
         engine: any ScoreEngine = PlaceholderScoreEngine(),
+        health: any HealthService = UnavailableHealthService(),
         setStore: any OnboardingSetStore = UserDefaultsOnboardingSetStore(),
         deviceLocale: Locale = .current,
         localeCode: String = "en",
@@ -43,6 +50,7 @@ final class OnboardingViewModel {
         self.measurements = measurements
         self.consents = consents
         self.engine = engine
+        self.health = health
         self.setStore = setStore
         self.localeCode = localeCode
         self.now = now
@@ -199,6 +207,36 @@ final class OnboardingViewModel {
     func setHeight(cm: Double) { draft.heightCm = cm }
 
     func setWeight(kg: Double) { draft.weightKg = kg }
+
+    // MARK: Apple Health (P023)
+
+    var isHealthAvailable: Bool { health.isAvailable }
+
+    /// "Fill in from Apple Health": asks for permission (only now), reads what Health has and proposes it.
+    /// Nothing changes until `applyHealthSuggestion()`.
+    func requestHealthSuggestion() async {
+        guard health.isAvailable, !isReadingHealth else { return }
+        isReadingHealth = true
+        healthFoundNothing = false
+        defer { isReadingHealth = false }
+        _ = await health.requestAuthorization()
+        let suggestion = OnboardingHealthRules.sanitized(await health.bodyProfile(), now: now(), calendar: calendar)
+        healthSuggestion = suggestion.isEmpty ? nil : suggestion
+        healthFoundNothing = suggestion.isEmpty
+    }
+
+    /// The user said yes: copy the proposed values into the draft (birth date and sex are only touched when Health has them).
+    func applyHealthSuggestion() {
+        guard let suggestion = healthSuggestion else { return }
+        if let height = suggestion.heightCm { draft.heightCm = height }
+        if let weight = suggestion.weightKg { draft.weightKg = weight }
+        if let birthDate = suggestion.birthDate { draft.birthDate = birthDate }
+        if let sex = suggestion.sex { draft.sex = sex }
+        healthSuggestion = nil
+        persist()
+    }
+
+    func dismissHealthSuggestion() { healthSuggestion = nil }
 
     // MARK: Training profile (part 2)
 

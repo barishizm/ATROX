@@ -156,12 +156,57 @@ struct BodyStepView: View {
                 wheel("onboarding.body.height") { heightWheel }
                 wheel("onboarding.body.weight") { weightWheel }
             }
-            // Room for the Apple Health shortcut; wired up in P023.
-            SecondaryButton("onboarding.body.health", systemImage: "heart.text.square") {}
-                .disabled(true)
-                .accessibilityIdentifier("onboarding-health")
-            Text("onboarding.body.health.soon").font(DSFont.footnote).foregroundStyle(DSColor.textTertiary)
+            if model.isHealthAvailable { healthShortcut }
         }
+        .alert(
+            "onboarding.body.health.confirm.title",
+            isPresented: Binding(
+                get: { model.healthSuggestion != nil },
+                set: { if !$0 { model.dismissHealthSuggestion() } }
+            )
+        ) {
+            Button("onboarding.body.health.confirm.use") { model.applyHealthSuggestion() }
+            Button("onboarding.body.health.confirm.cancel", role: .cancel) {}
+        } message: {
+            Text(verbatim: healthSummary)
+        }
+    }
+
+    /// Apple Health shortcut (P023): permission is asked only when this is pressed; the user confirms what is found.
+    @ViewBuilder private var healthShortcut: some View {
+        SecondaryButton("onboarding.body.health", systemImage: "heart.text.square") {
+            Task { await model.requestHealthSuggestion() }
+        }
+        .disabled(model.isReadingHealth)
+        .accessibilityIdentifier("onboarding-health")
+        if model.healthFoundNothing {
+            Text("onboarding.body.health.empty").font(DSFont.footnote).foregroundStyle(DSColor.textTertiary)
+                .accessibilityIdentifier("onboarding-health-empty")
+        }
+    }
+
+    private var healthSummary: String {
+        guard let found = model.healthSuggestion else { return "" }
+        var lines: [String] = []
+        if let height = found.heightCm {
+            let unit: LengthUnit = isMetric ? .centimeters : .feetInches
+            lines.append(String(localized: "onboarding.body.height") + ": "
+                + LengthFormat.string(centimeters: height, unit: unit, locale: .current))
+        }
+        if let weight = found.weightKg {
+            let unit: WeightUnit = isMetric ? .kilograms : .pounds
+            lines.append(String(localized: "onboarding.body.weight") + ": "
+                + WeightFormat.string(kilograms: weight, unit: unit, locale: .current))
+        }
+        if let birthDate = found.birthDate {
+            lines.append(String(localized: "onboarding.body.health.birth") + ": "
+                + birthDate.formatted(.dateTime.day().month().year()))
+        }
+        if let sex = found.sex {
+            lines.append(String(localized: "onboarding.body.health.sex") + ": "
+                + String(localized: sex == .male ? "onboarding.sex.male" : "onboarding.sex.female"))
+        }
+        return lines.joined(separator: "\n")
     }
 
     private func wheel<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {

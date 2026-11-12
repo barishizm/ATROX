@@ -18,6 +18,9 @@ final class ProfileModel {
     private(set) var consentHistory: [ConsentSnapshot] = []
     /// A save or delete went wrong; the screen that triggered it shows a message.
     private(set) var actionFailed = false
+    /// Outcome of the last "sync with Apple Health" press; nil until the user presses it.
+    private(set) var healthSync: HealthSyncOutcome?
+    private(set) var isSyncingHealth = false
 
     let userId: UUID
     let email: String?
@@ -26,12 +29,14 @@ final class ProfileModel {
     private let settingsRepository: any SettingsRepository
     private let consents: ConsentService
     private let appearance: AppearanceSettings
+    private let health: any HealthService
     private let now: () -> Date
     private let calendar: Calendar
 
     init(
         userId: UUID, email: String?, profiles: any ProfileRepository, measurements: any MeasurementRepository,
         settings: any SettingsRepository, consents: ConsentService, appearance: AppearanceSettings,
+        health: any HealthService = UnavailableHealthService(),
         now: @escaping () -> Date = { Date() }, calendar: Calendar = .current
     ) {
         self.userId = userId
@@ -41,6 +46,7 @@ final class ProfileModel {
         self.settingsRepository = settings
         self.consents = consents
         self.appearance = appearance
+        self.health = health
         self.now = now
         self.calendar = calendar
     }
@@ -88,6 +94,7 @@ final class ProfileModel {
     var latestWeightKg: Double? { measurements.first?.input.weightKg }
     var trendPoints: [WeightPoint] { MeasurementTrend.points(from: measurements) }
     var weightChangeKg: Double? { MeasurementTrend.change(of: trendPoints) }
+    var isHealthAvailable: Bool { health.isAvailable }
     var isContributing: Bool { contribution.isGranted }
 
     // MARK: Profile
@@ -114,10 +121,35 @@ final class ProfileModel {
     @discardableResult
     func addMeasurement(weightKg: Double, date: Date) async -> Bool {
         guard OnboardingRules.isValidWeight(kg: weightKg) else { return false }
-        return await perform { [self] in
+        let didSave = await perform { [self] in
             try await measurementRepository.add(MeasurementInput(date: date, weightKg: weightKg), userId: userId)
             measurements = try await measurementRepository.all(userId: userId)
         }
+        // Mirror into Health when the user allowed it; a failure there never blocks the local save.
+        if didSave, await health.canWriteWeight() { await health.saveWeight(kilograms: weightKg, date: date) }
+        return didSave
+    }
+
+    /// "Sync with Apple Health": asks for permission if needed, then imports readings newer than the local ones.
+    /// Denied or unavailable Health simply imports nothing.
+    func syncWithHealth() async {
+        guard health.isAvailable, !isSyncingHealth else { return }
+        isSyncingHealth = true
+        healthSync = nil
+        defer { isSyncingHealth = false }
+        _ = await health.requestAuthorization()
+        let start = HealthImport.startDate(existing: measurements, now: now(), calendar: calendar)
+        let samples = await health.weightSamples(since: start)
+        let fresh = HealthImport.newMeasurements(from: samples, existing: measurements, calendar: calendar)
+        guard !fresh.isEmpty else {
+            healthSync = .imported(0)
+            return
+        }
+        let didSave = await perform { [self] in
+            for input in fresh { try await measurementRepository.add(input, userId: userId) }
+            measurements = try await measurementRepository.all(userId: userId)
+        }
+        healthSync = didSave ? .imported(fresh.count) : .failed
     }
 
     func deleteMeasurement(id: UUID) async {
@@ -166,6 +198,11 @@ final class ProfileModel {
             return false
         }
     }
+}
+
+enum HealthSyncOutcome: Equatable {
+    case imported(Int)
+    case failed
 }
 
 private extension SettingsInput {

@@ -29,7 +29,8 @@ struct OnboardingViewModelTests {
     }
 
     static func harness(
-        userId: UUID = UUID(), defaults: UserDefaults? = nil, locale: Locale = Locale(identifier: "tr_TR")
+        userId: UUID = UUID(), defaults: UserDefaults? = nil, locale: Locale = Locale(identifier: "tr_TR"),
+        health: any HealthService = UnavailableHealthService()
     ) throws -> Harness {
         let defaults = defaults ?? UserDefaults(suiteName: "onboarding-tests-\(UUID().uuidString)")!
         let container = try DataStore.inMemory()
@@ -39,7 +40,7 @@ struct OnboardingViewModelTests {
         let consentRepository = SwiftDataConsentRepository(modelContainer: container)
         let model = OnboardingViewModel(
             userId: userId, store: store, profiles: profiles, measurements: measurements,
-            consents: ConsentService(repository: consentRepository),
+            consents: ConsentService(repository: consentRepository), health: health,
             setStore: UserDefaultsOnboardingSetStore(defaults: defaults),
             deviceLocale: locale, localeCode: "tr", now: { today }, calendar: calendar
         )
