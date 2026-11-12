@@ -95,8 +95,8 @@ jobs:
         run: |
           set -euo pipefail
           xcodebuild build-for-testing \
-            -project ios/GymAnalyzer.xcodeproj \
-            -scheme GymAnalyzer \
+            -project ios/ATROX.xcodeproj \
+            -scheme ATROX \
             -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
             -derivedDataPath "$RUNNER_TEMP/DerivedData" \
             -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages" \
@@ -106,11 +106,11 @@ jobs:
         run: |
           set -euo pipefail
           xcodebuild test-without-building \
-            -project ios/GymAnalyzer.xcodeproj \
-            -scheme GymAnalyzer \
+            -project ios/ATROX.xcodeproj \
+            -scheme ATROX \
             -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
             -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            -only-testing:GymAnalyzerTests \
+            -only-testing:ATROXTests \
             -parallel-testing-enabled NO \
             -resultBundlePath "$RUNNER_TEMP/Unit.xcresult"
 
@@ -119,11 +119,11 @@ jobs:
         run: |
           set -euo pipefail
           xcodebuild test-without-building \
-            -project ios/GymAnalyzer.xcodeproj \
-            -scheme GymAnalyzer \
+            -project ios/ATROX.xcodeproj \
+            -scheme ATROX \
             -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
             -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            -only-testing:GymAnalyzerUITests \
+            -only-testing:ATROXUITests \
             -parallel-testing-enabled NO \
             -retry-tests-on-failure -test-iterations 2 \
             -resultBundlePath "$RUNNER_TEMP/UI.xcresult"

@@ -7,13 +7,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "GymAnalyzer reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device."
+            "value": "ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "GymAnalyzer, profilini doldurmak ve tartı ölçümlerini almak için Apple Sağlık'tan boy, kilo, doğum tarihi ve cinsiyet bilgini okur. Bu veriler cihazından çıkmaz."
+            "value": "ATROX, profilini doldurmak ve tartı ölçümlerini almak için Apple Sağlık'tan boy, kilo, doğum tarihi ve cinsiyet bilgini okur. Bu veriler cihazından çıkmaz."
           }
         }
       }
@@ -23,13 +23,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "GymAnalyzer saves your weigh-ins and workouts to Apple Health."
+            "value": "ATROX saves your weigh-ins and workouts to Apple Health."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "GymAnalyzer, tartı ölçümlerini ve antrenmanlarını Apple Sağlık'a kaydeder."
+            "value": "ATROX, tartı ölçümlerini ve antrenmanlarını Apple Sağlık'a kaydeder."
           }
         }
       }

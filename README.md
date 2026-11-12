@@ -1,4 +1,4 @@
-# GymAnalyzer (çalışma adı)
+# ATROX
 
 iOS için yapay zekâ destekli antrenman takip ve kuvvet analiz uygulaması.
 

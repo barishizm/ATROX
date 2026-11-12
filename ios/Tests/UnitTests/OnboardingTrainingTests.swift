@@ -2,7 +2,7 @@ import DataKit
 import Foundation
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 /// Onboarding part 2 — training profile (P019). Shares the harness of the part 1 tests.
 @MainActor

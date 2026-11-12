@@ -18,9 +18,9 @@ struct NonceAndConfigTests {
 
     @Test func configFromInfoDictionary() {
         let good: [String: Any] = ["SupabaseURL": "http://127.0.0.1:54321", "SupabaseAnonKey": "key"]
-        let config = SupabaseConfiguration(infoDictionary: good, urlScheme: "vesania")
+        let config = SupabaseConfiguration(infoDictionary: good, urlScheme: "atrox")
         #expect(config?.url.absoluteString == "http://127.0.0.1:54321")
-        #expect(config?.redirectURL?.absoluteString == "vesania://auth-callback")
+        #expect(config?.redirectURL?.absoluteString == "atrox://auth-callback")
     }
 
     @Test func placeholderOrMissingConfigIsRejected() {
