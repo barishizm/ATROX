@@ -32,6 +32,9 @@ struct MainTabView: View {
                             case .templates: TemplateListView()
                             case .routine(let id): RoutineEditorView(routineId: id)
                             case .routineDay(let routineId, let dayId): RoutineDayView(routineId: routineId, dayId: dayId)
+                            case .history: HistoryView()
+                            case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
+                            case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
                             case .activeWorkout: FeaturePlaceholderView(title: "shell.tabbar.workout", systemImage: "dumbbell")
                             }
                         }
@@ -65,7 +68,9 @@ struct MainTabView: View {
         .environment(workoutPresenter)
         .task { await workoutPresenter.prepare(container: container) }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
-            if let model = workoutPresenter.model {
+            if let summary = workoutPresenter.summary {
+                WorkoutSummaryView(model: summary) { workoutPresenter.summaryDone() }
+            } else if let model = workoutPresenter.model {
                 ActiveWorkoutView(model: model, presenter: workoutPresenter)
                     .environment(container)
             }

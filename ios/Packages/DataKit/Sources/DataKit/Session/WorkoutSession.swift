@@ -149,6 +149,37 @@ public final class WorkoutSession {
         phase = .active
     }
 
+    /// Starts a new workout that repeats a finished one ("Repeat", P042): the same name, routine day and exercises, with
+    /// the old weights, reps and set types but nothing completed. Exercises the user no longer has sets for stay.
+    public func startRepeating(_ source: WorkoutSnapshot) async throws {
+        try ensureCanStart()
+        var drafts: [WorkoutExerciseDraft] = []
+        var lastTimes: [[SetInput]] = []
+        for exercise in source.exercises {
+            lastTimes.append(try await lastTime(exercise.ref))
+            let sets = exercise.sets.map {
+                SetInput(weightKg: $0.input.weightKg, reps: $0.input.reps, rir: $0.input.rir, setType: $0.input.setType)
+            }
+            drafts.append(
+                WorkoutExerciseDraft(
+                    ref: exercise.ref, supersetGroup: exercise.supersetGroup,
+                    sets: sets.isEmpty ? WorkoutPrefill.sets(target: nil, last: []) : sets
+                )
+            )
+        }
+        let started = try await workouts.start(
+            WorkoutDraft(
+                name: source.name, startedAt: clock(), routineId: source.routineId, routineDayId: source.routineDayId,
+                source: source.routineDayId == nil ? .manual : .routine, exercises: drafts
+            ),
+            userId: userId
+        )
+        workout = started
+        previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), lastTimes))
+        programRest = [:]
+        phase = .active
+    }
+
     private func ensureCanStart() throws {
         if phase == .active { throw WorkoutSessionError.alreadyActive }
     }

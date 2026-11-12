@@ -64,6 +64,8 @@ final class ActiveWorkoutModel {
     /// Bumped on every celebrated record; the view plays its animation and haptic on change.
     var recordCelebrations = 0
     @ObservationIgnored var recordBadges: [UUID: RecordBadge] = [:]
+    /// Every record hit of this workout, for the summary screen (unconfirmed ones are dropped there).
+    @ObservationIgnored var recordHits: [PersonalRecordHit] = []
     /// Localization key of the last failed action, shown once.
     var errorKey: String?
 

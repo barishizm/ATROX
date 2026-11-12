@@ -29,6 +29,8 @@ final class AppContainer {
     let exerciseImageBaseURL: URL?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
+    /// Version counter and pending undo of the workout history (P042).
+    let historyEvents = HistoryEvents()
     /// One rest timer for the app; it outlives the workout screen (minimizing keeps it running).
     let restTimer: RestTimerController = {
         let timer = RestTimerController(notifications: UserNotificationService())
@@ -248,6 +250,87 @@ final class AppContainer {
         liveActivity = coordinator
         Task { await coordinator.start() }
         return model
+    }
+
+    /// The summary screen of a just-finished workout (P041): numbers from DataKit plus the previous comparable
+    /// workout and the muscles of each exercise. nil without a local store.
+    func makeSummaryModel(
+        workout: WorkoutSnapshot, records: [PersonalRecordHit], names: [ExerciseRef: String], unit: WeightUnit,
+        decimalSeparator: String
+    ) async -> WorkoutSummaryModel? {
+        guard let modelContainer else { return nil }
+        let repository = SwiftDataWorkoutRepository(modelContainer: modelContainer)
+        let earlier = (try? await repository.finishedWorkouts(userId: workout.userId, before: workout.startedAt, limit: 40)) ?? []
+        let summary = WorkoutSummary(
+            workout: workout, previous: WorkoutSummary.previousComparable(to: workout, among: earlier),
+            muscles: Self.muscles(of: workout, in: modelContainer), records: records
+        )
+        return WorkoutSummaryModel(
+            workout: workout, summary: summary, unit: unit, names: names, repository: repository,
+            decimalSeparator: decimalSeparator
+        )
+    }
+
+    /// Muscles of the workout's catalog and custom exercises.
+    private static func muscles(of workout: WorkoutSnapshot, in container: ModelContainer) -> [ExerciseRef: ExerciseMuscles] {
+        let context = ModelContext(container)
+        var result: [ExerciseRef: ExerciseMuscles] = [:]
+        for exercise in workout.exercises {
+            switch exercise.ref {
+            case .catalog(let id):
+                var descriptor = FetchDescriptor<Exercise>(predicate: #Predicate { $0.id == id })
+                descriptor.fetchLimit = 1
+                if let row = (try? context.fetch(descriptor))?.first {
+                    result[exercise.ref] = ExerciseMuscles(primary: row.primaryMuscles, secondary: row.secondaryMuscles)
+                }
+            case .custom(let id):
+                var descriptor = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.id == id })
+                descriptor.fetchLimit = 1
+                if let row = (try? context.fetch(descriptor))?.first {
+                    result[exercise.ref] = ExerciseMuscles(primary: row.primaryMuscles, secondary: row.secondaryMuscles)
+                }
+            }
+        }
+        return result
+    }
+
+    /// Everything the history screens need (P042): repositories, the editor that keeps records true, the display unit
+    /// and the exercise names; nil without a user or local store.
+    func makeHistoryContext() async -> HistoryContext? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id)
+        let locale = language.effectiveLocale()
+        let languageCode = locale.language.languageCode?.identifier == "tr" ? "tr" : "en"
+        let workouts = SwiftDataWorkoutRepository(modelContainer: modelContainer)
+        let records = SwiftDataPersonalRecordService(modelContainer: modelContainer)
+        let userId = user.id
+        return HistoryContext(
+            userId: userId, workouts: workouts,
+            editor: WorkoutHistoryEditor(
+                userId: userId, workouts: workouts, records: records,
+                health: WorkoutHealthRecorder(workouts: workouts, health: health)
+            ),
+            routines: SwiftDataRoutineRepository(modelContainer: modelContainer), records: records,
+            unit: profile?.input.unitSystem == .imperial ? .pounds : .kilograms, locale: locale, languageCode: languageCode
+        ) {
+            let context = ModelContext(modelContainer)
+            var names: [String: String] = [:]
+            for row in (try? context.fetch(FetchDescriptor<Exercise>())) ?? [] {
+                let item = ExerciseListItem(row)
+                names[item.id] = item.name(languageCode: languageCode)
+            }
+            let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
+            for row in (try? context.fetch(own)) ?? [] {
+                let item = ExerciseListItem(row)
+                names[item.id] = item.name(languageCode: languageCode)
+            }
+            return names
+        }
+    }
+
+    /// Keeps Apple Health and the local workouts in step (P041); nil without a local store.
+    func workoutHealthRecorder() -> WorkoutHealthRecorder? {
+        modelContainer.map { WorkoutHealthRecorder(workouts: SwiftDataWorkoutRepository(modelContainer: $0), health: health) }
     }
 
     private func planStore(for userId: UUID) -> RoutinePlanStore {

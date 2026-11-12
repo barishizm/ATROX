@@ -24,6 +24,11 @@ struct WorkoutRootView: View {
             }
             .buttonStyle(.borderedProminent)
             .accessibilityIdentifier("open-routines")
+            NavigationLink(value: WorkoutRoute.history) {
+                Label("history.title", systemImage: "calendar")
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("open-history")
             NavigationLink(value: WorkoutRoute.exerciseLibrary) {
                 Label("library.exercises.title", systemImage: "books.vertical")
             }

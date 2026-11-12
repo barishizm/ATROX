@@ -17,7 +17,8 @@ struct ActiveWorkoutView: View {
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
     @Environment(\.scenePhase) private var scenePhase
-    @State private var confirmsFinish = false
+    @Environment(AppContainer.self) private var container
+    @State private var finishPrompt: FinishPrompt?
     @State private var confirmsCancel = false
     @State private var adding = false
     @State private var replacing: ActiveWorkoutModel.ExerciseCard?
@@ -65,7 +66,12 @@ struct ActiveWorkoutView: View {
                 }
             }
             .navigationDestination(for: WorkoutRoute.self) { route in
-                if case .exerciseDetail(let id) = route { ExerciseDetailView(exerciseID: id) }
+                switch route {
+                case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
+                case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
+                case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
+                default: EmptyView()
+                }
             }
         }
         .task { await model.load() }
@@ -78,14 +84,13 @@ struct ActiveWorkoutView: View {
         .onAppear { applyKeepAwake() }
         .onChange(of: keepAwake) { applyKeepAwake() }
         .onDisappear { WorkoutPreferences.setIdleTimerDisabled(false) }
-        .confirmationDialog("workout.finish.confirm", isPresented: $confirmsFinish, titleVisibility: .visible) {
-            Button("workout.finish.action") {
-                Task {
-                    if await model.finish() != nil { presenter.ended() }
-                }
-            }
-        } message: {
-            Text("workout.finish.message \(model.completedSetCount) \(model.totalSetCount)")
+        .confirmationDialog(
+            Self.finishTitle(finishPrompt), isPresented: Binding(get: { finishPrompt != nil }, set: { if !$0 { finishPrompt = nil } }),
+            titleVisibility: .visible, presenting: finishPrompt
+        ) { prompt in
+            finishButtons(prompt)
+        } message: { prompt in
+            Self.finishMessage(prompt, completed: model.completedSetCount, total: model.totalSetCount)
         }
         .confirmationDialog("workout.cancel.confirm", isPresented: $confirmsCancel, titleVisibility: .visible) {
             Button("workout.cancel.action", role: .destructive) {
@@ -137,6 +142,59 @@ struct ActiveWorkoutView: View {
         .accessibilityIdentifier("active-workout-root")
     }
 
+    // MARK: Finishing
+
+    private func finish() {
+        Task {
+            guard let result = await model.finish() else { return }
+            await presenter.finished(result, model: model, container: container)
+        }
+    }
+
+    @ViewBuilder
+    private func finishButtons(_ prompt: FinishPrompt) -> some View {
+        switch prompt {
+        case .confirm:
+            Button("workout.finish.action") { finish() }
+        case .openSets:
+            Button("workout.finish.deleteAndFinish") { finish() }
+            Button("workout.finish.goBack", role: .cancel) {}
+        case .short:
+            Button("workout.finish.save") { finish() }
+            Button("workout.finish.discard", role: .destructive) { discard() }
+            Button("workout.finish.goBack", role: .cancel) {}
+        case .empty:
+            Button("workout.finish.discard", role: .destructive) { discard() }
+            Button("workout.finish.goBack", role: .cancel) {}
+        }
+    }
+
+    private func discard() {
+        Task {
+            await model.cancel()
+            presenter.ended()
+        }
+    }
+
+    private static func finishTitle(_ prompt: FinishPrompt?) -> LocalizedStringKey {
+        switch prompt {
+        case .openSets(let count): "workout.finish.openSets.title \(count)"
+        case .short: "workout.finish.short.title"
+        case .empty: "workout.finish.empty.title"
+        case .confirm, nil: "workout.finish.confirm"
+        }
+    }
+
+    private static func finishMessage(_ prompt: FinishPrompt, completed: Int, total: Int) -> Text {
+        switch prompt {
+        case .confirm: Text("workout.finish.message \(completed) \(total)")
+        case .openSets: Text("workout.finish.openSets.message")
+        case .short(let open):
+            if open > 0 { Text("workout.finish.short.messageOpen \(open)") } else { Text("workout.finish.short.message") }
+        case .empty: Text("workout.finish.empty.message")
+        }
+    }
+
     // MARK: Toolbar
 
     @ToolbarContentBuilder
@@ -168,7 +226,7 @@ struct ActiveWorkoutView: View {
                 .accessibilityIdentifier("workout-more")
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Button("workout.finish.action") { confirmsFinish = true }
+            Button("workout.finish.action") { finishPrompt = model.finishPrompt() }
                 .fontWeight(.semibold)
                 .accessibilityIdentifier("workout-finish")
         }

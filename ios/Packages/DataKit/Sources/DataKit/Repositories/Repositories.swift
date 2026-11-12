@@ -102,6 +102,17 @@ public protocol WorkoutRepository: Sendable {
     @discardableResult
     func finish(id: UUID, at date: Date) async throws -> WorkoutSnapshot
     func updateDetails(id: UUID, name: String?, notes: String?) async throws
+    /// 1…5, or `nil` to clear.
+    func setRating(id: UUID, rating: Int?) async throws
+    /// Remembers (or, with `nil`, forgets) the Apple Health workout written for this one.
+    func setHealthKitUUID(id: UUID, uuid: UUID?) async throws
+    /// Puts a soft-deleted workout back with the exercises and sets that were deleted together with it (the undo of
+    /// `delete`). Does nothing when the workout is not deleted.
+    func restore(id: UUID) async throws
+    /// Finished workouts (not deleted, not active) that started before `before` (`nil` = from the newest), newest first.
+    func finishedWorkouts(userId: UUID, before: Date?, limit: Int) async throws -> [WorkoutSnapshot]
+    /// Every finished workout's start date, for the calendar (newest first).
+    func finishedDates(userId: UUID) async throws -> [Date]
     /// Soft delete with the exercises and sets.
     func delete(id: UUID) async throws
 

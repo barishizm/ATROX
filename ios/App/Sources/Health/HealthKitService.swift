@@ -3,7 +3,7 @@ import Foundation
 import HealthKit
 
 /// Real Apple Health access. Reads: height, body mass, date of birth, biological sex.
-/// Writes: body mass and workouts (workout saving itself arrives with P041).
+/// Writes: body mass and workouts (strength training, P041).
 final class HealthKitService: HealthService, @unchecked Sendable {
     // HKHealthStore is thread-safe; the type itself is not marked Sendable.
     private let store = HKHealthStore()
@@ -78,6 +78,39 @@ final class HealthKitService: HealthService, @unchecked Sendable {
             return true
         } catch {
             Log.app.error("Health weight save failed: \(error)")
+            return false
+        }
+    }
+
+    func saveWorkout(id: UUID, start: Date, end: Date) async -> UUID? {
+        guard isAvailable, store.authorizationStatus(for: HKObjectType.workoutType()) == .sharingAuthorized else { return nil }
+        let configuration = HKWorkoutConfiguration()
+        configuration.activityType = .traditionalStrengthTraining
+        configuration.locationType = .indoor
+        let builder = HKWorkoutBuilder(healthStore: store, configuration: configuration, device: .local())
+        do {
+            try await builder.beginCollection(at: start)
+            // The sync identifier makes Health treat a second write of the same workout as the same record.
+            try await builder.addMetadata([HKMetadataKeySyncIdentifier: id.uuidString, HKMetadataKeySyncVersion: 1])
+            try await builder.endCollection(at: max(end, start))
+            return try await builder.finishWorkout()?.uuid
+        } catch {
+            Log.app.error("Health workout save failed: \(error)")
+            return nil
+        }
+    }
+
+    func deleteWorkout(uuid: UUID) async -> Bool {
+        guard isAvailable else { return false }
+        let descriptor = HKSampleQueryDescriptor(
+            predicates: [.workout(HKQuery.predicateForObject(with: uuid))], sortDescriptors: [], limit: 1
+        )
+        do {
+            guard let workout = try await descriptor.result(for: store).first else { return true }
+            try await store.delete(workout)
+            return true
+        } catch {
+            Log.app.error("Health workout delete failed: \(error)")
             return false
         }
     }
