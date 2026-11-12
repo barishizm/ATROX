@@ -23,6 +23,8 @@ final class AppContainer {
     let modelContainer: ModelContainer?
     /// Apple Health (P023); `UnavailableHealthService` where Health does not exist.
     let health: any HealthService
+    /// Exercise catalog import and sync (P028); nil when there is no local store.
+    let catalog: CatalogService?
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -32,9 +34,11 @@ final class AppContainer {
         appearance: AppearanceSettings = AppearanceSettings(),
         accountService: any AccountService = FakeAccountService(),
         modelContainer: ModelContainer? = nil,
-        health: any HealthService = UnavailableHealthService()
+        health: any HealthService = UnavailableHealthService(),
+        catalog: CatalogService? = nil
     ) {
         self.health = health
+        self.catalog = catalog
         self.modelContainer = modelContainer
         self.featureFlags = featureFlags
         self.sessionService = sessionService
@@ -50,6 +54,25 @@ final class AppContainer {
             onSignedIn: { user in root.didSignIn(onboardingComplete: user.onboardingComplete) }
         )
         self.passwordRecovery = PasswordRecoveryModel(service: authService)
+    }
+
+    /// Installs the bundled catalog on first launch (or after an app update), then pulls newer exercises from the
+    /// server. Runs off the main actor; an offline sync failure is not an error for the user.
+    func prepareCatalog() async {
+        guard let catalog else { return }
+        do {
+            let result = try await catalog.bootstrap()
+            Log.app.info("Catalog bootstrap: \(String(describing: result))")
+        } catch {
+            Log.app.error("Catalog bootstrap failed: \(error)")
+            return
+        }
+        do {
+            let result = try await catalog.syncRemote()
+            Log.app.info("Catalog sync: \(String(describing: result))")
+        } catch {
+            Log.app.error("Catalog sync failed (keeping the local catalog): \(error)")
+        }
     }
 
     /// The signed-in user, or nil when signed out / auth is not configured.
@@ -111,7 +134,8 @@ final class AppContainer {
             if onboarded, let store { seedUITestData(in: store, userId: user.id) }
             return AppContainer(
                 sessionService: AuthSessionService(auth: fake), authService: fake,
-                accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth()
+                accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth(),
+                catalog: store.map { CatalogService(modelContainer: $0) }
             )
         }
         #endif
@@ -121,14 +145,18 @@ final class AppContainer {
             infoDictionary: info, urlScheme: info["AppURLScheme"] as? String
         ) else {
             Log.app.error("Supabase is not configured; running signed out. See docs/KURULUM.md.")
-            return AppContainer(sessionService: PlaceholderSessionService(), modelContainer: store)
+            return AppContainer(
+                sessionService: PlaceholderSessionService(), modelContainer: store,
+                catalog: store.map { CatalogService(modelContainer: $0) }
+            )
         }
         let auth = SupabaseAuthService(
             configuration: config, apple: AppleIDTokenProvider(), google: GoogleIDTokenProvider()
         )
         return AppContainer(
             sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store,
-            health: HealthKitService()
+            health: HealthKitService(),
+            catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) }
         )
     }
 

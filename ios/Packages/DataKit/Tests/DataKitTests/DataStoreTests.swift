@@ -4,11 +4,15 @@ import SwiftData
 import Testing
 
 @Suite struct DataStoreTests {
-    @Test func schemaContainsTheFourModels() {
-        let names = SchemaV1.models.map { String(describing: $0) }.sorted()
-        #expect(names == ["BodyMeasurement", "ConsentRecord", "UserProfile", "UserSettings"])
+    @Test func schemaContainsTheUserModelsAndTheCatalog() {
+        let v1 = SchemaV1.models.map { String(describing: $0) }.sorted()
+        #expect(v1 == ["BodyMeasurement", "ConsentRecord", "UserProfile", "UserSettings"])
         #expect(SchemaV1.versionIdentifier == Schema.Version(1, 0, 0))
-        #expect(DataMigrationPlan.schemas.count == 1)
+        let v2 = SchemaV2.models.map { String(describing: $0) }.sorted()
+        #expect(v2 == ["BodyMeasurement", "CatalogInfo", "ConsentRecord", "Exercise", "UserProfile", "UserSettings"])
+        #expect(SchemaV2.versionIdentifier == Schema.Version(2, 0, 0))
+        #expect(DataMigrationPlan.schemas.count == 2)
+        #expect(DataMigrationPlan.stages.count == 1)
     }
 
     @Test func onDiskStorePersistsAcrossContainers() async throws {
