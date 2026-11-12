@@ -94,6 +94,12 @@ public struct ExerciseFilter: Sendable, Equatable {
 }
 
 public enum ExerciseSearch {
+    private struct Scored {
+        let item: ExerciseListItem
+        let tier: Int
+        let length: Int
+    }
+
     /// Lower is better. Tiers: 0 name prefix, 1 name word-start, 2 name contains, 3 alias/any word-start,
     /// 4 alias/any contains, 5 typo-tolerant (one edit per token).
     enum Tier: Int { case namePrefix, nameWord, nameContains, aliasWord, aliasContains, typo }
@@ -104,11 +110,10 @@ public enum ExerciseSearch {
         let folded = SearchFolding.fold(query).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !folded.isEmpty else { return items }
         let tokens = words(of: folded)
-        var scored: [(item: ExerciseListItem, tier: Int, length: Int)] = []
+        var scored: [Scored] = []
         for item in items {
-            if let tier = tier(of: item, query: folded, tokens: tokens) {
-                scored.append((item, tier.rawValue, item.foldedNames.map(\.count).min() ?? 0))
-            }
+            guard let tier = tier(of: item, query: folded, tokens: tokens) else { continue }
+            scored.append(Scored(item: item, tier: tier.rawValue, length: item.foldedNames.map(\.count).min() ?? 0))
         }
         scored.sort {
             if $0.tier != $1.tier { return $0.tier < $1.tier }
@@ -119,9 +124,7 @@ public enum ExerciseSearch {
     }
 
     static func tier(of item: ExerciseListItem, query: String, tokens: [String]) -> Tier? {
-        for name in item.foldedNames {
-            if name.hasPrefix(query) { return .namePrefix }
-        }
+        if item.foldedNames.contains(where: { $0.hasPrefix(query) }) { return .namePrefix }
         let nameWords = item.foldedNames.map(words(of:))
         if nameWords.contains(where: { $0.contains { $0.hasPrefix(query) } }) { return .nameWord }
         if tokens.count > 1, nameWords.contains(where: { allTokensPrefix(tokens, in: $0) }) { return .nameWord }
@@ -143,25 +146,24 @@ public enum ExerciseSearch {
     /// True when `token` is within one edit (insert/delete/substitute/transposition) of the start of `word`.
     /// Only for tokens of 4+ characters, otherwise short queries would match everything.
     static func fuzzyPrefix(_ token: String, of word: String) -> Bool {
-        let t = Array(token), w = Array(word)
-        guard t.count >= 4, w.count >= t.count - 1 else { return false }
-        for length in max(1, t.count - 1)...min(w.count, t.count + 1) {
-            if editDistanceAtMostOne(t, Array(w.prefix(length))) { return true }
+        let wanted = Array(token), candidate = Array(word)
+        guard wanted.count >= 4, candidate.count >= wanted.count - 1 else { return false }
+        return (max(1, wanted.count - 1)...min(candidate.count, wanted.count + 1)).contains {
+            editDistanceAtMostOne(wanted, Array(candidate.prefix($0)))
         }
-        return false
     }
 
-    static func editDistanceAtMostOne(_ a: [Character], _ b: [Character]) -> Bool {
-        if a == b { return true }
-        if abs(a.count - b.count) > 1 { return false }
-        var i = 0
-        while i < a.count, i < b.count, a[i] == b[i] { i += 1 }
-        if a.count == b.count {
-            if Array(a[(i + 1)...]) == Array(b[(i + 1)...]) { return true }
-            if i + 1 < a.count, a[i] == b[i + 1], a[i + 1] == b[i], Array(a[(i + 2)...]) == Array(b[(i + 2)...]) { return true }
-            return false
+    static func editDistanceAtMostOne(_ lhs: [Character], _ rhs: [Character]) -> Bool {
+        if lhs == rhs { return true }
+        if abs(lhs.count - rhs.count) > 1 { return false }
+        var index = 0
+        while index < lhs.count, index < rhs.count, lhs[index] == rhs[index] { index += 1 }
+        if lhs.count == rhs.count {
+            if Array(lhs[(index + 1)...]) == Array(rhs[(index + 1)...]) { return true }
+            let swapped = index + 1 < lhs.count && lhs[index] == rhs[index + 1] && lhs[index + 1] == rhs[index]
+            return swapped && Array(lhs[(index + 2)...]) == Array(rhs[(index + 2)...])
         }
-        let (long, short) = a.count > b.count ? (a, b) : (b, a)
-        return Array(long[(i + 1)...]) == Array(short[i...])
+        let (long, short) = lhs.count > rhs.count ? (lhs, rhs) : (rhs, lhs)
+        return Array(long[(index + 1)...]) == Array(short[index...])
     }
 }

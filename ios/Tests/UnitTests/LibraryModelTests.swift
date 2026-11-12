@@ -2,11 +2,14 @@ import DataKit
 import Foundation
 import SwiftData
 import Testing
+
 @testable import ATROX
 
 @MainActor
 @Suite struct LibraryModelTests {
-    private func record(_ id: String, en: String, tr: String, equipment: String?, muscle: String, scoring: String = "weighted") -> CatalogRecord {
+    private func record(
+        _ id: String, en: String, tr: String, equipment: String?, muscle: String, scoring: String = "weighted"
+    ) -> CatalogRecord {
         CatalogRecord(
             id: id, equipment: equipment, primaryMuscles: [muscle], scoringType: scoring,
             translations: ["en": .init(name: en), "tr": .init(name: tr)])

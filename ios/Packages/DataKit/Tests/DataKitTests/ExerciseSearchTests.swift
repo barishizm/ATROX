@@ -104,8 +104,10 @@ private func ids(_ query: String, _ items: [ExerciseListItem] = sample) -> [Stri
 @Suite struct ExerciseFilterTests {
     @Test func filtersCombineWithAnd() {
         #expect(sample.filter(ExerciseFilter(muscles: ["chest"]).matches).count == 3)
-        #expect(sample.filter(ExerciseFilter(muscles: ["chest"], equipment: ["body_only"]).matches).map(\.id) == ["pushup", "incline-pushup"])
-        #expect(sample.filter(ExerciseFilter(muscles: ["chest"], equipment: ["body_only"], scorableOnly: true).matches).map(\.id) == ["pushup"])
+        let bodyweightChest = ExerciseFilter(muscles: ["chest"], equipment: ["body_only"])
+        #expect(sample.filter(bodyweightChest.matches).map(\.id) == ["pushup", "incline-pushup"])
+        let scorable = ExerciseFilter(muscles: ["chest"], equipment: ["body_only"], scorableOnly: true)
+        #expect(sample.filter(scorable.matches).map(\.id) == ["pushup"])
     }
 
     @Test func valuesInsideOneGroupCombineWithOr() {

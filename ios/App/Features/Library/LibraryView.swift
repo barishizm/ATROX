@@ -148,7 +148,7 @@ struct LibraryView: View {
         }
     }
 
-    private func title(of kind: LibraryModel.Section.Kind) -> LocalizedStringKey {
+    private func title(of kind: LibraryModel.SectionKind) -> LocalizedStringKey {
         switch kind {
         case .recent: "library.section.recent"
         case .favorites: "library.section.favorites"
@@ -191,7 +191,9 @@ struct LibraryFilterSheet: View {
                 }
                 Section("library.filter.equipment") {
                     FlowChips(
-                        options: model.availableEquipment.map { ($0, Text(equipmentKey($0 == ExerciseFilter.noEquipmentToken ? nil : $0))) },
+                        options: model.availableEquipment.map { raw in
+                            (raw, Text(equipmentKey(raw == ExerciseFilter.noEquipmentToken ? nil : raw)))
+                        },
                         selection: $model.filter.equipment
                     )
                     if model.hasEquipmentSuggestion {

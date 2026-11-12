@@ -10,9 +10,10 @@ import SwiftData
 final class LibraryModel {
     enum LoadState: Equatable { case loading, loaded, failed }
 
+    enum SectionKind: String { case recent, favorites, all, results }
+
     struct Section: Identifiable, Equatable {
-        enum Kind: String { case recent, favorites, all, results }
-        let kind: Kind
+        let kind: SectionKind
         let items: [ExerciseListItem]
         var id: String { kind.rawValue }
     }
