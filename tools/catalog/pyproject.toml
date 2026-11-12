@@ -6,12 +6,14 @@ requires-python = ">=3.11"
 dependencies = [
     "jsonschema>=4.26.0",
     "pyyaml>=6.0.3",
+    "pillow>=11.0",
 ]
 
 [project.scripts]
 catalog-import = "catalog.cli:main"
 catalog-taxonomy = "catalog.taxonomy_cli:main"
 catalog-translate = "catalog.translate:main"
+catalog-images = "catalog.images:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]

@@ -42,7 +42,7 @@ Toplam: 104 adım.
 - [x] **P024** · Katalog içe aktarma hattı — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P025** · Skor taksonomisi `[ARAŞTIRMA]` — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P026** · Türkçe çeviri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P028** · Katalog tohumlama ve uygulama içi eşitleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P029** · Kas haritası — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P030** · Hareket kütüphanesi — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
@@ -215,3 +215,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P025) `scoring_taxonomy.yaml` kalıp değerleri P011 şemasındaki `movement_pattern` enum'uyla (squat, hinge, lunge, ...) örtüşmüyor; P056/P027 öncesi yeni bir migration ile hizalanmalı.
 - (P025) Çekirdek dışı 200 kadar hareket yalnızca kuralla atandı ve `needs_review: true`; skorlanmayacakları için ilk sürümde elle gözden geçirilmedi.
 - (P026) Çeviri hattı hazır (`tools/catalog/translate.py`, `glossary.tr.yaml` onaylandı, 23 yeni test) ama kutu işaretlenmedi: (1) sözlük onaylandı, (2) `OPENROUTER_API_KEY` (veya `--provider deepseek` + `DEEPSEEK_API_KEY`) ile `uv run python translate.py run` çalıştırılmadı, bu yüzden `exercises.tr/en.json` üretilmedi, (3) `review/tr_core.csv` çekirdek satırlar onaylanmadı (`approved` sütununa `yes`). Sıra: sözlüğü onayla → `run` → `review` → CSV'yi onayla → `run` → `sample`.
+- (P027) Görseller henüz Supabase Storage'a yüklenmedi: bucket migration'ı uygulandıktan sonra `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` ile `uv run catalog-images upload` çalıştırılmalı (`tools/catalog/IMAGES.md`).
+- (P027) 3 hareketin görseli kaynakta yok: `kettlebell-halo`, `kettlebell-halo-with-overhead-extension`, `kettlebell-overhead-triceps-extension` (çekirdek değil).
+- (P027) `ios/App/Resources/ExerciseThumbs/` pakete girer mi, P028/P030'da (kod tarafı) doğrulanmalı.
