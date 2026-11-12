@@ -17,10 +17,12 @@ final class ActiveWorkoutUITests: XCTestCase {
             || app.buttons["workout-add-exercise"].waitForExistence(timeout: 10), app.debugDescription)
 
         app.buttons["Add exercise"].firstMatch.tap()
-        let firstRow = app.cells.firstMatch
+        // Library rows only: `app.cells` would also match the workout list behind the sheet.
+        let firstRow = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH 'library-row-'")).firstMatch
         XCTAssertTrue(firstRow.waitForExistence(timeout: 15), app.debugDescription)
         firstRow.tap()
-        let addButton = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Add'")).firstMatch
+        let addButton = app.buttons["library-add-button"]
         if addButton.waitForExistence(timeout: 3) { addButton.tap() }
 
         for index in 0..<3 {
@@ -28,17 +30,19 @@ final class ActiveWorkoutUITests: XCTestCase {
             XCTAssertTrue(complete.waitForExistence(timeout: 10), app.debugDescription)
             complete.tap()
             if index == 0 {
-                // The first rest timer asks to explain notifications before the system prompt.
+                // The first rest timer ever explains notifications first (a reused simulator may have seen it).
                 let later = app.buttons["rest-primer-later"]
-                XCTAssertTrue(later.waitForExistence(timeout: 10), app.debugDescription)
-                later.tap()
+                if later.waitForExistence(timeout: 5) { later.tap() }
                 XCTAssertTrue(app.buttons["rest-skip"].waitForExistence(timeout: 5), app.debugDescription)
             }
         }
         XCTAssertTrue(app.buttons["Undo complete"].firstMatch.exists)
 
         app.buttons["workout-finish"].tap()
-        app.buttons["Finish"].firstMatch.tap()
+        // The confirmation dialog's button is on top; the toolbar button of the same name stays behind it.
+        let confirm = app.buttons.matching(NSPredicate(format: "label == 'Finish'"))
+        XCTAssertTrue(confirm.firstMatch.waitForExistence(timeout: 5), app.debugDescription)
+        confirm.allElementsBoundByIndex.last?.tap()
         XCTAssertTrue(app.buttons["start-empty-workout"].waitForExistence(timeout: 10), app.debugDescription)
     }
 }
