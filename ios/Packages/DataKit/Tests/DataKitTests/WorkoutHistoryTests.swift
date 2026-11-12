@@ -259,8 +259,11 @@ private struct Env {
         let summary = HistoryMath.monthSummary(of: all, month: date(2026, 4, 15), calendar: calendar)
         #expect(summary.workoutCount == 3)
         #expect(summary.trainedDays == [1, 30])
-        #expect(summary.totalDuration == 60 * 60 + 30 * 60 + 60 * 60)
-        #expect(summary.totalVolumeKg == 500 + 600 + 700)
+        // 60 + 30 + 60 minutes and 500 + 600 + 700 kg; plain literals keep CI's type checker fast.
+        let expectedDuration: TimeInterval = 9_000
+        let expectedVolume: Double = 1_800
+        #expect(summary.totalDuration == expectedDuration)
+        #expect(summary.totalVolumeKg == expectedVolume)
     }
 
     @Test func trainedDaysUseOnlyStartDatesInTheMonth() {
