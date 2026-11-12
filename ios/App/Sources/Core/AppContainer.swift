@@ -89,6 +89,9 @@ final class AppContainer {
         workoutEventsTask?.cancel()
         workoutEventsTask = nil
         workoutSession = nil
+        #if DEBUG
+        debugUser = nil
+        #endif
         await sync?.signOut()
         await root.signOut()
     }
@@ -124,12 +127,28 @@ final class AppContainer {
 
     /// The signed-in user, or nil when signed out / auth is not configured.
     func currentUser() async -> AuthUser? {
-        guard let authService else { return nil }
-        switch await authService.restoreSession() {
-        case .signedIn(let user), .passwordRecovery(let user): return user
-        case .signedOut: return nil
+        if let authService {
+            switch await authService.restoreSession() {
+            case .signedIn(let user), .passwordRecovery(let user): return user
+            case .signedOut: break
+            }
         }
+        #if DEBUG
+        return debugUser
+        #else
+        return nil
+        #endif
     }
+
+    #if DEBUG
+    /// Local-only user for the "pretend signed in" developer shortcut; there is no real session behind it.
+    @ObservationIgnored private(set) var debugUser: AuthUser?
+
+    func debugSignIn() {
+        debugUser = AuthUser(id: UUID(), email: "debug@atrox.local", isEmailConfirmed: true, onboardingComplete: false)
+        root.didSignIn(onboardingComplete: false)
+    }
+    #endif
 
     /// Builds the onboarding model for the signed-in user; nil when there is no user or no local store.
     func makeOnboardingModel() async -> OnboardingViewModel? {
