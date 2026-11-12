@@ -189,7 +189,7 @@ final class AppContainer {
             userId: user.id, workouts: SwiftDataWorkoutRepository(modelContainer: modelContainer),
             routines: SwiftDataRoutineRepository(modelContainer: modelContainer)
         )
-        try? await session.restore()
+        _ = try? await session.restore()
         workoutSession = session
         return session
     }
