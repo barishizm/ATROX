@@ -145,7 +145,10 @@ final class OnboardingUITests: XCTestCase {
         health.tap()
         XCTAssertTrue(alert.waitForExistence(timeout: 10))
         alert.buttons["Use"].tap()
-        XCTAssertTrue(app.pickerWheels["182 cm"].waitForExistence(timeout: 5), app.debugDescription)
+        // The simulator locale decides the unit: 182 cm, or 6′ 0″ when the locale is imperial.
+        let metric = app.pickerWheels["182 cm"]
+        let imperial = app.pickerWheels["6′ 0″"]
+        XCTAssertTrue(metric.waitForExistence(timeout: 5) || imperial.waitForExistence(timeout: 2), app.debugDescription)
     }
 
     @MainActor
