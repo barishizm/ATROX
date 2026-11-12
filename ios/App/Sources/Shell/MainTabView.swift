@@ -27,6 +27,7 @@ struct MainTabView: View {
                             case .exerciseLibrary: LibraryView()
                             case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
                             case .routines: RoutineListView()
+                            case .templates: TemplateListView()
                             case .routine(let id): RoutineEditorView(routineId: id)
                             case .routineDay(let routineId, let dayId): RoutineDayView(routineId: routineId, dayId: dayId)
                             case .activeWorkout: FeaturePlaceholderView(title: "shell.tabbar.workout", systemImage: "dumbbell")

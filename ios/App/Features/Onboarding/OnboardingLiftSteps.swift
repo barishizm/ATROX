@@ -133,6 +133,7 @@ enum LiftNames {
 
 struct ResultStepView: View {
     @Bindable var model: OnboardingViewModel
+    @Environment(\.locale) private var locale
     let finish: () -> Void
 
     var body: some View {
@@ -175,6 +176,7 @@ struct ResultStepView: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("onboarding-result-\(result.lift.rawValue)")
             }
+            templateSuggestions
             Text("onboarding.result.disclaimer")
                 .font(DSFont.footnote)
                 .foregroundStyle(DSColor.textSecondary)
@@ -182,6 +184,34 @@ struct ResultStepView: View {
                 .accessibilityIdentifier("onboarding-result-disclaimer")
         }
     }
+
+    /// The two program templates that fit the answers given so far (P034); they are picked under Workout → Programs.
+    @ViewBuilder
+    private var templateSuggestions: some View {
+        let picks = model.recommendedTemplates
+        if !picks.isEmpty {
+            Card {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("onboarding.result.templates.title")
+                        .font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                    ForEach(picks, id: \.id) { template in
+                        HStack {
+                            Text(verbatim: template.name.resolve(languageCode: languageCode))
+                                .font(DSFont.body).foregroundStyle(DSColor.textPrimary)
+                            Spacer(minLength: Spacing.sm)
+                            Text("template.summary \(template.daysPerWeek) \(template.estimatedMinutes)")
+                                .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+                        }
+                    }
+                    Text("onboarding.result.templates.hint")
+                        .font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
+                }
+            }
+            .accessibilityIdentifier("onboarding-result-templates")
+        }
+    }
+
+    private var languageCode: String { locale.language.languageCode?.identifier == "tr" ? "tr" : "en" }
 
     private var empty: some View {
         VStack(spacing: Spacing.lg) {

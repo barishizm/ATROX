@@ -1,0 +1,1435 @@
+{
+ "format": 1,
+ "version": 1,
+ "templates": [
+  {
+   "id": "beginner-full-body-3",
+   "name": {
+    "en": "Beginner Full Body (3 days)",
+    "tr": "Yeni Başlayan Tam Vücut (3 gün)"
+   },
+   "audience": {
+    "en": "New to lifting, or back after a long break",
+    "tr": "Antrenmana yeni başlayanlar veya uzun aradan dönenler"
+   },
+   "summary": {
+    "en": "Three full-body sessions a week with basic machine and free-weight lifts. Simple, forgiving, easy to progress.",
+    "tr": "Haftada üç tam vücut antrenman; temel makine ve serbest ağırlık hareketleri. Basit, bağışlayıcı, ilerletmesi kolay."
+   },
+   "level": "beginner",
+   "goals": [
+    "general_health",
+    "muscle_gain",
+    "fat_loss",
+    "strength"
+   ],
+   "equipment": "full_gym",
+   "days": [
+    {
+     "name": {
+      "en": "Full Body A",
+      "tr": "Tam Vücut A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "seated-cable-rows",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 2,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "crunches",
+       "sets": 2,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body B",
+      "tr": "Tam Vücut B"
+     },
+     "exercises": [
+      {
+       "id": "romanian-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "incline-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "wide-grip-lat-pulldown",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "leg-press",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 2,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body C",
+      "tr": "Tam Vücut C"
+     },
+     "exercises": [
+      {
+       "id": "dumbbell-lunges",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-bench-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "one-arm-dumbbell-row",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "lying-leg-curls",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "triceps-pushdown",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "dumbbell-bicep-curl",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "upper-lower-4",
+   "name": {
+    "en": "Upper / Lower (4 days)",
+    "tr": "Üst / Alt (4 gün)"
+   },
+   "audience": {
+    "en": "Lifters with some months of training who want strength and size",
+    "tr": "Birkaç aydır antrenman yapıp güç ve kas isteyenler"
+   },
+   "summary": {
+    "en": "Two upper and two lower sessions. Each muscle is trained twice a week with a heavy and a lighter day.",
+    "tr": "İki üst, iki alt vücut antrenmanı. Her kas haftada iki kez, biri ağır biri daha hafif günle çalışır."
+   },
+   "level": "intermediate",
+   "goals": [
+    "strength",
+    "muscle_gain"
+   ],
+   "equipment": "full_gym",
+   "days": [
+    {
+     "name": {
+      "en": "Upper A",
+      "tr": "Üst A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 4,
+       "reps_min": 6,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 150
+      },
+      {
+       "id": "bent-over-barbell-row",
+       "sets": 4,
+       "reps_min": 6,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 150
+      },
+      {
+       "id": "standing-military-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "wide-grip-lat-pulldown",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-bicep-curl",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "triceps-pushdown",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Lower A",
+      "tr": "Alt A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 4,
+       "reps_min": 5,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "romanian-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "leg-press",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "lying-leg-curls",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 75
+      },
+      {
+       "id": "standing-calf-raises",
+       "sets": 4,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Upper B",
+      "tr": "Üst B"
+     },
+     "exercises": [
+      {
+       "id": "incline-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-cable-rows",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "pullups",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "hammer-curls",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "triceps-overhead-extension-with-rope",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Lower B",
+      "tr": "Alt B"
+     },
+     "exercises": [
+      {
+       "id": "barbell-deadlift",
+       "sets": 3,
+       "reps_min": 4,
+       "reps_max": 6,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "dumbbell-lunges",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "leg-extensions",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "seated-leg-curl",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 75
+      },
+      {
+       "id": "seated-calf-raise",
+       "sets": 4,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "cable-crunch",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "push-pull-legs-3",
+   "name": {
+    "en": "Push / Pull / Legs (3 days)",
+    "tr": "İtiş / Çekiş / Bacak (3 gün)"
+   },
+   "audience": {
+    "en": "Lifters who like a clear split with three days a week",
+    "tr": "Haftada üç gün net bir bölünme isteyenler"
+   },
+   "summary": {
+    "en": "One push, one pull and one leg day. Plenty of volume per session with a rest day between each.",
+    "tr": "Bir itiş, bir çekiş, bir bacak günü. Her antrenmanda yeterli hacim, aralarda dinlenme günü."
+   },
+   "level": "beginner",
+   "goals": [
+    "muscle_gain",
+    "strength",
+    "general_health"
+   ],
+   "equipment": "full_gym",
+   "days": [
+    {
+     "name": {
+      "en": "Push",
+      "tr": "İtiş"
+     },
+     "exercises": [
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "incline-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "triceps-pushdown",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Pull",
+      "tr": "Çekiş"
+     },
+     "exercises": [
+      {
+       "id": "wide-grip-lat-pulldown",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "bent-over-barbell-row",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "seated-cable-rows",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "face-pull",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "dumbbell-bicep-curl",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "hammer-curls",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Legs",
+      "tr": "Bacak"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 4,
+       "reps_min": 5,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 150
+      },
+      {
+       "id": "romanian-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "leg-press",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "lying-leg-curls",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 75
+      },
+      {
+       "id": "standing-calf-raises",
+       "sets": 4,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "crunches",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "push-pull-legs-6",
+   "name": {
+    "en": "Push / Pull / Legs (6 days)",
+    "tr": "İtiş / Çekiş / Bacak (6 gün)"
+   },
+   "audience": {
+    "en": "Experienced lifters who can train six days a week",
+    "tr": "Haftada altı gün antrenman yapabilen deneyimliler"
+   },
+   "summary": {
+    "en": "The classic split run twice a week: the highest volume of all templates. Needs good recovery.",
+    "tr": "Klasik bölünme haftada iki tur: tüm şablonlar içinde en yüksek hacim. İyi toparlanma gerektirir."
+   },
+   "level": "intermediate",
+   "goals": [
+    "muscle_gain",
+    "strength"
+   ],
+   "equipment": "full_gym",
+   "days": [
+    {
+     "name": {
+      "en": "Push A",
+      "tr": "İtiş A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 4,
+       "reps_min": 5,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 150
+      },
+      {
+       "id": "standing-military-press",
+       "sets": 3,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "incline-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 4,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "triceps-pushdown",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Pull A",
+      "tr": "Çekiş A"
+     },
+     "exercises": [
+      {
+       "id": "pullups",
+       "sets": 4,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "bent-over-barbell-row",
+       "sets": 4,
+       "reps_min": 6,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "seated-cable-rows",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "face-pull",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "barbell-curl",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Legs A",
+      "tr": "Bacak A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 4,
+       "reps_min": 5,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "romanian-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 10,
+       "rir": 2,
+       "rest_seconds": 120
+      },
+      {
+       "id": "leg-press",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "lying-leg-curls",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 75
+      },
+      {
+       "id": "standing-calf-raises",
+       "sets": 4,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Push B",
+      "tr": "İtiş B"
+     },
+     "exercises": [
+      {
+       "id": "dumbbell-bench-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "cable-crossover",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "triceps-overhead-extension-with-rope",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Pull B",
+      "tr": "Çekiş B"
+     },
+     "exercises": [
+      {
+       "id": "wide-grip-lat-pulldown",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "one-arm-dumbbell-row",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-incline-row",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "reverse-flyes",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "hammer-curls",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Legs B",
+      "tr": "Bacak B"
+     },
+     "exercises": [
+      {
+       "id": "barbell-deadlift",
+       "sets": 3,
+       "reps_min": 4,
+       "reps_max": 6,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "dumbbell-lunges",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "leg-extensions",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "seated-leg-curl",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 75
+      },
+      {
+       "id": "seated-calf-raise",
+       "sets": 4,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "cable-crunch",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "strength-5x5-3",
+   "name": {
+    "en": "5×5 Strength (3 days)",
+    "tr": "5×5 Kuvvet (3 gün)"
+   },
+   "audience": {
+    "en": "Beginners and returning lifters who want to get strong on the big lifts",
+    "tr": "Büyük hareketlerde güçlenmek isteyen yeni başlayanlar ve geri dönenler"
+   },
+   "summary": {
+    "en": "Heavy sets of five on squat, bench, row, press and deadlift. Add a little weight every session.",
+    "tr": "Squat, bench, kürek, omuz presi ve deadlift'te ağır beşlik setler. Her antrenmanda biraz ağırlık ekle."
+   },
+   "level": "beginner",
+   "goals": [
+    "strength"
+   ],
+   "equipment": "full_gym",
+   "days": [
+    {
+     "name": {
+      "en": "Workout A",
+      "tr": "Antrenman A"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "bent-over-barbell-row",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Workout B",
+      "tr": "Antrenman B"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "standing-military-press",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "barbell-deadlift",
+       "sets": 1,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 240
+      },
+      {
+       "id": "pullups",
+       "sets": 3,
+       "reps_min": 5,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 120
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Workout A (repeat)",
+      "tr": "Antrenman A (tekrar)"
+     },
+     "exercises": [
+      {
+       "id": "barbell-squat",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "barbell-bench-press-medium-grip",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      },
+      {
+       "id": "bent-over-barbell-row",
+       "sets": 5,
+       "reps_min": 5,
+       "reps_max": 5,
+       "rir": 2,
+       "rest_seconds": 180
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "home-dumbbell-full-body-3",
+   "name": {
+    "en": "Home Dumbbell Full Body (3 days)",
+    "tr": "Ev Dambıl Tam Vücut (3 gün)"
+   },
+   "audience": {
+    "en": "Training at home with a pair of dumbbells and a bench",
+    "tr": "Evde bir çift dambıl ve bankla çalışanlar"
+   },
+   "summary": {
+    "en": "Three full-body sessions that need nothing but dumbbells and a bench.",
+    "tr": "Yalnızca dambıl ve bank gerektiren üç tam vücut antrenman."
+   },
+   "level": "beginner",
+   "goals": [
+    "general_health",
+    "muscle_gain",
+    "fat_loss"
+   ],
+   "equipment": "home_dumbbell",
+   "days": [
+    {
+     "name": {
+      "en": "Full Body A",
+      "tr": "Tam Vücut A"
+     },
+     "exercises": [
+      {
+       "id": "dumbbell-squat",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-bench-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "bent-over-two-dumbbell-row",
+       "sets": 4,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 2,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "stiff-legged-dumbbell-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "crunches",
+       "sets": 2,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body B",
+      "tr": "Tam Vücut B"
+     },
+     "exercises": [
+      {
+       "id": "dumbbell-lunges",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "incline-dumbbell-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "one-arm-dumbbell-row",
+       "sets": 4,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "side-lateral-raise",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "dumbbell-bicep-curl",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "standing-dumbbell-triceps-extension",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "standing-dumbbell-calf-raise",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body C",
+      "tr": "Tam Vücut C"
+     },
+     "exercises": [
+      {
+       "id": "split-squat-with-dumbbells",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-bench-press",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "dumbbell-incline-row",
+       "sets": 4,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "seated-dumbbell-press",
+       "sets": 2,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "stiff-legged-dumbbell-deadlift",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "hammer-curls",
+       "sets": 2,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bodyweight-3",
+   "name": {
+    "en": "Bodyweight Only (3 days)",
+    "tr": "Yalnızca Vücut Ağırlığı (3 gün)"
+   },
+   "audience": {
+    "en": "No equipment, a pull-up bar if possible",
+    "tr": "Ekipmansız; mümkünse bir barfiks barıyla"
+   },
+   "summary": {
+    "en": "Push-ups, squats, lunges, bridges and pull-ups. Progress with more reps and harder variations.",
+    "tr": "Şınav, squat, hamle, köprü ve barfiks. Tekrar artırarak ve daha zor varyasyonlarla ilerle."
+   },
+   "level": "beginner",
+   "goals": [
+    "general_health",
+    "fat_loss",
+    "muscle_gain"
+   ],
+   "equipment": "bodyweight_only",
+   "days": [
+    {
+     "name": {
+      "en": "Full Body A",
+      "tr": "Tam Vücut A"
+     },
+     "exercises": [
+      {
+       "id": "bodyweight-squat",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 20,
+       "rir": 2,
+       "rest_seconds": 60
+      },
+      {
+       "id": "pushups",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 15,
+       "rir": 2,
+       "rest_seconds": 75
+      },
+      {
+       "id": "chin-up",
+       "sets": 3,
+       "reps_min": 3,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "single-leg-glute-bridge",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "crunches",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 20,
+       "rir": 1,
+       "rest_seconds": 45
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body B",
+      "tr": "Tam Vücut B"
+     },
+     "exercises": [
+      {
+       "id": "bodyweight-walking-lunge",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 60
+      },
+      {
+       "id": "push-ups-with-feet-elevated",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 75
+      },
+      {
+       "id": "scapular-pull-up",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 2,
+       "rest_seconds": 75
+      },
+      {
+       "id": "hyperextensions-with-no-hyperextension-bench",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "bench-dips",
+       "sets": 2,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "dead-bug",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 12,
+       "rir": 1,
+       "rest_seconds": 45
+      }
+     ]
+    },
+    {
+     "name": {
+      "en": "Full Body C",
+      "tr": "Tam Vücut C"
+     },
+     "exercises": [
+      {
+       "id": "freehand-jump-squat",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 2,
+       "rest_seconds": 60
+      },
+      {
+       "id": "pushups",
+       "sets": 3,
+       "reps_min": 8,
+       "reps_max": 15,
+       "rir": 2,
+       "rest_seconds": 75
+      },
+      {
+       "id": "wide-grip-rear-pull-up",
+       "sets": 3,
+       "reps_min": 3,
+       "reps_max": 8,
+       "rir": 2,
+       "rest_seconds": 90
+      },
+      {
+       "id": "butt-lift-bridge",
+       "sets": 3,
+       "reps_min": 12,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 60
+      },
+      {
+       "id": "reverse-crunch",
+       "sets": 3,
+       "reps_min": 10,
+       "reps_max": 15,
+       "rir": 1,
+       "rest_seconds": 45
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
