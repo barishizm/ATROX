@@ -39,7 +39,7 @@ Toplam: 104 adım.
 
 ## Faz 3 — Hareket kataloğu
 
-- [ ] **P024** · Katalog içe aktarma hattı — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P024** · Katalog içe aktarma hattı — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P025** · Skor taksonomisi `[ARAŞTIRMA]` — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P026** · Türkçe çeviri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)

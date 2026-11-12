@@ -68,3 +68,9 @@ supabase/functions/**/.env
 # Claude Code yerel durumu
 .claude/worktrees/
 .claude/settings.local.json
+
+# tools/catalog
+tools/catalog/cache/
+tools/catalog/.venv/
+__pycache__/
+.pytest_cache/
