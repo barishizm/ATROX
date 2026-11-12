@@ -74,3 +74,8 @@ tools/catalog/cache/
 tools/catalog/.venv/
 __pycache__/
 .pytest_cache/
+
+# Personal (free Apple ID) device builds: local-only overrides
+ios/Config/Personal.xcconfig
+**/Personal.xcconfig
+!**/Personal.example.xcconfig

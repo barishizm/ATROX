@@ -36,3 +36,9 @@ LEGAL_PRIVACY_URL = https:/$(SLASH)example.com/privacy
 
 // ---- Secrets (gitignored). Optional so a fresh clone still builds. ----
 #include? "Secrets.xcconfig"
+
+// ---- Entitlements (overridable) ----
+APP_ENTITLEMENTS_FILE = App/ATROX.entitlements
+
+// ---- Personal device overrides (gitignored, optional). See Config/Personal.example.xcconfig. ----
+#include? "Personal.xcconfig"
