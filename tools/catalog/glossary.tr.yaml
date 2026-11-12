@@ -4,8 +4,8 @@
 # `en` patterns, the Turkish name MUST contain `tr` (case-insensitive). `tr == en` means "leave as is" — this is how
 # Turkish gyms actually say it.
 #
-# STATUS: DRAFT. `approved` must be flipped to true by the product owner before `translate run` calls the LLM.
-approved: false
+# STATUS: approved by the product owner (crunch, cable, machine, band, front/rear/side kept in English).
+approved: true
 version: 1
 
 # name terms: matched against the exercise name, hyphen/plural-insensitive, lowercase.
@@ -14,7 +14,7 @@ terms:
   - {en: [pull-up, pullup, pull up, chin-up, chin up, chinup], tr: barfiks, note: "pull-up and chin-up both say barfiks"}
   - {en: [push-up, pushup, push up], tr: şınav}
   - {en: [sit-up, situp, sit up], tr: mekik}
-  - {en: [crunch], tr: mekik, note: "crunch is also mekik in gyms; 'crunch' alias is generated"}
+  - {en: [crunch], tr: crunch, note: "kept; alias 'mekik'"}
   - {en: [squat], tr: squat, note: "kept; 'çömelme' is not used in gyms"}
   - {en: [lunge], tr: lunge, note: "kept; alias 'hamle'"}
   - {en: [deadlift], tr: deadlift, note: "kept; alias 'ölü kaldırış'"}
@@ -63,9 +63,9 @@ terms:
   - {en: [dumbbell], tr: dumbbell, note: "'dambıl' used as alias only"}
   - {en: [barbell], tr: barbell, note: "'halter' used as alias only"}
   - {en: [ez-bar, ez bar, ez curl, ez], tr: ez bar}
-  - {en: [cable], tr: kablo, note: "e.g. Cable Row → Kablo Row; keep 'cable crossover' as is"}
-  - {en: [machine], tr: makine}
-  - {en: [band, bands, resistance band], tr: lastik}
+  - {en: [cable], tr: cable, note: "kept"}
+  - {en: [machine], tr: machine, note: "kept"}
+  - {en: [band, bands, resistance band], tr: band, note: "kept; alias 'lastik'"}
   - {en: [foam roll, foam roller], tr: foam roller}
   - {en: [medicine ball], tr: medicine ball}
   - {en: [smr], tr: foam roller, note: "self-myofascial release"}
@@ -78,9 +78,9 @@ terms:
   - {en: [lying], tr: yatarak}
   - {en: [kneeling], tr: diz üstü}
   - {en: [reverse], tr: ters}
-  - {en: [front], tr: ön}
-  - {en: [rear], tr: arka}
-  - {en: [side], tr: yan}
+  - {en: [front], tr: front, note: "kept"}
+  - {en: [rear], tr: rear, note: "kept"}
+  - {en: [side], tr: side, note: "kept"}
   - {en: [alternating, alternate], tr: sırayla}
   - {en: [wide grip, wide-grip], tr: geniş tutuş}
   - {en: [close grip, close-grip], tr: dar tutuş}

@@ -30,8 +30,8 @@ def fake_client(calls=None, name_for=lambda e: e["name"].upper(), drop_step=Fals
     return client
 
 
-def test_glossary_file_is_draft_until_approved():
-    assert GLOSSARY.approved is False
+def test_glossary_file_is_approved():
+    assert GLOSSARY.approved is True
 
 
 @pytest.mark.parametrize("name,expect", [
@@ -169,6 +169,8 @@ def _workdir(tmp_path, exercises):
 
 def test_run_requires_approved_glossary_and_key(tmp_path, monkeypatch, capsys):
     _workdir(tmp_path, BASE)
+    g = tmp_path / "glossary.tr.yaml"
+    g.write_text(g.read_text(encoding="utf-8").replace("approved: true", "approved: false", 1), encoding="utf-8")
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     assert T.main(["run", "--root", str(tmp_path), "--limit", "1"]) == 2
     assert "not approved" in capsys.readouterr().err
