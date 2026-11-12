@@ -45,7 +45,7 @@ Toplam: 104 adım.
 - [x] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P028** · Katalog tohumlama ve uygulama içi eşitleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P029** · Kas haritası — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P030** · Hareket kütüphanesi — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P030** · Hareket kütüphanesi — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P031** · Hareket detayı ve özel hareket — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 
 ## Faz 4 — Antrenman takibi
