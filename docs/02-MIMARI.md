@@ -68,12 +68,14 @@ Tüm modellerde ortak alanlar: `id: UUID`, `createdAt`, `updatedAt`, `deletedAt?
 ### 2.4 Senkronizasyon (çevrimdışı öncelikli)
 
 - **Doğruluk kaynağı cihazdır.** Her yazma önce SwiftData'ya gider ve kaydı `pending` işaretler.
-- **Gönderme (push):** `pending` kayıtlar tablo bağımlılık sırasına göre toplu `upsert` edilir.
-- **Çekme (pull):** Tablo başına `updated_at > son_imleç` sorgusu; imleç sunucu saatidir.
-- **Çakışma:** Kayıt bazında son-yazan-kazanır (`updated_at`). Aktif antrenman cihazda kilitlidir; bitene kadar çekme onu ezmez.
+- **Sıra:** her geçiş önce çeker, sonra gönderir (`DataKit/Sync/SyncEngine`).
+- **Gönderme (push):** `pending` kayıtlar tablo bağımlılık sırasına göre parça parça `upsert` edilir. Sunucunun reddettiği parça satır satır denenir; yalnız bozuk satır `failed` olur (neden saklanır). Geçici hata geçişi durdurur, satırlar `pending` kalır.
+- **Çekme (pull):** Tablo başına `(updated_at, id) > imleç` keyset sayfalama; imleç sunucunun `updated_at` metnidir.
+- **Çakışma:** Kayıt bazında son-yazan-kazanır (`updated_at`); yerel saat, `server_time()` ile ölçülen farkla sunucu saatine çevrilerek karşılaştırılır. Mezar taşı düzenlemeyi yener. Aktif antrenman ağacı cihazda kilitlidir: bitene kadar gönderilmez ve çekme onu ezmez.
 - **Silme:** Yumuşak silme (`deleted_at`). 90 günden eski mezar taşları sunucuda zamanlanmış işle temizlenir.
 - **Tetikleyiciler:** uygulama öne gelince, antrenman bitince, ağ geri gelince, 15 dakikada bir; üstel geri çekilme.
-- **İlk giriş:** Tüm veriyi sayfalı çeker; ilerleme çubuğu gösterir.
+- **İlk giriş:** Tüm veriyi sayfalı çeker; ilerleme çubuğu gösterir. Başka hesabın yerel verisi varsa önce silinir; çıkışta yerel veri silinir.
+- **Tek geçiş:** `SyncCoordinator` aynı anda bir geçiş çalıştırır; yerel yazmalardan birkaç saniye sonra (debounce) ve `BGAppRefreshTask` ile de tetiklenir.
 
 Bu bölüm bilinçli olarak basit tutuldu: tek kullanıcı kendi verisini düzenler, eşzamanlı çok cihaz düzenlemesi nadirdir.
 

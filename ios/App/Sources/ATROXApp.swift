@@ -5,6 +5,11 @@ import SwiftUI
 @main
 struct ATROXApp: App {
     @State private var container = AppContainer.live()
+    @Environment(\.scenePhase) private var scenePhase
+
+    init() {
+        BackgroundSync.shared.register()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -12,6 +17,17 @@ struct ATROXApp: App {
                 .environment(container)
                 .modifier(LocalStoreModifier(container: container.modelContainer))
                 .task { await container.prepareCatalog() }
+                .task { BackgroundSync.shared.coordinator = container.sync }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            // Sync triggers (P045): coming to the foreground syncs and starts the 15-minute timer; leaving stops it.
+            switch phase {
+            case .active: container.sync?.appBecameActive()
+            case .background:
+                container.sync?.appEnteredBackground()
+                BackgroundSync.shared.schedule()
+            default: break
+            }
         }
     }
 }

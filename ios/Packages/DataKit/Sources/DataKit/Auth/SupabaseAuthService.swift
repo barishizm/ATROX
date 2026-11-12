@@ -172,6 +172,18 @@ public final class SupabaseAuthService: AuthService {
         }
     }
 
+    /// The current access token (refreshed first when it expired) for PostgREST and Edge Function calls (P045);
+    /// nil when signed out or the refresh failed.
+    public func accessToken() async -> String? {
+        try? await client.auth.session.accessToken
+    }
+
+    /// Whether the signed-in account has a Sign in with Apple identity (account deletion must revoke its tokens).
+    public func hasAppleIdentity() async -> Bool {
+        guard let user = try? await client.auth.session.user else { return false }
+        return user.identities?.contains { $0.provider == "apple" } ?? false
+    }
+
     public func handle(url: URL) async -> Bool {
         guard let scheme = redirectURL?.scheme, url.scheme == scheme else { return false }
         do {

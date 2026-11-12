@@ -67,3 +67,26 @@ yaşar.
 4. **Tekrarla / Programa dönüştür.** Tekrarla: aynı hareket ve ağırlıklarla, hiçbir set tamamlanmamış yeni antrenman açılır (zaten antrenman varsa uyarı). Programa dönüştür: Programlar'da tek günlü yeni program.
 5. **Hareket detayı.** Kütüphane → bir hareket → "Senin verin": en iyi set, e1RM, son antrenman; "Tüm geçmiş ve grafik" e1RM çizgisini gösterir (en az iki oturum).
 6. **Uzun geçmiş.** Uygulamada 500 antrenmanı yükleyen bir hata ayıklama düğmesi yok; akıcılık yalnızca birim testlerle (`LargeHistoryTests`) ölçüldü. Gerçek cihazda uzun bir geçmişle kaydırma elle denenmeli.
+
+## P044/P045 — Senkronizasyon ve hesap işlemleri (elle doğrulama)
+
+Hazırlık: `supabase start && supabase db reset`, `supabase functions serve` (ayrı terminal). İki simülatör (ör. iPhone 14
+ve ikinci bir cihaz) Debug yapılandırmasında yerel Supabase'e bağlı.
+
+1. **Cihaz A → B:** A'da giriş yap, bir antrenman başlat → 2 set tamamla. Antrenman sürerken `sets` tablosunda satır
+   olmamalı (`select count(*) from sets`). Bitir → birkaç saniye içinde satırlar sunucuda. B'de aynı hesapla giriş:
+   "Verilerin geri yükleniyor" ekranı, ardından Geçmiş'te antrenman ve setler görünür.
+2. **Çevrimdışı düzenleme:** B'yi çevrimdışı yap (Mac'te ağı kapat), bir ölçüm ekle ve geçmişte bir seti düzenle.
+   Profil kartı "Eşitlenmeyi bekleyen: 2" göstermeli. Ağı aç → kart "Güncel"e döner; A öne gelince değişiklikleri alır.
+3. **Çakışma:** A ve B'de aynı ölçümü çevrimdışı farklı değerlerle düzenle (önce A, sonra B); ikisini de çevrimiçi yap →
+   iki cihazda da B'nin değeri kalır.
+4. **Çıkış uyarısı:** çevrimdışıyken bir değişiklik yap → Ayarlar → Çıkış: uyarıda "1 değişiklik henüz sunucuya
+   ulaşmadı" yazmalı. Çıkış sonrası farklı hesapla giriş: önceki hesabın verisi görünmemeli.
+5. **Dışa aktarma:** Ayarlar → Verilerimi dışa aktar → paylaş sayfası açılır; dosya geçerli JSON, `tables` altında
+   tüm tablolar.
+6. **Hesap silme:** Ayarlar → Hesabı sil → onay kelimesi. Sonra `select count(*) from auth.users where id = …` ve kullanıcı
+   tablolarında satır kalmamalı. Apple hesabıyla: Apple onay sayfası bir kez daha açılır; Apple secret'ları tanımlı değilse
+   yanıt `apple_revoked: null`.
+7. **Arka plan eşitlemesi:** uygulamayı arka plana al, Xcode'da duraklat ve
+   `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.barishizm.atrox.sync.refresh"]`
+   → devam et; logda `sync` kategorisinde hata olmamalı ve bekleyen satırlar gönderilmeli.

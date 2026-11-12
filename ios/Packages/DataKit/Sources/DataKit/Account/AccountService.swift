@@ -5,8 +5,8 @@ public enum AccountError: Error, Equatable, Sendable {
 }
 
 /// Account-level server operations: data export and account deletion.
-/// The production implementation (Edge Functions `export-data` / `delete-account`) comes after P045;
-/// until then the app runs on `FakeAccountService`.
+/// Production: `SupabaseAccountService` (Edge Functions `export-data` / `delete-account`, P045); tests and builds
+/// without a server use `FakeAccountService`.
 public protocol AccountService: Sendable {
     /// Prepares a copy of the user's data and returns a file the user can share.
     func exportData(userId: UUID) async throws -> URL
@@ -33,7 +33,7 @@ public actor FakeAccountService: AccountService {
     public func exportData(userId: UUID) async throws -> URL {
         try await simulateLatency()
         let url = directory.appendingPathComponent("atrox-export-\(userId.uuidString.prefix(8)).json")
-        let body = #"{"note":"placeholder export; the real export is connected after P045","user_id":"\#(userId.uuidString)"}"#
+        let body = #"{"note":"placeholder export (no server configured)","user_id":"\#(userId.uuidString)"}"#
         try Data(body.utf8).write(to: url, options: .atomic)
         exportedUsers.append(userId)
         return url

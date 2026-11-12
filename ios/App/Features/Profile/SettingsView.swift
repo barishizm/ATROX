@@ -9,6 +9,8 @@ struct SettingsView: View {
     let account: AccountModel
     @Environment(AppContainer.self) private var container
     @State private var confirmsSignOut = false
+    /// Rows that have not reached the server; signing out deletes the device's copy (P045).
+    @State private var unsyncedCount = 0
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.restAutoStartKey) private var restAutoStart = true
@@ -60,7 +62,13 @@ struct SettingsView: View {
         .navigationTitle("settings.title")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("account.signOut.confirm", isPresented: $confirmsSignOut, titleVisibility: .visible) {
-            Button("account.signOut", role: .destructive) { Task { await container.root.signOut() } }
+            Button("account.signOut", role: .destructive) { Task { await container.signOut() } }
+        } message: {
+            if unsyncedCount > 0 {
+                Text("account.signOut.unsynced \(unsyncedCount)")
+            } else {
+                Text("account.signOut.localData")
+            }
         }
         .accessibilityIdentifier("settings-screen")
     }
@@ -83,7 +91,12 @@ struct SettingsView: View {
     private var accountSection: some View {
         Section("settings.section.account") {
             if let email = model.email { LabeledContent("settings.account.email") { Text(verbatim: email) } }
-            Button("account.signOut", role: .destructive) { confirmsSignOut = true }
+            Button("account.signOut", role: .destructive) {
+                Task {
+                    unsyncedCount = await container.sync?.unsyncedCount() ?? 0
+                    confirmsSignOut = true
+                }
+            }
                 .accessibilityIdentifier("settings-sign-out")
             exportRow
             NavigationLink(value: ProfileRoute.deleteAccount) {
