@@ -24,7 +24,7 @@ struct OnboardingViewModelTests {
         let profiles: SwiftDataProfileRepository
         let measurements: SwiftDataMeasurementRepository
         let consentRepository: SwiftDataConsentRepository
-        let setStore: UserDefaultsOnboardingSetStore
+        let workouts: SwiftDataWorkoutRepository
         let userId: UUID
     }
 
@@ -38,16 +38,17 @@ struct OnboardingViewModelTests {
         let profiles = SwiftDataProfileRepository(modelContainer: container)
         let measurements = SwiftDataMeasurementRepository(modelContainer: container)
         let consentRepository = SwiftDataConsentRepository(modelContainer: container)
+        let workouts = SwiftDataWorkoutRepository(modelContainer: container)
         let model = OnboardingViewModel(
             userId: userId, store: store, profiles: profiles, measurements: measurements,
             consents: ConsentService(repository: consentRepository), health: health,
-            setStore: UserDefaultsOnboardingSetStore(defaults: defaults),
+            workouts: workouts,
             deviceLocale: locale, localeCode: "tr", now: { today }, calendar: calendar
         )
         return Harness(
             model: model, store: store, profiles: profiles, measurements: measurements,
             consentRepository: consentRepository,
-            setStore: UserDefaultsOnboardingSetStore(defaults: defaults), userId: userId
+            workouts: workouts, userId: userId
         )
     }
 

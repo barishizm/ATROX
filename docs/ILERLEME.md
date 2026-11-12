@@ -50,7 +50,7 @@ Toplam: 104 adım.
 
 ## Faz 4 — Antrenman takibi
 
-- [ ] **P032** · Antrenman veri modelleri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P032** · Antrenman veri modelleri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P033** · Program oluşturucu — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P034** · Program şablonları — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P035** · Aktif antrenman motoru — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
@@ -196,7 +196,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P020) TR çalışma zamanı görünümü elle doğrulanmadı.
 - (P021) StrengthKit'e `ScoreEngine` protokolü + `PlaceholderScoreEngine` (vücut ağırlığı oranı, Epley 1RM, yaş yok, kalibre DEĞİL; dosya P061–P062'de silinecek) eklendi. Dumbbell setleri çift kullanılır varsayılıp 0,85 katsayısıyla halter eşdeğerine çevrilir.
 - (P021) Onboarding'e `lifts` (4 hareket kartı, her biri atlanabilir) ve `result` (ScoreRing + tek cümlelik yorum + "ilk tahmin" notu, hepsi atlanırsa boş durum) adımları eklendi; `trainingDone` ekranı ve geçici DEBUG bitirme düğmesi kalktı. Ham değer 12 eskiden `trainingDone`'dı: orada kalan taslak `lifts`'ten devam eder.
-- (P021) Girilen setler `OnboardingSetStore` (UserDefaults, `onboarding.sets.<uid>`) içinde duruyor; TODO(P032): tek bir Workout (source = onboarding) olarak kaydedilip depo silinecek. Atlanan veya yarım kartlar saklanmaz.
+- (P021) Girilen setler `OnboardingSetStore` (UserDefaults, `onboarding.sets.<uid>`) içinde duruyor; (P032'de çözüldü: tek bir Workout (source = onboarding) olarak kaydediliyor, `OnboardingSetStore` kaldırıldı.) Atlanan veya yarım kartlar saklanmaz.
 - (P021, K1 düzeltmesi) Onboarding bitince `AppRootModel.didCompleteOnboarding()` bayrağı hem cihazda (`onboarding.complete.<uid>`) hem sunucuda (`user_metadata.onboarding_complete`) yazar; açılışta ikisinden biri yeterlidir, yalnızca yerelde kalan bayrak sonraki açılışta sunucuya yeniden yazılır. Kalıcı kaynak ileride profil tablosuna taşınabilir.
 - (P021) Karttaki ağırlık alanı ondalık klavye + virgül/nokta kabul eder; üst sınır 500 kg, tekrar 1–30 (motor 12'den fazlasını 12 sayar). TR çalışma zamanı görünümü elle doğrulanmadı.
 - (P022) Profil sekmesi: özet, düzenleme, kilo geçmişi + Swift Charts grafiği, ayarlar (birim, dil, tema, bildirim yer tutucusu, katkı anahtarı, onay geçmişi), hesap (çıkış, dışa aktar, iki aşamalı silme), hakkında + lisanslar. `SettingsRepository` (DataKit) eklendi.
@@ -236,3 +236,8 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P031) Özel hareket: `SchemaV3` + `CustomExercise` (hafif geçiş V2→V3, `custom_exercises` ile birebir alanlar), `CustomExerciseRepository` (oluştur/güncelle/yumuşak sil, doğrulama sunucudaki CHECK sözlüğüyle aynı). Kütüphanede arama/filtre/favori ve seçim modunda çalışır, satırda "Özel" rozeti. "Benzer" seçilince katalog hareketinin skor ayarları kopyalanır (sunucuda `similar_to` sütunu yok; yalnızca kopya saklanır, bağ saklanmaz).
 - (P031) Özel hareketlerin sunucuya senkronu P0xx senkron motoruna kalır (satırlar `syncState = pending` ile bekler). Özel hareketin görseli yok (yer tutucu); kullanıcı fotoğrafı eklemek ertelendi. Özel hareketin `movement_pattern` değeri her zaman `other`; "benzer" seçiminde desen devralınmıyor (P056'da skor motoru gerekirse eklenir).
 - (P031) Yerelde DataKit testleri (108) ve `ExerciseDetailAndCustomExerciseTests` (9) geçti. Görünümler simülatörde elle/VoiceOver ile denenmedi; `LibraryModelTests` ve UI testleri CI'a bırakıldı.
+- (P032) Antrenman modelleri `SchemaV4` ile geldi (V3→V4 hafif geçiş): Routine, RoutineDay, RoutineExercise, Workout, WorkoutExercise, SetEntry, PersonalRecord. Prompt "SchemaV1'e dahil et" diyordu ama V1 donmuş ve yayında olduğundan yeni sürüm açıldı. İlişkiler sunucudaki gibi UUID ile (`@Relationship` yok); yumuşak silme zinciri depolarda elle işaretleniyor, kardeş `position` değerleri her silme/taşımada boşluksuz yeniden numaralanıyor.
+- (P032) Değişmezler: aynı anda en çok bir aktif antrenman (`DataError.activeWorkoutExists`), `SetInput.countsForScore` = tamamlanmış + ısınma değil + en az 1 tekrar, depolar sunucudaki CHECK sınırlarını doğrular. Depolar: `SwiftDataRoutineRepository`, `SwiftDataWorkoutRepository` (aktif antrenman, hareket geçmişi, son setler, tarih aralığı, son kullanılan hareketler). Örnek geçmiş: `TrainingFixtures` (12 hafta × 4 seans, deterministik).
+- (P032) Onboarding setleri artık `replaceOnboardingWorkout` ile tek bitmiş Workout olarak yazılıyor (geri dönüp değiştirince yenisi eskisinin yerine geçer).
+- (P032) Ertelenen: sunucuda `workouts.source` sütunu yok, `Workout.source` şimdilik yalnızca yerel (senkron öncesi migration gerekir). `PersonalRecord` için yalnızca model var; rekor hesaplama/depo sonraki adımda. `ExerciseLists` "son kullanılanlar" henüz `recentExercises` ile beslenmiyor. Özel hareket silinince ona bağlı satırların davranışı belirlenmedi.
+- (P032) Yerelde DataKit testleri (126) ve uygulama `build-for-testing` derlemesi geçti; ATROXTests (onboarding güncellemeleri dahil) ve UI testleri CI'a bırakıldı.

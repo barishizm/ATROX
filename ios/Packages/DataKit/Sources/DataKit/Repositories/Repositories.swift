@@ -51,3 +51,95 @@ public protocol CustomExerciseRepository: Sendable {
     /// The user's exercises, A–Z by name.
     func all(userId: UUID) async throws -> [CustomExerciseSnapshot]
 }
+
+public protocol RoutineRepository: Sendable {
+    @discardableResult
+    func create(name: String, notes: String?, userId: UUID) async throws -> RoutineSnapshot
+    @discardableResult
+    func update(id: UUID, name: String, notes: String?) async throws -> RoutineSnapshot
+    /// Soft delete; the days and exercises are marked deleted with it.
+    func delete(id: UUID) async throws
+    func routine(id: UUID) async throws -> RoutineSnapshot?
+    /// The user's routines, A–Z by name, each with its days and exercises.
+    func all(userId: UUID) async throws -> [RoutineSnapshot]
+
+    @discardableResult
+    func addDay(routineId: UUID, name: String) async throws -> RoutineDaySnapshot
+    func renameDay(id: UUID, to name: String) async throws
+    func moveDay(id: UUID, to position: Int) async throws
+    func deleteDay(id: UUID) async throws
+
+    @discardableResult
+    func addExercise(dayId: UUID, ref: ExerciseRef, input: RoutineExerciseInput) async throws -> RoutineExerciseSnapshot
+    func updateExercise(id: UUID, with input: RoutineExerciseInput) async throws
+    func moveExercise(id: UUID, to position: Int) async throws
+    func deleteExercise(id: UUID) async throws
+}
+
+public protocol WorkoutRepository: Sendable {
+    /// Creates a workout. With `endedAt == nil` it becomes the active one; throws `activeWorkoutExists` if the user
+    /// already has one. A draft with `endedAt` records finished history.
+    @discardableResult
+    func start(_ draft: WorkoutDraft, userId: UUID) async throws -> WorkoutSnapshot
+    func activeWorkout(userId: UUID) async throws -> WorkoutSnapshot?
+    func workout(id: UUID) async throws -> WorkoutSnapshot?
+    @discardableResult
+    func finish(id: UUID, at date: Date) async throws -> WorkoutSnapshot
+    func updateDetails(id: UUID, name: String?, notes: String?) async throws
+    /// Soft delete with the exercises and sets.
+    func delete(id: UUID) async throws
+
+    @discardableResult
+    func addExercise(workoutId: UUID, ref: ExerciseRef, supersetGroup: Int?) async throws -> WorkoutExerciseSnapshot
+    func moveExercise(id: UUID, to position: Int) async throws
+    func removeExercise(id: UUID) async throws
+
+    @discardableResult
+    func addSet(workoutExerciseId: UUID, input: SetInput) async throws -> SetSnapshot
+    func updateSet(id: UUID, with input: SetInput) async throws
+    func removeSet(id: UUID) async throws
+
+    /// Workouts whose `startedAt` lies in `[from, to)`, newest first.
+    func workouts(userId: UUID, from: Date, to: Date) async throws -> [WorkoutSnapshot]
+    /// Finished sessions of an exercise that have at least one completed set, newest first.
+    func history(userId: UUID, ref: ExerciseRef, limit: Int) async throws -> [ExerciseSession]
+    /// Completed sets of the exercise's most recent finished session (empty when never done).
+    func lastSets(userId: UUID, ref: ExerciseRef) async throws -> [SetSnapshot]
+    /// Distinct exercises of the most recent finished workouts, newest first.
+    func recentExercises(userId: UUID, limit: Int) async throws -> [ExerciseRef]
+    /// Stores the sets reported during onboarding as one finished workout (source = onboarding), replacing an earlier
+    /// one. A `nil` or empty draft only removes the earlier workout.
+    func replaceOnboardingWorkout(_ draft: WorkoutDraft?, userId: UUID) async throws
+}
+
+/// Ordered child rows share this so reordering is written once.
+protocol Positioned: SyncableRecord {
+    var position: Int { get set }
+}
+
+extension SchemaV4.RoutineDay: Positioned {}
+extension SchemaV4.RoutineExercise: Positioned {}
+extension SchemaV4.WorkoutExercise: Positioned {}
+extension SchemaV4.SetEntry: Positioned {}
+
+enum Ordering {
+    /// Renumbers `items` 0…n-1 in their current order; only changed rows are marked pending.
+    static func compact<T: Positioned>(_ items: [T], at now: Date) {
+        for (index, item) in items.sorted(by: { $0.position < $1.position }).enumerated() where item.position != index {
+            item.position = index
+            item.markPending(at: now)
+        }
+    }
+
+    /// Moves the item with `id` to `target` (clamped) and renumbers the rest without gaps.
+    static func move<T: Positioned>(_ items: [T], id: UUID, to target: Int, at now: Date) throws {
+        var ordered = items.sorted { $0.position < $1.position }
+        guard let from = ordered.firstIndex(where: { $0.id == id }) else { throw DataError.notFound }
+        let item = ordered.remove(at: from)
+        ordered.insert(item, at: min(max(target, 0), ordered.count))
+        for (index, entry) in ordered.enumerated() where entry.position != index {
+            entry.position = index
+            entry.markPending(at: now)
+        }
+    }
+}

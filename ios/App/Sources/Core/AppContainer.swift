@@ -98,6 +98,7 @@ final class AppContainer {
             measurements: SwiftDataMeasurementRepository(modelContainer: modelContainer),
             consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
             health: health,
+            workouts: SwiftDataWorkoutRepository(modelContainer: modelContainer),
             localeCode: language.effectiveLocale().language.languageCode?.identifier ?? "en"
         )
     }
