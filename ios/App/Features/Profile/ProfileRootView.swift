@@ -6,12 +6,14 @@ import SwiftUI
 struct ProfileRootView: View {
     let model: ProfileModel
     @Environment(\.locale) private var locale
+    @Environment(AppContainer.self) private var container
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.lg) {
                 header
                 stats
+                if let sync = container.sync, sync.isAvailable { SyncStatusCard(sync: sync) }
                 VStack(spacing: Spacing.sm) {
                     row("profile.row.edit", icon: "person.text.rectangle", route: .editProfile, id: "profile-edit")
                     row("profile.row.measurements", icon: "scalemass", route: .measurements, id: "profile-measurements")

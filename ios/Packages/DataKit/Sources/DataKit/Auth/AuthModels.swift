@@ -38,11 +38,14 @@ public struct IDTokenCredential: Sendable, Equatable {
     public let accessToken: String?
     /// The raw (un-hashed) nonce that was bound to the token, if any.
     public let nonce: String?
+    /// Sign in with Apple's one-time authorization code; `delete-account` exchanges it to revoke the user's tokens.
+    public let authorizationCode: String?
 
-    public init(idToken: String, accessToken: String? = nil, nonce: String? = nil) {
+    public init(idToken: String, accessToken: String? = nil, nonce: String? = nil, authorizationCode: String? = nil) {
         self.idToken = idToken
         self.accessToken = accessToken
         self.nonce = nonce
+        self.authorizationCode = authorizationCode
     }
 }
 

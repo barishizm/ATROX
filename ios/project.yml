@@ -88,6 +88,9 @@ targets:
         UILaunchScreen: {}
         # Live Activity for the active workout (P038); the extension is ATROXWidgets.
         NSSupportsLiveActivities: true
+        # Opportunistic background sync (P045, BackgroundSync.swift).
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh]
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
@@ -128,7 +131,7 @@ targets:
     #   - In-App Purchase               (StoreKit 2 subscriptions)
     #   - Push Notifications            (rest timer / coach reminders)
     #   - Associated Domains            (universal links / Google sign-in callback)
-    #   - Background Modes              (background sync, Live Activity updates)
+    #   - Background Modes              (Live Activity push updates; background fetch for sync is in Info.plist, P045)
     # Widgets extension (WidgetKit + Live Activity): ATROXWidgets below (P038).
 
   # Workout Live Activity and Dynamic Island (P038). `Shared` holds the attributes and App Intents used by both targets.

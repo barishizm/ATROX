@@ -1,6 +1,7 @@
 import DataKit
 import Foundation
 import Observation
+import StrengthKit
 import SwiftData
 
 /// Composition root: holds the app's dependencies and is handed down via `Environment`.
@@ -15,8 +16,12 @@ final class AppContainer {
     let root: AppRootModel
     let language: LanguageSettings
     let appearance: AppearanceSettings
-    /// Fake until the export/delete Edge Functions exist (after P045).
+    /// Export / account deletion: the Edge Functions in production (P045), a fake in tests and unconfigured builds.
     let accountService: any AccountService
+    /// Sync with the server (P044/P045); nil without a local store. Inert (`isAvailable == false`) without Supabase.
+    let sync: SyncCoordinator?
+    @ObservationIgnored var saveObserver: (any NSObjectProtocol)?
+    @ObservationIgnored private var workoutEventsTask: Task<Void, Never>?
     let authFlow: AuthFlowModel
     let passwordRecovery: PasswordRecoveryModel
     /// Local SwiftData store (app group container); nil only in tests that do not need persistence.
@@ -51,8 +56,10 @@ final class AppContainer {
         modelContainer: ModelContainer? = nil,
         health: any HealthService = UnavailableHealthService(),
         catalog: CatalogService? = nil,
-        exerciseImageBaseURL: URL? = nil
+        exerciseImageBaseURL: URL? = nil,
+        sync: SyncCoordinator? = nil
     ) {
+        self.sync = sync
         self.exerciseImageBaseURL = exerciseImageBaseURL
         self.health = health
         self.catalog = catalog
@@ -72,6 +79,18 @@ final class AppContainer {
         )
         self.passwordRecovery = PasswordRecoveryModel(service: authService)
         installRestIntentHandler()
+        observeLocalSaves()
+    }
+
+    // MARK: Sync (P045)
+
+    /// Sign-out from the UI: the device's copy of the user's data is removed, then the session ends.
+    func signOut() async {
+        workoutEventsTask?.cancel()
+        workoutEventsTask = nil
+        workoutSession = nil
+        await sync?.signOut()
+        await root.signOut()
     }
 
     /// Lets the Live Activity buttons ("skip", "+15 s") drive the rest timer (P038).
@@ -104,7 +123,7 @@ final class AppContainer {
     }
 
     /// The signed-in user, or nil when signed out / auth is not configured.
-    private func currentUser() async -> AuthUser? {
+    func currentUser() async -> AuthUser? {
         guard let authService else { return nil }
         switch await authService.restoreSession() {
         case .signedIn(let user), .passwordRecovery(let user): return user
@@ -212,9 +231,37 @@ final class AppContainer {
             routines: SwiftDataRoutineRepository(modelContainer: modelContainer),
             records: SwiftDataPersonalRecordService(modelContainer: modelContainer)
         )
+        session.progression = await progressionContext(userId: user.id, modelContainer: modelContainer)
         _ = try? await session.restore()
         workoutSession = session
+        workoutEventsTask?.cancel()
+        let events = session.events()
+        workoutEventsTask = Task { [sync] in
+            for await event in events {
+                if case .workoutFinished = event { sync?.request(.workoutFinished) }
+            }
+        }
         return session
+    }
+
+    /// What the progression engine (P043) needs: the user's smallest loadable step and each catalog exercise's jump class.
+    func progressionContext(userId: UUID, modelContainer: ModelContainer) async -> ProgressionContext {
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: userId)
+        let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
+        let context = ModelContext(modelContainer)
+        let classes = Dictionary(
+            ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
+                ($0.id, LoadClass.classify(movementPattern: $0.movementPattern, mechanic: $0.mechanic))
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return ProgressionContext(
+            roundingStepKg: unit.kilograms(from: PlateRounding.step(for: unit)),
+            loadClass: { ref in
+                if case .catalog(let id) = ref { return classes[id] ?? .upperCompound }
+                return .upperCompound
+            }
+        )
     }
 
     /// Screen model of the active workout (P036) around the shared `WorkoutSession`; nil without user or store.
@@ -224,6 +271,7 @@ final class AppContainer {
         let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
         let locale = language.effectiveLocale()
         let userId = user.id
+        session.progression = await progressionContext(userId: userId, modelContainer: modelContainer)
         let model = ActiveWorkoutModel(
             session: session, unit: unit, showsRir: WorkoutPreferences.showsRir(),
             autoStartsRest: WorkoutPreferences.autoStartsRest(),
@@ -345,7 +393,7 @@ final class AppContainer {
             userId: userId,
             service: accountService,
             confirmationWord: DeleteConfirmation.word(for: language.effectiveLocale())
-        ) { [root] in await root.signOut() }
+        ) { [weak self] in await self?.signOut() }
     }
 
     /// Production wiring.
@@ -377,14 +425,22 @@ final class AppContainer {
                 catalog: store.map { CatalogService(modelContainer: $0) }
             )
         }
-        let auth = SupabaseAuthService(
-            configuration: config, apple: AppleIDTokenProvider(), google: GoogleIDTokenProvider()
-        )
+        let apple = AppleIDTokenProvider()
+        let auth = SupabaseAuthService(configuration: config, apple: apple, google: GoogleIDTokenProvider())
+        let accessToken: SupabaseRemoteStore.AccessToken = { await auth.accessToken() }
+        // Apple users confirm once more with Apple so the server can revoke their Sign in with Apple tokens.
+        let appleCode: @Sendable () async -> String? = {
+            guard await auth.hasAppleIdentity() else { return nil }
+            return try? await apple.credential().authorizationCode
+        }
+        let account = SupabaseAccountService(configuration: config, accessToken: accessToken, appleAuthorizationCode: appleCode)
+        let remote = SupabaseRemoteStore(configuration: config, accessToken: accessToken)
         return AppContainer(
-            sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store,
+            sessionService: AuthSessionService(auth: auth), authService: auth, accountService: account, modelContainer: store,
             health: HealthKitService(),
             catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) },
-            exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images")
+            exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images"),
+            sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) }
         )
     }
 

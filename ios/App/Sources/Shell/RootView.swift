@@ -13,11 +13,18 @@ struct RootView: View {
             case .loading: LoadingState()
             case .signedOut: AuthFlowView(model: container.authFlow)
             case .needsOnboarding: OnboardingFlowView()
-            case .ready: MainTabView()
+            case .ready:
+                MainTabView().overlay {
+                    if let sync = container.sync, case .restoring(let progress) = sync.phase {
+                        RestoreProgressView(progress: progress).transition(.opacity)
+                    }
+                }
             }
         }
         .animation(.default, value: root.state)
         .task { await root.start() }
+        // Sync follows the session (P045): sign-in starts it (with the first restore).
+        .task(id: root.state) { await container.sessionChanged(root.state) }
         .task { await container.passwordRecovery.listen() }
         .fullScreenCover(isPresented: .constant(container.passwordRecovery.isPresented)) {
             NewPasswordView(model: container.passwordRecovery)

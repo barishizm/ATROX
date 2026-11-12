@@ -10816,6 +10816,358 @@
           }
         }
       }
+    },
+    "progression.target %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target %1$@. %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hedef %1$@. %2$@"
+          }
+        }
+      }
+    },
+    "progression.addWeight %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every set hit the top of the range last time: add %@ and start the range over."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen sefer her sette aralığın üst sınırına ulaştın: %@ ekle ve aralığa yeniden başla."
+          }
+        }
+      }
+    },
+    "progression.addWeightFast %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last time felt easier than planned, so the jump is bigger: add %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen sefer planladığından kolaydı, bu yüzden artış büyük: %@ ekle."
+          }
+        }
+      }
+    },
+    "progression.addRep": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same weight, one more rep than your weakest set last time."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aynı ağırlık, geçen seferki en zayıf setinden bir tekrar fazla."
+          }
+        }
+      }
+    },
+    "progression.addRepsFast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last time felt easier than planned: same weight, two more reps."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen sefer planladığından kolaydı: aynı ağırlık, iki tekrar fazla."
+          }
+        }
+      }
+    },
+    "progression.holdHard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last time was harder than planned, so keep the same load."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen sefer planladığından zordu, bu yüzden aynı yükte kal."
+          }
+        }
+      }
+    },
+    "progression.recovery": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your last two sessions slipped: keep the load and recover."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son iki antrenman geriledi: yükü koru ve toparlan."
+          }
+        }
+      }
+    },
+    "progression.deload": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No progress for three sessions: drop the weight by a tenth to recover."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç antrenmandır ilerleme yok: toparlanmak için ağırlığı onda bir azalt."
+          }
+        }
+      }
+    },
+    "progression.addRepBodyweight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One more rep than last time."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen seferden bir tekrar fazla."
+          }
+        }
+      }
+    },
+    "sync.status.syncing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncing…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eşitleniyor…"
+          }
+        }
+      }
+    },
+    "sync.status.upToDate": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to date"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncel"
+          }
+        }
+      }
+    },
+    "sync.status.pending %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting to sync: %lld"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eşitlenmeyi bekleyen: %lld"
+          }
+        }
+      }
+    },
+    "sync.status.offline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the server, will retry"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunucuya ulaşılamıyor, yeniden denenecek"
+          }
+        }
+      }
+    },
+    "sync.status.failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync failed"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eşitleme başarısız"
+          }
+        }
+      }
+    },
+    "sync.status.failedRows %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't upload: %lld. Tap Sync now to try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yüklenemeyen: %lld. Yeniden denemek için Şimdi eşitle'ye dokun."
+          }
+        }
+      }
+    },
+    "sync.status.lastSynced %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last synced %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son eşitleme: %@"
+          }
+        }
+      }
+    },
+    "sync.status.never": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not synced yet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz eşitlenmedi"
+          }
+        }
+      }
+    },
+    "sync.action.now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync now"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdi eşitle"
+          }
+        }
+      }
+    },
+    "sync.restore.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restoring your data"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verilerin geri yükleniyor"
+          }
+        }
+      }
+    },
+    "sync.restore.detail %lld %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "account.signOut.unsynced %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld changes haven't reached the server yet and will be lost. Your other data stays in your account."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld değişiklik henüz sunucuya ulaşmadı ve kaybolacak. Diğer verilerin hesabında kalır."
+          }
+        }
+      }
+    },
+    "account.signOut.localData": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your data stays in your account and is removed from this device."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verilerin hesabında kalır ve bu cihazdan silinir."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -30,6 +30,7 @@ Saklama yerleri:
 | OpenRouter | API anahtarı | **Evet** | EF (`OPENROUTER_API_KEY`, staging ve prod ayrı) + PM |
 | OpenRouter | Aylık harcama limiti | Hayır | OpenRouter panelinde anahtar başına ayarlanır; değeri PM notuna yaz |
 | DeepSeek platformu | Yedek API anahtarı | **Evet** | EF (`DEEPSEEK_API_KEY`) + PM |
+| Apple Developer Program | Sign in with Apple token iptali (P045 `delete-account`): Team ID, Key ID, Services ID / bundle id, `.p8` | **Evet** (`.p8`) | EF (`APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_CLIENT_ID`, `APPLE_PRIVATE_KEY`; PEM, satır sonları `\n` olabilir). Yoksa iptal atlanır |
 | Google Cloud | iOS OAuth istemci kimliği (Client ID) | Hayır | xcconfig / Info.plist (`GIDClientID`) |
 | Google Cloud | Reversed Client ID (URL scheme) | Hayır | Info.plist (`project.yml` üzerinden) |
 | Google Cloud | Web OAuth istemcisi — Client ID + **Secret** | Secret **evet** | Secret: PM + Supabase Auth paneli; ID: PM notu |

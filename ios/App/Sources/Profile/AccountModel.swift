@@ -17,7 +17,7 @@ enum DeleteConfirmation {
 }
 
 /// Account actions: sign out, data export and the two-step account deletion.
-/// Export and deletion run against `AccountService` (a fake until the Edge Functions exist after P045).
+/// Export and deletion run against `AccountService` (the Edge Functions in production, P045).
 @MainActor
 @Observable
 final class AccountModel {

@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import StrengthKit
 
 /// The active workout engine (P035): a UI-free state machine over `WorkoutRepository`.
 ///
@@ -33,6 +34,12 @@ public final class WorkoutSession {
     public private(set) var previous: [UUID: [SetInput]] = [:]
     /// Rest seconds the routine plans per workout exercise id (only for workouts started from a routine day).
     public private(set) var programRest: [UUID: Int] = [:]
+
+    /// The progression engine's next-session target per workout exercise id (P043), with the reason it was chosen.
+    /// Missing when the exercise has no history yet.
+    public private(set) var suggestions: [UUID: ProgressionSuggestion] = [:]
+    /// Plate step and exercise classification the engine needs; the app sets it from the user's unit and the catalog.
+    public var progression = ProgressionContext()
 
     @ObservationIgnored private let workouts: any WorkoutRepository
     @ObservationIgnored private let routines: (any RoutineRepository)?
@@ -85,10 +92,9 @@ public final class WorkoutSession {
         workout = active
         phase = .active
         previous = [:]
-        for exercise in active.exercises {
-            previous[exercise.id] = try await lastTime(exercise.ref)
-        }
+        suggestions = [:]
         programRest = [:]
+        var targets: [UUID: RoutineExerciseInput] = [:]
         if let routineId = active.routineId, let dayId = active.routineDayId,
            let day = try await routines?.routine(id: routineId)?.days.first(where: { $0.id == dayId }) {
             // Match rows to exercises in order by reference (the user may have added or removed exercises).
@@ -96,8 +102,14 @@ public final class WorkoutSession {
             for exercise in active.exercises {
                 guard let index = rows.firstIndex(where: { $0.ref == exercise.ref }) else { continue }
                 programRest[exercise.id] = rows[index].input.restSeconds
+                targets[exercise.id] = rows[index].input
                 rows = rows[(index + 1)...]
             }
+        }
+        for exercise in active.exercises {
+            let found = try await lookup(exercise.ref, target: targets[exercise.id])
+            previous[exercise.id] = found.last
+            suggestions[exercise.id] = found.suggestion
         }
         return true
     }
@@ -110,6 +122,7 @@ public final class WorkoutSession {
         )
         workout = started
         previous = [:]
+        suggestions = [:]
         programRest = [:]
         phase = .active
     }
@@ -122,14 +135,14 @@ public final class WorkoutSession {
               let day = routine.days.first(where: { $0.id == dayId })
         else { throw WorkoutSessionError.unknownRoutineDay }
         var drafts: [WorkoutExerciseDraft] = []
-        var lastTimes: [[SetInput]] = []
+        var found: [(last: [SetInput], suggestion: ProgressionSuggestion?)] = []
         for row in day.exercises {
-            let last = try await lastTime(row.ref)
-            lastTimes.append(last)
+            let entry = try await lookup(row.ref, target: row.input)
+            found.append(entry)
             drafts.append(
                 WorkoutExerciseDraft(
                     ref: row.ref, supersetGroup: row.input.supersetGroup,
-                    sets: WorkoutPrefill.sets(target: row.input, last: last)
+                    sets: WorkoutPrefill.sets(target: row.input, last: entry.last, suggestion: entry.suggestion)
                 )
             )
         }
@@ -141,7 +154,9 @@ public final class WorkoutSession {
             userId: userId
         )
         workout = started
-        previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), lastTimes))
+        previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), found.map(\.last)))
+        suggestions = [:]
+        for (exercise, entry) in zip(started.exercises, found) { suggestions[exercise.id] = entry.suggestion }
         programRest = [:]
         for (exercise, row) in zip(started.exercises, day.exercises) {
             programRest[exercise.id] = row.input.restSeconds
@@ -176,6 +191,7 @@ public final class WorkoutSession {
         )
         workout = started
         previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), lastTimes))
+        suggestions = [:]
         programRest = [:]
         phase = .active
     }
@@ -296,6 +312,7 @@ public final class WorkoutSession {
         guard let removed = exercise(workoutExerciseId) else { throw activeOr(.unknownExercise) }
         try await workouts.removeExercise(id: workoutExerciseId)
         previous[workoutExerciseId] = nil
+        suggestions[workoutExerciseId] = nil
         try await reload()
         if removed.sets.contains(where: \.input.countsForScore) { try await recordsChanged(removed.ref) }
     }
@@ -309,6 +326,7 @@ public final class WorkoutSession {
         try await workouts.removeExercise(id: workoutExerciseId)
         try await workouts.moveExercise(id: newId, to: old.position)
         previous[workoutExerciseId] = nil
+        suggestions[workoutExerciseId] = nil
         try await reload()
         if old.sets.contains(where: \.input.countsForScore) { try await recordsChanged(old.ref) }
         return newId
@@ -375,24 +393,51 @@ public final class WorkoutSession {
         self.phase = phase
         workout = nil
         previous = [:]
+        suggestions = [:]
         programRest = [:]
     }
 
     // MARK: Helpers
 
     private func insertExercise(_ ref: ExerciseRef, into workoutId: UUID, supersetGroup: Int? = nil) async throws -> UUID {
-        let last = try await lastTime(ref)
+        let found = try await lookup(ref, target: nil)
         let row = try await workouts.addExercise(workoutId: workoutId, ref: ref, supersetGroup: supersetGroup)
-        for input in WorkoutPrefill.sets(target: nil, last: last) {
+        for input in WorkoutPrefill.sets(target: nil, last: found.last, suggestion: found.suggestion) {
             try await workouts.addSet(workoutExerciseId: row.id, input: input)
         }
-        previous[row.id] = last
+        previous[row.id] = found.last
+        suggestions[row.id] = found.suggestion
         try await reload()
         return row.id
     }
 
     private func lastTime(_ ref: ExerciseRef) async throws -> [SetInput] {
         try await workouts.lastSets(userId: userId, ref: ref).map(\.input)
+    }
+
+    /// How many finished sessions the progression engine looks at (it needs four to spot a three-session stall).
+    private static let progressionSessions = 6
+
+    /// Last time's completed sets plus the progression engine's target built from the recent sessions.
+    private func lookup(
+        _ ref: ExerciseRef, target: RoutineExerciseInput?
+    ) async throws -> (last: [SetInput], suggestion: ProgressionSuggestion?) {
+        let sessions = try await workouts.history(userId: userId, ref: ref, limit: Self.progressionSessions)
+        let last = sessions.first?.sets.map(\.input) ?? []
+        let history = sessions.map { session in
+            session.sets.map(\.input).filter { $0.setType != .warmup && $0.reps >= 1 }
+                .map { ProgressionSet(weightKg: $0.weightKg, reps: $0.reps, rir: $0.rir) }
+        }
+        let range = ProgressionEngine.defaultRepRange
+        let repMin = target?.targetRepsMin ?? target?.targetRepsMax ?? range.lowerBound
+        let repMax = target?.targetRepsMax ?? target?.targetRepsMin ?? range.upperBound
+        let suggestion = ProgressionEngine.suggest(
+            ProgressionInput(
+                history: history, repMin: repMin, repMax: repMax, targetRir: target?.targetRir,
+                loadClass: progression.loadClass(ref), roundingStepKg: progression.roundingStepKg
+            )
+        )
+        return (last, suggestion)
     }
 
     private func reload() async throws {
@@ -425,5 +470,16 @@ public final class WorkoutSession {
     private static func clean(_ text: String?) -> String? {
         let trimmed = text?.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed?.isEmpty == false ? trimmed : nil
+    }
+}
+
+/// What the progression engine needs from the app: the smallest loadable step and how big a jump each exercise takes.
+public struct ProgressionContext: Sendable {
+    public var roundingStepKg: Double
+    public var loadClass: @Sendable (ExerciseRef) -> LoadClass
+
+    public init(roundingStepKg: Double = 2.5, loadClass: @escaping @Sendable (ExerciseRef) -> LoadClass = { _ in .upperCompound }) {
+        self.roundingStepKg = roundingStepKg
+        self.loadClass = loadClass
     }
 }

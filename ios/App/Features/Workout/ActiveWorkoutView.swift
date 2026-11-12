@@ -269,6 +269,11 @@ struct ActiveWorkoutView: View {
             if let notes = card.notes {
                 Text(verbatim: notes).font(DSFont.caption).foregroundStyle(DSColor.textSecondary).textCase(nil)
             }
+            if let text = card.suggestionText {
+                Label { Text(verbatim: text) } icon: { Image(systemName: "chart.line.uptrend.xyaxis") }
+                    .font(DSFont.caption).foregroundStyle(DSColor.accent).textCase(nil)
+                    .accessibilityIdentifier("workout-suggestion")
+            }
             columnHeads
         }
     }

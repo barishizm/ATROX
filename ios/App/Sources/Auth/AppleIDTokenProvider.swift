@@ -50,7 +50,8 @@ extension AppleIDTokenProvider: ASAuthorizationControllerDelegate {
             let token = String(data: tokenData, encoding: .utf8),
             let nonce
         else { return finish(.failure(AuthError.providerUnavailable)) }
-        finish(.success(IDTokenCredential(idToken: token, nonce: nonce.raw)))
+        let code = apple.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
+        finish(.success(IDTokenCredential(idToken: token, nonce: nonce.raw, authorizationCode: code)))
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
