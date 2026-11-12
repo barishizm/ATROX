@@ -106,12 +106,14 @@ public actor SwiftDataRoutineRepository: RoutineRepository {
         let model = try live(RoutineExercise.self, id: id)
         model.apply(try input.validated())
         model.markPending(at: clock())
+        try normalizeSupersets(dayId: model.routineDayId)
         try modelContext.save()
     }
 
     public func moveExercise(id: UUID, to position: Int) throws {
         let model = try live(RoutineExercise.self, id: id)
         try Ordering.move(try exercises(of: model.routineDayId), id: id, to: position, at: clock())
+        try normalizeSupersets(dayId: model.routineDayId)
         try modelContext.save()
     }
 
@@ -120,6 +122,7 @@ public actor SwiftDataRoutineRepository: RoutineRepository {
         let now = clock()
         model.markDeleted(at: now)
         Ordering.compact(try exercises(of: model.routineDayId).filter { $0.id != id }, at: now)
+        try normalizeSupersets(dayId: model.routineDayId)
         try modelContext.save()
     }
 
@@ -184,6 +187,206 @@ public actor SwiftDataRoutineRepository: RoutineRepository {
                 targetRir: model.targetRir, supersetGroup: model.supersetGroup, restSeconds: model.restSeconds,
                 notes: model.notes
             )
+        )
+    }
+}
+
+extension SwiftDataRoutineRepository {
+    // MARK: Copies
+
+    @discardableResult
+    public func duplicate(routineId: UUID, name: String) throws -> RoutineSnapshot {
+        let source = try live(Routine.self, id: routineId)
+        let now = clock()
+        let copy = Routine(userId: source.userId, name: try Self.validName(name), notes: source.notes, now: now)
+        modelContext.insert(copy)
+        for day in try days(of: routineId) {
+            let newDay = RoutineDay(
+                userId: source.userId, routineId: copy.id, position: day.position, name: day.name, now: now
+            )
+            modelContext.insert(newDay)
+            for exercise in try exercises(of: day.id) { modelContext.insert(clone(exercise, into: newDay.id, now: now)) }
+        }
+        try modelContext.save()
+        return try snapshot(of: copy)
+    }
+
+    @discardableResult
+    public func duplicateDay(id: UUID, name: String) throws -> RoutineDaySnapshot {
+        let source = try live(RoutineDay.self, id: id)
+        let now = clock()
+        let copy = RoutineDay(
+            userId: source.userId, routineId: source.routineId, position: try days(of: source.routineId).count,
+            name: try Self.validName(name), now: now
+        )
+        modelContext.insert(copy)
+        for exercise in try exercises(of: id) { modelContext.insert(clone(exercise, into: copy.id, now: now)) }
+        try modelContext.save()
+        try Ordering.move(try days(of: source.routineId), id: copy.id, to: source.position + 1, at: now)
+        try modelContext.save()
+        return try daySnapshot(copy)
+    }
+
+    @discardableResult
+    public func duplicateExercise(id: UUID) throws -> RoutineExerciseSnapshot {
+        let source = try live(RoutineExercise.self, id: id)
+        let now = clock()
+        let copy = clone(source, into: source.routineDayId, now: now)
+        copy.position = try exercises(of: source.routineDayId).count
+        copy.supersetGroup = nil
+        modelContext.insert(copy)
+        try modelContext.save()
+        try Ordering.move(try exercises(of: source.routineDayId), id: copy.id, to: source.position + 1, at: now)
+        try normalizeSupersets(dayId: source.routineDayId)
+        try modelContext.save()
+        return Self.snapshot(of: copy)
+    }
+
+    // MARK: Supersets
+
+    public func setSuperset(exerciseIds: [UUID]) throws {
+        let unique = Array(Set(exerciseIds))
+        guard unique.count >= 2 else { throw DataError.invalidValue("supersetGroup") }
+        let chosen = try unique.map { try live(RoutineExercise.self, id: $0) }
+        guard let dayId = chosen.first?.routineDayId, chosen.allSatisfy({ $0.routineDayId == dayId }) else {
+            throw DataError.invalidValue("supersetGroup")
+        }
+        let now = clock()
+        let day = try exercises(of: dayId)
+        let group = (day.compactMap(\.supersetGroup).max() ?? 0) + 1
+        let members = day.filter { unique.contains($0.id) }
+        // The members take the place of the first one, in their current relative order.
+        var ordered = day.filter { !unique.contains($0.id) }
+        let firstIndex = day.firstIndex { $0.id == members[0].id } ?? 0
+        let insertAt = day[..<firstIndex].filter { !unique.contains($0.id) }.count
+        ordered.insert(contentsOf: members, at: insertAt)
+        for (index, exercise) in ordered.enumerated() {
+            let isMember = unique.contains(exercise.id)
+            if exercise.position != index || (isMember && exercise.supersetGroup != group) {
+                exercise.position = index
+                if isMember { exercise.supersetGroup = group }
+                exercise.markPending(at: now)
+            }
+        }
+        try normalizeSupersets(dayId: dayId)
+        try modelContext.save()
+    }
+
+    public func clearSuperset(exerciseId: UUID) throws {
+        let model = try live(RoutineExercise.self, id: exerciseId)
+        guard model.supersetGroup != nil else { return }
+        model.supersetGroup = nil
+        model.markPending(at: clock())
+        try normalizeSupersets(dayId: model.routineDayId)
+        try modelContext.save()
+    }
+
+    /// Superset groups must be runs of two or more neighbours. Each contiguous run keeps a group (the first one the
+    /// old number, later ones fresh numbers); lone members lose the group.
+    private func normalizeSupersets(dayId: UUID) throws {
+        let day = try exercises(of: dayId)
+        let now = clock()
+        var nextFresh = (day.compactMap(\.supersetGroup).max() ?? 0) + 1
+        var target: [UUID: Int?] = [:]
+        var index = 0
+        var seen: Set<Int> = []
+        while index < day.count {
+            guard let group = day[index].supersetGroup else { index += 1; continue }
+            var end = index
+            while end + 1 < day.count, day[end + 1].supersetGroup == group { end += 1 }
+            var number: Int?
+            if end > index {
+                if seen.insert(group).inserted {
+                    number = group
+                } else {
+                    number = nextFresh
+                    nextFresh += 1
+                }
+            }
+            for position in index...end { target[day[position].id] = .some(number) }
+            index = end + 1
+        }
+        for exercise in day {
+            guard let wanted = target[exercise.id] else { continue }
+            if exercise.supersetGroup != wanted {
+                exercise.supersetGroup = wanted
+                exercise.markPending(at: now)
+            }
+        }
+    }
+
+    // MARK: Undo
+
+    public func restore(_ snapshot: RoutineSnapshot) throws {
+        let now = clock()
+        let routineId = snapshot.id
+        var routineFetch = FetchDescriptor<Routine>(predicate: #Predicate { $0.id == routineId })
+        routineFetch.fetchLimit = 1
+        guard let routine = try modelContext.fetch(routineFetch).first else { throw DataError.notFound }
+        routine.name = snapshot.name
+        routine.notes = snapshot.notes
+        routine.deletedAt = nil
+        routine.markPending(at: now)
+
+        let allDays = try modelContext.fetch(FetchDescriptor<RoutineDay>(predicate: #Predicate { $0.routineId == routineId }))
+        var dayById = Dictionary(uniqueKeysWithValues: allDays.map { ($0.id, $0) })
+        let keptDays = Set(snapshot.days.map(\.id))
+        for day in allDays where !keptDays.contains(day.id) && !day.isSoftDeleted { try softDelete(day: day, at: now) }
+        for daySnapshot in snapshot.days {
+            let day: RoutineDay
+            if let existing = dayById[daySnapshot.id] {
+                day = existing
+            } else {
+                day = RoutineDay(
+                    id: daySnapshot.id, userId: routine.userId, routineId: routineId, position: daySnapshot.position,
+                    name: daySnapshot.name, now: now
+                )
+                modelContext.insert(day)
+                dayById[day.id] = day
+            }
+            day.name = daySnapshot.name
+            day.position = daySnapshot.position
+            day.deletedAt = nil
+            day.markPending(at: now)
+
+            let dayId = day.id
+            let allExercises = try modelContext.fetch(
+                FetchDescriptor<RoutineExercise>(predicate: #Predicate { $0.routineDayId == dayId })
+            )
+            let byId = Dictionary(uniqueKeysWithValues: allExercises.map { ($0.id, $0) })
+            let keptExercises = Set(daySnapshot.exercises.map(\.id))
+            for exercise in allExercises where !keptExercises.contains(exercise.id) && !exercise.isSoftDeleted {
+                exercise.markDeleted(at: now)
+            }
+            for exerciseSnapshot in daySnapshot.exercises {
+                if let exercise = byId[exerciseSnapshot.id] {
+                    exercise.position = exerciseSnapshot.position
+                    exercise.exerciseId = exerciseSnapshot.ref.catalogId
+                    exercise.customExerciseId = exerciseSnapshot.ref.customId
+                    exercise.apply(exerciseSnapshot.input)
+                    exercise.deletedAt = nil
+                    exercise.markPending(at: now)
+                } else {
+                    modelContext.insert(RoutineExercise(
+                        id: exerciseSnapshot.id, userId: routine.userId, routineDayId: dayId,
+                        position: exerciseSnapshot.position, ref: exerciseSnapshot.ref, input: exerciseSnapshot.input, now: now
+                    ))
+                }
+            }
+        }
+        try modelContext.save()
+    }
+
+    private func clone(_ exercise: RoutineExercise, into dayId: UUID, now: Date) -> RoutineExercise {
+        RoutineExercise(
+            userId: exercise.userId, routineDayId: dayId, position: exercise.position,
+            ref: exercise.ref ?? .catalog(exercise.exerciseId ?? ""),
+            input: RoutineExerciseInput(
+                targetSets: exercise.targetSets, targetRepsMin: exercise.targetRepsMin,
+                targetRepsMax: exercise.targetRepsMax, targetRir: exercise.targetRir,
+                supersetGroup: exercise.supersetGroup, restSeconds: exercise.restSeconds, notes: exercise.notes
+            ),
+            now: now
         )
     }
 }

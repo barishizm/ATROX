@@ -27,6 +27,7 @@ final class AppContainer {
     let catalog: CatalogService?
     /// Public Storage bucket with the exercise images (P027); nil without Supabase.
     let exerciseImageBaseURL: URL?
+    @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
 
     init(
         featureFlags: FeatureFlags = FeatureFlags(),
@@ -137,6 +138,38 @@ final class AppContainer {
         guard let modelContainer else { return nil }
         await ThumbnailLoader.shared.configure(storageBaseURL: exerciseImageBaseURL)
         return ExerciseDetailModel(id: id, modelContainer: modelContainer, userId: await currentUser()?.id)
+    }
+
+    /// The user's programs (P033); nil when there is no user or no local store.
+    func makeRoutineListModel() async -> RoutineListModel? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        return RoutineListModel(
+            userId: user.id, repository: SwiftDataRoutineRepository(modelContainer: modelContainer),
+            plan: planStore(for: user.id)
+        )
+    }
+
+    /// Editor of one program (P033); nil when there is no user or no local store.
+    func makeRoutineEditorModel(routineId: UUID) async -> RoutineEditorModel? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        let userId = user.id
+        return RoutineEditorModel(
+            routineId: routineId, repository: SwiftDataRoutineRepository(modelContainer: modelContainer),
+            plan: planStore(for: userId)
+        ) {
+            let context = ModelContext(modelContainer)
+            var items = ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map(ExerciseListItem.init)
+            let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
+            items += ((try? context.fetch(own)) ?? []).map(ExerciseListItem.init)
+            return items
+        }
+    }
+
+    private func planStore(for userId: UUID) -> RoutinePlanStore {
+        if let existing = planStores[userId] { return existing }
+        let store = RoutinePlanStore(userId: userId)
+        planStores[userId] = store
+        return store
     }
 
     func makeAccountModel(userId: UUID) -> AccountModel {
