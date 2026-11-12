@@ -44,7 +44,7 @@ Toplam: 104 adım.
 - [ ] **P026** · Türkçe çeviri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P028** · Katalog tohumlama ve uygulama içi eşitleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P029** · Kas haritası — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P029** · Kas haritası — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P030** · Hareket kütüphanesi — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P031** · Hareket detayı ve özel hareket — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 
@@ -224,3 +224,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P028) DataKit: `SchemaV2` (+ `Exercise`, `CatalogInfo`, hafif geçiş V1→V2, diskte eski depo geçişi testli), `CatalogService.bootstrap()` (ilk açılış/uygulama güncellemesi: paketten içe aktar, listede olmayanı arşivle) ve `syncRemote()` (sunucu sürümü yenisse, yüklü sürümün `published_at` tarihinden sonra değişen hareketleri çeker). İçe aktarma 876 hareket için ~0,33 sn (macOS, debug, bellek içi), hedef < 1 sn. Uygulama açılışında arka planda çalışır (`AppContainer.prepareCatalog`).
 - (P028) Özel hareketler (`custom_exercises`) yerel modeli P031'de; `Exercise.isCustom` henüz yok.
 - (P028) `ATROXTests`/UI testleri yerelde çalıştırılmadı; yalnızca DataKit paket testleri (81), Python testleri (84) ve uygulama derlemesi (iPhone 14 simülatörü) geçti.
+- (P029) Kas haritası yalnızca erkek modelini kullanıyor (yukarıdaki yolların kadın varyantı `bodyFemale*.ts` içe aktarılmadı); profil cinsiyetine göre model seçimi istenirse `convert.py`'a eklenir.
+- (P029) Eşleme boşlukları: `abductors` için ayrı bölge yok (gluteal bölgesine yaklaşık eşlendi); `lats` ve `middle_back` aynı upper-back bölgesini paylaşıyor (dokunuşta en yüksek yoğunluklu kas bildirilir); head/hands/feet/ankles/knees/tibialis nötr çizilir.
+- (P029) `MuscleMapView` simülatörde/VoiceOver ile elle sınanmadı; yalnızca `swift test` (DesignSystem) ve üretilen yolların SVG önizlemesi kontrol edildi.
+- (P029) Kas adları `DesignSystem/Resources/Muscles.xcstrings` tablosunda (ayrı tablo; `Localizable.xcstrings` Xcode yeniden biçimlendirmesiyle kirli olduğu için dokunulmadı).

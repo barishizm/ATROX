@@ -9,6 +9,7 @@ public struct ComponentGalleryView: View {
     @State private var isLoadingButton = false
     @State private var cardChoice = 0
     @State private var cardMulti: Set<Int> = [1]
+    @State private var tappedMuscle: Muscle?
 
     public init() {}
 
@@ -44,6 +45,31 @@ public struct ComponentGalleryView: View {
                         }
                     }
                     SecondaryButton("Şablon Seç", systemImage: "list.bullet") {}
+                }
+
+                section("Kas Haritası — Tek Hareket") {
+                    Card {
+                        VStack(spacing: Spacing.md) {
+                            MuscleMapView(
+                                primary: [.chest, .triceps], secondary: [.shoulders, .abdominals],
+                                style: .front
+                            ) { tappedMuscle = $0 }
+                            .frame(maxHeight: 360)
+                            Text(verbatim: "Bench Press · birincil: göğüs, triseps · ikincil: omuz, karın")
+                                .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+                            Text(verbatim: tappedMuscle.map { "Dokunulan: \($0.localizedName)" } ?? "Bir kasa dokun")
+                                .font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+
+                section("Kas Haritası — Isı Haritası") {
+                    Card {
+                        MuscleMapView(intensities: MuscleIntensities.heatmap(Self.sampleWeeklySets))
+                            .frame(maxHeight: 380)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
 
                 section("Seçim Kartları") {
@@ -117,6 +143,12 @@ public struct ComponentGalleryView: View {
         .preferredColorScheme(appearance.colorScheme)
         .accessibilityIdentifier("component-gallery")
     }
+
+    /// Fake weekly working sets per muscle for the heat-map example.
+    private static let sampleWeeklySets: [Muscle: Double] = [
+        .chest: 16, .lats: 14, .middleBack: 10, .quadriceps: 12, .hamstrings: 8, .glutes: 9, .shoulders: 12,
+        .biceps: 7, .triceps: 9, .abdominals: 6, .calves: 4, .traps: 5, .lowerBack: 3, .forearms: 2
+    ]
 
     private func section<C: View>(_ title: String, @ViewBuilder content: () -> C) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {

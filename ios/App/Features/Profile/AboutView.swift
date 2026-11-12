@@ -39,6 +39,9 @@ struct LicenseEntry: Identifiable, Equatable {
     static let all: [LicenseEntry] = [
         LicenseEntry(name: "supabase-swift", license: "MIT", url: URL(string: "https://github.com/supabase/supabase-swift")!),
         LicenseEntry(name: "GoogleSignIn-iOS", license: "Apache-2.0", url: URL(string: "https://github.com/google/GoogleSignIn-iOS")!),
+        LicenseEntry(
+            name: "react-native-body-highlighter (muscle map paths)", license: "MIT",
+            url: URL(string: "https://github.com/HichamELBSI/react-native-body-highlighter")!),
     ]
 }
 
