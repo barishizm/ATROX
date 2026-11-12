@@ -204,18 +204,28 @@ def upload_one(base: str, key: str, name: str, data: bytes) -> None:
 
 
 def upload(manifest: dict, out_dir: Path, base: str, key: str, *, dry_run: bool = False,
-           exists=remote_exists, put=upload_one) -> dict:
+           exists=remote_exists, put=upload_one, workers: int = 12, progress=None) -> dict:
     """Upload only files missing in the bucket. Names are content hashes, so 'exists' means 'unchanged'."""
+    from concurrent.futures import ThreadPoolExecutor
+
     base = base.rstrip("/")
-    uploaded, skipped = [], []
-    for name in manifest["files"]:
-        if exists(base, name):
-            skipped.append(name)
-            continue
-        if not dry_run:
+    names = list(manifest["files"])
+    done = 0
+
+    def one(name: str) -> tuple[str, bool]:
+        nonlocal done
+        present = exists(base, name)
+        if not present and not dry_run:
             put(base, key, name, (out_dir / name).read_bytes())
-        uploaded.append(name)
-    return {"uploaded": uploaded, "skipped": skipped, "dry_run": dry_run}
+        done += 1
+        if progress and (done % 100 == 0 or done == len(names)):
+            progress(done, len(names))
+        return name, present
+
+    with ThreadPoolExecutor(workers) as ex:
+        results = list(ex.map(one, names))  # keeps manifest order
+    return {"uploaded": [n for n, p in results if not p], "skipped": [n for n, p in results if p],
+            "dry_run": dry_run}
 
 
 # --- CLI -------------------------------------------------------------------------------------------------------
@@ -250,7 +260,8 @@ def main(argv: list[str] | None = None) -> int:
         print("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set", file=sys.stderr)
         return 2
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    res = upload(manifest, a.out, base_url, key, dry_run=a.dry_run)
+    res = upload(manifest, a.out, base_url, key, dry_run=a.dry_run,
+                 progress=lambda d, t: print(f"  {d}/{t}", flush=True))
     print(f"{'would upload' if a.dry_run else 'uploaded'} {len(res['uploaded'])}, unchanged {len(res['skipped'])}")
     return 0
 
