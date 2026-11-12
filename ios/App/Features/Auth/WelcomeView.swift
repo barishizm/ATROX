@@ -112,7 +112,7 @@ private struct AuthDebugTools: View {
 
     var body: some View {
         VStack(spacing: Spacing.xs) {
-            Button("auth.signin.debugContinue") { container.root.didSignIn(onboardingComplete: false) }
+            Button("auth.signin.debugContinue") { container.debugSignIn() }
                 .accessibilityIdentifier("auth-debug-continue")
             Button("debug.menu.open") { showDebugMenu = true }
                 .accessibilityIdentifier("auth-debug-menu")
