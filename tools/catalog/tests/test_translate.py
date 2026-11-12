@@ -176,12 +176,16 @@ def test_run_requires_approved_glossary_and_key(tmp_path, monkeypatch, capsys):
     assert "not approved" in capsys.readouterr().err
     assert T.main(["run", "--root", str(tmp_path), "--limit", "1", "--allow-unapproved-glossary"]) == 2
     assert "OPENROUTER_API_KEY" in capsys.readouterr().err
+    args = ["run", "--root", str(tmp_path), "--limit", "1", "--allow-unapproved-glossary", "--provider", "deepseek"]
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+    assert T.main(args) == 2
+    assert "DEEPSEEK_API_KEY" in capsys.readouterr().err
 
 
 def test_end_to_end_with_fake_llm(tmp_path, monkeypatch):
     small = BASE[:12]
     _workdir(tmp_path, small)
-    monkeypatch.setattr(T, "openrouter_client", lambda key, model: fake_client())
+    monkeypatch.setattr(T, "llm_client", lambda url, key, model: fake_client())
     monkeypatch.setenv("OPENROUTER_API_KEY", "k")
     assert T.main(["run", "--root", str(tmp_path), "--allow-unapproved-glossary"]) == 0
     tr = json.loads((tmp_path / "out" / "exercises.tr.json").read_text(encoding="utf-8"))

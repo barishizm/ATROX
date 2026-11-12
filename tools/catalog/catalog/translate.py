@@ -25,8 +25,11 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 MODEL = "deepseek/deepseek-v4.1-flash"
+PROVIDERS = {  # name -> (chat-completions URL, API-key env var, default model)
+    "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY", MODEL),
+    "deepseek": ("https://api.deepseek.com/chat/completions", "DEEPSEEK_API_KEY", "deepseek-flash"),
+}
 PROMPT_VERSION = 1
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 APPROVED_VALUES = {"1", "yes", "y", "true", "x", "evet", "e"}
 CSV_COLUMNS = ["id", "name_en", "name_tr", "aliases_tr", "aliases_en", "instructions_tr", "approved"]
 
@@ -139,13 +142,13 @@ class Glossary:
 
 # ---------------------------------------------------------------- LLM
 
-def openrouter_client(api_key: str, model: str = MODEL, retries: int = 4) -> Client:
+def llm_client(url: str, api_key: str, model: str, retries: int = 4) -> Client:
     def call(messages: list[dict]) -> str:
         body = json.dumps({"model": model, "messages": messages, "temperature": 0,
                            "response_format": {"type": "json_object"}}).encode()
-        req = urllib.request.Request(OPENROUTER_URL, data=body, headers={
+        req = urllib.request.Request(url, data=body, headers={
             "Authorization": f"Bearer {api_key}", "Content-Type": "application/json",
-            "X-Title": "atrox-catalog"})
+            "X-Title": "atrox-catalog"})  # generic client name only
         for attempt in range(retries):
             try:
                 with urllib.request.urlopen(req, timeout=180) as r:
@@ -354,7 +357,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("command", choices=["run", "review", "sample", "check"])
     ap.add_argument("--root", type=Path, default=ROOT)
-    ap.add_argument("--model", default=MODEL)
+    ap.add_argument("--provider", choices=sorted(PROVIDERS), default="openrouter")
+    ap.add_argument("--model", help="default depends on --provider")
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--limit", type=int, help="run: translate only the first N untranslated exercises")
     ap.add_argument("--dry-run", action="store_true", help="run: count what would be requested, call nothing")
@@ -363,6 +367,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--seed", type=int, default=26)
     a = ap.parse_args(argv)
 
+    url, key_env, default_model = PROVIDERS[a.provider]
+    a.model = a.model or default_model
     root = a.root
     base, core_ids = _load(root)
     by_id = {e["id"]: e for e in base}
@@ -383,11 +389,11 @@ def main(argv: list[str] | None = None) -> int:
             if not glossary.approved and not a.allow_unapproved_glossary:
                 print("glossary.tr.yaml is not approved (approved: false); get it approved first.", file=sys.stderr)
                 return 2
-            key = os.environ.get("OPENROUTER_API_KEY")
+            key = os.environ.get(key_env)
             if not key:
-                print("OPENROUTER_API_KEY is not set.", file=sys.stderr)
+                print(f"{key_env} is not set.", file=sys.stderr)
                 return 2
-            st = translate_missing(need, glossary, cache, openrouter_client(key, a.model), model=a.model,
+            st = translate_missing(need, glossary, cache, llm_client(url, key, a.model), model=a.model,
                                    batch_size=a.batch_size, log=print)
             print(f"requested={st['requested']} calls={st['calls']} failed={len(st['failed'])}")
         resolved = resolve_all(base, glossary, cache, locked, a.model)
