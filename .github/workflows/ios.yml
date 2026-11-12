@@ -21,7 +21,17 @@ permissions:
 
 env:
   SIMULATOR_NAME: iPhone 17
+  # Pinned tools: same versions Homebrew installed before pinning, checksums of the release zips.
+  SWIFTLINT_VERSION: 0.65.1
+  SWIFTLINT_SHA256: c1e429b0599cf1b516f369a2d9ec04eaf0e436f3c12b637df8851fa52ff694d0
+  XCODEGEN_VERSION: 2.46.0
+  XCODEGEN_SHA256: 4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806
 
+# Layout (the repo is public, so parallel macOS runners cost nothing):
+#   lint ─┐
+#   packages ─┤  (independent)
+#   build ──> test matrix: unit + 3 UI shards, each on its own runner and its own single simulator.
+# Inside every shard tests still run one at a time (-parallel-testing-enabled NO).
 jobs:
   lint:
     name: SwiftLint
@@ -29,16 +39,23 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Install SwiftLint
-        run: brew install swiftlint
+      - name: Install SwiftLint ${{ env.SWIFTLINT_VERSION }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o swiftlint.zip \
+            "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/portable_swiftlint.zip"
+          echo "${SWIFTLINT_SHA256}  swiftlint.zip" | shasum -a 256 -c -
+          unzip -q swiftlint.zip -d swiftlint
+          echo "$RUNNER_TEMP/swiftlint" >> "$GITHUB_PATH"
       - name: Lint
         # Not --strict: 54 pre-existing warnings are deferred (docs/ILERLEME.md). Errors fail the job.
         run: swiftlint lint --reporter github-actions-logging
 
-  test:
-    name: Build & test
+  packages:
+    name: Package tests
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -49,23 +66,12 @@ jobs:
             ~/Library/Caches/org.swift.swiftpm
             ~/Library/org.swift.swiftpm
             ios/Packages/*/.build
-            ${{ runner.temp }}/SourcePackages
-          key: spm-${{ runner.os }}-${{ hashFiles('ios/Packages/*/Package.swift', 'ios/Packages/*/Package.resolved', 'ios/project.yml') }}
+          key: spm-packages-${{ runner.os }}-${{ hashFiles('ios/Packages/*/Package.swift', 'ios/Packages/*/Package.resolved') }}
           restore-keys: |
+            spm-packages-${{ runner.os }}-
             spm-${{ runner.os }}-
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      # Secrets.xcconfig is gitignored; Base.xcconfig includes it optionally.
-      # CI never has real keys, so fall back to the checked-in example.
-      - name: Provide Secrets.xcconfig
-        run: |
-          if [ ! -f ios/Config/Secrets.xcconfig ]; then
-            cp ios/Config/Secrets.example.xcconfig ios/Config/Secrets.xcconfig
-          fi
-
-      - name: Package tests
+      - name: swift test (DataKit, CoachKit)
         run: |
           set -euo pipefail
           # StrengthKit is tested on Linux by core.yml; no need to run it again here.
@@ -85,12 +91,47 @@ jobs:
             -scheme DesignSystem \
             -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}"
 
+  build:
+    name: Build for testing
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache SwiftPM
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+            ${{ runner.temp }}/SourcePackages
+          key: spm-app-${{ runner.os }}-${{ hashFiles('ios/Packages/*/Package.swift', 'ios/Packages/*/Package.resolved', 'ios/project.yml') }}
+          restore-keys: |
+            spm-app-${{ runner.os }}-
+            spm-${{ runner.os }}-
+
+      - name: Install XcodeGen ${{ env.XCODEGEN_VERSION }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o xcodegen.zip \
+            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
+          echo "${XCODEGEN_SHA256}  xcodegen.zip" | shasum -a 256 -c -
+          unzip -q xcodegen.zip
+          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+
+      # Secrets.xcconfig is gitignored; Base.xcconfig includes it optionally.
+      # CI never has real keys, so fall back to the checked-in example.
+      - name: Provide Secrets.xcconfig
+        run: |
+          if [ ! -f ios/Config/Secrets.xcconfig ]; then
+            cp ios/Config/Secrets.example.xcconfig ios/Config/Secrets.xcconfig
+          fi
+
       - name: Generate Xcode project
         working-directory: ios
         run: xcodegen generate
 
-      # Build once, then run the fast unit tests before the slow UI tests so a unit failure
-      # stops the job early. One simulator, no parallel testing (UI tests are timing-sensitive).
       - name: Build for testing
         run: |
           set -euo pipefail
@@ -102,38 +143,109 @@ jobs:
             -clonedSourcePackagesDirPath "$RUNNER_TEMP/SourcePackages" \
             -skipPackagePluginValidation
 
-      - name: App unit tests
+      # tar keeps symlinks and permissions inside the .app / .xctest bundles.
+      - name: Pack test products
         run: |
           set -euo pipefail
-          xcodebuild test-without-building \
-            -project ios/ATROX.xcodeproj \
-            -scheme ATROX \
-            -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
-            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            -only-testing:ATROXTests \
-            -parallel-testing-enabled NO \
-            -resultBundlePath "$RUNNER_TEMP/Unit.xcresult"
+          ls "$RUNNER_TEMP"/DerivedData/Build/Products/*.xctestrun
+          tar -cf "$RUNNER_TEMP/products.tar" -C "$RUNNER_TEMP/DerivedData/Build" Products
+          du -h "$RUNNER_TEMP/products.tar"
 
-      - name: App UI tests
-        # A UI test that fails once is re-run once before the job fails.
+      - name: Upload test products
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-products
+          path: ${{ runner.temp }}/products.tar
+          compression-level: 1
+          retention-days: 1
+
+  test:
+    name: ${{ matrix.name }}
+    needs: build
+    runs-on: macos-26
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: unit
+            name: App unit tests
+            args: -only-testing:ATROXTests
+          # UI shards: a UI test that fails once is re-run once before the job fails.
+          - id: ui-auth
+            name: UI tests (auth, launch)
+            args: >-
+              -only-testing:ATROXUITests/AuthFlowUITests -only-testing:ATROXUITests/LaunchTests
+              -retry-tests-on-failure -test-iterations 2
+          - id: ui-onboarding
+            name: UI tests (onboarding)
+            args: >-
+              -only-testing:ATROXUITests/OnboardingUITests
+              -retry-tests-on-failure -test-iterations 2
+          # Catch-all: every UI test class not listed above (Profile today, any new class later).
+          - id: ui-rest
+            name: UI tests (profile, other)
+            args: >-
+              -only-testing:ATROXUITests
+              -skip-testing:ATROXUITests/AuthFlowUITests -skip-testing:ATROXUITests/LaunchTests
+              -skip-testing:ATROXUITests/OnboardingUITests
+              -retry-tests-on-failure -test-iterations 2
+    steps:
+      # Boot first so the simulator comes up while the products download.
+      # Same device xcodebuild's `name=` picks: the newest iOS runtime.
+      - name: Boot simulator
         run: |
           set -euo pipefail
+          udid="$(xcrun simctl list devices available -j | jq -r --arg name "$SIMULATOR_NAME" '
+            [.devices | to_entries[]
+              | select(.key | test("SimRuntime\\.iOS-"))
+              | {v: (.key | capture("iOS-(?<v>[0-9-]+)$").v | split("-") | map(tonumber)), d: .value[]}
+              | select(.d.name == $name)]
+            | sort_by(.v) | last | .d.udid // empty')"
+          if [ -z "$udid" ]; then
+            echo "::error::No available simulator named '$SIMULATOR_NAME'"
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "SIM_UDID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl boot "$udid" || true   # already booted is fine
+          echo "Booting $SIMULATOR_NAME ($udid)"
+
+      - name: Download test products
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: test-products
+          path: ${{ runner.temp }}
+
+      - name: Unpack test products
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/Build"
+          tar -xf "$RUNNER_TEMP/products.tar" -C "$RUNNER_TEMP/Build"
+          xctestrun="$(find "$RUNNER_TEMP/Build/Products" -maxdepth 1 -name '*.xctestrun' | head -n 1)"
+          test -n "$xctestrun" || { echo "::error::No .xctestrun in test products"; exit 1; }
+          echo "XCTESTRUN=$xctestrun" >> "$GITHUB_ENV"
+
+      - name: Wait for simulator
+        run: xcrun simctl bootstatus "$SIM_UDID" -b
+
+      - name: Run tests
+        env:
+          TEST_ARGS: ${{ matrix.args }}
+        run: |
+          set -euo pipefail
+          read -ra extra <<< "$TEST_ARGS"
           xcodebuild test-without-building \
-            -project ios/ATROX.xcodeproj \
-            -scheme ATROX \
-            -destination "platform=iOS Simulator,name=${SIMULATOR_NAME}" \
-            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
-            -only-testing:ATROXUITests \
+            -xctestrun "$XCTESTRUN" \
+            -destination "id=${SIM_UDID}" \
             -parallel-testing-enabled NO \
-            -retry-tests-on-failure -test-iterations 2 \
-            -resultBundlePath "$RUNNER_TEMP/UI.xcresult"
+            -resultBundlePath "$RUNNER_TEMP/${{ matrix.id }}.xcresult" \
+            "${extra[@]}"
 
       - name: Upload test results on failure
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: xcresult
-          path: |
-            ${{ runner.temp }}/Unit.xcresult
-            ${{ runner.temp }}/UI.xcresult
+          name: xcresult-${{ matrix.id }}
+          path: ${{ runner.temp }}/${{ matrix.id }}.xcresult
           retention-days: 7

@@ -109,7 +109,10 @@ final class AuthFlowUITests: XCTestCase {
         for attempt in 0..<3 {
             if attempt == 0 {
                 field.tap()
-                dismissStrongPasswordSuggestion(in: app)
+                // Only password fields get the suggestion; waiting for it on other fields costs ~4 s each.
+                if field.elementType == .secureTextField {
+                    dismissStrongPasswordSuggestion(in: app)
+                }
             }
             field.typeText(text)
             let typed = (field.value as? String) ?? ""
