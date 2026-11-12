@@ -1,0 +1,118 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "liveactivity.intent.skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip rest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinlenmeyi atla"
+          }
+        }
+      }
+    },
+    "liveactivity.intent.extend": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add 15 seconds of rest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinlenmeye 15 sn ekle"
+          }
+        }
+      }
+    },
+    "liveactivity.rest": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dinlenme"
+          }
+        }
+      }
+    },
+    "liveactivity.skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atla"
+          }
+        }
+      }
+    },
+    "liveactivity.extend": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+15 s"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+15 sn"
+          }
+        }
+      }
+    },
+    "liveactivity.finished": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workout complete"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman tamamlandı"
+          }
+        }
+      }
+    },
+    "liveactivity.summary %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld sets"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld set"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

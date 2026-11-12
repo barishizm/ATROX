@@ -39,6 +39,7 @@ LEGAL_PRIVACY_URL = https:/$(SLASH)example.com/privacy
 
 // ---- Entitlements (overridable) ----
 APP_ENTITLEMENTS_FILE = App/ATROX.entitlements
+WIDGET_ENTITLEMENTS_FILE = Widgets/ATROXWidgets.entitlements
 
 // ---- Personal device overrides (gitignored, optional). See Config/Personal.example.xcconfig. ----
 #include? "Personal.xcconfig"

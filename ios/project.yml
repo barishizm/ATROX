@@ -69,7 +69,9 @@ targets:
       - path: App/Features
       - path: App/Resources
         optional: true
+      - path: Shared
     dependencies:
+      - target: ATROXWidgets
       - package: StrengthKit
       - package: DataKit
       - package: DesignSystem
@@ -84,6 +86,8 @@ targets:
         CFBundleDisplayName: $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
         CFBundleLocalizations: [en, tr]
         UILaunchScreen: {}
+        # Live Activity for the active workout (P038); the extension is ATROXWidgets.
+        NSSupportsLiveActivities: true
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
@@ -125,7 +129,30 @@ targets:
     #   - Push Notifications            (rest timer / coach reminders)
     #   - Associated Domains            (universal links / Google sign-in callback)
     #   - Background Modes              (background sync, Live Activity updates)
-    # Also later: Widgets extension target (WidgetKit + Live Activity).
+    # Widgets extension (WidgetKit + Live Activity): ATROXWidgets below (P038).
+
+  # Workout Live Activity and Dynamic Island (P038). `Shared` holds the attributes and App Intents used by both targets.
+  ATROXWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets/Sources
+      - path: Widgets/Resources
+        optional: true
+      - path: Shared
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
+        CFBundleLocalizations: [en, tr]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX).widgets
+        # App group shared with the app; Config/Personal.xcconfig swaps in an empty file for free Apple IDs.
+        CODE_SIGN_ENTITLEMENTS: $(WIDGET_ENTITLEMENTS_FILE)
+        SKIP_INSTALL: YES
 
   ATROXTests:
     type: bundle.unit-test
