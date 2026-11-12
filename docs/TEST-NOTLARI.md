@@ -43,3 +43,13 @@ yaşar.
 5. **Ayarlar.** Ayarlar → Bar ve plakalar: bir plakayı kapat (ör. 25 kg), hesaplayıcıda artık kullanılmadığını doğrula.
 6. **Isınma.** Bir hareketin ilk setine çalışma ağırlığı yaz (ör. 100 kg), hareket menüsünden "Isınma setleri ekle": bar ×10,
    40 ×8, 60 ×5, 80 ×3 ısınma (W) setleri en üste eklenir, çalışma setleri aşağı kayar. Ağırlık yokken menü öğesi pasif.
+
+## P040 — Rekor tespiti (elle doğrulama)
+
+1. **İlk kayıt.** Hiç yapılmamış bir harekette ilk seti tamamla: rozet çıkmaz.
+2. **Rekor.** Aynı harekette sonraki antrenmanda daha ağır (veya aynı ağırlıkta daha çok tekrar) bir seti tamamla: satırda kupa rozeti
+   ve hafif zıplama + haptik. Eşit değer rozet vermez; ısınma seti vermez.
+3. **Geri alma / düzenleme.** Rozetli seti geri al veya ağırlığını değiştir: rozet kalkar; yeni değer yine rekorsa tamamlayınca döner.
+4. **Aykırı değer.** Önceki en iyiden ~%15 fazla e1RM'li set: "Bu seti doğru mu girdin?" sorusu. Evet → rozet; Düzelt → ağırlık tuş takımı açılır.
+5. **Silme.** Rekoru taşıyan antrenmanı iptal et/sil: bir sonraki daha hafif set önceki en iyiye göre yeniden değerlendirilir.
+

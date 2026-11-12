@@ -121,6 +121,14 @@ struct ActiveWorkoutView: View {
             }
             Button("workout.cancel.keep", role: .cancel) { noting = nil }
         }
+        .sensoryFeedback(.success, trigger: model.recordCelebrations)
+        .animation(.snappy, value: model.recordCelebrations)
+        .alert("workout.record.confirm.title", isPresented: Binding(get: { model.recordToConfirm != nil }, set: { _ in })) {
+            Button("workout.record.confirm.yes") { model.confirmRecord() }
+            Button("workout.record.confirm.fix", role: .cancel) { Task { await model.reviseRecordSet() } }
+        } message: {
+            Text("workout.record.confirm.message")
+        }
         .alert("workout.error.title", isPresented: Binding(get: { model.errorKey != nil }, set: { if !$0 { model.errorKey = nil } })) {
             Button("workout.ok", role: .cancel) {}
         } message: {
@@ -227,9 +235,13 @@ struct ActiveWorkoutView: View {
         let tint = row.isCompleted ? DSColor.textPrimary : DSColor.textSecondary
         return HStack(spacing: Spacing.sm) {
             typeMenu(row)
-            Text(verbatim: row.previousText ?? "—")
-                .font(DSFont.callout).foregroundStyle(DSColor.textTertiary).monospacedDigit()
-                .frame(maxWidth: .infinity)
+            if let record = row.record {
+                recordBadge(record, celebrations: model.recordCelebrations)
+            } else {
+                Text(verbatim: row.previousText ?? "—")
+                    .font(DSFont.callout).foregroundStyle(DSColor.textTertiary).monospacedDigit()
+                    .frame(maxWidth: .infinity)
+            }
             field(editingWeight ? liveText(model.editing) : row.weightText, active: editingWeight, tint: tint, width: 72)
                 .onTapGesture { Task { await model.beginEditing(row.id, field: .weight) } }
                 .onLongPressGesture(minimumDuration: 0.4) {

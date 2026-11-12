@@ -207,7 +207,8 @@ final class AppContainer {
         if let workoutSession, workoutSession.userId == user.id { return workoutSession }
         let session = WorkoutSession(
             userId: user.id, workouts: SwiftDataWorkoutRepository(modelContainer: modelContainer),
-            routines: SwiftDataRoutineRepository(modelContainer: modelContainer)
+            routines: SwiftDataRoutineRepository(modelContainer: modelContainer),
+            records: SwiftDataPersonalRecordService(modelContainer: modelContainer)
         )
         _ = try? await session.restore()
         workoutSession = session
