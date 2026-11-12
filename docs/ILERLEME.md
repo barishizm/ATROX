@@ -40,7 +40,7 @@ Toplam: 104 adım.
 ## Faz 3 — Hareket kataloğu
 
 - [x] **P024** · Katalog içe aktarma hattı — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P025** · Skor taksonomisi `[ARAŞTIRMA]` — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P025** · Skor taksonomisi `[ARAŞTIRMA]` — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P026** · Türkçe çeviri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P027** · Görsel işleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P028** · Katalog tohumlama ve uygulama içi eşitleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
@@ -211,3 +211,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P023) Antrenman yazma izni (HKWorkoutType) istendi ama antrenman kaydı P041'de yazılacak. Sağlık verisinin LLM'e/katkıya ham gitmemesi `docs/02-MIMARI.md` §3.4'e not edildi; Faz 9/Faz 11 bağlam ve özet üreticileri bu kurala uymalı.
 - (P023) Simülatörde elle Sağlık verisiyle "kilo Sağlık'ta görünüyor" kabulü doğrulanmadı; sahte `HealthService` ile birim/UI testleri geçer (`-uitest-fake-health`).
 - (P023) Eklenen UI testleri (`testAppleHealthShortcut…`, `testHealthSync…`) yazıldı ama çalıştırılmadı (kullanıcı testi atlattı). Birim testleri (HealthTests, 12) lint yeniden adlandırmasından (`saveWeight(kilograms:)`) önce geçti; sonrasında yeniden çalıştırılmadı.
+- (P025) `docs/CEKIRDEK-HAREKETLER.md` tablosundaki 155 çekirdek hareket ve ⚠ ile işaretli belirsiz atamalar (dips'in itiş yönü, plaka yüklü makinelerde `per_side`, Smith makinesinde `total`) kullanıcı onayını bekliyor; değişiklikler `tools/catalog/taxonomy_overrides.yaml` içine yazılıp `uv run catalog-taxonomy` ile yeniden üretilir.
+- (P025) `scoring_taxonomy.yaml` kalıp değerleri P011 şemasındaki `movement_pattern` enum'uyla (squat, hinge, lunge, ...) örtüşmüyor; P056/P027 öncesi yeni bir migration ile hizalanmalı.
+- (P025) Çekirdek dışı 200 kadar hareket yalnızca kuralla atandı ve `needs_review: true`; skorlanmayacakları için ilk sürümde elle gözden geçirilmedi.
