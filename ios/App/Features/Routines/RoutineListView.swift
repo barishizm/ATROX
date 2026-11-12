@@ -51,6 +51,11 @@ struct RoutineListView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(value: WorkoutRoute.templates) { Image(systemName: "square.grid.2x2") }
+                    .accessibilityLabel("routine.list.templates")
+                    .accessibilityIdentifier("routine-templates")
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Button { startNaming() } label: { Image(systemName: "plus") }
                     .accessibilityLabel("routine.list.new")
                     .accessibilityIdentifier("routine-add")
@@ -74,6 +79,14 @@ struct RoutineListView: View {
             systemImage: "list.bullet.rectangle", title: "routine.list.empty.title",
             message: "routine.list.empty.message", actionTitle: "routine.list.new", action: startNaming
         )
+        .safeAreaInset(edge: .bottom) {
+            NavigationLink(value: WorkoutRoute.templates) {
+                Label("routine.list.fromTemplate", systemImage: "square.grid.2x2")
+            }
+            .buttonStyle(.bordered)
+            .padding(Spacing.lg)
+            .accessibilityIdentifier("routine-empty-templates")
+        }
     }
 
     private func list(_ model: RoutineListModel) -> some View {

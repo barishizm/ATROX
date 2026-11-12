@@ -165,6 +165,20 @@ final class AppContainer {
         }
     }
 
+    /// Program templates (P034): the bundled templates, the exercise catalog for personalizing them and the user's
+    /// profile for the recommendation; nil when there is no user, no local store or the template file is unreadable.
+    func makeTemplateListModel() async -> TemplateListModel? {
+        guard let modelContainer, let user = await currentUser(),
+              let library = try? TemplateLibrary.bundled() else { return nil }
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id)
+        let catalog = ((try? ModelContext(modelContainer).fetch(FetchDescriptor<Exercise>())) ?? [])
+            .map(TemplateExerciseInfo.init)
+        return TemplateListModel(
+            userId: user.id, templates: library.templates, catalog: catalog, profile: profile?.input,
+            repository: SwiftDataRoutineRepository(modelContainer: modelContainer), plan: planStore(for: user.id)
+        )
+    }
+
     private func planStore(for userId: UUID) -> RoutinePlanStore {
         if let existing = planStores[userId] { return existing }
         let store = RoutinePlanStore(userId: userId)

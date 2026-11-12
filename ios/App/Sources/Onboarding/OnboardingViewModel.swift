@@ -324,6 +324,15 @@ final class OnboardingViewModel {
     }
 
     /// One score per reported lift; empty when every card was skipped.
+    /// The two program templates that fit the training profile answered so far (P034); empty until it is complete.
+    var recommendedTemplates: [ProgramTemplate] {
+        guard let experience = draft.experience, let goal = draft.goal, let equipment = draft.equipment,
+              let library = try? TemplateLibrary.bundled() else { return [] }
+        let profile = TemplateProfile(
+            experience: experience, goal: goal, weeklyFrequency: draft.weeklyFrequency, equipment: equipment)
+        return TemplateRecommender.recommend(library.templates, for: profile).map(\.template)
+    }
+
     var results: [LiftResult] {
         let athlete = AthleteProfile(
             sex: scoreSex, bodyweightKg: draft.weightKg,
