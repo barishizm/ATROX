@@ -6,7 +6,7 @@ import Supabase
 public struct SupabaseConfiguration: Sendable, Equatable {
     public let url: URL
     public let anonKey: String
-    /// Deep link that email confirmation / password-reset links return to, e.g. `vesania://auth-callback`.
+    /// Deep link that email confirmation / password-reset links return to, e.g. `atrox://auth-callback`.
     public let redirectURL: URL?
 
     public init(url: URL, anonKey: String, redirectURL: URL? = nil) {

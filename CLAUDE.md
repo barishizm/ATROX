@@ -1,4 +1,4 @@
-# GymAnalyzer (çalışma adı) — Claude için proje rehberi
+# ATROX — Claude için proje rehberi
 
 iOS için yapay zekâ destekli antrenman takip ve kuvvet analiz uygulaması. Kullanıcı antrenmanını kaydeder;
 kendi eğittiğimiz model her hareket için **0–100 Güç Skoru** (aynı cinsiyet/yaş/kilodaki salon kullanıcılarına
@@ -59,8 +59,8 @@ docs/                Tasarım dokümanları ve prompt listesi
 
 ```bash
 cd ios && xcodegen generate                      # projeyi üret
-xcodebuild test -project ios/GymAnalyzer.xcodeproj -scheme GymAnalyzer \
-  -destination 'platform=iOS Simulator,name=iPhone 17'   # uygulama testleri
+xcodebuild test -project ios/ATROX.xcodeproj -scheme ATROX \
+  -destination 'platform=iOS Simulator,name=iPhone 14'   # uygulama testleri
 swift test --package-path ios/Packages/StrengthKit       # skor motoru testleri
 cd ml && uv run pytest                           # ML testleri
 supabase db reset && supabase test db            # şema + RLS testleri

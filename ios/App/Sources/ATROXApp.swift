@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 @main
-struct GymAnalyzerApp: App {
+struct ATROXApp: App {
     @State private var container = AppContainer.live()
 
     var body: some Scene {

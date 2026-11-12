@@ -36,8 +36,8 @@ Kabul: Dizinler ve yapılandırma dosyaları var; `git status` temiz.
 
 ```text
 ios/project.yml oluştur (docs/02-MIMARI.md §2 ve §4):
-- Uygulama hedefi "GymAnalyzer", iOS 26.0, Swift 6, SWIFT_STRICT_CONCURRENCY=complete, uyarılar hata sayılır.
-- Bundle ID ve görünen ad tek bir xcconfig değişkeninden gelsin (çalışma adı; sonradan tek yerden değişecek).
+- Uygulama hedefi "ATROX", iOS 26.0, Swift 6, SWIFT_STRICT_CONCURRENCY=complete, uyarılar hata sayılır.
+- Bundle ID ve görünen ad tek bir xcconfig değişkeninden gelsin.
 - Üç yapılandırma: Debug, Staging, Release. Config/*.xcconfig dosyaları; gizli olmayan değerler commit edilir,
   Config/Secrets.xcconfig gitignore'da olur ve Secrets.example.xcconfig şablonu bulunur (SUPABASE_URL, SUPABASE_ANON_KEY).
 - Birim test ve UI test hedefleri (Swift Testing + XCUITest).

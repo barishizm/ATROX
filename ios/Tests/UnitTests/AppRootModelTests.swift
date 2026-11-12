@@ -1,6 +1,6 @@
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 private struct FakeSessionService: SessionService {
     var result: Result<SessionStatus, any Error>

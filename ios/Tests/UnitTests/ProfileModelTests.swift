@@ -3,7 +3,7 @@ import Foundation
 import SwiftData
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 @MainActor
 struct ProfileModelTests {

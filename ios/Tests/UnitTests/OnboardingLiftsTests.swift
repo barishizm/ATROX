@@ -3,7 +3,7 @@ import Foundation
 import StrengthKit
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 /// Onboarding part 3 — first strength profile (P021). Shares the harness of the part 1 tests.
 @MainActor

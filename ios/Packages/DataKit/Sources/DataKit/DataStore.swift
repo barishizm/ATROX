@@ -32,7 +32,7 @@ public enum DataStore {
     public static func onDisk(directory: URL, fileManager: FileManager = .default) throws -> ModelContainer {
         let folder = directory.appendingPathComponent("Library/Application Support", isDirectory: true)
         try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
-        let configuration = ModelConfiguration(schema: schema, url: folder.appendingPathComponent("Vesania.store"))
+        let configuration = ModelConfiguration(schema: schema, url: folder.appendingPathComponent("ATROX.store"))
         return try ModelContainer(for: schema, migrationPlan: DataMigrationPlan.self, configurations: configuration)
     }
 }

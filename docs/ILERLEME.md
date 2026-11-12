@@ -168,12 +168,12 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P015) Google "Skip nonce checks" açık kalıyor: uygulama Google'a hash'li nonce gönderip Supabase'e ham nonce veriyor; gerçek cihazda Google girişi doğrulandıktan sonra staging/prod panelinde kapat.
 - (P015) Apple yalnızca ilk girişte ad/soyad verir; `AppleIDTokenProvider` şimdilik yakalamıyor — profil adı P018+ (UserProfile) ile `signInWithIdToken` sonrası kaydedilmeli.
 - (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla.
-- (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_gymanalyzer`.
+- (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_atrox`.
 - (P016) Kullanım Koşulları / Gizlilik Politikası bağlantıları `example.com` yer tutucusu (`LEGAL_TERMS_URL`, `LEGAL_PRIVACY_URL`, `ios/Config/Base.xcconfig`); gerçek sayfalar P101'de yayınlanınca değiştir.
 - (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür.
 - (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir.
 - (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır.
-- (P017) App Group (`group.com.barishizm.vesania[.debug|.staging]`) Apple Developer portalında App ID'lere eklenip provisioning profile'a girmeli; simülatörde sorunsuz, gerçek cihaz/release öncesi `[MANUEL]`. Widgets hedefi (P0xx) aynı `APP_GROUP_ID`'yi kullanmalı.
+- (P017) App Group (`group.com.barishizm.atrox[.debug|.staging]`) Apple Developer portalında App ID'lere eklenip provisioning profile'a girmeli; simülatörde sorunsuz, gerçek cihaz/release öncesi `[MANUEL]`. Widgets hedefi (P0xx) aynı `APP_GROUP_ID`'yi kullanmalı.
 - (P017) `UserSettings` modeli var ama deposu yok; P022 (Profil ve ayarlar) ile `SettingsRepository` eklenecek.
 - (P017) Depolar kayıtları `pending` bırakır; itme/çekme ve `syncState` geçişleri (synced/failed) senkronizasyon motoruna (Faz 11) ait.
 - (P017) Uygulama grubu konteyneri açılamazsa (imzasız derleme) uygulama kendi sandbox'ına düşer; widget'lar o durumda veriyi göremez. Üretimde grubun varlığı release kontrol listesine eklenmeli.

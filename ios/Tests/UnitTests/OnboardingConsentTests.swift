@@ -2,7 +2,7 @@ import DataKit
 import Foundation
 import Testing
 
-@testable import GymAnalyzer
+@testable import ATROX
 
 /// Onboarding consent screens (P020): terms + privacy, then the opt-in model contribution.
 @MainActor

@@ -1,4 +1,4 @@
-name: GymAnalyzer
+name: ATROX
 
 options:
   bundleIdPrefix: com.barishizm
@@ -42,15 +42,15 @@ packages:
     exactVersion: 10.1.0
 
 schemes:
-  GymAnalyzer:
+  ATROX:
     build:
       targets:
-        GymAnalyzer: all
+        ATROX: all
     test:
       config: Debug
       targets:
-        - GymAnalyzerTests
-        - GymAnalyzerUITests
+        - ATROXTests
+        - ATROXUITests
     run:
       config: Debug
     profile:
@@ -61,7 +61,7 @@ schemes:
       config: Release
 
 targets:
-  GymAnalyzer:
+  ATROX:
     type: application
     platform: iOS
     sources:
@@ -95,8 +95,8 @@ targets:
         LegalTermsURL: $(LEGAL_TERMS_URL)
         LegalPrivacyURL: $(LEGAL_PRIVACY_URL)
         # HealthKit (P023). English defaults; TR/EN translations live in App/Resources/InfoPlist.xcstrings.
-        NSHealthShareUsageDescription: GymAnalyzer reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.
-        NSHealthUpdateUsageDescription: GymAnalyzer saves your weigh-ins and workouts to Apple Health.
+        NSHealthShareUsageDescription: ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.
+        NSHealthUpdateUsageDescription: ATROX saves your weigh-ins and workouts to Apple Health.
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
         GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
         GIDServerClientID: $(GOOGLE_WEB_CLIENT_ID)
@@ -116,7 +116,7 @@ targets:
         # No app icon yet (asset catalog currently holds only the Google logo); remove when the icon lands.
         ASSETCATALOG_COMPILER_APPICON_NAME: ""
     entitlements:
-      path: App/GymAnalyzer.entitlements
+      path: App/ATROX.entitlements
       properties:
         com.apple.developer.applesignin:
           - Default
@@ -135,25 +135,25 @@ targets:
     #   - Background Modes              (background sync, Live Activity updates)
     # Also later: Widgets extension target (WidgetKit + Live Activity).
 
-  GymAnalyzerTests:
+  ATROXTests:
     type: bundle.unit-test
     platform: iOS
     sources:
       - path: Tests/UnitTests
     dependencies:
-      - target: GymAnalyzer
+      - target: ATROX
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX).tests
 
-  GymAnalyzerUITests:
+  ATROXUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
       - path: Tests/UITests
     dependencies:
-      - target: GymAnalyzer
+      - target: ATROX
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES

@@ -22,7 +22,7 @@ public protocol AuthService: Sendable {
     /// Records on the server (`user_metadata.onboarding_complete`) that the signed-in user finished onboarding.
     func markOnboardingComplete() async throws
 
-    /// Hands a `vesania://auth-callback…` link (email confirmation / password reset) to the SDK.
+    /// Hands a `atrox://auth-callback…` link (email confirmation / password reset) to the SDK.
     /// Returns false when the URL is not an auth link.
     func handle(url: URL) async -> Bool
 }
