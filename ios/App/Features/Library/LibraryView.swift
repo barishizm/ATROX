@@ -11,8 +11,13 @@ struct LibraryView: View {
     @State private var model: LibraryModel?
     @State private var failed = false
     @State private var showFilters = false
+    @State private var creating: CustomExerciseFormModel?
     /// Non-nil switches the screen into selection mode.
     var onAdd: (([String]) -> Void)?
+    /// With `onAdd`: tapping a row picks that one exercise and closes the screen (no "Add (n)" button).
+    var singleSelection = false
+    /// Only catalog exercises that are scored (the "similar to" picker); hides the new-exercise button.
+    var catalogOnly = false
 
     var body: some View {
         Group {
@@ -46,7 +51,16 @@ struct LibraryView: View {
         .autocorrectionDisabled()
         .toolbar { toolbar(model) }
         .sheet(isPresented: $showFilters) { LibraryFilterSheet(model: model) }
-        .onAppear { model.languageCode = locale.language.languageCode?.identifier == "tr" ? "tr" : "en" }
+        .sheet(item: $creating) { form in
+            CustomExerciseFormView(model: form) { saved in
+                creating = nil
+                model.didCreateCustom(id: saved.id.uuidString, select: onAdd != nil && !singleSelection)
+            }
+        }
+        .onAppear {
+            model.reload()
+            model.languageCode = locale.language.languageCode?.identifier == "tr" ? "tr" : "en"
+        }
         .onChange(of: locale) { _, new in model.languageCode = new.language.languageCode?.identifier == "tr" ? "tr" : "en" }
     }
 
@@ -79,8 +93,28 @@ struct LibraryView: View {
         .scrollDismissesKeyboard(.interactively)
     }
 
+    @ViewBuilder
     private func row(_ item: ExerciseListItem, model: LibraryModel) -> some View {
-        let selecting = onAdd != nil
+        if onAdd == nil {
+            NavigationLink(value: WorkoutRoute.exerciseDetail(id: item.id)) { rowContent(item, model: model) }
+        } else {
+            rowContent(item, model: model)
+                .contentShape(Rectangle())
+                .onTapGesture { tap(item, model: model) }
+        }
+    }
+
+    private func tap(_ item: ExerciseListItem, model: LibraryModel) {
+        if singleSelection {
+            onAdd?([item.id])
+            dismiss()
+        } else {
+            model.toggleSelection(item.id)
+        }
+    }
+
+    private func rowContent(_ item: ExerciseListItem, model: LibraryModel) -> some View {
+        let selecting = onAdd != nil && !singleSelection
         let selected = model.isSelected(item.id)
         let favorite = model.lists.isFavorite(item.id)
         return HStack(spacing: Spacing.md) {
@@ -99,6 +133,7 @@ struct LibraryView: View {
                         Text(verbatim: muscle.localizedName(locale: locale))
                     }
                     Text(equipmentKey(item.equipment)).foregroundStyle(DSColor.textTertiary)
+                    if item.isCustom { TagChip("library.badge.custom", style: .accent) }
                 }
                 .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
             }
@@ -113,8 +148,6 @@ struct LibraryView: View {
             .buttonStyle(.borderless)
             .accessibilityLabel(favorite ? "library.favorite.remove" : "library.favorite.add")
         }
-        .contentShape(Rectangle())
-        .onTapGesture { if selecting { model.toggleSelection(item.id) } }
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityIdentifier("library-row-\(item.id)")
@@ -131,21 +164,35 @@ struct LibraryView: View {
             .accessibilityValue(model.filter.isActive ? Text(verbatim: "\(model.filter.activeCount)") : Text(verbatim: ""))
             .accessibilityIdentifier("library-filter-button")
         }
+        if model.canCreateCustom {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { startCreating(model) } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("library.custom.add")
+                    .accessibilityIdentifier("library-add-custom")
+            }
+        }
         if let onAdd {
             ToolbarItem(placement: .topBarLeading) {
                 Button("library.select.cancel") { dismiss() }
             }
-            ToolbarItem(placement: .bottomBar) {
-                Button {
-                    onAdd(model.confirmSelection())
-                } label: {
-                    Text("library.select.add \(model.selectionCount)").frame(maxWidth: .infinity)
+            if !singleSelection {
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        onAdd(model.confirmSelection())
+                    } label: {
+                        Text("library.select.add \(model.selectionCount)").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(model.selectionCount == 0)
+                    .accessibilityIdentifier("library-add-button")
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(model.selectionCount == 0)
-                .accessibilityIdentifier("library-add-button")
             }
         }
+    }
+
+    private func startCreating(_ model: LibraryModel) {
+        guard let userId = model.userId, let store = container.modelContainer else { return }
+        creating = CustomExerciseFormModel(userId: userId, repository: SwiftDataCustomExerciseRepository(modelContainer: store))
     }
 
     private func title(of kind: LibraryModel.SectionKind) -> LocalizedStringKey {
@@ -159,7 +206,7 @@ struct LibraryView: View {
 
     private func prepare() async {
         guard model == nil else { return }
-        guard let created = await container.makeLibraryModel() else {
+        guard let created = await container.makeLibraryModel(catalogOnly: catalogOnly) else {
             failed = true
             return
         }
@@ -223,7 +270,7 @@ struct LibraryFilterSheet: View {
 }
 
 /// Wrapping multi-select chips.
-private struct FlowChips: View {
+struct FlowChips: View {
     let options: [(id: String, label: Text)]
     @Binding var selection: Set<String>
 
@@ -248,7 +295,7 @@ private struct FlowChips: View {
     }
 }
 
-private struct FlowLayout: Layout {
+struct FlowLayout: Layout {
     var spacing: CGFloat
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {

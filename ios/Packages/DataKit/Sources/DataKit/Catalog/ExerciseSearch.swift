@@ -12,6 +12,8 @@ public struct ExerciseListItem: Sendable, Identifiable, Hashable {
     public let equipment: String?
     public let isScorable: Bool
     public let thumbnailName: String?
+    /// A user-created exercise (its `id` is the UUID string).
+    public let isCustom: Bool
     /// Folded names + aliases of both languages.
     let searchText: String
     let foldedNames: [String]
@@ -20,7 +22,7 @@ public struct ExerciseListItem: Sendable, Identifiable, Hashable {
     public init(
         id: String, nameEn: String, nameTr: String, aliases: [String] = [],
         primaryMuscles: [String] = [], secondaryMuscles: [String] = [], equipment: String? = nil,
-        isScorable: Bool = false, thumbnailName: String? = nil
+        isScorable: Bool = false, thumbnailName: String? = nil, isCustom: Bool = false
     ) {
         self.id = id
         self.nameEn = nameEn
@@ -30,6 +32,7 @@ public struct ExerciseListItem: Sendable, Identifiable, Hashable {
         self.equipment = equipment
         self.isScorable = isScorable
         self.thumbnailName = thumbnailName
+        self.isCustom = isCustom
         let names = [SearchFolding.fold(nameEn), SearchFolding.fold(nameTr)]
         foldedNames = names
         searchText = ([nameEn, nameTr] + aliases).map(SearchFolding.fold).joined(separator: " ")
@@ -44,6 +47,14 @@ public struct ExerciseListItem: Sendable, Identifiable, Hashable {
             equipment: exercise.equipment,
             isScorable: exercise.scoringTypeRaw != "none",
             thumbnailName: exercise.imagePaths.first.map(ImageNaming.thumb(forFull:))
+        )
+    }
+
+    public init(_ custom: CustomExercise) {
+        self.init(
+            id: custom.id.uuidString, nameEn: custom.name, nameTr: custom.name, aliases: custom.aliases,
+            primaryMuscles: custom.primaryMuscles, secondaryMuscles: custom.secondaryMuscles,
+            equipment: custom.equipment, isScorable: custom.scoringTypeRaw != "none", isCustom: true
         )
     }
 

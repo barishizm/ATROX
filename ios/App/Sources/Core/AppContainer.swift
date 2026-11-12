@@ -119,15 +119,23 @@ final class AppContainer {
 
     /// Builds the exercise library's model; nil when there is no local store. The default equipment filter comes from
     /// the user's profile (full gym when there is none yet).
-    func makeLibraryModel() async -> LibraryModel? {
+    func makeLibraryModel(catalogOnly: Bool = false) async -> LibraryModel? {
         guard let modelContainer else { return nil }
         var access = EquipmentAccess.fullGym
-        if let user = await currentUser(),
+        let user = await currentUser()
+        if let user,
            let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id) {
             access = profile.input.equipmentAccess
         }
         await ThumbnailLoader.shared.configure(storageBaseURL: exerciseImageBaseURL)
-        return LibraryModel(modelContainer: modelContainer, equipmentAccess: access)
+        return LibraryModel(modelContainer: modelContainer, equipmentAccess: access, userId: user?.id, catalogOnly: catalogOnly)
+    }
+
+    /// Detail screen of one exercise (catalog slug or custom exercise UUID); nil when there is no local store.
+    func makeExerciseDetailModel(id: String) async -> ExerciseDetailModel? {
+        guard let modelContainer else { return nil }
+        await ThumbnailLoader.shared.configure(storageBaseURL: exerciseImageBaseURL)
+        return ExerciseDetailModel(id: id, modelContainer: modelContainer, userId: await currentUser()?.id)
     }
 
     func makeAccountModel(userId: UUID) -> AccountModel {

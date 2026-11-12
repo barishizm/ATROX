@@ -46,7 +46,7 @@ Toplam: 104 adım.
 - [x] **P028** · Katalog tohumlama ve uygulama içi eşitleme — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P029** · Kas haritası — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [x] **P030** · Hareket kütüphanesi — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P031** · Hareket detayı ve özel hareket — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P031** · Hareket detayı ve özel hareket — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 
 ## Faz 4 — Antrenman takibi
 
@@ -232,3 +232,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P030) Favoriler ve "son kullanılanlar" şimdilik cihazda `UserDefaults`'ta (senkronsuz). Son kullanılanlar P032'den sonra gerçek antrenman geçmişinden beslenmeli; favoriler eşitlenen modele taşınmalı.
 - (P030) Hareket satırına dokunma (detay) P031'e kaldı; Antrenman sekmesindeki kütüphane girişi geçici bir düğme.
 - (P030) Yerelde yalnızca DataKit testleri (98) ve uygulama derlemesi çalıştı; `LibraryModelTests` (ATROXTests) yazıldı ama yerelde çalıştırılmadı, CI'a bırakıldı. Instruments ile kaydırma ölçümü ve simülatörde elle deneme yapılmadı. 876 kayıtta arama testi < 2 sn sınırıyla (7 tuş) geçiyor.
+- (P031) Hareket detayı (`ExerciseDetailView`): başlangıç/bitiş karesi yumuşak geçişli döngü (dokununca duraklat, kaydırarak elle geçiş, Reduce Motion'da kendiliğinden dönmez), kas haritası, ekipman/mekanik/seviye/yük kuralı etiketleri, talimatlar (eksik dilde diğer dile düşer), boş "Senin verin" bölümü ve `ScoreNote` bilgi notu (makine, yalnızca tekrar, süre, vücut ağırlığı, düşük güven, skorlanmaz). Mantık DataKit'te (`ExerciseDetail`, `ScoreNote`).
+- (P031) Özel hareket: `SchemaV3` + `CustomExercise` (hafif geçiş V2→V3, `custom_exercises` ile birebir alanlar), `CustomExerciseRepository` (oluştur/güncelle/yumuşak sil, doğrulama sunucudaki CHECK sözlüğüyle aynı). Kütüphanede arama/filtre/favori ve seçim modunda çalışır, satırda "Özel" rozeti. "Benzer" seçilince katalog hareketinin skor ayarları kopyalanır (sunucuda `similar_to` sütunu yok; yalnızca kopya saklanır, bağ saklanmaz).
+- (P031) Özel hareketlerin sunucuya senkronu P0xx senkron motoruna kalır (satırlar `syncState = pending` ile bekler). Özel hareketin görseli yok (yer tutucu); kullanıcı fotoğrafı eklemek ertelendi. Özel hareketin `movement_pattern` değeri her zaman `other`; "benzer" seçiminde desen devralınmıyor (P056'da skor motoru gerekirse eklenir).
+- (P031) Yerelde DataKit testleri (108) ve `ExerciseDetailAndCustomExerciseTests` (9) geçti. Görünümler simülatörde elle/VoiceOver ile denenmedi; `LibraryModelTests` ve UI testleri CI'a bırakıldı.

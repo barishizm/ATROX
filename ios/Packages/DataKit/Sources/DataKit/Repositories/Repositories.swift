@@ -39,3 +39,15 @@ public protocol SettingsRepository: Sendable {
     @discardableResult
     func update(_ input: SettingsInput, userId: UUID) async throws -> SettingsSnapshot
 }
+
+public protocol CustomExerciseRepository: Sendable {
+    @discardableResult
+    func create(_ input: CustomExerciseInput, userId: UUID) async throws -> CustomExerciseSnapshot
+    @discardableResult
+    func update(id: UUID, with input: CustomExerciseInput) async throws -> CustomExerciseSnapshot
+    /// Soft delete.
+    func delete(id: UUID) async throws
+    func exercise(id: UUID) async throws -> CustomExerciseSnapshot?
+    /// The user's exercises, A–Z by name.
+    func all(userId: UUID) async throws -> [CustomExerciseSnapshot]
+}
