@@ -1,4 +1,5 @@
 import Foundation
+import StrengthKit
 
 /// Pre-fills the planned sets of an exercise when a workout starts or an exercise is added (P035).
 /// Pure, so the rules are tested without a store.
@@ -13,7 +14,22 @@ public enum WorkoutPrefill {
     ///   weight and reps come from last time's working sets by index (else the last one; reps fall back to the top of
     ///   the target range); RIR is the target RIR. Without a target last time is repeated as it was (warm-ups
     ///   included), or `defaultSetCount` empty working sets are planned.
-    public static func sets(target: RoutineExerciseInput?, last: [SetInput]) -> [SetInput] {
+    ///   - suggestion: the progression engine's target (P043). When present every working set gets its weight and reps;
+    ///     the set count and RIR still come from the target (or from last time), and warm-ups of last time are kept
+    ///     when there is no routine target.
+    public static func sets(
+        target: RoutineExerciseInput?, last: [SetInput], suggestion: ProgressionSuggestion? = nil
+    ) -> [SetInput] {
+        if let suggestion {
+            let working = last.filter { $0.setType != .warmup }
+            let count = target?.targetSets ?? max(working.count, 1)
+            let rir = target?.targetRir
+            let warmups = target == nil ? last.filter { $0.setType == .warmup } : []
+            let planned = (0..<count).map { _ in
+                SetInput(weightKg: suggestion.weightKg, reps: suggestion.reps, rir: rir, setType: .working)
+            }
+            return warmups.map { SetInput(weightKg: $0.weightKg, reps: $0.reps, rir: $0.rir, setType: .warmup) } + planned
+        }
         guard let target else {
             guard !last.isEmpty else { return Array(repeating: SetInput(), count: defaultSetCount) }
             return last.map { SetInput(weightKg: $0.weightKg, reps: $0.reps, rir: $0.rir, setType: $0.setType) }

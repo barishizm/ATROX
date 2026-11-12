@@ -81,6 +81,23 @@ import Testing
         return model
     }
 
+    @Test func suggestionTextLeadsWithTheTargetInTheDisplayUnit() async throws {
+        let kg = try await makeModel()
+        let up = ProgressionSuggestion(weightKg: 62.5, reps: 8, rationale: .addWeight(incrementKg: 2.5))
+        #expect(kg.suggestionText(for: up).contains("62.5 kg × 8"))
+        #expect(kg.suggestionText(for: up).contains("2.5 kg"))
+        let bodyweight = ProgressionSuggestion(weightKg: 0, reps: 11, rationale: .addRepBodyweight)
+        #expect(!kg.suggestionText(for: bodyweight).contains("kg"))
+        let lb = try await makeModel(unit: .pounds)
+        let step = ProgressionSuggestion(weightKg: 100.0 * 0.45359237, reps: 5, rationale: .deload)
+        #expect(lb.suggestionText(for: step).contains("100 lb × 5"))
+    }
+
+    @Test func cardsCarryTheSessionsSuggestionOnlyWhenThereIsOne() async throws {
+        let model = try await makeModel()
+        #expect(model.cards.first?.suggestionText == nil)
+    }
+
     @Test func rowsShowBadgesAndNames() async throws {
         let model = try await makeModel()
         let card = try #require(model.cards.first)

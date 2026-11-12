@@ -1,5 +1,6 @@
 @testable import DataKit
 import Foundation
+import StrengthKit
 import SwiftData
 import Testing
 
@@ -34,6 +35,23 @@ private func done(_ kg: Double, _ reps: Int, type: SetType = .working) -> SetInp
     @Test func targetWithoutHistoryUsesTopOfRepRange() {
         let planned = WorkoutPrefill.sets(target: RoutineExerciseInput(targetSets: 2, targetRepsMin: 8, targetRepsMax: 12), last: [])
         #expect(planned == Array(repeating: SetInput(weightKg: 0, reps: 12), count: 2))
+    }
+
+    @Test func suggestionFillsEveryWorkingSetAndKeepsTheTargetRir() {
+        let target = RoutineExerciseInput(targetSets: 4, targetRepsMin: 6, targetRepsMax: 8, targetRir: 2)
+        let suggestion = ProgressionSuggestion(weightKg: 82.5, reps: 6, rationale: .addWeight(incrementKg: 2.5))
+        let planned = WorkoutPrefill.sets(target: target, last: [done(80, 8)], suggestion: suggestion)
+        #expect(planned == Array(repeating: SetInput(weightKg: 82.5, reps: 6, rir: 2), count: 4))
+    }
+
+    @Test func suggestionWithoutTargetKeepsWarmupsAndLastWorkingSetCount() {
+        let suggestion = ProgressionSuggestion(weightKg: 62.5, reps: 8, rationale: .addWeight(incrementKg: 2.5))
+        let last = [done(30, 10, type: .warmup), done(60, 12), done(60, 12), done(60, 12)]
+        let planned = WorkoutPrefill.sets(target: nil, last: last, suggestion: suggestion)
+        #expect(planned.map(\.setType) == [.warmup, .working, .working, .working])
+        #expect(planned.map(\.weightKg) == [30, 62.5, 62.5, 62.5])
+        #expect(planned.map(\.reps) == [10, 8, 8, 8])
+        #expect(planned.allSatisfy { !$0.isCompleted })
     }
 
     @Test func nextSetCopiesTheLastOneUncompleted() {
@@ -120,11 +138,50 @@ private func done(_ kg: Double, _ reps: Int, type: SetType = .working) -> SetInp
         #expect(workout.name == "Push" && workout.source == .routine && workout.routineDayId == day.id)
         #expect(workout.exercises.map(\.ref) == [bench, squat])
         #expect(workout.exercises[0].sets.map(\.input.weightKg) == [80, 80, 80])
-        #expect(workout.exercises[0].sets.map(\.input.reps) == [8, 7, 7])
+        // Last time 80×8 and 80×7 with the range 6–8: the weakest set gains a rep, every set aims at 80×8 (P043).
+        #expect(workout.exercises[0].sets.map(\.input.reps) == [8, 8, 8])
+        #expect(session.suggestions[workout.exercises[0].id] == ProgressionSuggestion(weightKg: 80, reps: 8, rationale: .addRep))
+        #expect(session.suggestions[workout.exercises[1].id] == nil)
         #expect(workout.exercises[0].sets.allSatisfy { $0.input.rir == 1 && !$0.input.isCompleted })
         #expect(workout.exercises[1].sets.map(\.input.reps) == [5, 5])
         #expect(session.previous[workout.exercises[0].id] == [done(80, 8), done(80, 7)])
         #expect(session.previous[workout.exercises[1].id] == [])
+    }
+
+    @Test func addedExerciseGetsASuggestionFromItsHistoryWithTheAppsRounding() async throws {
+        let env = try makeEnv()
+        try await seedHistory(env, bench, [done(60, 12), done(60, 12), done(60, 12)])
+        let session = env.session()
+        session.progression = ProgressionContext(roundingStepKg: 2.5, loadClass: { _ in .lowerCompound })
+        try await session.startEmpty()
+        let id = try await session.addExercise(bench)
+        let sets = try #require(session.exercise(id)?.sets)
+        #expect(sets.map(\.input.weightKg) == [65, 65, 65])
+        #expect(sets.map(\.input.reps) == [8, 8, 8])
+        #expect(session.suggestions[id]?.rationale == .addWeight(incrementKg: 5))
+        try await session.removeExercise(id)
+        #expect(session.suggestions[id] == nil)
+    }
+
+    @Test func exerciseWithoutHistoryHasNoSuggestionAndPlansEmptySets() async throws {
+        let env = try makeEnv()
+        let session = env.session()
+        try await session.startEmpty()
+        let id = try await session.addExercise(squat)
+        #expect(session.suggestions[id] == nil)
+        #expect(session.exercise(id)?.sets.count == 3)
+    }
+
+    @Test func restoredWorkoutKeepsItsSuggestions() async throws {
+        let env = try makeEnv()
+        try await seedHistory(env, bench, [done(60, 12), done(60, 12), done(60, 12)])
+        let first = env.session()
+        try await first.startEmpty()
+        let id = try await first.addExercise(bench)
+        let second = env.session()
+        #expect(try await second.restore())
+        #expect(second.suggestions[id] == first.suggestions[id])
+        #expect(second.suggestions[id] != nil)
     }
 
     @Test func unknownRoutineDayIsRejected() async throws {

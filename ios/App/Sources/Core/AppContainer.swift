@@ -1,6 +1,7 @@
 import DataKit
 import Foundation
 import Observation
+import StrengthKit
 import SwiftData
 
 /// Composition root: holds the app's dependencies and is handed down via `Environment`.
@@ -212,9 +213,30 @@ final class AppContainer {
             routines: SwiftDataRoutineRepository(modelContainer: modelContainer),
             records: SwiftDataPersonalRecordService(modelContainer: modelContainer)
         )
+        session.progression = await progressionContext(userId: user.id, modelContainer: modelContainer)
         _ = try? await session.restore()
         workoutSession = session
         return session
+    }
+
+    /// What the progression engine (P043) needs: the user's smallest loadable step and each catalog exercise's jump class.
+    func progressionContext(userId: UUID, modelContainer: ModelContainer) async -> ProgressionContext {
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: userId)
+        let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
+        let context = ModelContext(modelContainer)
+        let classes = Dictionary(
+            ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
+                ($0.id, LoadClass.classify(movementPattern: $0.movementPattern, mechanic: $0.mechanic))
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return ProgressionContext(
+            roundingStepKg: unit.kilograms(from: PlateRounding.step(for: unit)),
+            loadClass: { ref in
+                if case .catalog(let id) = ref { return classes[id] ?? .upperCompound }
+                return .upperCompound
+            }
+        )
     }
 
     /// Screen model of the active workout (P036) around the shared `WorkoutSession`; nil without user or store.
@@ -224,6 +246,7 @@ final class AppContainer {
         let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
         let locale = language.effectiveLocale()
         let userId = user.id
+        session.progression = await progressionContext(userId: userId, modelContainer: modelContainer)
         let model = ActiveWorkoutModel(
             session: session, unit: unit, showsRir: WorkoutPreferences.showsRir(),
             autoStartsRest: WorkoutPreferences.autoStartsRest(),

@@ -37,6 +37,8 @@ final class ActiveWorkoutModel {
         let notes: String?
         let supersetGroup: Int?
         let rows: [SetRow]
+        /// One sentence explaining the pre-filled target (P043); nil without history.
+        var suggestionText: String?
     }
 
     /// A catalog or custom exercise with its movement pattern (for "similar" suggestions).
@@ -126,7 +128,8 @@ final class ActiveWorkoutModel {
             }
             return ExerciseCard(
                 id: exercise.id, ref: exercise.ref, name: name(of: exercise.ref), notes: exercise.notes,
-                supersetGroup: exercise.supersetGroup, rows: rows
+                supersetGroup: exercise.supersetGroup, rows: rows,
+                suggestionText: session.suggestions[exercise.id].map(suggestionText(for:))
             )
         }
     }
@@ -164,6 +167,26 @@ final class ActiveWorkoutModel {
         WorkoutKeypad.format(unit.value(fromKilograms: kg), field: .weight)
             .replacingOccurrences(of: ".", with: decimalSeparator)
     }
+
+    /// "Target 62.5 kg × 8. Last time …" in the user's language (P043).
+    func suggestionText(for suggestion: ProgressionSuggestion) -> String {
+        let target = suggestion.weightKg > 0
+            ? "\(weightText(kg: suggestion.weightKg)) \(unit.symbol) × \(suggestion.reps)" : "\(suggestion.reps)"
+        let reason: String
+        switch suggestion.rationale {
+        case .addWeight(let kg): reason = String(localized: "progression.addWeight \(increment(kg))")
+        case .addWeightFast(let kg): reason = String(localized: "progression.addWeightFast \(increment(kg))")
+        case .addRep: reason = String(localized: "progression.addRep")
+        case .addRepsFast: reason = String(localized: "progression.addRepsFast")
+        case .holdHard: reason = String(localized: "progression.holdHard")
+        case .recovery: reason = String(localized: "progression.recovery")
+        case .deload: reason = String(localized: "progression.deload")
+        case .addRepBodyweight: reason = String(localized: "progression.addRepBodyweight")
+        }
+        return String(localized: "progression.target \(target) \(reason)")
+    }
+
+    private func increment(_ kg: Double) -> String { "\(weightText(kg: kg)) \(unit.symbol)" }
 
     func previousText(_ input: SetInput) -> String {
         "\(weightText(kg: input.weightKg)) × \(input.reps)"
