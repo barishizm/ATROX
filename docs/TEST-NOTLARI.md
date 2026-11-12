@@ -60,3 +60,10 @@ yaşar.
 4. **Sağlık.** Sağlık izni verilmişse Sağlık → Gezin → Egzersiz: "Güç Antrenmanı" kaydı başlangıç/bitişle görünür; aynı antrenman ikinci kez yazılmaz. İzin kapalıysa hata göstermeden atlanır.
 5. **Karşılaştırma.** Aynı gün programından ikinci antrenman: özet "… tarihli antrenmanla karşılaştırıldı" ve hacim farkını gösterir.
 
+## P042 — Geçmiş (elle doğrulama)
+1. **Takvim ve liste.** Antrenman → Geçmiş: bu ayın antrenman günlerinde nokta, altında ay özeti. Ok düğmeleriyle önceki aya geç; gelecek aya geçilemez.
+2. **Detay ve düzenleme.** Bir antrenmana gir → Düzenle: bir setin ağırlığını yükselt (rekor rozeti oraya taşınır), set ekle/sil, hareket ekle/kaldır. Hareket başlığına dokun: hareket geçmişi.
+3. **Rekor tutarlılığı.** Rekoru taşıyan antrenmanı sil: önceki en iyi rekor olarak döner. "Geri al" (8 sn): rekor geri gelir, Sağlık'ta kayıt yeniden görünür.
+4. **Tekrarla / Programa dönüştür.** Tekrarla: aynı hareket ve ağırlıklarla, hiçbir set tamamlanmamış yeni antrenman açılır (zaten antrenman varsa uyarı). Programa dönüştür: Programlar'da tek günlü yeni program.
+5. **Hareket detayı.** Kütüphane → bir hareket → "Senin verin": en iyi set, e1RM, son antrenman; "Tüm geçmiş ve grafik" e1RM çizgisini gösterir (en az iki oturum).
+6. **Uzun geçmiş.** Uygulamada 500 antrenmanı yükleyen bir hata ayıklama düğmesi yok; akıcılık yalnızca birim testlerle (`LargeHistoryTests`) ölçüldü. Gerçek cihazda uzun bir geçmişle kaydırma elle denenmeli.

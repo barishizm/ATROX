@@ -102,6 +102,25 @@ public enum TrainingFixtures {
         return drafts
     }
 
+    /// `count` finished workouts, oldest first, ending before `now`: the twelve-week pattern repeated further back in
+    /// time (for measuring history performance, P042).
+    public static func largeHistory(
+        count: Int, now: Date, calendar: Calendar = Calendar(identifier: .gregorian)
+    ) -> [WorkoutDraft] {
+        var blocks: [[WorkoutDraft]] = []
+        var total = 0
+        var block = 0
+        while total < count {
+            let shifted = calendar.date(byAdding: .day, value: -7 * weeks * block, to: now) ?? now
+            let drafts = twelveWeekHistory(now: shifted, calendar: calendar)
+            blocks.append(drafts)
+            total += drafts.count
+            block += 1
+        }
+        // Older blocks first, so the result is oldest first.
+        return Array(blocks.reversed().flatMap { $0 }.suffix(count))
+    }
+
     private static func exercise(_ lift: Lift, week: Int, sessionIndex: Int, liftIndex: Int) -> WorkoutExerciseDraft {
         let weight = lift.startKg + lift.stepKg * Double(week / 2)
         var sets: [SetInput] = []

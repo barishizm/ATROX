@@ -8,4 +8,7 @@ enum WorkoutRoute: Hashable, Sendable {
     case templates
     case routine(id: UUID)
     case routineDay(routineId: UUID, dayId: UUID)
+    case history
+    case workoutDetail(id: UUID)
+    case exerciseHistory(id: String)
 }

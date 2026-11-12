@@ -14,6 +14,7 @@ struct ExerciseDetailView: View {
     @State private var confirmDelete = false
     @State private var deleteFailed = false
     @State private var unavailable = false
+    @State private var history: ExerciseHistoryModel?
 
     var body: some View {
         Group {
@@ -167,7 +168,7 @@ struct ExerciseDetailView: View {
         }
     }
 
-    /// Filled from the workout history in phase 6; until then it explains what will appear.
+    /// The user's own numbers for this exercise from the workout history (P042); the score arrives with phase 6.
     private var yourDataSection: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             Text("exercise.detail.yourData").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
@@ -175,22 +176,33 @@ struct ExerciseDetailView: View {
             Card {
                 VStack(alignment: .leading, spacing: Spacing.md) {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], alignment: .leading, spacing: Spacing.md) {
-                        placeholderStat("exercise.detail.bestSet")
-                        placeholderStat("exercise.detail.e1rm")
-                        placeholderStat("exercise.detail.lastPerformed")
-                        placeholderStat("exercise.detail.score")
+                        stat("exercise.detail.bestSet", history?.heaviestText)
+                        stat("exercise.detail.e1rm", history?.bestE1rmText)
+                        stat(
+                            "exercise.detail.lastPerformed",
+                            history?.progress.lastDate.map { $0.formatted(.dateTime.day().month(.abbreviated)) }
+                        )
+                        stat("exercise.detail.score", nil)
                     }
-                    Text("exercise.detail.yourData.empty").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                    if history?.isEmpty == false {
+                        NavigationLink(value: WorkoutRoute.exerciseHistory(id: exerciseID)) {
+                            Label("exercisehistory.open", systemImage: "chart.xyaxis.line")
+                        }
+                        .accessibilityIdentifier("open-exercise-history")
+                    } else {
+                        Text("exercise.detail.yourData.empty").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                    }
                 }
             }
             .accessibilityIdentifier("exercise-your-data")
         }
     }
 
-    private func placeholderStat(_ title: LocalizedStringKey) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ value: String?) -> some View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
             Text(title).dsOverline()
-            Text(verbatim: "—").font(DSFont.numericMedium).foregroundStyle(DSColor.textTertiary)
+            Text(verbatim: value ?? "—").font(DSFont.numericMedium)
+                .foregroundStyle(value == nil ? DSColor.textTertiary : DSColor.textPrimary)
         }
         .accessibilityElement(children: .combine)
     }
@@ -227,6 +239,11 @@ struct ExerciseDetailView: View {
         created.languageCode = locale.language.languageCode?.identifier == "tr" ? "tr" : "en"
         model = created
         await created.load()
+        if let context = await container.makeHistoryContext() {
+            let data = ExerciseHistoryModel(ref: ActiveWorkoutView.ref(exerciseID), context: context)
+            await data.load()
+            history = data
+        }
     }
 }
 

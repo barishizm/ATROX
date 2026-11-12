@@ -30,6 +30,16 @@ final class ActiveWorkoutPresenter {
         isPresented = model.isActive
     }
 
+    /// "Repeat" from the history: starts a copy of a finished workout. False when a workout is already running or the
+    /// copy could not be started.
+    func startRepeating(_ workout: WorkoutSnapshot, container: AppContainer) async -> Bool {
+        await prepare(container: container)
+        guard let model, !model.isActive else { return false }
+        do { try await model.session.startRepeating(workout) } catch { return false }
+        isPresented = true
+        return true
+    }
+
     func start(routineId: UUID, dayId: UUID, container: AppContainer) async {
         await prepare(container: container)
         guard let model else { return }

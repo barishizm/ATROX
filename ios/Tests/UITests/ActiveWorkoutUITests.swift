@@ -39,10 +39,23 @@ final class ActiveWorkoutUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Undo complete"].firstMatch.exists)
 
         app.buttons["workout-finish"].tap()
-        // The confirmation dialog's button is on top; the toolbar button of the same name stays behind it.
-        let confirm = app.buttons.matching(NSPredicate(format: "label == 'Finish'"))
+        // A workout shorter than two minutes asks "Save?" first (P041); a longer one only asks "Finish?".
+        // The dialog's button is on top; a toolbar button of the same name would stay behind it.
+        let confirm = app.buttons.matching(NSPredicate(format: "label == 'Save' OR label == 'Finish'"))
         XCTAssertTrue(confirm.firstMatch.waitForExistence(timeout: 5), app.debugDescription)
         confirm.allElementsBoundByIndex.last?.tap()
+        // The summary screen follows; "Done" returns to the workout tab.
+        let done = app.buttons["summary-done"]
+        XCTAssertTrue(done.waitForExistence(timeout: 10), app.debugDescription)
+        done.tap()
         XCTAssertTrue(app.buttons["start-empty-workout"].waitForExistence(timeout: 10), app.debugDescription)
+
+        // The finished workout is in the history (P042).
+        app.buttons["open-history"].tap()
+        let row = app.descendants(matching: .any).matching(identifier: "history-row").firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "history-calendar").firstMatch.exists)
+        row.tap()
+        XCTAssertTrue(app.buttons["history-edit-toggle"].waitForExistence(timeout: 10), app.debugDescription)
     }
 }

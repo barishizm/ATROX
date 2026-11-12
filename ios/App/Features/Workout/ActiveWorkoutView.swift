@@ -66,7 +66,12 @@ struct ActiveWorkoutView: View {
                 }
             }
             .navigationDestination(for: WorkoutRoute.self) { route in
-                if case .exerciseDetail(let id) = route { ExerciseDetailView(exerciseID: id) }
+                switch route {
+                case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
+                case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
+                case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
+                default: EmptyView()
+                }
             }
         }
         .task { await model.load() }
