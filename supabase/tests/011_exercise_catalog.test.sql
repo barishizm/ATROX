@@ -1,7 +1,7 @@
 -- P011 · Catalog tables: RLS, constraints, accent-insensitive search.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(40);
+select plan(42);
 
 -- Fixtures (inserted as the superuser, i.e. like the service role).
 insert into auth.users (id, instance_id, aud, role, email)
@@ -17,10 +17,14 @@ values
    'horizontal_push', 'weighted', 'bench', 'total', 1.0, 0.05, 'A', true, null),
   ('lat_pulldown', 'cable', 'compound', 'pull', 'beginner', 'strength', '{lats}', '{biceps}',
    'vertical_pull', 'weighted', 'bench', 'machine_stack', 0.9, 0.2, 'C', true, null),
-  ('pull_up', 'body only', 'compound', 'pull', 'intermediate', 'strength', '{lats}', '{biceps}',
+  ('pull_up', 'body_only', 'compound', 'pull', 'intermediate', 'strength', '{lats}', '{biceps}',
    'vertical_pull', 'bodyweight_loaded', 'bench', null, 0.8, 0.2, 'B', true, 1.0),
-  ('plank', 'body only', 'isolation', 'static', 'beginner', 'strength', '{abdominals}', '{}',
-   'core', 'time', null, null, null, null, null, false, null);
+  ('plank', 'body_only', 'isolation', 'static', 'beginner', 'strength', '{abdominals}', '{}',
+   'core', 'time', null, null, null, null, null, false, null),
+  -- Hyphenated slug ids (tools/catalog/id_lock.json) and an archived exercise (removed by a catalog update).
+  ('archived-curl', 'dumbbell', 'isolation', 'pull', 'beginner', 'strength', '{biceps}', '{}',
+   'isolation_biceps', 'none', null, null, null, null, null, false, null);
+update public.exercises set archived_at = now() where id = 'archived-curl';
 
 insert into public.exercise_translations (exercise_id, locale, name, aliases, instructions)
 values
@@ -30,7 +34,8 @@ values
   ('lat_pulldown', 'tr', 'Geniş Tutuş Sırt Çekişi', '{lat çekiş,kablo sırt}', '{}'),
   ('pull_up', 'en', 'Pull-Up', '{chin up,pullup}', '{}'),
   ('pull_up', 'tr', 'Barfiks', '{}', '{}'),
-  ('plank', 'en', 'Plank', '{}', '{}');
+  ('plank', 'en', 'Plank', '{}', '{}'),
+  ('archived-curl', 'en', 'Archived Curl', '{}', '{}');
 
 insert into public.catalog_versions (version, checksum) values (1, 'abc123');
 
@@ -49,12 +54,14 @@ select throws_ok($$ insert into public.exercises (id, level, category, primary_m
   '23514', null, 'exercises: id must be a lowercase slug');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles) values ('x1', 'god', 'strength', '{chest}') $$,
   '23514', null, 'exercises: invalid level rejected');
+select throws_ok($$ insert into public.exercises (id, equipment, level, category, primary_muscles) values ('x7', 'body only', 'beginner', 'strength', '{chest}') $$,
+  '23514', null, 'exercises: pre-P028 equipment spelling rejected');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles) values ('x2', 'beginner', 'strength', '{wings}') $$,
   '23514', null, 'exercises: unknown muscle rejected');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles) values ('x3', 'beginner', 'strength', '{}') $$,
   '23514', null, 'exercises: primary muscles must not be empty');
-select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type) values ('x4', 'beginner', 'strength', '{chest}', 'weighted') $$,
-  '23514', null, 'exercises: weighted scoring requires anchor/ratio/tau/convention/confidence');
+select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, anchor_lift) values ('x4', 'beginner', 'strength', '{chest}', 'weighted', 'bench') $$,
+  '23514', null, 'exercises: weighted scoring parameters are complete-or-empty');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, anchor_lift, ratio, tau, ratio_confidence)
                     values ('x5', 'beginner', 'strength', '{chest}', 'bodyweight_loaded', 'bench', 0.5, 0.2, 'B') $$,
   '23514', null, 'exercises: bodyweight_loaded requires bw_fraction');
@@ -69,7 +76,7 @@ select throws_ok($$ insert into public.exercise_translations (exercise_id, local
 
 -- Search (as anon: the catalog is public)
 set local role anon;
-select is((select count(*)::int from public.exercises), 4, 'anon can read exercises');
+select is((select count(*)::int from public.exercises), 5, 'anon can read exercises');
 select is((select count(*)::int from public.catalog_versions), 1, 'anon can read catalog_versions');
 
 select is((select exercise_id from public.search_exercises('barfiks', 'tr') limit 1), 'pull_up', 'search: Turkish name');
@@ -82,9 +89,10 @@ select is((select name from public.search_exercises('plank', 'tr') limit 1), 'Pl
 select is((select exercise_id from public.search_exercises('chin up') limit 1), 'pull_up', 'search: alias match');
 select is((select exercise_id from public.search_exercises('benchpress') limit 1), 'barbell_bench_press', 'search: typo tolerance (missing space)');
 select is((select count(*)::int from public.search_exercises('zzzzqqq')), 0, 'search: no match returns nothing');
+select is((select count(*)::int from public.search_exercises('archived')), 0, 'search: archived exercises are hidden');
 select is((select count(*)::int from public.search_exercises('100%')), 0, 'search: LIKE wildcards in input are escaped');
 select is((select count(*)::int from public.search_exercises('', 'en', 'lats')), 2, 'search: empty query browses by muscle filter');
-select is((select exercise_id from public.search_exercises('', 'en', null, array['body only']) limit 1), 'pull_up', 'search: equipment filter, core first');
+select is((select exercise_id from public.search_exercises('', 'en', null, array['body_only']) limit 1), 'pull_up', 'search: equipment filter, core first');
 select is((select count(*)::int from public.search_exercises('pull', 'en', 'chest')), 0, 'search: muscle filter excludes non-matching');
 
 -- Catalog is read-only for anon and authenticated.

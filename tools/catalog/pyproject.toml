@@ -14,6 +14,8 @@ catalog-import = "catalog.cli:main"
 catalog-taxonomy = "catalog.taxonomy_cli:main"
 catalog-translate = "catalog.translate:main"
 catalog-images = "catalog.images:main"
+catalog-build = "catalog.build:main"
+catalog-seed = "catalog.seed:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]

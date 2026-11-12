@@ -11,6 +11,7 @@ struct ATROXApp: App {
             ContentView()
                 .environment(container)
                 .modifier(LocalStoreModifier(container: container.modelContainer))
+                .task { await container.prepareCatalog() }
         }
     }
 }
