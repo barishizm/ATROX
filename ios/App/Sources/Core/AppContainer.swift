@@ -194,6 +194,28 @@ final class AppContainer {
         return session
     }
 
+    /// Screen model of the active workout (P036) around the shared `WorkoutSession`; nil without user or store.
+    func makeActiveWorkoutModel() async -> ActiveWorkoutModel? {
+        guard let modelContainer, let user = await currentUser(), let session = await activeWorkoutSession() else { return nil }
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id)
+        let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
+        let locale = language.effectiveLocale()
+        let userId = user.id
+        return ActiveWorkoutModel(
+            session: session, unit: unit, showsRir: WorkoutPreferences.showsRir(),
+            languageCode: locale.language.languageCode?.identifier == "tr" ? "tr" : "en",
+            decimalSeparator: locale.decimalSeparator ?? "."
+        ) {
+            let context = ModelContext(modelContainer)
+            var entries = ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
+                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: $0.movementPattern)
+            }
+            let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
+            entries += ((try? context.fetch(own)) ?? []).map { ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil) }
+            return entries
+        }
+    }
+
     private func planStore(for userId: UUID) -> RoutinePlanStore {
         if let existing = planStores[userId] { return existing }
         let store = RoutinePlanStore(userId: userId)
