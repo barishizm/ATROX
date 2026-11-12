@@ -74,6 +74,22 @@ public protocol RoutineRepository: Sendable {
     func updateExercise(id: UUID, with input: RoutineExerciseInput) async throws
     func moveExercise(id: UUID, to position: Int) async throws
     func deleteExercise(id: UUID) async throws
+
+    /// Copies a routine (days and exercises, new ids) under `name`.
+    @discardableResult
+    func duplicate(routineId: UUID, name: String) async throws -> RoutineSnapshot
+    /// Copies a day right behind the original under `name`.
+    @discardableResult
+    func duplicateDay(id: UUID, name: String) async throws -> RoutineDaySnapshot
+    /// Copies an exercise right behind the original (without its superset group).
+    @discardableResult
+    func duplicateExercise(id: UUID) async throws -> RoutineExerciseSnapshot
+    /// Groups two or more exercises of one day into a superset: they are moved next to each other.
+    func setSuperset(exerciseIds: [UUID]) async throws
+    /// Takes one exercise out of its superset; a group left with a single member dissolves.
+    func clearSuperset(exerciseId: UUID) async throws
+    /// Puts a routine back to `snapshot` (same ids): the undo of an edit.
+    func restore(_ snapshot: RoutineSnapshot) async throws
 }
 
 public protocol WorkoutRepository: Sendable {

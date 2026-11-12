@@ -51,7 +51,7 @@ Toplam: 104 adım.
 ## Faz 4 — Antrenman takibi
 
 - [x] **P032** · Antrenman veri modelleri — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
-- [ ] **P033** · Program oluşturucu — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
+- [x] **P033** · Program oluşturucu — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P034** · Program şablonları — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P035** · Aktif antrenman motoru — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
 - [ ] **P036** · Aktif antrenman arayüzü — [`02-katalog-antrenman.md`](prompts/02-katalog-antrenman.md)
@@ -241,3 +241,7 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P032) Onboarding setleri artık `replaceOnboardingWorkout` ile tek bitmiş Workout olarak yazılıyor (geri dönüp değiştirince yenisi eskisinin yerine geçer).
 - (P032) Ertelenen: sunucuda `workouts.source` sütunu yok, `Workout.source` şimdilik yalnızca yerel (senkron öncesi migration gerekir). `PersonalRecord` için yalnızca model var; rekor hesaplama/depo sonraki adımda. `ExerciseLists` "son kullanılanlar" henüz `recentExercises` ile beslenmiyor. Özel hareket silinince ona bağlı satırların davranışı belirlenmedi.
 - (P032) Yerelde DataKit testleri (126) ve uygulama `build-for-testing` derlemesi geçti; ATROXTests (onboarding güncellemeleri dahil) ve UI testleri CI'a bırakıldı.
+- (P033) Program oluşturucu: Antrenman sekmesi → Programlar (`RoutineListView`) → program (`RoutineEditorView`: ad, aktif program, günler, haftalık plan, kas başına haftalık set) → gün (`RoutineDayView`: hareket listesi). Hareket ekleme P030'daki `LibraryView(onAdd:)` seçim modunu sheet olarak açar; satıra dokununca hedefler (set, tekrar aralığı, RIR, dinlenme, not) `RoutineExerciseSheet`'te düzenlenir. Her değişiklik hemen SwiftData'ya yazılır (otomatik kayıt); düzenleyici son 30 değişikliği geri alır (`RoutineRepository.restore` programı aynı kimliklerle eski hâline getirir), silinen program listede geri alınabilir.
+- (P033) DataKit'e eklenenler: `duplicate`/`duplicateDay`/`duplicateExercise`, `setSuperset`/`clearSuperset`, `restore`; süperset grupları her taşıma/silme/düzenlemede normalleşir (yalnızca bitişik, ≥ 2 üyeli koşular grup kalır). `RoutineVolume` (haftalık set: birincil kas tam, ikincil yarım; her gün haftada bir sayılır; boş gün listesi) ve `RoutinePlanStore` (aktif program + hafta günü → program günü, kullanıcı başına `UserDefaults`).
+- (P033) Ertelenen: aktif program ve haftalık plan şimdilik cihazda (`UserDefaults`), senkronsuz; sunucu tarafı için bir tablo/sütun kararı gerekir. Haftalık plan tek programın günlerini seçtirir, başka programa ait atama "Başka program" görünür. Süperset kurmak için Düzenle modunda ≥ 2 satır seçilir (sürükleyerek gruplama yok). "3 günlük program 2 dakikada" hedefi ve görünümler simülatörde elle ölçülmedi; UI testi yazılmadı.
+- (P033) Yerelde DataKit testleri (144) ve `RoutineEditorModelTests` (6) geçti, uygulama `build-for-testing` derlemesi başarılı; diğer ATROXTests ve UI testleri CI'a bırakıldı.
