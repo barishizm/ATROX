@@ -1,5 +1,5 @@
 # ATROX ML hattı. Her hedef `uv run` ile çalışır.
-.PHONY: data eda train-a train-b train-c tune bakeoff export test lint smoke
+.PHONY: data eda baselines train-a train-b train-c tune bakeoff export test lint smoke
 
 data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.parquet
 	uv run python -m gymml.data.opl
@@ -7,8 +7,14 @@ data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.pa
 eda:         ## P048: kohort tabloları (data/processed/) + reports/eda.md
 	uv run python -m gymml.data.eda
 
+baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
+	uv run python -m gymml.eval.baselines
+
 train-a:     ## P050
-	@echo "train-a: P050'de eklenecek"; exit 1
+	@echo "baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
+	uv run python -m gymml.eval.baselines
+
+train-a: P050'de eklenecek"; exit 1
 
 train-b:     ## P051
 	@echo "train-b: P051'de eklenecek"; exit 1
