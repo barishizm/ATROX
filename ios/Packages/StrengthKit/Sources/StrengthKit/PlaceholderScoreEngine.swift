@@ -11,8 +11,6 @@ public struct PlaceholderScoreEngine: ScoreEngine {
     static let femaleFactor = 0.6
     static let unspecifiedFactor = 0.8
 
-    private let estimator = EpleyEstimator()
-
     public init() {}
 
     /// Bodyweight multiple (men) that maps to a score of 100.
@@ -35,7 +33,7 @@ public struct PlaceholderScoreEngine: ScoreEngine {
 
     public func estimate(_ set: LiftSet, for athlete: AthleteProfile) -> ScoreEstimate? {
         guard set.weightKg.isFinite, athlete.bodyweightKg.isFinite, athlete.bodyweightKg > 0,
-              let oneRepMax = estimator.estimateOneRepMax(weightKg: set.weightKg, reps: Swift.min(set.reps, Self.repCap))
+              let oneRepMax = E1RMModel.standard.estimate(weightKg: set.weightKg, reps: Swift.min(set.reps, Self.repCap))?.valueKg
         else { return nil }
         let barbellEquivalent: Double
         switch set.implement {
