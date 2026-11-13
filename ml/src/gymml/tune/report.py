@@ -12,7 +12,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
-from gymml.data.cohort import AGE_BAND_EDGES, BW_BAND_EDGES, LIFTS, ML_ROOT, band_labels  # noqa: E402
+from gymml.data.cohort import AGE_BAND_EDGES, LIFTS, ML_ROOT, band_labels  # noqa: E402
+from gymml.eval.metrics import class_band_labels  # noqa: E402
 
 OUT = ML_ROOT / "reports/bakeoff"
 REPORT = ML_ROOT / "reports/bakeoff.md"
@@ -129,9 +130,10 @@ def heatmap(k: str, final: dict, path: Path) -> None:
     strata = final.get("test_strata")
     if not strata:
         return
-    ages, bws = band_labels(AGE_BAND_EDGES), band_labels(BW_BAND_EDGES)
+    ages = band_labels(AGE_BAND_EDGES)
     fig, axes = plt.subplots(2, 3, figsize=(16, 8))
     for i, sex in enumerate(("M", "F")):
+        bws = class_band_labels(sex)
         for j, lift in enumerate(LIFTS):
             m = np.full((len(ages), len(bws)), np.nan)
             for r in strata.get(lift, []):

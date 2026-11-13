@@ -101,6 +101,9 @@ Kazanan, sonuçlar görülmeden önce yazılmış şu kurallarla seçilir:
    örneklemi). Kusursuz bir model de katmanların ~%5'inde bandı rastlantıyla aşacağından kapı, bandı aşan katman
    oranı ≤ %10 ise geçilmiş sayılır. *(2026-11-13 kullanıcı onayı: n≈500 ağırlıklı katmanlarda yalnız örnekleme
    gürültüsü 5–8 puan olduğundan düz 2 puan sınırı karşılanamıyordu; bkz. `ml/reports/baselines.md`.)*
+   Kilo bantları yarışma kilo sınıflarıdır (erkek ≤59/66/74/83/93/105/120/>120, kadın ≤47/52/57/63/69/76/84/>84 kg).
+   *(2026-11-13 kullanıcı onayı: yarışma verisinde güç sınıf sınırının hemen altında tepe yapıp hemen üstünde ~%7
+   düşüyor; 10 kg'lık ondalık bantlar bu dişleri böldüğünden pürüzsüz modelleri haksız yere eliyordu.)*
 3. **Akıl sağlığı testleri (hepsi geçmeli):**
    - Skor, kaldırılan ağırlıkta kesin artan.
    - Aynı kaldırış için skor, vücut ağırlığı arttıkça **artmamalı** (daha ağır kişi için aynı yük daha az etkileyicidir).

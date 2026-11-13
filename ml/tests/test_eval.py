@@ -238,3 +238,14 @@ def test_age_jump_limit_ignores_fast_teen_growth():
     assert res.passed, res.detail
     strict = sanity.age_shape(TeenGrowth(), sanity.SanityConfig(jump_min_age=0.0))
     assert not strict.passed
+
+
+def test_weight_class_bands_are_sex_specific_and_right_closed():
+    x = pl.DataFrame(
+        {
+            "sex": ["M", "M", "M", "F", "F", "F"],
+            "bodyweight_kg": [83.0, 83.1, 130.0, 47.0, 63.5, 90.0],
+        }
+    ).select(metrics.weight_class_band())
+    assert x.to_series().to_list() == ["74-83", "83-93", ">120", "≤47", "63-69", ">84"]
+    assert metrics.class_band_labels("M")[0] == "≤59"
