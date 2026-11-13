@@ -1,0 +1,24 @@
+# P050 Aday A — Spline-LMS temel yapılandırması (P053'te Optuna ile aranacak).
+# Düğümler: yaş [age_min, age_max] ve log-kilo [log bw_min, log bw_max] üzerinde eşit aralıklı,
+# kübik; taban sayısı = segment + derece. Dört parametre aynı tensör tabanını paylaşır.
+family: BCPE
+degree: 3
+age_segments: 10
+bw_segments: 8
+age_min: 14.0
+age_max: 85.0
+bw_min: 30.0
+bw_max: 250.0
+penalties:
+  mu: {age: 0.001, bw: 0.001}
+  sigma: {age: 0.01, bw: 0.01}
+  nu: {age: 0.1, bw: 0.1}
+  tau: {age: 0.1, bw: 0.1}
+adam_steps: 300
+adam_lr: 0.05
+lbfgs_rounds: 30
+lbfgs_iter: 20
+patience: 3
+min_improvement: 0.000001
+holdout_frac: 0.1
+seed: 20260101

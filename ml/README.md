@@ -15,5 +15,6 @@ make test        # birim testleri
 make smoke       # örnek çalıştırma -> runs/<zaman>-smoke/
 make data        # P047: OpenPowerlifting içe aktarma
 ```
+macOS'ta LightGBM (P051, `make train-b`) OpenMP ister: `brew install libomp`.
 Yapı: `src/gymml/{data,features,models,eval,export,utils}`, `configs/`, `reports/`, `golden/`,
 `data/{raw,interim,processed}` (raw ve interim git dışı), `runs/` (git dışı).

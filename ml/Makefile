@@ -10,14 +10,11 @@ eda:         ## P048: kohort tabloları (data/processed/) + reports/eda.md
 baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
 	uv run python -m gymml.eval.baselines
 
-train-a:     ## P050
-	@echo "baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
-	uv run python -m gymml.eval.baselines
+train-a:     ## P050: Spline-LMS (BCCG + BCPE) -> reports/candidate_a.md
+	uv run python -m gymml.models.train_a
 
-train-a: P050'de eklenecek"; exit 1
-
-train-b:     ## P051
-	@echo "train-b: P051'de eklenecek"; exit 1
+train-b:     ## P051: Aday B LightGBM çeyreklik (kısıtlı + kısıtsız) -> reports/candidate_b.md
+	uv run python -m gymml.models.train_b
 
 train-c:     ## P052: Aday C (sinirsel BCPE/SHASH + kopula) -> reports/candidate_c.md, params_draft/correlation.json
 	uv run python -m gymml.models.neural_run
@@ -37,5 +34,6 @@ smoke:
 lint:
 	uv run ruff check src tests
 
-test:
+test:        ## macOS'ta LightGBM testleri ayrı süreçte koşar (bkz. tests/conftest.py)
 	uv run pytest
+	@if [ "$$(uname)" = "Darwin" ]; then ATROX_LGBM_TESTS=1 uv run pytest tests/test_lgbm_quantile.py; fi

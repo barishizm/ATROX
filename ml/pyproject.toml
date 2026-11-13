@@ -42,3 +42,4 @@ select = ["E", "F", "I", "UP", "B"]
 # Rapor şablonu (Markdown satırları) uzun olabilir.
 "src/gymml/data/eda.py" = ["E501"]
 "src/gymml/eval/baselines.py" = ["E501"]
+"src/gymml/models/train_a.py" = ["E501"]
