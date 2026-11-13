@@ -159,7 +159,7 @@ final class AppContainer {
     func checkModelUpdate() async {
         guard let modelUpdater else { return }
         let outcome = await modelUpdater.checkIfDue()
-        if case let .failed(reason) = outcome { Log.app.error("Model update failed: \(reason, privacy: .public)") }
+        if case let .failed(reason) = outcome { Log.app.error("Model update failed: \(reason)") }
     }
 
     private static func makeModelUpdater(config: SupabaseConfiguration, info: [String: Any]) -> ModelUpdater? {
