@@ -17,6 +17,8 @@ let package = Package(
     targets: [
         .target(
             name: "StrengthKit",
+            // Embedded base model bundle (P060 `make export`); the app works offline from first launch.
+            resources: [.copy("Resources/ModelBundle")],
             swiftSettings: [.swiftLanguageMode(.v6), .enableUpcomingFeature("StrictConcurrency")]
         ),
         .testTarget(

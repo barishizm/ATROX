@@ -32,8 +32,8 @@ profiles:    ## P057: A modelinden çapa korelasyonu + örnek profil skorları -
 	uv run python -m gymml.scoring_run corr
 	uv run python -m gymml.scoring_run profiles
 
-export:      ## P058
-	@echo "export: P058'de eklenecek"; exit 1
+export:      ## P060: imzalı model paketi (dist/) + altın vektörler (golden/) + gömülü paket (StrengthKit)
+	uv run python -m gymml.export.bundle
 
 smoke:
 	uv run python -m gymml.cli smoke
