@@ -1,0 +1,137 @@
+{
+  "module": "e1rm",
+  "step": "P054",
+  "family": "general",
+  "formula": "e1rm = w / f(r_eff); f(r) = 1 / (1 + ((r - 1) / k)^p); r_eff = reps + RIR",
+  "r_max": 30.0,
+  "default_category": "general",
+  "pattern_category": {
+    "squat": "lower_compound",
+    "hip_hinge": "lower_compound",
+    "horizontal_push": "upper_push",
+    "vertical_push": "upper_push",
+    "horizontal_pull": "upper_pull",
+    "vertical_pull": "upper_pull",
+    "isolation_*": "isolation"
+  },
+  "categories": {
+    "lower_compound": {
+      "k": 34.4664,
+      "p": 1.3229,
+      "fit_rmse_log": 0.0072,
+      "fit_max_abs_log": 0.0439,
+      "n_points": 8,
+      "sources": [
+        "nuzzo2024"
+      ],
+      "exercises": [
+        "leg_press"
+      ]
+    },
+    "upper_push": {
+      "k": 26.4565,
+      "p": 1.1482,
+      "fit_rmse_log": 0.0108,
+      "fit_max_abs_log": 0.0232,
+      "n_points": 10,
+      "sources": [
+        "nuzzo2024"
+      ],
+      "exercises": [
+        "bench_press"
+      ]
+    },
+    "upper_pull": {
+      "k": 22.6625,
+      "p": 1.2204,
+      "fit_rmse_log": 0.0114,
+      "fit_max_abs_log": 0.0274,
+      "n_points": 6,
+      "sources": [
+        "ferrari2017"
+      ],
+      "exercises": [
+        "dumbbell_row"
+      ]
+    },
+    "isolation": {
+      "k": 27.7244,
+      "p": 1.1153,
+      "fit_rmse_log": 0.0182,
+      "fit_max_abs_log": 0.0313,
+      "n_points": 12,
+      "sources": [
+        "ferrari2017"
+      ],
+      "exercises": [
+        "elbow_flexion",
+        "triceps_extension"
+      ]
+    },
+    "general": {
+      "k": 25.1715,
+      "p": 1.3522,
+      "fit_rmse_log": 0.0099,
+      "fit_max_abs_log": 0.0271,
+      "n_points": 10,
+      "sources": [
+        "nuzzo2024"
+      ],
+      "exercises": [
+        "all"
+      ]
+    }
+  },
+  "cross_check": [
+    {
+      "category": "upper_push",
+      "source": "hatfield2006",
+      "exercise": "shoulder_press",
+      "pct_1rm": 0.6,
+      "mean_reps": 14.0,
+      "resid_log": 0.1446
+    },
+    {
+      "category": "upper_push",
+      "source": "hatfield2006",
+      "exercise": "shoulder_press",
+      "pct_1rm": 0.8,
+      "mean_reps": 6.0,
+      "resid_log": 0.0854
+    },
+    {
+      "category": "lower_compound",
+      "source": "hatfield2006",
+      "exercise": "back_squat",
+      "pct_1rm": 0.6,
+      "mean_reps": 24.0,
+      "resid_log": 0.0499
+    },
+    {
+      "category": "lower_compound",
+      "source": "hatfield2006",
+      "exercise": "back_squat",
+      "pct_1rm": 0.8,
+      "mean_reps": 12.0,
+      "resid_log": 0.0237
+    }
+  ],
+  "confidence": {
+    "knots_reps": [
+      5.0,
+      12.0,
+      20.0,
+      30.0
+    ],
+    "knots_conf": [
+      1.0,
+      0.6,
+      0.25,
+      0.0
+    ],
+    "no_rir_factor": 0.85
+  },
+  "warmup_sets": "excluded",
+  "source_table": "ml/data/e1rm_rep_tables.csv",
+  "report": "ml/reports/e1rm_literature.md"
+}
