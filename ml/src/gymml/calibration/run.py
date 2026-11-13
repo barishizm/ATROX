@@ -23,6 +23,7 @@ from gymml.calibration.reference import (
     SEXES,
     CompetitorReference,
     EmpiricalOPLReference,
+    ModelReference,
     age_band_of,
 )
 
@@ -127,10 +128,15 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--report", type=Path, default=ML_ROOT / "reports/calibration.md")
     ap.add_argument("--params", type=Path, default=ML_ROOT / "params_draft/calibration.json")
     ap.add_argument("--n-boot", type=int, default=500)
+    ap.add_argument("--reference", choices=["model", "opl"], default="model",
+                    help="model: P053 kazananı (runs/bakeoff/model_A_*.pkl); opl: ampirik OPL")
     args = ap.parse_args(argv)
 
     anchors = load_anchors(args.anchors)
-    ref = EmpiricalOPLReference.from_parquet(args.opl, tested_only=True)
+    if args.reference == "model":
+        ref = ModelReference.from_pickles(ML_ROOT / "runs/bakeoff")
+    else:
+        ref = EmpiricalOPLReference.from_parquet(args.opl, tested_only=True)
     ref_all = EmpiricalOPLReference.from_parquet(args.opl, tested_only=False)
 
     cal = F.fit(anchors, ref)
@@ -190,10 +196,11 @@ def main(argv: list[str] | None = None) -> None:
                      "anchors carry no height, so the test relies on assumed heights"
            if not improves else "improvement seen; needs user review before enabling"}
 
-    ref_note = ("P053 winner not available yet: OpenPowerlifting empirical conditional "
-                "distribution (Raw, Tested, sex x age band x 5 kg bodyweight bin; log median and "
-                "(q84.13-q15.87)/2). Swap via gymml.calibration.reference.CompetitorReference "
-                "(P057) and re-run `make calibrate`.")
+    ref_note = ("P053 winner (Spline-LMS BCPE, seed 1): log median and (q84.13-q15.87)/2 at the "
+                "age-band representative age (gymml.calibration.reference.BAND_AGE)."
+                if args.reference == "model" else
+                "OpenPowerlifting empirical conditional distribution (Raw, Tested, sex x age band "
+                "x 5 kg bodyweight bin; log median and (q84.13-q15.87)/2).")
     section = calibration_section(cal, boots, band, bmi, ref_note)
     args.params.parent.mkdir(parents=True, exist_ok=True)
     args.params.write_text(json.dumps(section, indent=2, ensure_ascii=False) + "\n")
@@ -245,9 +252,9 @@ def render_report(anchors: list[Anchor], cal, boots, loso, rows, band, bmi_resul
       f"±{gn['max_half_width']} puan — çapası az ve dağınık; salon referansından belirgin "
       "şekilde daha belirsiz.")
     w("- Dokümandaki ±8–12 tahmini bu ölçümle değiştirildi (`docs/03-ML-MODEL.md` §5.3).")
-    w("- Yarışmacı referansı: P053 kazananı henüz yok → OpenPowerlifting ampirik koşullu dağılımı "
-      f"(`{cal.reference_name}`). P057 `CompetitorReference` arayüzüyle P053 modelini takıp "
-      "`make calibrate`'i yeniden çalıştırır; δ/κ değerleri o zaman yeniden kestirilmelidir.")
+    w(f"- Yarışmacı referansı: `{cal.reference_name}` (P057'den itibaren varsayılan P053 kazananı "
+      "Spline-LMS; `--reference opl` ampirik OPL referansını kullanır). \"OPL tümü\" senaryosu "
+      "ampirik tested+untested referansıyla karşılaştırır.")
     w(f"- BMI düzeltmesi: **{'kapalı' if not improves else 'inceleme gerekli'}** (aşağıda).\n")
 
     w("## Model\n")

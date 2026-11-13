@@ -176,13 +176,14 @@ erişim tarihi yazılır, birincil kaynak okunamayan çapa dosyaya girmez.
 P055 duyarlılık analizi (kaynak çıkarma, ağırlıklandırma, yarışmacı referansı, varsayım değişiklikleri ve bootstrap
 zarfının yarı genişliği; tipik kullanıcılar) ölçülen belirsizlik bandı:
 
-- **Salon referansı:** medyan **±9 yüzdelik puan**, en kötü ±19 (squat: kaldırış farkı tek kaynağa dayanıyor).
-  Örnek: 80 kg, 30 yaş erkek, bench 80 kg → salon skoru ≈ 26 (bant 19–31).
-- **Genel nüfus referansı:** medyan **±18 puan**, en kötü ±24 — çapası az; v1'de "çok tahmini" olarak gösterilmeli.
+- **Salon referansı:** medyan **±8 yüzdelik puan**, en kötü ±19 (squat: kaldırış farkı tek kaynağa dayanıyor).
+  Örnek: 80 kg, 30 yaş erkek, bench 80 kg → salon skoru ≈ 26 (bant 21–31).
+- **Genel nüfus referansı:** medyan **±19 puan**, en kötü ±26 — çapası az; v1'de "çok tahmini" olarak gösterilmeli.
 - Yarışmacı referansı doğrudan veriye dayanır; bu bant ona uygulanmaz.
 
 Ayrıntı: `ml/reports/calibration.md`; değerler `ml/params_draft/calibration.json` → `uncertainty_band_pct_points`.
-Rakamlar P053 kazananı takılınca (P057) yeniden üretilir. Bu yüzden:
+Rakamlar P057'de P053 kazananı (Spline-LMS) yarışmacı referansı olarak takılarak yeniden üretildi
+(önceki ampirik OPL referansına göre skorlar ≤ 2,5 puan oynadı). Bu yüzden:
 
 - Skorun yanında güven göstergesi ve "tahmini" etiketi bulunur.
 - Yarışmacı referansı her zaman seçilebilir; o referans doğrudan veriye dayanır ve en güvenilir olandır.
@@ -246,6 +247,9 @@ z_grup = Σ w_i z_i / sqrt( Σ w_i² + 2 Σ_{i<j} w_i w_j r_ij )
 ```
 
 Payda, ortalamanın varyansını 1'e geri ölçekler. `r_ij` §4.4'teki korelasyonlardan gelir (bilinmeyen çiftler için 0.6).
+Sonuç: korelasyon 1'den küçükken eşit iki skorun birleşimi aynı yönde **daha uçtur** (ör. r = 0.6 iken iki 60 → ≈ 61; 50 her
+zaman 50) — bütün hareketlerde 60. yüzdelikte olmak, tek harekette olmaktan daha nadirdir. P057 referansı bunu
+uygular; kullanıcıya gösterim kararı açık (`docs/ILERLEME.md` Ertelenenler).
 
 - **Kas grubu skoru:** `w_i` = kas katılımı (birincil 1.0, ikincil 0.4) × hareket güveni × güncellik.
 - **Genel Güç Skoru:** 7 hareket kalıbı üzerinden (yatay itiş, dikey itiş, yatay çekiş, dikey çekiş, squat, kalça
