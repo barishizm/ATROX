@@ -106,6 +106,9 @@ Kazanan, sonuçlar görülmeden önce yazılmış şu kurallarla seçilir:
    - Aynı kaldırış için skor, vücut ağırlığı arttıkça **artmamalı** (daha ağır kişi için aynı yük daha az etkileyicidir).
    - Beklenen medyan yaşla tek tepeli olmalı, tepe 20–40 yaş arasında; ani sıçrama olmamalı. *(2026-11-13 kullanıcı
      onayı: OPL ham verisinde tepe 27–34, bench'te 32–41 yaş; "20'lerin ortası" ifadesi bu aralıkla değiştirildi.)*
+     "Ani sıçrama" sınırı (ardışık yaşlar arasında medyanda ≤ %4 değişim) yalnızca 20 yaş ve üstüne uygulanır;
+     gençlerde yıllık artış verinin kendisinde %4–10 olduğundan oradaki kırılmaları pürüzsüzlük (ikinci fark)
+     testi denetler. *(2026-11-13 kullanıcı onayı, P053 deneylerinden önce.)*
    - van den Hoek 2024 tablolarındaki 90. yüzdelik değerlerine ±%3 içinde uyum. vdH her yarışma kaydını ayrı sayar,
      modeller sporcu başına eşit ağırlıkla eğitilir; bu yüzden P053 bu ölçütü ağırlıklandırma açık ve kapalı iki
      sürümle raporlar ve karşılaştırmayı ağırlıksız sürüm üzerinden yapar. *(2026-11-13 kullanıcı onayı.)*

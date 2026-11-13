@@ -24,6 +24,9 @@ class SanityConfig:
     # 27–34 (bench 32–41); aralık kullanıcı onayına kadar geniş tutuldu (reports/baselines.md).
     peak_age_range: tuple[float, float] = (20.0, 40.0)
     max_year_jump: float = 0.04  # ardışık iki yaş arasında medyanın en çok göreli değişimi
+    # Sıçrama sınırı yalnızca yetişkinlere (2026-11-13 kullanıcı onayı): gençlerde yıllık artış
+    # verinin kendisinde %4–10; gençlerdeki ani kırılmaları pürüzsüzlük (ikinci fark) testi yakalar.
+    jump_min_age: float = 20.0
     max_rel_second_diff: float = 0.01  # 1 kg / 1 yıl adımında |Δ²medyan| / medyan sınırı
     extrapolation_ages: tuple[float, ...] = (10.0, 14.0, 85.0, 95.0)
     extrapolation_bws: tuple[float, ...] = (25.0, 30.0, 250.0, 300.0)
@@ -81,7 +84,8 @@ def age_shape(m: DistributionModel, cfg: SanityConfig) -> SanityResult:
     for sex in ("M", "F"):
         med = m.quantile(_x(sex, ages, np.full(len(ages), TYPICAL_BW[sex])), np.array([0.5]))[:, 0]
         peaks.append(float(ages[np.argmax(med)]))
-        jumps.append(float(np.max(np.abs(np.diff(med)) / med[:-1])))
+        adult = ages[:-1] >= cfg.jump_min_age
+        jumps.append(float(np.max((np.abs(np.diff(med)) / med[:-1])[adult])))
         # Tek tepelilik: tepeden önce azalmayan, sonra artmayan (yarım adım tolerans).
         k = int(np.argmax(med))
         tol = 0.005 * med.max()
@@ -89,9 +93,10 @@ def age_shape(m: DistributionModel, cfg: SanityConfig) -> SanityResult:
     lo, hi = cfg.peak_age_range
     ok = all(lo <= p <= hi for p in peaks) and max(jumps) <= cfg.max_year_jump and unimodal
     return SanityResult(
-        f"yaş eğrisi tek tepeli, tepe {lo:g}–{hi:g}, sıçrama yok",
+        f"yaş eğrisi tek tepeli, tepe {lo:g}–{hi:g}, {cfg.jump_min_age:g}+ yaşta sıçrama yok",
         ok,
-        f"tepe yaşı M/F {peaks}, en büyük yıllık değişim {max(jumps):.3f}, tek tepeli={unimodal}",
+        f"tepe yaşı M/F {peaks}, {cfg.jump_min_age:g}+ yaşta en büyük yıllık değişim "
+        f"{max(jumps):.3f}, tek tepeli={unimodal}",
     )
 
 

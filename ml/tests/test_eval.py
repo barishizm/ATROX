@@ -218,3 +218,23 @@ def test_coverage_gate_passes_truth_and_fails_misspecified_model():
     df = synthetic(80_000, seed=4)
     assert metrics.evaluate(LogNormalTruth(), df)["coverage_gate_pass"]
     assert not metrics.evaluate(LogNormalTruth(bw_power=0.3), df)["coverage_gate_pass"]
+
+
+def test_age_jump_limit_ignores_fast_teen_growth():
+    class TeenGrowth(LogNormalTruth):
+        def mu(self, x):  # 16→20 yaş arası yılda ~%7 artış, sonra yavaş düşüş
+            age = x["age"].to_numpy()
+            teen = np.where(age < 20, 0.07 * (age - 20), 0.0)
+            adult = -0.0004 * np.maximum(age - 30, 0) ** 2
+            return (
+                super().mu(x) * 0
+                + np.array([self.A[s] for s in x["sex"]])
+                + (2 / 3) * np.log(x["bodyweight_kg"].to_numpy())
+                + teen
+                + adult
+            )
+
+    res = sanity.age_shape(TeenGrowth(), sanity.SanityConfig())
+    assert res.passed, res.detail
+    strict = sanity.age_shape(TeenGrowth(), sanity.SanityConfig(jump_min_age=0.0))
+    assert not strict.passed
