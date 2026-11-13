@@ -4,8 +4,8 @@
 data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.parquet
 	uv run python -m gymml.data.opl
 
-eda:         ## P048
-	@echo "eda: P048'de eklenecek"; exit 1
+eda:         ## P048: kohort tabloları (data/processed/) + reports/eda.md
+	uv run python -m gymml.data.eda
 
 train-a:     ## P050
 	@echo "train-a: P050'de eklenecek"; exit 1
