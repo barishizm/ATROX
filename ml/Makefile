@@ -13,8 +13,8 @@ baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/
 train-a:     ## P050: Spline-LMS (BCCG + BCPE) -> reports/candidate_a.md
 	uv run python -m gymml.models.train_a
 
-train-b:     ## P051
-	@echo "train-b: P051'de eklenecek"; exit 1
+train-b:     ## P051: Aday B LightGBM çeyreklik (kısıtlı + kısıtsız) -> reports/candidate_b.md
+	uv run python -m gymml.models.train_b
 
 train-c:     ## P052
 	@echo "train-c: P052'de eklenecek"; exit 1
@@ -34,5 +34,6 @@ smoke:
 lint:
 	uv run ruff check src tests
 
-test:
+test:        ## macOS'ta LightGBM testleri ayrı süreçte koşar (bkz. tests/conftest.py)
 	uv run pytest
+	@if [ "$$(uname)" = "Darwin" ]; then ATROX_LGBM_TESTS=1 uv run pytest tests/test_lgbm_quantile.py; fi
