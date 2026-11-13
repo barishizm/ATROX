@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "atrox/params.schema.json",
+  "title": "ATROX model bundle params.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "e1rm", "currentStrength", "anchor", "exerciseScore", "calibration",
+               "correlation", "aggregate", "levels", "progress", "imbalance", "repNorms", "inputClip"],
+  "$defs": {
+    "num": {"type": "number"},
+    "pos": {"type": "number", "exclusiveMinimum": 0},
+    "unit": {"type": "number", "minimum": 0, "maximum": 1},
+    "pair": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+    "ladder": {"type": "array", "items": {"type": "number", "exclusiveMinimum": 0}, "minItems": 3, "maxItems": 3},
+    "strings": {"type": "array", "items": {"type": "string"}},
+    "sexMap": {"type": "object", "required": ["M", "F"], "additionalProperties": false,
+               "properties": {"M": {"type": "number"}, "F": {"type": "number"}}},
+    "confLevel": {"type": "object", "additionalProperties": false,
+                  "required": ["minSessions", "maxDaysSinceLast", "minMeanSetConfidence"],
+                  "properties": {"minSessions": {"type": "integer"}, "maxDaysSinceLast": {"type": "integer"},
+                                 "minMeanSetConfidence": {"$ref": "#/$defs/unit"}}},
+    "confWeights": {"type": "object", "additionalProperties": {"$ref": "#/$defs/pos"},
+                    "propertyNames": {"enum": ["low", "medium", "high"]}}
+  },
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "e1rm": {
+      "type": "object", "additionalProperties": false,
+      "required": ["family", "rMax", "defaultCategory", "patternCategory", "categories", "confidence"],
+      "properties": {
+        "family": {"const": "general"},
+        "rMax": {"$ref": "#/$defs/pos"},
+        "defaultCategory": {"type": "string"},
+        "patternCategory": {"type": "object", "additionalProperties": {"type": "string"}},
+        "categories": {"type": "object", "minProperties": 1, "additionalProperties": {
+          "type": "object", "required": ["k", "p"], "additionalProperties": false,
+          "properties": {"k": {"$ref": "#/$defs/pos"}, "p": {"$ref": "#/$defs/pos"}}}},
+        "confidence": {"type": "object", "additionalProperties": false,
+                       "required": ["knotsReps", "knotsConf", "noRirFactor"],
+                       "properties": {"knotsReps": {"type": "array", "items": {"type": "number"}, "minItems": 2},
+                                      "knotsConf": {"type": "array", "items": {"$ref": "#/$defs/unit"}, "minItems": 2},
+                                      "noRirFactor": {"$ref": "#/$defs/unit"}}}
+      }
+    },
+    "currentStrength": {
+      "type": "object", "additionalProperties": false,
+      "required": ["windowDays", "outlierJump", "staleDecayPerWeek", "minSetConfidence", "confidenceLevels"],
+      "properties": {
+        "windowDays": {"type": "integer", "minimum": 1},
+        "outlierJump": {"$ref": "#/$defs/pos"},
+        "staleDecayPerWeek": {"$ref": "#/$defs/unit"},
+        "minSetConfidence": {"$ref": "#/$defs/unit"},
+        "confidenceLevels": {"type": "object", "required": ["high", "medium"], "additionalProperties": false,
+                             "properties": {"high": {"$ref": "#/$defs/confLevel"}, "medium": {"$ref": "#/$defs/confLevel"}}}
+      }
+    },
+    "anchor": {"type": "object", "additionalProperties": false, "required": ["cdfClip", "scaleQuantiles"],
+               "properties": {"cdfClip": {"$ref": "#/$defs/pair"}, "scaleQuantiles": {"$ref": "#/$defs/pair"}}},
+    "exerciseScore": {
+      "type": "object", "additionalProperties": false,
+      "required": ["populations", "defaultPopulation", "scoreClip", "calibrationMinAge", "unspecifiedSexMix",
+                   "gradeConfidenceCap", "machineConventions", "machineEquipment"],
+      "properties": {
+        "populations": {"$ref": "#/$defs/strings"},
+        "defaultPopulation": {"enum": ["competitor", "gym", "general"]},
+        "scoreClip": {"$ref": "#/$defs/pair"},
+        "calibrationMinAge": {"type": "number"},
+        "unspecifiedSexMix": {"$ref": "#/$defs/sexMap"},
+        "gradeConfidenceCap": {"type": "object", "required": ["anchor", "A", "B", "C"],
+                               "additionalProperties": {"enum": ["low", "medium", "high"]}},
+        "machineConventions": {"$ref": "#/$defs/strings"},
+        "machineEquipment": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "calibration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ageBands", "delta", "kappa", "uncertaintyHalfWidth"],
+      "properties": {
+        "ageBands": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "required": ["key", "min", "max"], "additionalProperties": false,
+          "properties": {"key": {"type": "string"}, "min": {"type": "number"}, "max": {"type": "number"}}}},
+        "delta": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {
+          "type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"type": "number"}}}}},
+        "kappa": {"type": "object", "additionalProperties": {"$ref": "#/$defs/sexMap"}},
+        "uncertaintyHalfWidth": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 50}}
+      }
+    },
+    "correlation": {"type": "object", "additionalProperties": false, "required": ["variables", "matrix"],
+                    "properties": {"variables": {"const": ["squat", "bench", "deadlift"]},
+                                   "matrix": {"type": "array", "minItems": 3, "maxItems": 3,
+                                              "items": {"type": "array", "minItems": 3, "maxItems": 3,
+                                                        "items": {"type": "number", "minimum": -1, "maximum": 1}}}}},
+    "aggregate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["muscleWeights", "confidenceWeights", "staleWeight", "machineWeight", "unknownPairCorrelation",
+                   "sameAnchorCorrelation", "patternCorrelation", "patterns", "upperPatterns", "lowerPatterns",
+                   "minPatternsForFullScore"],
+      "properties": {
+        "muscleWeights": {"type": "object", "required": ["primary", "secondary"], "additionalProperties": false,
+                          "properties": {"primary": {"$ref": "#/$defs/pos"}, "secondary": {"$ref": "#/$defs/pos"}}},
+        "confidenceWeights": {"$ref": "#/$defs/confWeights"},
+        "staleWeight": {"$ref": "#/$defs/unit"},
+        "machineWeight": {"$ref": "#/$defs/unit"},
+        "unknownPairCorrelation": {"$ref": "#/$defs/unit"},
+        "sameAnchorCorrelation": {"$ref": "#/$defs/unit"},
+        "patternCorrelation": {"$ref": "#/$defs/unit"},
+        "patterns": {"$ref": "#/$defs/strings"},
+        "upperPatterns": {"$ref": "#/$defs/strings"},
+        "lowerPatterns": {"$ref": "#/$defs/strings"},
+        "minPatternsForFullScore": {"type": "integer", "minimum": 1}
+      }
+    },
+    "levels": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "required": ["key", "min"], "additionalProperties": false,
+      "properties": {"key": {"type": "string"}, "min": {"type": "number"}}}},
+    "progress": {"type": "object", "additionalProperties": false,
+                 "required": ["daysPerMonth", "trend", "expectedCurve", "score", "plateau", "forecast"],
+                 "properties": {"daysPerMonth": {"$ref": "#/$defs/pos"},
+                                "trend": {"type": "object"}, "expectedCurve": {"type": "object"},
+                                "score": {"type": "object"}, "plateau": {"type": "object"},
+                                "forecast": {"type": "object"}}},
+    "imbalance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minVariables", "severitySd", "unknownPairCorrelation", "confidenceWeights", "allowedConfidence",
+                   "excludeMachine", "ratioRules", "severityAsymmetry"],
+      "properties": {
+        "minVariables": {"type": "integer", "minimum": 2},
+        "severitySd": {"$ref": "#/$defs/ladder"},
+        "unknownPairCorrelation": {"type": "number", "exclusiveMinimum": -1, "exclusiveMaximum": 1},
+        "confidenceWeights": {"$ref": "#/$defs/confWeights"},
+        "allowedConfidence": {"type": "array", "items": {"enum": ["low", "medium", "high"]}},
+        "excludeMachine": {"type": "boolean"},
+        "ratioRules": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "groupA", "patternsA", "groupB", "patternsB", "minExercisesPerGroup", "severityZGap"],
+          "properties": {"id": {"type": "string"}, "groupA": {"type": "string"}, "patternsA": {"$ref": "#/$defs/strings"},
+                         "groupB": {"type": "string"}, "patternsB": {"$ref": "#/$defs/strings"},
+                         "minExercisesPerGroup": {"type": "integer", "minimum": 1},
+                         "severityZGap": {"$ref": "#/$defs/ladder"}}}},
+        "severityAsymmetry": {"$ref": "#/$defs/ladder"}
+      }
+    },
+    "repNorms": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exerciseIds", "sex", "ageMin", "ageMax", "percentile", "reps"],
+      "properties": {"exerciseIds": {"$ref": "#/$defs/strings"}, "sex": {"enum": ["M", "F"]},
+                     "ageMin": {"type": "integer"}, "ageMax": {"type": "integer"},
+                     "percentile": {"type": "number", "minimum": 0, "maximum": 100}, "reps": {"type": "number"}}}},
+    "inputClip": {"type": "object", "additionalProperties": false, "required": ["age", "bodyweightKg"],
+                  "properties": {"age": {"$ref": "#/$defs/pair"}, "bodyweightKg": {"$ref": "#/$defs/pair"}}}
+  }
+}

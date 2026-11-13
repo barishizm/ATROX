@@ -26,7 +26,7 @@ Saklama yerleri:
 | Supabase (prod) | `service_role` anahtarı | **Evet** | PM; yalnızca sunucu tarafı |
 | Supabase (prod) | Veritabanı parolası | **Evet** | PM |
 | Supabase (her ikisi) | Kişisel erişim jetonu (CLI/MCP) | **Evet** | PM; `supabase login` ile macOS anahtar zincirine yazılır |
-| Supabase (her ikisi) | Model paketi Ed25519 **özel** anahtarı | **Evet** | PM (çevrimdışı yedekle); **açık** anahtar uygulamaya gömülür (Depo) |
+| Supabase (her ikisi) | Model paketi Ed25519 **özel** anahtarı | **Evet** | Yerelde `~/.config/atrox/model-signing-ed25519.pem` (izin 600; başka yol için `ATROX_MODEL_SIGNING_KEY`) + PM'de çevrimdışı yedek. **Açık** anahtar Depo'da (`ModelBundle.trustedPublicKeyBase64`, `ml/src/gymml/export/keys.py`); bkz. "Model paketi imzası (P060)" |
 | OpenRouter | API anahtarı | **Evet** | EF (`OPENROUTER_API_KEY`, staging ve prod ayrı) + PM |
 | OpenRouter | Aylık harcama limiti | Hayır | OpenRouter panelinde anahtar başına ayarlanır; değeri PM notuna yaz |
 | DeepSeek platformu | Yedek API anahtarı | **Evet** | EF (`DEEPSEEK_API_KEY`) + PM |
@@ -41,6 +41,20 @@ Saklama yerleri:
 1. Depoya yalnızca `*.example` şablonları girer; gerçek `*.xcconfig` ve `.env*` dosyaları `.gitignore`'dadır.
 2. Her ortam (staging / prod) için ayrı anahtar kullan; anahtarları ortamlar arasında paylaşma.
 3. Bir anahtar sohbete, ekran görüntüsüne veya commit'e sızarsa hemen yenile (rotate) ve eskisini iptal et.
+
+## Model paketi imzası (P060)
+
+- Anahtar bir kez üretilir: `cd ml && uv run python -m gymml.export.keys generate` (var olan dosyanın üzerine
+  yazmaz). Çıktıdaki açık anahtar `ios/Packages/StrengthKit/Sources/StrengthKit/Model/ModelBundle.swift`
+  (`trustedPublicKeyBase64`) ve `ml/src/gymml/export/keys.py` (`PUBLIC_KEY_B64`) içine yazılır.
+- `.pem` dosyasını PM'e dosya eki olarak yedekle; depoya, CI'ya veya Edge Function secret'larına koyma.
+- `make export` paketi imzalar; doğrulama: `uv run python -m gymml.export.keys verify <paket klasörü>`.
+- Yayın (P063): `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… uv run python -m gymml.export.publish dist/model-bundle-vX.Y.Z
+  [--rollout 10] [--activate]` (service role anahtarı PM'den, yalnızca o komutun ortamında). Satır varsayılan olarak
+  `is_active=false` eklenir; etkinleştirme/kademeli dağıtım/geri alma `model_versions.is_active` ve `rollout_percent`
+  ile yapılır.
+- Anahtar değişirse eski uygulama sürümleri yeni paketleri reddeder (gömülü pakete düşer); anahtarı yalnızca
+  sızıntıda değiştir ve yeni açık anahtarla uygulama sürümü çıkar.
 
 ## Supabase kurulumu (P009)
 

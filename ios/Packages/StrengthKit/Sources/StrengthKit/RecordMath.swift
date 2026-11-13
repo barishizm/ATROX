@@ -82,8 +82,6 @@ public enum RecordMath {
     /// A new e1RM more than 12% above the previous best asks "Did you enter this set correctly?" first.
     public static let outlierFactor = 1.12
 
-    private static let estimator = EpleyEstimator()
-
     /// Numeric value of a set for one metric; nil when the set cannot take part (e.g. bodyweight sets have no weight).
     public static func value(_ metric: RecordMetric, of set: RecordSet) -> Double? {
         guard set.reps >= 1, set.weightKg >= 0, set.weightKg.isFinite else { return nil }
@@ -91,7 +89,7 @@ public enum RecordMath {
         case .weight: return set.weightKg > 0 ? set.weightKg : nil
         case .reps: return Double(set.reps)
         case .volume: return set.weightKg > 0 ? set.weightKg * Double(set.reps) : nil
-        case .e1rm: return estimator.estimate(weightKg: set.weightKg, reps: set.reps, rir: set.rir)?.valueKg
+        case .e1rm: return E1RMModel.standard.estimate(weightKg: set.weightKg, reps: set.reps, rir: set.rir)?.valueKg
         }
     }
 

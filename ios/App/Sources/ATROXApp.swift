@@ -18,11 +18,14 @@ struct ATROXApp: App {
                 .modifier(LocalStoreModifier(container: container.modelContainer))
                 .task { await container.prepareCatalog() }
                 .task { BackgroundSync.shared.coordinator = container.sync }
+                .task { await container.checkModelUpdate() }
         }
         .onChange(of: scenePhase) { _, phase in
             // Sync triggers (P045): coming to the foreground syncs and starts the 15-minute timer; leaving stops it.
             switch phase {
-            case .active: container.sync?.appBecameActive()
+            case .active:
+                container.sync?.appBecameActive()
+                Task { await container.checkModelUpdate() }
             case .background:
                 container.sync?.appEnteredBackground()
                 BackgroundSync.shared.schedule()

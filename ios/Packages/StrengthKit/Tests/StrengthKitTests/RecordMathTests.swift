@@ -106,19 +106,31 @@ import Testing
 }
 
 @Suite struct E1RMConfidenceTests {
+    private let model = E1RMModel.standard
+
     @Test func confidenceCurve() {
-        #expect(EpleyEstimator.confidence(effectiveReps: 3, hasRir: true) == 1)
-        #expect(abs(EpleyEstimator.confidence(effectiveReps: 12, hasRir: true) - 0.6) < 1e-9)
-        #expect(abs(EpleyEstimator.confidence(effectiveReps: 20, hasRir: true) - 0.25) < 1e-9)
-        #expect(EpleyEstimator.confidence(effectiveReps: 30, hasRir: true) == 0)
-        #expect(abs(EpleyEstimator.confidence(effectiveReps: 3, hasRir: false) - 0.85) < 1e-9)
+        #expect(model.confidence(effectiveReps: 3, rirKnown: true, isWarmup: false) == 1)
+        #expect(abs(model.confidence(effectiveReps: 12, rirKnown: true, isWarmup: false) - 0.6) < 1e-9)
+        #expect(abs(model.confidence(effectiveReps: 20, rirKnown: true, isWarmup: false) - 0.25) < 1e-9)
+        #expect(model.confidence(effectiveReps: 30, rirKnown: true, isWarmup: false) == 0)
+        #expect(abs(model.confidence(effectiveReps: 3, rirKnown: false, isWarmup: false) - 0.85) < 1e-9)
+        #expect(model.confidence(effectiveReps: 3, rirKnown: true, isWarmup: true) == 0)
     }
 
     @Test func rirRaisesEffectiveReps() throws {
-        let plain = try #require(EpleyEstimator().estimate(weightKg: 100, reps: 5))
-        let withRir = try #require(EpleyEstimator().estimate(weightKg: 100, reps: 5, rir: 2))
+        let plain = try #require(model.estimate(weightKg: 100, reps: 5))
+        let withRir = try #require(model.estimate(weightKg: 100, reps: 5, rir: 2))
         #expect(withRir.valueKg > plain.valueKg)
-        #expect(EpleyEstimator().estimate(weightKg: 100, reps: 1)?.valueKg == 100)
-        #expect(EpleyEstimator().estimate(weightKg: 100, reps: 30) == nil)
+        #expect(model.estimate(weightKg: 100, reps: 1)?.valueKg == 100)
+        #expect(model.estimate(weightKg: 100, reps: 30) == nil)
+        #expect(model.estimate(weightKg: 0, reps: 5) == nil)
+        #expect(model.estimate(weightKg: 80, reps: 0) == nil)
+    }
+
+    @Test func categoriesFollowMovementPattern() {
+        #expect(model.category(for: "squat") == "lower_compound")
+        #expect(model.category(for: "isolation_biceps") == "isolation")
+        #expect(model.category(for: "core") == model.params.defaultCategory)
+        #expect(model.category(for: nil) == model.params.defaultCategory)
     }
 }

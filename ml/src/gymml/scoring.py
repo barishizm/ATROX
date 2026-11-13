@@ -289,7 +289,8 @@ def calibrate_z(
     if pop == "competitor":
         return z_c, s_c
     cal = p.calibration
-    band = age_band_of(max(age, _band_min_age(p)))
+    # Under 20 uses the 20-39 band (P057); 86+ uses 70+ (the anchor model also clips age at 85).
+    band = age_band_of(min(max(age, _band_min_age(p)), 85.0))
     delta = cal["delta"][pop][sex][lift][band]
     kappa = cal["kappa"][pop][sex]
     return (z_c + delta / s_c) / kappa, kappa * s_c

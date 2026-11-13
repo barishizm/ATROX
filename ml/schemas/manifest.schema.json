@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "atrox/manifest.schema.json",
+  "title": "ATROX model bundle manifest.json",
+  "type": "object",
+  "required": ["format", "version", "schemaVersion", "minAppVersion", "createdAt", "anchor", "files",
+               "trainingData", "metrics"],
+  "additionalProperties": false,
+  "properties": {
+    "format": {"const": "atrox-model-bundle/1"},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "schemaVersion": {"type": "integer", "minimum": 1},
+    "minAppVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "createdAt": {"type": "string"},
+    "anchor": {"type": "object", "required": ["kind", "file", "model"], "additionalProperties": false,
+               "properties": {"kind": {"enum": ["tables", "coreml"]}, "file": {"type": "string"},
+                              "model": {"type": "string"}}},
+    "files": {"type": "object", "minProperties": 1,
+              "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "trainingData": {"type": "object"},
+    "metrics": {"type": "object"}
+  }
+}

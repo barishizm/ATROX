@@ -291,7 +291,7 @@ private struct Env {
         #expect(progress.points[1].volumeKg == 450)
         #expect(progress.points[2].volumeKg == 1000)
         #expect(progress.heaviest?.input.weightKg == 100)
-        #expect(abs((progress.bestE1rmKg ?? 0) - 100 * (1 + 5.0 / 30)) < 1e-9)
+        #expect(abs((progress.bestE1rmKg ?? 0) - (E1RMModel.standard.estimate(weightKg: 100, reps: 5)?.valueKg ?? -1)) < 1e-9)
         #expect(progress.lastDate == date(2026, 1, 20))
         #expect(progress.sessionCount == 3)
         #expect(HistoryMath.progress(of: []).points.isEmpty)

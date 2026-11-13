@@ -15,6 +15,8 @@ dependencies = [
   "coremltools>=8.0",
   "matplotlib>=3.9",
   "pyyaml>=6.0",
+  "cryptography>=50.0.2",
+  "jsonschema>=4.26.0",
 ]
 
 [dependency-groups]

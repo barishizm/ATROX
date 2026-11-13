@@ -186,8 +186,7 @@ public enum ProgressionEngine {
 
     /// Best estimated 1RM of a session (best reps when it was all bodyweight).
     private static func performance(of sets: [ProgressionSet]) -> Double {
-        let estimator = EpleyEstimator()
-        let best = sets.compactMap { estimator.estimateOneRepMax(weightKg: $0.weightKg, reps: $0.reps) }.max()
+        let best = sets.compactMap { E1RMModel.standard.estimate(weightKg: $0.weightKg, reps: $0.reps)?.valueKg }.max()
         return best ?? Double(sets.map(\.reps).max() ?? 0)
     }
 

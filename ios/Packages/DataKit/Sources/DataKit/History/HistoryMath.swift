@@ -72,14 +72,13 @@ public enum HistoryMath {
     /// Progress from an exercise's sessions (as `WorkoutRepository.history` returns them, newest first). Warm-ups and
     /// sets without reps are ignored.
     public static func progress(of sessions: [ExerciseSession]) -> ExerciseProgress {
-        let estimator = EpleyEstimator()
         var heaviest: SetSnapshot?
         var points: [ExercisePoint] = []
         for session in sessions {
             let counted = session.sets.filter { $0.input.countsForScore }
             guard !counted.isEmpty else { continue }
             let e1rm = counted.compactMap {
-                estimator.estimate(weightKg: $0.input.weightKg, reps: $0.input.reps, rir: $0.input.rir)?.valueKg
+                E1RMModel.standard.estimate(weightKg: $0.input.weightKg, reps: $0.input.reps, rir: $0.input.rir)?.valueKg
             }.max()
             for set in counted where set.input.weightKg > (heaviest?.input.weightKg ?? -1) { heaviest = set }
             points.append(
