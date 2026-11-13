@@ -36,11 +36,6 @@ private func exercises(in container: ModelContainer) throws -> [Exercise] {
     try ModelContext(container).fetch(FetchDescriptor<Exercise>(sortBy: [SortDescriptor(\.id)]))
 }
 
-private let realCatalogURL = URL(fileURLWithPath: #filePath)
-    .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    .deletingLastPathComponent().deletingLastPathComponent()
-    .appendingPathComponent("App/Resources/Catalog/catalog.v1.json")
-
 // MARK: - Folding and file naming
 
 @Suite struct SearchFoldingTests {
