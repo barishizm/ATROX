@@ -16,8 +16,12 @@ struct MainTabView: View {
             Tab(AppTab.today.title, systemImage: AppTab.today.systemImage, value: AppTab.today) {
                 NavigationStack(path: $today.path) {
                     TodayRootView()
-                        .navigationDestination(for: TodayRoute.self) { _ in
-                            FeaturePlaceholderView(title: "shell.tabbar.today", systemImage: "sun.max")
+                        .navigationDestination(for: TodayRoute.self) { route in
+                            switch route {
+                            case .workoutSummary: FeaturePlaceholderView(title: "shell.tabbar.today", systemImage: "sun.max")
+                            case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
+                            case .templates: TemplateListView()
+                            }
                         }
                 }
             }
@@ -42,9 +46,13 @@ struct MainTabView: View {
             }
             Tab(AppTab.analysis.title, systemImage: AppTab.analysis.systemImage, value: AppTab.analysis) {
                 NavigationStack(path: $analysis.path) {
-                    AnalysisRootView()
-                        .navigationDestination(for: AnalysisRoute.self) { _ in
-                            FeaturePlaceholderView(title: "shell.tabbar.analysis", systemImage: "chart.line.uptrend.xyaxis")
+                    AnalysisRootView(router: analysis)
+                        .navigationDestination(for: AnalysisRoute.self) { route in
+                            switch route {
+                            case .muscle(let name): MuscleDetailView(muscleName: name)
+                            case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
+                            case .exerciseDetail: FeaturePlaceholderView(title: "shell.tabbar.analysis", systemImage: "chart.line.uptrend.xyaxis")
+                            }
                         }
                 }
             }

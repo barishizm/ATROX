@@ -15,6 +15,7 @@ struct ExerciseDetailView: View {
     @State private var deleteFailed = false
     @State private var unavailable = false
     @State private var history: ExerciseHistoryModel?
+    @State private var scoreText: String?
 
     var body: some View {
         Group {
@@ -182,8 +183,14 @@ struct ExerciseDetailView: View {
                             "exercise.detail.lastPerformed",
                             history?.progress.lastDate.map { $0.formatted(.dateTime.day().month(.abbreviated)) }
                         )
-                        stat("exercise.detail.score", nil)
+                        stat("exercise.detail.score", scoreText)
                     }
+                    NavigationLink {
+                        ExerciseScoreView(exerciseID: exerciseID)
+                    } label: {
+                        Label("scorescreen.open", systemImage: "gauge.with.dots.needle.67percent")
+                    }
+                    .accessibilityIdentifier("open-exercise-score")
                     if history?.isEmpty == false {
                         NavigationLink(value: WorkoutRoute.exerciseHistory(id: exerciseID)) {
                             Label("exercisehistory.open", systemImage: "chart.xyaxis.line")
@@ -244,6 +251,15 @@ struct ExerciseDetailView: View {
             await data.load()
             history = data
         }
+        await loadScore()
+    }
+
+    /// The score shown in "Your data": the preferred reference group's, straight from the history.
+    private func loadScore() async {
+        guard let service = container.scoreService, let user = await container.currentUser() else { return }
+        let group = await service.preferredPopulation(userId: user.id)
+        let evaluation = await service.evaluation(userId: user.id, exerciseId: exerciseID, population: group)
+        scoreText = evaluation.map { Int($0.score.score.rounded()).formatted() }
     }
 }
 
