@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "module": "scoring",
+  "status": "draft — P057 reference pipeline; P060 merges all params_draft/*.json into params.json",
+  "note": "Every constant used by gymml/scoring.py. Values marked 'assumption' are expert choices without a primary source and are meant to be tuned with app data (docs/03-ML-MODEL.md §12).",
+  "anchor_model": {
+    "key": "A",
+    "family": "Spline-LMS BCPE (P053 winner)",
+    "pickle_pattern": "runs/bakeoff/model_{key}_{lift}.pkl",
+    "cdf_clip": [
+      1e-06,
+      0.999999
+    ],
+    "scale_quantiles": [
+      0.158655,
+      0.841345
+    ]
+  },
+  "current_strength": {
+    "window_days": 42,
+    "outlier_jump": 0.12,
+    "stale_decay_per_week": 0.005,
+    "min_set_confidence": 0.05,
+    "confidence_levels": {
+      "high": {
+        "min_sessions": 4,
+        "max_days_since_last": 14,
+        "min_mean_set_confidence": 0.6
+      },
+      "medium": {
+        "min_sessions": 2,
+        "max_days_since_last": 42,
+        "min_mean_set_confidence": 0.3
+      }
+    },
+    "source": "docs/03-ML-MODEL.md §3 (42 days, 12% jump, 0.5%/week); confidence thresholds: assumption"
+  },
+  "exercise_score": {
+    "populations": [
+      "competitor",
+      "gym",
+      "general"
+    ],
+    "default_population": "gym",
+    "score_clip": [
+      1,
+      99
+    ],
+    "calibration_min_age_band": "20-39",
+    "unspecified_sex_mix": {
+      "M": 0.5,
+      "F": 0.5
+    },
+    "grade_confidence_cap": {
+      "anchor": "high",
+      "A": "high",
+      "B": "medium",
+      "C": "low"
+    },
+    "machine_conventions": [
+      "machine_stack",
+      "per_side"
+    ],
+    "machine_equipment": [
+      "machine",
+      "cable"
+    ],
+    "source": "docs/03-ML-MODEL.md §4.5, §5.1, §6; confidence caps: assumption"
+  },
+  "aggregate": {
+    "muscle_weights": {
+      "primary": 1.0,
+      "secondary": 0.4
+    },
+    "confidence_weights": {
+      "low": 0.5,
+      "medium": 0.8,
+      "high": 1.0
+    },
+    "stale_weight": 0.5,
+    "machine_weight": 0.3,
+    "unknown_pair_correlation": 0.6,
+    "same_anchor_correlation": 0.8,
+    "pattern_correlation": 0.6,
+    "patterns": [
+      "horizontal_push",
+      "vertical_push",
+      "horizontal_pull",
+      "vertical_pull",
+      "squat",
+      "hip_hinge",
+      "core"
+    ],
+    "upper_patterns": [
+      "horizontal_push",
+      "vertical_push",
+      "horizontal_pull",
+      "vertical_pull"
+    ],
+    "lower_patterns": [
+      "squat",
+      "hip_hinge"
+    ],
+    "min_patterns_for_full_score": 3,
+    "source": "docs/03-ML-MODEL.md §8 (weights 1.0/0.4, machine 0.3, unknown pairs 0.6, ≥3 patterns + upper and lower); confidence/stale weights, same-anchor and pattern correlations: assumption"
+  },
+  "levels": [
+    {
+      "key": "beginner",
+      "min": 0
+    },
+    {
+      "key": "developing",
+      "min": 20
+    },
+    {
+      "key": "intermediate",
+      "min": 40
+    },
+    {
+      "key": "advanced",
+      "min": 60
+    },
+    {
+      "key": "expert",
+      "min": 80
+    },
+    {
+      "key": "elite",
+      "min": 95
+    }
+  ],
+  "anchor_correlation": {
+    "variables": [
+      "squat",
+      "bench",
+      "deadlift"
+    ],
+    "matrix": [
+      [
+        1.0,
+        0.7156,
+        0.8092
+      ],
+      [
+        0.7156,
+        1.0,
+        0.6603
+      ],
+      [
+        0.8092,
+        0.6603,
+        1.0
+      ]
+    ],
+    "source": "P057: weighted Pearson correlation of Phi^-1(F_A(y|x)) on cohort_sbd train (Tested, no wraps), n=370960"
+  }
+}

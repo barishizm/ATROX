@@ -128,6 +128,44 @@ class EmpiricalOPLReference:
                 float(np.interp(bodyweight_kg, c.bw_grid, c.s)))
 
 
+# Model referansında yaş bandı → temsil yaşı (bant ortası; 70+ için 70–85 ortası).
+BAND_AGE = {"20-39": 29.5, "40-49": 44.5, "50-59": 54.5, "60-69": 64.5, "70+": 77.5}
+
+
+class ModelReference:
+    """P053 kazananı (`DistributionModel`, kaldırış başına) üzerinden yarışmacı referansı (P057).
+
+    m_c = log Q50, s_c = (log Q84.13 − log Q15.87) / 2; yaş bandı `BAND_AGE` yaşında.
+    Sık çağrıldığı için (bootstrap) 0.1 kg'a yuvarlanmış kilo ile önbelleğe alınır.
+    """
+
+    def __init__(self, models: dict[str, object], name: str):
+        self._models = models
+        self.name = name
+        self._cache: dict[tuple[str, str, str, float], tuple[float, float]] = {}
+
+    @classmethod
+    def from_pickles(cls, directory: Path, key: str = "A") -> ModelReference:
+        import pickle
+
+        models = {}
+        for lift in LIFTS:
+            with (directory / f"model_{key}_{lift}.pkl").open("rb") as f:
+                models[lift] = pickle.load(f)
+        return cls(models, name=f"p053-winner-{key}")
+
+    def location_scale(self, sex: str, lift: str, age_band: str, bodyweight_kg: float
+                       ) -> tuple[float, float]:
+        k = (sex, lift, age_band, round(float(bodyweight_kg), 1))
+        if k not in self._cache:
+            x = pl.DataFrame({"sex": [sex], "age": [BAND_AGE[age_band]], "bodyweight_kg": [k[3]]})
+            model = self._models[lift]
+            q = model.quantile(x, np.array([_P_LO, 0.5, _P_HI]))[0]  # type: ignore[attr-defined]
+            lq = np.log(q)
+            self._cache[k] = (float(lq[1]), float((lq[2] - lq[0]) / 2))
+        return self._cache[k]
+
+
 class ParametricReference:
     """Testler ve duman denemeleri için kapalı biçimli referans: m = a + b·log(bw) − yaş düşüşü."""
 

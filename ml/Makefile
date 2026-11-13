@@ -1,5 +1,5 @@
 # ATROX ML hattı. Her hedef `uv run` ile çalışır.
-.PHONY: data calibrate eda baselines train-a train-b train-c tune bakeoff export test lint smoke
+.PHONY: data calibrate eda baselines profiles train-a train-b train-c tune bakeoff export test lint smoke
 
 data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.parquet
 	uv run python -m gymml.data.opl
@@ -27,6 +27,10 @@ tune:        ## P053: aday başına Optuna + 3 tohum + tek test bakışı + duya
 
 bakeoff:     ## P053: reports/bakeoff.md (§3 ve sonrası) reports/bakeoff/*.json'dan
 	uv run python -m gymml.tune.bakeoff report
+
+profiles:    ## P057: A modelinden çapa korelasyonu + örnek profil skorları -> reports/scoring_profiles.md
+	uv run python -m gymml.scoring_run corr
+	uv run python -m gymml.scoring_run profiles
 
 export:      ## P058
 	@echo "export: P058'de eklenecek"; exit 1

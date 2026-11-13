@@ -4,10 +4,10 @@
 
 ## Özet
 
-- **Salon referansı belirsizlik bandı:** tipik kullanıcılarda medyan **±8.8** yüzdelik puan (en kötü ±18.6).
-- **Genel nüfus referansı:** medyan ±18.3, en kötü ±24.3 puan — çapası az ve dağınık; salon referansından belirgin şekilde daha belirsiz.
+- **Salon referansı belirsizlik bandı:** tipik kullanıcılarda medyan **±8.3** yüzdelik puan (en kötü ±18.6).
+- **Genel nüfus referansı:** medyan ±18.7, en kötü ±26.0 puan — çapası az ve dağınık; salon referansından belirgin şekilde daha belirsiz.
 - Dokümandaki ±8–12 tahmini bu ölçümle değiştirildi (`docs/03-ML-MODEL.md` §5.3).
-- Yarışmacı referansı: P053 kazananı henüz yok → OpenPowerlifting ampirik koşullu dağılımı (`opl-empirical-tested`). P057 `CompetitorReference` arayüzüyle P053 modelini takıp `make calibrate`'i yeniden çalıştırır; δ/κ değerleri o zaman yeniden kestirilmelidir.
+- Yarışmacı referansı: `p053-winner-A` (P057'den itibaren varsayılan P053 kazananı Spline-LMS; `--reference opl` ampirik OPL referansını kullanır). "OPL tümü" senaryosu ampirik tested+untested referansıyla karşılaştırır.
 - BMI düzeltmesi: **kapalı** (aşağıda).
 
 ## Model
@@ -49,14 +49,14 @@ Log-kg ölçeğinde yer-ölçek (§5.1): `m_g = m_c − δ_g`, `s_g = κ_g · s_
 
 ## Kestirim sonucu
 
-Ağırlıklı ortalama kare artık: 0.0077 (log², σ₀ birimsiz). Bootstrap: kaynak içinde tabakalı satır yeniden örneklemesi, B = 500.
+Ağırlıklı ortalama kare artık: 0.0082 (log², σ₀ birimsiz). Bootstrap: kaynak içinde tabakalı satır yeniden örneklemesi, B = 500.
 
 | Nüfus | Cinsiyet | κ (5–95%) | δ bench 20-39 (5–95%) | δ squat 20-39 | δ deadlift 20-39 |
 |---|---|---|---|---|---|
-| gym | M | 1.91 (1.70–2.06) | 0.253 (0.208–0.299) | 0.393 | 0.359 |
-| gym | F | 1.91 (1.70–2.06) | 0.247 (0.162–0.336) | 0.534 | 0.481 |
-| general | M | 1.25 (0.77–1.78) | 0.567 (0.490–0.643) | 0.707 | 0.673 |
-| general | F | 1.25 (0.77–1.78) | 0.576 (0.427–0.664) | 0.862 | 0.810 |
+| gym | M | 1.95 (1.73–2.10) | 0.244 (0.194–0.297) | 0.366 | 0.332 |
+| gym | F | 1.95 (1.73–2.10) | 0.195 (0.111–0.281) | 0.476 | 0.434 |
+| general | M | 1.25 (0.75–1.78) | 0.550 (0.474–0.628) | 0.672 | 0.639 |
+| general | F | 1.25 (0.75–1.78) | 0.526 (0.378–0.611) | 0.807 | 0.765 |
 
 δ = 0.25 → salon medyanı yarışmacı medyanının e^−0.25 ≈ %78'i. κ > 1 → salon nüfusu yarışmacılardan daha geniş yayılır (beklenen: yarışmacılar seçilmiş, homojen bir uçtur).
 
@@ -64,10 +64,10 @@ Yaş ofsetleri A (δ'ya eklenir; pozitif = o yaşta yarışmacılara göre daha 
 
 | Nüfus | Cinsiyet | 40-49 | 50-59 | 60-69 | 70+ |
 |---|---|---|---|---|---|
-| gym | M | -0.006 | +0.062 | +0.129 | +0.183 |
-| gym | F | -0.015 | +0.049 | +0.098 | +0.127 |
-| general | M | -0.006 | +0.000 | -0.058 | -0.114 |
-| general | F | -0.064 | -0.069 | -0.171 | -0.119 |
+| gym | M | -0.029 | +0.041 | +0.096 | +0.071 |
+| gym | F | -0.030 | +0.020 | +0.065 | +0.044 |
+| general | M | -0.034 | -0.026 | -0.100 | -0.226 |
+| general | F | -0.081 | -0.097 | -0.196 | -0.201 |
 
 Not: salon (Strength Level) yaş tabloları yarışmacılardan daha dik, genel nüfus (el kavrama) daha yatık bir düşüş ima ediyor. Yaşlı yarışmacılar seçilmiş güçlü bir gruptur, bu yüzden genel nüfus için bu yön beklenir; salon yönü Strength Level'ın yaş çarpanlarından gelir ve tek kaynaklıdır.
 
@@ -77,15 +77,15 @@ Her kaynak çıkarılır, kalanlarla kestirilir, çıkarılan kaynağın mutlak 
 
 | Çıkarılan kaynak | Satır | Ort. mutlak yüzdelik hatası | log RMSE |
 |---|---|---|---|
-| Stratton2024 | 2 | 0.5 | 0.007 |
-| Perna2016-NHANES-grip | 8 | — (göreli) | 0.115 |
-| FernandezOrtega2022 | 6 | 27.7 | 0.280 |
-| StrengthLevel-bench | 20 | 7.3 | 0.123 |
-| StrengthLevel-deadlift | 20 | 11.4 | 0.146 |
-| StrengthLevel-squat | 20 | 22.0 | 0.248 |
-| Cooper(ACE) | 12 | 20.5 | 0.243 |
+| Stratton2024 | 2 | 0.8 | 0.009 |
+| Perna2016-NHANES-grip | 8 | — (göreli) | 0.143 |
+| FernandezOrtega2022 | 6 | 28.9 | 0.283 |
+| StrengthLevel-bench | 20 | 8.2 | 0.129 |
+| StrengthLevel-deadlift | 20 | 10.9 | 0.145 |
+| StrengthLevel-squat | 20 | 22.4 | 0.259 |
+| Cooper(ACE) | 12 | 19.8 | 0.243 |
 
-Tüm kaynaklar üzerinden ortalama mutlak yüzdelik hatası: **16.1** puan. Yorum: tek kaynağın taşıdığı parametreler (ör. squat'ın kaldırış farkı yalnızca Strength Level-squat'tan, genel nüfus bench seviyesi Cooper ile Fernandez Ortega arasında) o kaynak çıkınca önsele düşer — büyük hatalar kaynak sayısının azlığını gösterir, bir kaynağın "yanlış" olduğunu değil. Bu yüzden bant LOSO kestirimlerini de kapsar.
+Tüm kaynaklar üzerinden ortalama mutlak yüzdelik hatası: **16.3** puan. Yorum: tek kaynağın taşıdığı parametreler (ör. squat'ın kaldırış farkı yalnızca Strength Level-squat'tan, genel nüfus bench seviyesi Cooper ile Fernandez Ortega arasında) o kaynak çıkınca önsele düşer — büyük hatalar kaynak sayısının azlığını gösterir, bir kaynağın "yanlış" olduğunu değil. Bu yüzden bant LOSO kestirimlerini de kapsar.
 
 ## Duyarlılık: tipik kullanıcılar
 
@@ -93,18 +93,18 @@ Senaryolar: temel; her kaynağın çıkarılması (7); eşit ağırlık; yalnız
 
 | Kullanıcı | Nüfus | Temel skor | Bootstrap 5–95 | En düşük (senaryo) | En yüksek (senaryo) | ± |
 |---|---|---|---|---|---|---|
-| Erkek 30 y, 80 kg, bench 80 | gym | 26.1 | 21.9–30.8 | 19.4 (−StrengthLevel-bench) | 28.4 (−StrengthLevel-squat) | 5.7 |
-| Erkek 30 y, 80 kg, bench 80 | general | 67.9 | 54.0–88.1 | 52.7 (−FernandezOrtega2022) | 87.9 (−Cooper(ACE)) | 17.7 |
-| Erkek 30 y, 80 kg, squat 100 | gym | 22.7 | 17.5–28.1 | 20.5 (−FernandezOrtega2022) | 48.5 (−StrengthLevel-squat) | 15.5 |
-| Erkek 30 y, 80 kg, squat 100 | general | 62.1 | 41.0–82.7 | 40.1 (−FernandezOrtega2022) | 88.8 (−StrengthLevel-squat) | 24.3 |
-| Erkek 30 y, 80 kg, deadlift 140 | gym | 36.9 | 29.3–43.2 | 23.6 (−StrengthLevel-deadlift) | 37.1 (OPL tümü (tested+untested)) | 9.8 |
-| Erkek 30 y, 80 kg, deadlift 140 | general | 86.8 | 68.5–99.0 | 69.4 (−FernandezOrtega2022) | 97.8 (−Cooper(ACE)) | 15.2 |
-| Erkek 50 y, 90 kg, bench 90 | gym | 46.5 | 40.0–52.3 | 36.6 (−StrengthLevel-bench) | 50.2 (−StrengthLevel-squat) | 7.9 |
-| Erkek 50 y, 90 kg, bench 90 | general | 81.0 | 65.9–96.0 | 71.9 (−FernandezOrtega2022) | 91.1 (−Cooper(ACE)) | 15.0 |
-| Kadın 30 y, 65 kg, bench 40 | gym | 31.0 | 23.0–38.7 | 23.7 (−StrengthLevel-bench) | 34.4 (−StrengthLevel-squat) | 7.8 |
-| Kadın 30 y, 65 kg, bench 40 | general | 64.8 | 44.5–79.4 | 46.8 (−FernandezOrtega2022) | 86.5 (−Cooper(ACE)) | 21.0 |
-| Kadın 30 y, 65 kg, squat 70 | gym | 51.5 | 41.6–60.7 | 46.1 (−FernandezOrtega2022) | 78.7 (−StrengthLevel-squat) | 18.6 |
-| Kadın 30 y, 65 kg, squat 70 | general | 89.8 | 61.1–98.9 | 64.3 (−FernandezOrtega2022) | 98.2 (−StrengthLevel-squat) | 18.9 |
+| Erkek 30 y, 80 kg, bench 80 | gym | 25.9 | 21.2–31.1 | 18.4 (−StrengthLevel-bench) | 28.2 (−StrengthLevel-squat) | 6.4 |
+| Erkek 30 y, 80 kg, bench 80 | general | 65.5 | 51.6–86.3 | 49.1 (−FernandezOrtega2022) | 87.2 (−Cooper(ACE)) | 19.0 |
+| Erkek 30 y, 80 kg, squat 100 | gym | 23.0 | 17.5–28.8 | 20.8 (−FernandezOrtega2022) | 49.8 (−StrengthLevel-squat) | 16.1 |
+| Erkek 30 y, 80 kg, squat 100 | general | 60.1 | 37.4–80.7 | 36.8 (−FernandezOrtega2022) | 88.8 (−StrengthLevel-squat) | 26.0 |
+| Erkek 30 y, 80 kg, deadlift 140 | gym | 36.3 | 28.6–42.4 | 25.2 (−StrengthLevel-deadlift) | 37.1 (OPL tümü (tested+untested)) | 8.6 |
+| Erkek 30 y, 80 kg, deadlift 140 | general | 86.0 | 66.4–99.0 | 66.4 (−FernandezOrtega2022) | 97.9 (−Cooper(ACE)) | 16.3 |
+| Erkek 50 y, 90 kg, bench 90 | gym | 48.4 | 42.5–54.1 | 38.3 (−StrengthLevel-bench) | 51.9 (−StrengthLevel-squat) | 7.9 |
+| Erkek 50 y, 90 kg, bench 90 | general | 81.2 | 67.1–96.0 | 71.8 (−FernandezOrtega2022) | 92.2 (−Cooper(ACE)) | 14.4 |
+| Kadın 30 y, 65 kg, bench 40 | gym | 30.8 | 22.7–38.1 | 24.1 (−StrengthLevel-bench) | 34.1 (−StrengthLevel-squat) | 7.7 |
+| Kadın 30 y, 65 kg, bench 40 | general | 65.1 | 44.8–80.5 | 47.6 (−FernandezOrtega2022) | 86.3 (−Cooper(ACE)) | 20.7 |
+| Kadın 30 y, 65 kg, squat 70 | gym | 51.7 | 41.4–60.9 | 46.3 (−FernandezOrtega2022) | 78.6 (−StrengthLevel-squat) | 18.6 |
+| Kadın 30 y, 65 kg, squat 70 | general | 90.9 | 62.3–99.2 | 66.6 (−FernandezOrtega2022) | 98.5 (−StrengthLevel-squat) | 18.5 |
 
 Karşılaştırma: aynı kullanıcı (Erkek 30 y, 80 kg, bench 80) yarışmacı referansında 0.4. yüzdelikte.
 
@@ -114,28 +114,28 @@ Karşılaştırma: aynı kullanıcı (Erkek 30 y, 80 kg, bench 80) yarışmacı 
 
 | Varyant | Ağırlıklı RSS | LOSO MAE (puan) |
 |---|---|---|
-| düzeltme yok | 0.0077 | 16.1 |
-| varsayılan boy 177/164, β=0.5 | 0.0095 | 17.4 |
-| varsayılan boy 177/164, β=0.25 | 0.0110 | 18.4 |
-| FO boyu 170.5/158.2, β=0.5 | 0.0106 | 18.7 |
-| FO boyu 170.5/158.2, β=0.25 | 0.0128 | 20.1 |
+| düzeltme yok | 0.0082 | 16.3 |
+| varsayılan boy 177/164, β=0.5 | 0.0100 | 17.4 |
+| varsayılan boy 177/164, β=0.25 | 0.0115 | 18.2 |
+| FO boyu 170.5/158.2, β=0.5 | 0.0107 | 18.4 |
+| FO boyu 170.5/158.2, β=0.25 | 0.0128 | 19.8 |
 
 Vekil kontrol: Strength Level erkek medyan satırlarında yüzdelik hatası VA'ya göre (ağır kullanıcılarda sistematik sapma BMI etkisine işaret ederdi):
 
 | Kaldırış | VA | Hata (puan) |
 |---|---|---|
-| bench | 60 | -11.1 |
-| bench | 80 | -1.2 |
-| bench | 100 | +4.3 |
-| bench | 120 | +9.7 |
-| deadlift | 60 | -13.6 |
-| deadlift | 80 | +0.5 |
-| deadlift | 100 | +11.5 |
-| deadlift | 120 | +22.1 |
-| squat | 60 | -5.8 |
-| squat | 80 | +3.7 |
-| squat | 100 | +10.9 |
-| squat | 120 | +17.8 |
+| bench | 60 | -13.3 |
+| bench | 80 | -2.0 |
+| bench | 100 | +4.9 |
+| bench | 120 | +12.0 |
+| deadlift | 60 | -11.7 |
+| deadlift | 80 | -0.2 |
+| deadlift | 100 | +11.2 |
+| deadlift | 120 | +22.4 |
+| squat | 60 | -5.3 |
+| squat | 80 | +3.2 |
+| squat | 100 | +11.5 |
+| squat | 120 | +18.5 |
 
 **Sonuç: kapalı.** Düzeltme RSS'i ve LOSO hatasını iyileştirmedi, tersine kötüleştirdi. Nedenleri: (1) çapalar bireysel boy taşımıyor (yalnızca varsayılan boy) ve yarışmacı verisinde de boy yok; (2) vekil tablo düzeltmenin varsaydığının tersini gösteriyor — Strength Level'da ağır kullanıcıların medyanı yarışmacı VA eğrisinin öngördüğünden *yüksek* (hata VA ile artıyor); BMI düzeltmesi ağır kullanıcının etkin VA'sını düşürüp bu farkı büyütür. Bu eğim tek kaynaklıdır (Strength Level'ın kendi tablo modeli olabilir). Boy toplanmaya devam eder; v2'de uygulama verisiyle (boy × e1RM) yeniden denenir (`bmi_correction.enabled = false`).
 
