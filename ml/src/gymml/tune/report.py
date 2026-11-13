@@ -271,6 +271,9 @@ Kullanıcı onayı gereği ±%3 ölçütü **ağırlıksız** sürümle değerle
 
 {verdict}
 """
+    commentary = OUT / "commentary.md"
+    if commentary.exists():
+        body += "\n" + commentary.read_text(encoding="utf-8")
     REPORT.write_text(body, encoding="utf-8")
     return REPORT
 

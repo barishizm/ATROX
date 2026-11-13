@@ -1,0 +1,627 @@
+{
+  "candidate": "B",
+  "config": {
+    "num_rounds": 383,
+    "num_leaves": 6,
+    "learning_rate": 0.1844054618187431,
+    "min_data_in_leaf": 408,
+    "monotone": false
+  },
+  "variants": {
+    "tested_all": {
+      "squat": {
+        "metrics": {
+          "n": 99071,
+          "pinball": 9.2214960506457,
+          "crps": 18.4429921012914,
+          "pit_ks": 0.007025588860997626,
+          "strata": 55,
+          "strata_failing_noise_aware": 2,
+          "strata_outside_share": 0.03636363636363636,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 3.90e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1502 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [25.0, 24.0], 20+ yaşta en büyük yıllık değişim 0.071, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1480 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 46465,
+            "vdh": 2.83,
+            "model_oran": 2.7631180751540674,
+            "veri_ağırlıksız": 2.8556033543684283,
+            "fark_%": -2.363318899149569,
+            "geçti": true
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 20440,
+            "vdh": 2.26,
+            "model_oran": 2.1698015253596337,
+            "veri_ağırlıksız": 2.289669824347616,
+            "fark_%": -3.9910829486887622,
+            "geçti": false
+          },
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 48,
+            "vdh": 1.72,
+            "model_oran": 1.7153245900264524,
+            "veri_ağırlıksız": 1.7266187050359711,
+            "fark_%": -0.27182616125276393,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 9,
+            "vdh": 1.01,
+            "model_oran": 1.37319243716727,
+            "veri_ağırlıksız": 1.1895321497536442,
+            "fark_%": 35.959647244284156,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 54.1262892090017
+      },
+      "bench": {
+        "metrics": {
+          "n": 149889,
+          "pinball": 6.353792337625902,
+          "crps": 12.707584675251804,
+          "pit_ks": 0.00563575276660875,
+          "strata": 73,
+          "strata_failing_noise_aware": 4,
+          "strata_outside_share": 0.0547945205479452,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 6.62e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1130 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [34.0, 27.0], 20+ yaşta en büyük yıllık değişim 0.081, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.0945 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "bench",
+            "age_group": "18-35",
+            "n": 69089,
+            "vdh": 1.95,
+            "model_oran": 1.885522713063854,
+            "veri_ağırlıksız": 1.95,
+            "fark_%": -3.306527535186965,
+            "geçti": false
+          },
+          {
+            "sex": "F",
+            "lift": "bench",
+            "age_group": "18-35",
+            "n": 26117,
+            "vdh": 1.35,
+            "model_oran": 1.2322190171653302,
+            "veri_ağırlıksız": 1.3321492187628632,
+            "fark_%": -8.724517247012587,
+            "geçti": false
+          },
+          {
+            "sex": "M",
+            "lift": "bench",
+            "age_group": ">80",
+            "n": 119,
+            "vdh": 1.31,
+            "model_oran": 1.3288823717880183,
+            "veri_ağırlıksız": 1.2776242824654704,
+            "fark_%": 1.441402426566274,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "bench",
+            "age_group": ">80",
+            "n": 13,
+            "vdh": 0.92,
+            "model_oran": 0.8735824817260385,
+            "veri_ağırlıksız": 0.7550335763773458,
+            "fark_%": -5.045382421082778,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 79.8246227089985
+      },
+      "deadlift": {
+        "metrics": {
+          "n": 127784,
+          "pinball": 9.29521034404875,
+          "crps": 18.5904206880975,
+          "pit_ks": 0.007133470451751903,
+          "strata": 65,
+          "strata_failing_noise_aware": 3,
+          "strata_outside_share": 0.046153846153846156,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 4.02e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.0776 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [27.0, 23.0], 20+ yaşta en büyük yıllık değişim 0.047, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1249 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "deadlift",
+            "age_group": "18-35",
+            "n": 59733,
+            "vdh": 3.25,
+            "model_oran": 3.144418671506677,
+            "veri_ağırlıksız": 3.2442748091603053,
+            "fark_%": -3.248656261333016,
+            "geçti": false
+          },
+          {
+            "sex": "F",
+            "lift": "deadlift",
+            "age_group": "18-35",
+            "n": 24671,
+            "vdh": 2.66,
+            "model_oran": 2.541054871491748,
+            "veri_ağırlıksız": 2.666779484214963,
+            "fark_%": -4.471621372490686,
+            "geçti": false
+          },
+          {
+            "sex": "M",
+            "lift": "deadlift",
+            "age_group": ">80",
+            "n": 91,
+            "vdh": 2.3,
+            "model_oran": 2.2146189579369002,
+            "veri_ağırlıksız": 2.386529908007155,
+            "fark_%": -3.7122192201347604,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "deadlift",
+            "age_group": ">80",
+            "n": 16,
+            "vdh": 1.68,
+            "model_oran": 1.8391701694386997,
+            "veri_ağırlıksız": 1.6050583181104157,
+            "fark_%": 9.474414847541656,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 100.13363429200035
+      }
+    },
+    "wraps_dahil": {
+      "squat": {
+        "metrics": {
+          "n": 85864,
+          "pinball": 9.048680770310689,
+          "crps": 18.097361540621378,
+          "pit_ks": 0.007222089477296938,
+          "strata": 47,
+          "strata_failing_noise_aware": 1,
+          "strata_outside_share": 0.02127659574468085,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 4.31e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1554 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [25.0, 25.0], 20+ yaşta en büyük yıllık değişim 0.079, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1438 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 39761,
+            "vdh": 2.83,
+            "model_oran": 2.768479382950866,
+            "veri_ağırlıksız": 2.857142857142857,
+            "fark_%": -2.1738733939623445,
+            "geçti": true
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 17622,
+            "vdh": 2.26,
+            "model_oran": 2.1734993730518903,
+            "veri_ağırlıksız": 2.2994129845132245,
+            "fark_%": -3.8274613693853765,
+            "geçti": false
+          },
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 44,
+            "vdh": 1.72,
+            "model_oran": 1.7195239620933345,
+            "veri_ağırlıksız": 1.7266187050359711,
+            "fark_%": -0.02767662248055469,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 9,
+            "vdh": 1.01,
+            "model_oran": 1.3843361352785566,
+            "veri_ağırlıksız": 1.1895321497536442,
+            "fark_%": 37.062983690946204,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 66.82380379099777
+      }
+    },
+    "ağırlıksız": {
+      "squat": {
+        "metrics": {
+          "n": 80232,
+          "pinball": 9.354954607087713,
+          "crps": 18.709909214175426,
+          "pit_ks": 0.007216571941370027,
+          "strata": 46,
+          "strata_failing_noise_aware": 2,
+          "strata_outside_share": 0.043478260869565216,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 3.89e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1744 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [25.0, 24.0], 20+ yaşta en büyük yıllık değişim 0.090, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1352 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 37242,
+            "vdh": 2.83,
+            "model_oran": 2.8779619427365466,
+            "veri_ağırlıksız": 2.860417144506156,
+            "fark_%": 1.69476829457762,
+            "geçti": true
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": "18-35",
+            "n": 16605,
+            "vdh": 2.26,
+            "model_oran": 2.300762751016685,
+            "veri_ağırlıksız": 2.3003788498233484,
+            "fark_%": 1.803661549410851,
+            "geçti": true
+          },
+          {
+            "sex": "M",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 39,
+            "vdh": 1.72,
+            "model_oran": 1.7627992798700598,
+            "veri_ağırlıksız": 1.617795728325982,
+            "fark_%": 2.4883302250034767,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "squat",
+            "age_group": ">80",
+            "n": 9,
+            "vdh": 1.01,
+            "model_oran": 1.4457723499615716,
+            "veri_ağırlıksız": 1.1895321497536442,
+            "fark_%": 43.14577722391797,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 64.48590075000175
+      },
+      "bench": {
+        "metrics": {
+          "n": 105766,
+          "pinball": 6.300108480373452,
+          "crps": 12.600216960746904,
+          "pit_ks": 0.005814723067904619,
+          "strata": 62,
+          "strata_failing_noise_aware": 6,
+          "strata_outside_share": 0.0967741935483871,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 5.50e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1693 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [33.0, 26.0], 20+ yaşta en büyük yıllık değişim 0.053, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1320 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "bench",
+            "age_group": "18-35",
+            "n": 47426,
+            "vdh": 1.95,
+            "model_oran": 1.9390462626867544,
+            "veri_ağırlıksız": 1.9278918672181224,
+            "fark_%": -0.5617301186279788,
+            "geçti": true
+          },
+          {
+            "sex": "F",
+            "lift": "bench",
+            "age_group": "18-35",
+            "n": 19481,
+            "vdh": 1.35,
+            "model_oran": 1.3354774571436012,
+            "veri_ağırlıksız": 1.334519554837053,
+            "fark_%": -1.075743915288807,
+            "geçti": true
+          },
+          {
+            "sex": "M",
+            "lift": "bench",
+            "age_group": ">80",
+            "n": 80,
+            "vdh": 1.31,
+            "model_oran": 1.3246407945687855,
+            "veri_ağırlıksız": 1.2634238543546201,
+            "fark_%": 1.1176179060141456,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "bench",
+            "age_group": ">80",
+            "n": 13,
+            "vdh": 0.92,
+            "model_oran": 0.9212127285467142,
+            "veri_ağırlıksız": 0.7550335763773458,
+            "fark_%": 0.1318183202950074,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 74.23892454099769
+      },
+      "deadlift": {
+        "metrics": {
+          "n": 89988,
+          "pinball": 9.314983059173786,
+          "crps": 18.62996611834757,
+          "pit_ks": 0.006889807529892875,
+          "strata": 52,
+          "strata_failing_noise_aware": 5,
+          "strata_outside_share": 0.09615384615384616,
+          "coverage_gate_pass": true,
+          "crossing_rate": 0.0
+        },
+        "sanity": [
+          {
+            "name": "skor yükte kesin artan (Q05–Q95 arası, 2.5 kg adım)",
+            "passed": true,
+            "detail": "en küçük CDF artışı 3.86e-03"
+          },
+          {
+            "name": "aynı yükte skor kiloyla artmıyor",
+            "passed": false,
+            "detail": "kilo +1 kg'da en büyük CDF artışı 0.1743 (tolerans 0.005)"
+          },
+          {
+            "name": "yaş eğrisi tek tepeli, tepe 20–40, 20+ yaşta sıçrama yok",
+            "passed": false,
+            "detail": "tepe yaşı M/F [27.0, 24.0], 20+ yaşta en büyük yıllık değişim 0.057, tek tepeli=False"
+          },
+          {
+            "name": "pürüzsüzlük (ikinci fark sınırı)",
+            "passed": false,
+            "detail": "en büyük |Δ²medyan|/medyan 0.1442 (sınır 0.01)"
+          },
+          {
+            "name": "eğitim aralığı dışında makul davranış",
+            "passed": true,
+            "detail": "sonlu, pozitif, sıralı, fiziksel sınır içinde"
+          }
+        ],
+        "external": [
+          {
+            "sex": "M",
+            "lift": "deadlift",
+            "age_group": "18-35",
+            "n": 41227,
+            "vdh": 3.25,
+            "model_oran": 3.2695321048901294,
+            "veri_ağırlıksız": 3.2586557369679015,
+            "fark_%": 0.600987842773204,
+            "geçti": true
+          },
+          {
+            "sex": "F",
+            "lift": "deadlift",
+            "age_group": "18-35",
+            "n": 18158,
+            "vdh": 2.66,
+            "model_oran": 2.6822942990102083,
+            "veri_ağırlıksız": 2.672233735333923,
+            "fark_%": 0.8381315417371527,
+            "geçti": true
+          },
+          {
+            "sex": "M",
+            "lift": "deadlift",
+            "age_group": ">80",
+            "n": 60,
+            "vdh": 2.3,
+            "model_oran": 2.3206703293384168,
+            "veri_ağırlıksız": 2.2534332514165576,
+            "fark_%": 0.8987099712355118,
+            "geçti": null
+          },
+          {
+            "sex": "F",
+            "lift": "deadlift",
+            "age_group": ">80",
+            "n": 15,
+            "vdh": 1.68,
+            "model_oran": 1.9423389874911523,
+            "veri_ağırlıksız": 1.6050583181104157,
+            "fark_%": 15.615415922092414,
+            "geçti": null
+          }
+        ],
+        "fit_seconds": 63.50051258299936
+      }
+    }
+  }
+}
