@@ -293,3 +293,53 @@ extension PersonalRecord: SyncableModel {
         apply(dto)
     }
 }
+
+public struct ScoreSnapshotDTO: SyncDTO {
+    public var id: UUID
+    public var userId: UUID
+    public var createdAt: Date
+    public var updatedAt: Date
+    public var deletedAt: Date?
+    public var scope: String
+    public var key: String
+    public var referenceGroup: String
+    public var score: Double
+    public var z: Double
+    public var confidence: String
+    public var modelVersion: String
+    public var date: String
+}
+
+extension ScoreSnapshot: SyncableModel {
+    public static var syncTable: SyncTable { .scoreSnapshots }
+
+    public func makeDTO() -> ScoreSnapshotDTO {
+        ScoreSnapshotDTO(
+            id: id, userId: userId, createdAt: createdAt, updatedAt: updatedAt, deletedAt: deletedAt, scope: scopeRaw, key: key,
+            referenceGroup: referenceGroupRaw, score: score, z: z, confidence: confidenceRaw, modelVersion: modelVersion,
+            date: SyncTime.day(date)
+        )
+    }
+
+    public func apply(_ dto: ScoreSnapshotDTO) {
+        applyCommon(dto)
+        scopeRaw = dto.scope
+        key = dto.key
+        referenceGroupRaw = dto.referenceGroup
+        score = dto.score
+        z = dto.z
+        confidenceRaw = dto.confidence
+        modelVersion = dto.modelVersion
+        if SyncTime.day(date) != dto.date { date = SyncTime.parseDay(dto.date) ?? date }
+    }
+
+    public convenience init(syncDTO dto: ScoreSnapshotDTO) {
+        self.init(
+            userId: dto.userId, scope: SnapshotScope(rawValue: dto.scope) ?? .exercise, key: dto.key,
+            referenceGroup: dto.referenceGroup, score: dto.score, z: dto.z, confidence: dto.confidence,
+            modelVersion: dto.modelVersion, date: SyncTime.parseDay(dto.date) ?? dto.createdAt, now: dto.createdAt
+        )
+        id = dto.id
+        apply(dto)
+    }
+}

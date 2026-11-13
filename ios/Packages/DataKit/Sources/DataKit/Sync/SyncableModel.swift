@@ -48,6 +48,7 @@ extension SyncTable {
         case .workoutExercises: WorkoutExercise.self
         case .sets: SetEntry.self
         case .personalRecords: PersonalRecord.self
+        case .scoreSnapshots: ScoreSnapshot.self
         }
     }
 }

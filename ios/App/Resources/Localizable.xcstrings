@@ -11168,6 +11168,726 @@
           }
         }
       }
+    },
+    "scorescreen.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength Score"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç Skoru"
+          }
+        }
+      }
+    },
+    "scorescreen.open": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score details"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor ayrıntıları"
+          }
+        }
+      }
+    },
+    "scorescreen.error": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t load the score."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor yüklenemedi."
+          }
+        }
+      }
+    },
+    "scorescreen.group": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reference group"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referans grubu"
+          }
+        }
+      }
+    },
+    "scorescreen.group.gym": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gym"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salon"
+          }
+        }
+      }
+    },
+    "scorescreen.group.general": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel"
+          }
+        }
+      }
+    },
+    "scorescreen.group.competitor": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Athletes"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yarışmacı"
+          }
+        }
+      }
+    },
+    "scorescreen.sentence.gym %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re stronger than %1$lld%% of gym-goers your age and weight."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin yaşında ve kilondaki salon kullanıcılarının %%%1$lld%2$@ güçlüsün."
+          }
+        }
+      }
+    },
+    "scorescreen.sentence.general %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re stronger than %1$lld%% of the general population your age and weight."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin yaşında ve kilondaki genel nüfusun %%%1$lld%2$@ güçlüsün."
+          }
+        }
+      }
+    },
+    "scorescreen.sentence.competitor %lld %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re stronger than %1$lld%% of competitive lifters your age and weight."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin yaşında ve kilondaki yarışmacı sporcuların %%%1$lld%2$@ güçlüsün."
+          }
+        }
+      }
+    },
+    "scorescreen.distribution": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where you are in the distribution"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dağılımda buradasın"
+          }
+        }
+      }
+    },
+    "scorescreen.distribution.axis %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimated 1RM (%@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahmini 1TM (%@)"
+          }
+        }
+      }
+    },
+    "scorescreen.distribution.a11y": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribution of the reference group with your position marked"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referans grubun dağılımı, senin konumun işaretli"
+          }
+        }
+      }
+    },
+    "scorescreen.distribution.median": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Median"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medyan"
+          }
+        }
+      }
+    },
+    "scorescreen.distribution.you": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen"
+          }
+        }
+      }
+    },
+    "scorescreen.confidence.high": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High confidence"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yüksek güven"
+          }
+        }
+      }
+    },
+    "scorescreen.confidence.medium": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medium confidence"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orta güven"
+          }
+        }
+      }
+    },
+    "scorescreen.confidence.low": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low confidence"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Düşük güven"
+          }
+        }
+      }
+    },
+    "scorescreen.reason.fewSessions": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Few recent sessions of this exercise."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hareketin son dönemde az seansı var."
+          }
+        }
+      }
+    },
+    "scorescreen.reason.highReps": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The deciding set has many reps (12+), so the max is extrapolated."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Belirleyici sette tekrar çok (12+), bu yüzden maksimum tahmin ediliyor."
+          }
+        }
+      }
+    },
+    "scorescreen.reason.machine": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Machine exercise: loads are not comparable between machines."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makine hareketi: yükler makineler arasında karşılaştırılamaz."
+          }
+        }
+      }
+    },
+    "scorescreen.reason.stale": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recent session; this is an aged estimate."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yakın zamanda seans yok; bu eskimiş bir tahmin."
+          }
+        }
+      }
+    },
+    "scorescreen.reason.estimatedRatio": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scored through a ratio to a basic lift, so it is an estimate."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temel bir harekete oranlanarak skorlanıyor, bu yüzden tahmin niteliğinde."
+          }
+        }
+      }
+    },
+    "scorescreen.next": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To the next level"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir sonraki seviyeye"
+          }
+        }
+      }
+    },
+    "scorescreen.next.level %@ %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next level: %1$@ (score %2$lld+)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonraki seviye: %1$@ (skor %2$lld+)"
+          }
+        }
+      }
+    },
+    "scorescreen.next.e1rm %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You need an estimated 1RM of %1$@, which is %2$@ more than now."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ tahmini 1TM gerekiyor; şimdikinden %2$@ fazla."
+          }
+        }
+      }
+    },
+    "scorescreen.next.loads": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or hit it with"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya da şununla yakala"
+          }
+        }
+      }
+    },
+    "scorescreen.next.top": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are at the top level for this exercise."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hareket için en üst seviyedesin."
+          }
+        }
+      }
+    },
+    "scorescreen.basis": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basis"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dayanak"
+          }
+        }
+      }
+    },
+    "scorescreen.modelchange.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score model updated"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor modeli güncellendi"
+          }
+        }
+      }
+    },
+    "scorescreen.modelchange.message %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your scores were recalculated with model %2$@ (was %1$@). Small shifts are expected."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skorların %2$@ modeliyle yeniden hesaplandı (önceki: %1$@). Küçük değişimler beklenir."
+          }
+        }
+      }
+    },
+    "scorescreen.modelchange.ok": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Got it"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anladım"
+          }
+        }
+      }
+    },
+    "scorescreen.bodyweight.reminder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your last weigh-in is over 60 days old. Update your weight in Profile for accurate scores."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son tartın 60 günden eski. Doğru skorlar için Profil’den kilonu güncelle."
+          }
+        }
+      }
+    },
+    "scorescreen.empty.noData.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No score yet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz skor yok"
+          }
+        }
+      }
+    },
+    "scorescreen.empty.noData.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log a few sets of this exercise and your score appears here."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hareketten birkaç set kaydet, skorun burada görünsün."
+          }
+        }
+      }
+    },
+    "scorescreen.empty.noStrength.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough to score"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor için yetersiz"
+          }
+        }
+      }
+    },
+    "scorescreen.empty.noStrength.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sets are too high in reps to estimate strength. Add a heavier set of 12 reps or fewer."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setlerin tekrar açısından fazla yüksek; güç tahmin edilemiyor. 12 tekrar veya daha az tekrarlı, daha ağır bir set ekle."
+          }
+        }
+      }
+    },
+    "scorescreen.empty.notInModel.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This exercise is not scored"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hareket skorlanmıyor"
+          }
+        }
+      }
+    },
+    "scorescreen.empty.notInModel.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom, timed and some isolation exercises have no population data yet. Your other lifts still count."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Özel, süreli ve bazı izolasyon hareketleri için henüz nüfus verisi yok. Diğer hareketlerin sayılmaya devam eder."
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noProfile.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile needed"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil gerekli"
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noProfile.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your birth date and sex in Profile to get scores."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor için Profil’e doğum tarihini ve cinsiyetini ekle."
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noBodyweight.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weight needed"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilo gerekli"
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noBodyweight.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a weigh-in in Profile to get scores."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor için Profil’e bir tartı ölçümü ekle."
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noModel.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score model unavailable"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor modeli kullanılamıyor"
+          }
+        }
+      }
+    },
+    "scorescreen.unavailable.noModel.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The score model could not be loaded. Try again later."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor modeli yüklenemedi. Daha sonra tekrar dene."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

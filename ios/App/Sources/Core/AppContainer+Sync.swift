@@ -7,14 +7,18 @@ extension AppContainer {
     /// Every save of a SwiftData context (repositories, the sync engine itself) asks for a debounced sync; the
     /// coordinator skips it when nothing is pending.
     func observeLocalSaves() {
-        guard let sync else { return }
-        saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { _ in
-            MainActor.assumeIsolated { sync.noteLocalChange() }
+        guard sync != nil || scoreService != nil else { return }
+        saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.sync?.noteLocalChange()
+                self?.scoresMayHaveChanged()
+            }
         }
     }
 
     /// Follows the root session state: a signed-in user gets the sync running (with the first restore).
     func sessionChanged(_ state: SessionState) async {
+        if case .ready = state { Task { [weak self] in await self?.prepareScores() } }
         guard let sync else { return }
         switch state {
         case .ready, .needsOnboarding:

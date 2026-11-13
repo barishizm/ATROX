@@ -34,6 +34,10 @@ final class AppContainer {
     let exerciseImageBaseURL: URL?
     /// Keeps the score model bundle current (P063); nil without Supabase (the embedded bundle is used).
     let modelUpdater: ModelUpdater?
+    /// Score orchestration (P064); nil without a local store.
+    let scoreService: ScoreService?
+    @ObservationIgnored var scoreCenterState: (userId: UUID, center: ScoreCenter)?
+    @ObservationIgnored var scoreRefreshTask: Task<Void, Never>?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).
@@ -64,6 +68,10 @@ final class AppContainer {
     ) {
         self.sync = sync
         self.modelUpdater = modelUpdater
+        self.scoreService = Self.makeScoreService(
+            store: modelContainer, updater: modelUpdater,
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        )
         self.exerciseImageBaseURL = exerciseImageBaseURL
         self.health = health
         self.catalog = catalog
@@ -96,6 +104,7 @@ final class AppContainer {
         #if DEBUG
         debugUser = nil
         #endif
+        await resetScores()
         await sync?.signOut()
         await root.signOut()
     }
@@ -154,12 +163,14 @@ final class AppContainer {
     }
     #endif
 
-    /// Launch / foreground: checks for a newer model bundle at most once a day (P063). Score recomputation and the
-    /// one-time explanation of the change come with score orchestration (P064, `ModelUpdater.pendingChange()`).
+    /// Launch / foreground: checks for a newer model bundle at most once a day (P063). A new version recomputes the
+    /// scores (`ScoreService.refresh` sees the version change) and leaves a one-time notice (`ScoreCenter.modelChange`).
     func checkModelUpdate() async {
-        guard let modelUpdater else { return }
-        let outcome = await modelUpdater.checkIfDue()
-        if case let .failed(reason) = outcome { Log.app.error("Model update failed: \(reason)") }
+        if let modelUpdater {
+            let outcome = await modelUpdater.checkIfDue()
+            if case let .failed(reason) = outcome { Log.app.error("Model update failed: \(reason)") }
+        }
+        await prepareScores()
     }
 
     private static func makeModelUpdater(config: SupabaseConfiguration, info: [String: Any]) -> ModelUpdater? {
