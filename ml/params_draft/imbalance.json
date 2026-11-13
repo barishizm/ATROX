@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "module": "imbalance",
+  "status": "draft",
+  "note": "Per-module draft (P059). P058 merges this into params.json. Every number carries its source; 'uzman varsayımı' = expert assumption, to be revisited.",
+  "correlation": {
+    "variables": ["squat", "bench", "deadlift"],
+    "matrix": [
+      [1.0, 0.7, 0.8],
+      [0.7, 1.0, 0.65],
+      [0.8, 0.65, 1.0]
+    ],
+    "source": "PLACEHOLDER — uzman varsayımı; P052/P053 learns Corr(z_S, z_B, z_D | x) from SBD meets (docs/03-ML-MODEL.md §4.4) and replaces this matrix."
+  },
+  "residual": {
+    "min_variables": 3,
+    "min_variables_source": "uzman varsayımı — with only two lifts the residual cannot tell which lift is off; the squat_deadlift rule covers that case.",
+    "severity_sd": {"mild": 1.0, "moderate": 1.5, "severe": 2.0},
+    "severity_sd_source": "mild = 1.0 SD from docs/03-ML-MODEL.md §10 ('fark 1 standart sapmayı aşarsa'); moderate/severe = uzman varsayımı."
+  },
+  "aggregation": {
+    "unknown_pair_correlation": 0.6,
+    "unknown_pair_correlation_source": "docs/03-ML-MODEL.md §8 ('bilinmeyen çiftler için 0.6').",
+    "confidence_weights": {"medium": 0.6, "high": 1.0},
+    "confidence_weights_source": "uzman varsayımı (§8 weights scores by movement confidence; values not yet fitted)."
+  },
+  "gate": {
+    "allowed_confidence": ["medium", "high"],
+    "exclude_machine": true,
+    "source": "docs/03-ML-MODEL.md §6 (machine/cable loads not comparable) + prompt P059 (only medium/high confidence)."
+  },
+  "ratio_rules": [
+    {
+      "id": "push_pull",
+      "group_a": {"name": "push", "patterns": ["horizontal_push", "vertical_push"]},
+      "group_b": {"name": "pull", "patterns": ["horizontal_pull", "vertical_pull"]},
+      "min_exercises_per_group": 1,
+      "severity_z_gap": {"mild": 1.0, "moderate": 1.5, "severe": 2.0},
+      "source": "uzman varsayımı — equal z means the pair is balanced relative to the same population; a 1.0 z gap is about 1.1 SD of the difference at r = 0.6."
+    },
+    {
+      "id": "upper_lower",
+      "group_a": {"name": "upper", "patterns": ["horizontal_push", "vertical_push", "horizontal_pull", "vertical_pull"]},
+      "group_b": {"name": "lower", "patterns": ["squat", "hinge"]},
+      "min_exercises_per_group": 1,
+      "severity_z_gap": {"mild": 1.0, "moderate": 1.5, "severe": 2.0},
+      "source": "uzman varsayımı (same reasoning as push_pull)."
+    },
+    {
+      "id": "squat_deadlift",
+      "group_a": {"name": "squat", "patterns": ["squat"]},
+      "group_b": {"name": "hinge", "patterns": ["hinge"]},
+      "min_exercises_per_group": 1,
+      "severity_z_gap": {"mild": 1.0, "moderate": 1.5, "severe": 2.0},
+      "source": "uzman varsayımı (same reasoning as push_pull)."
+    }
+  ],
+  "left_right": {
+    "severity_asymmetry": {"mild": 0.10, "moderate": 0.15, "severe": 0.20},
+    "source": "mild = 10% inter-limb asymmetry, the commonly used threshold reviewed in Bishop, Turner & Read (2018), J Sports Sci 36(10):1135-1144; moderate/severe = uzman varsayımı. Asymmetry = (strong - weak) / strong on e1RM kg of the same exercise."
+  }
+}
