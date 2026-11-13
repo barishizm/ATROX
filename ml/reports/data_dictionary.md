@@ -30,3 +30,21 @@ eyalet gibi sütunlar da tutulmaz. Ham CSV içe aktarma sonunda diskten silinir.
 `Name` (kimliğe çevrildi), `BirthYearClass`, `Division`, `WeightClassKg`, tüm `Squat1..4Kg/Bench1..4Kg/Deadlift1..4Kg`
 (deneme düzeyi; modelde yalnızca en iyi başarılı kaldırış kullanılır), `Wilks`, `Glossbrenner`, `Goodlift`,
 `State`, `MeetCountry`, `MeetState`, `MeetTown`, `MeetName`, `Sanctioned`.
+
+# Kohort tabloları — `data/processed/` (P048, `make eda`)
+
+`cohort_long.parquet` — satır = sporcu × takvim yılı × kaldırış × `wraps` başına en iyi başarılı kaldırış.
+
+| Sütun | Anlamı |
+|---|---|
+| `athlete_id`, `year`, `sex`, `tested`, `federation`, `event` | `opl.parquet`'ten; `year` = yarışma yılı |
+| `age`, `bodyweight_kg` | En iyi kaydın yapıldığı yarışmadaki yaş ve kilo |
+| `age_imputed` | Yaş AgeClass orta noktasından mı (varsayılan kapalı, hep `false`) |
+| `lift`, `value_kg` | `squat` / `bench` / `deadlift`, kg |
+| `wraps` | Yalnızca squat'ta `true` olabilir (Wraps kategorisi); model hedefi `false` satırlar |
+| `weight` | Ters-frekans örnek ağırlığı; bir sporcunun bir kaldırıştaki ağırlıkları toplamı 1 |
+| `age_band`, `bodyweight_kg_band` | Kalibrasyon katmanları (`AGE_BAND_EDGES`, `BW_BAND_EDGES`) |
+
+`cohort_sbd.parquet` — aynı yarışmada S, B, D üçü de başarılı kayıtlar; sporcu × yıl × `wraps` başına en iyi
+toplam; `squat_kg`, `bench_kg`, `deadlift_kg`, `total_kg`, `weight` (sporcu başına toplam 1). Oranları
+tutarsız (veri giriş hatası şüphesi) kayıtlar atılır. `cohort_flow.json` süzgeç akışını ve yapılandırmayı tutar.
