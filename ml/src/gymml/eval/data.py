@@ -58,6 +58,8 @@ class DataSpec:
 
     tested_only: bool = True
     include_wraps: bool = False
+    # P053 duyarlılık analizi: ters-frekans ağırlıklar yerine her satır 1.
+    unweighted: bool = False
 
 
 def load_lift(lift: str, split: str, spec: DataSpec = DataSpec()) -> pl.DataFrame:
@@ -67,4 +69,6 @@ def load_lift(lift: str, split: str, spec: DataSpec = DataSpec()) -> pl.DataFram
         df = df.filter(pl.col("tested"))
     if not spec.include_wraps:
         df = df.filter(~pl.col("wraps"))
+    if spec.unweighted:
+        df = df.with_columns(weight=pl.lit(1.0))
     return df.join(splits, on="athlete_id").filter(pl.col("split") == split)

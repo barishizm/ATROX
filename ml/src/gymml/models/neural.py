@@ -725,6 +725,8 @@ def load_sbd(split: str, spec: DataSpec | None = None) -> pl.DataFrame:
         df = df.filter(pl.col("tested"))
     if not spec.include_wraps:
         df = df.filter(~pl.col("wraps"))
+    if spec.unweighted:
+        df = df.with_columns(weight=pl.lit(1.0))
     return df.join(ensure_splits(), on="athlete_id").filter(pl.col("split") == split)
 
 
