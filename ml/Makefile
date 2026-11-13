@@ -16,8 +16,8 @@ train-a:     ## P050: Spline-LMS (BCCG + BCPE) -> reports/candidate_a.md
 train-b:     ## P051: Aday B LightGBM çeyreklik (kısıtlı + kısıtsız) -> reports/candidate_b.md
 	uv run python -m gymml.models.train_b
 
-train-c:     ## P052
-	@echo "train-c: P052'de eklenecek"; exit 1
+train-c:     ## P052: Aday C (sinirsel BCPE/SHASH + kopula) -> reports/candidate_c.md, params_draft/correlation.json
+	uv run python -m gymml.models.neural_run
 
 tune:        ## P053
 	@echo "tune: P053'te eklenecek"; exit 1
