@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
-from gymml.data.cohort import AGE_BAND_EDGES, BW_BAND_EDGES, band
+from gymml.data.cohort import AGE_BAND_EDGES, band
 from gymml.eval.interface import QUANTILES, DistributionModel
 
 MIN_STRATUM_N = 500
@@ -69,10 +69,38 @@ def pit_summary(pit: np.ndarray, w: np.ndarray | None = None) -> PitSummary:
     return PitSummary(hist.tolist(), ks, float(np.max(np.abs(hist - 1 / PIT_BINS))))
 
 
+# Kalibrasyon katmanlarının kilo bantları yarışma kilo sınıflarıdır (IPF; 2026-11-13 onayı).
+# Yarışma verisinde güç, sınıf sınırının hemen altında tepe yapıp hemen üstünde ~%7 düşer
+# (tartı için kilo düşme); 10 kg'lık bantlar bu dişleri böldüğünden pürüzsüz modeller kalıyordu.
+WEIGHT_CLASS_LIMITS: dict[str, tuple[float, ...]] = {
+    "M": (59.0, 66.0, 74.0, 83.0, 93.0, 105.0, 120.0),
+    "F": (47.0, 52.0, 57.0, 63.0, 69.0, 76.0, 84.0),
+}
+
+
+def class_band_labels(sex: str) -> list[str]:
+    lim = WEIGHT_CLASS_LIMITS[sex]
+    return [f"≤{lim[0]:g}"] + [f"{a:g}-{b:g}" for a, b in zip(lim[:-1], lim[1:], strict=True)] + [
+        f">{lim[-1]:g}"
+    ]
+
+
+def weight_class_band() -> pl.Expr:
+    """Cinsiyete göre sınıf etiketi (sağ kapalı: 83.0 kg → "74-83"); `bodyweight_kg_band` adıyla."""
+    expr = pl.when(pl.lit(False)).then(pl.lit(None, dtype=pl.String))
+    bw = pl.col("bodyweight_kg")
+    for sex, lim in WEIGHT_CLASS_LIMITS.items():
+        labels = class_band_labels(sex)
+        bounds = (-float("inf"), *lim, float("inf"))
+        for (a, b), label in zip(zip(bounds[:-1], bounds[1:], strict=True), labels, strict=True):
+            expr = expr.when((pl.col("sex") == sex) & (bw > a) & (bw <= b)).then(pl.lit(label))
+    return expr.otherwise(None).alias("bodyweight_kg_band")
+
+
 def coverage_table(model: DistributionModel, df: pl.DataFrame, seed: int = 0) -> pl.DataFrame:
-    """Katman (cinsiyet × yaş bandı × kilo bandı, n ≥ 500) başına 10–90 çeyreklerinde
+    """Katman (cinsiyet × yaş bandı × kilo sınıfı, n ≥ 500) başına 10–90 çeyreklerinde
     gözlenen − beklenen kapsama farkının en büyüğü (yüzde puan)."""
-    d = df.with_columns(band("age", AGE_BAND_EDGES), band("bodyweight_kg", BW_BAND_EDGES))
+    d = df.with_columns(band("age", AGE_BAND_EDGES), weight_class_band())
     y = d["value_kg"].to_numpy()
     rng = np.random.default_rng(seed)
     y_j = y + rng.uniform(-ROUNDING_STEP_KG / 2, ROUNDING_STEP_KG / 2, size=len(y))

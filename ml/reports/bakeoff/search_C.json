@@ -1,0 +1,568 @@
+{
+  "candidate": "C",
+  "n_trials": 10,
+  "trials": [
+    {
+      "number": 0,
+      "config": {
+        "width": 32,
+        "depth": 2,
+        "activation": "tanh",
+        "weight_decay": 1.3920590285431507e-05,
+        "lr": 0.004411879698599427,
+        "head": "shash"
+      },
+      "pinball_mean": 8.104879337133516,
+      "gate": false,
+      "size_bytes": 6716,
+      "pruned": true,
+      "seconds": 30.88742687499871,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.157516044945824,
+          "crps": 18.31503208989165,
+          "pit_ks": 0.02019307558453548,
+          "strata": 46,
+          "strata_failing_noise_aware": 12,
+          "strata_outside_share": 0.2608695652173913,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.05625146538995,
+          "crps": 12.1125029307799,
+          "pit_ks": 0.010242990560669407,
+          "strata": 62,
+          "strata_failing_noise_aware": 16,
+          "strata_outside_share": 0.25806451612903225,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.10087050106477,
+          "crps": 18.20174100212954,
+          "pit_ks": 0.023161926386617626,
+          "strata": 52,
+          "strata_failing_noise_aware": 20,
+          "strata_outside_share": 0.38461538461538464,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 1,
+      "config": {
+        "width": 96,
+        "depth": 2,
+        "activation": "silu",
+        "weight_decay": 0.00015876241823976358,
+        "lr": 0.0029195088200660944,
+        "head": "shash"
+      },
+      "pinball_mean": 8.09859398112959,
+      "gate": false,
+      "size_bytes": 44604,
+      "pruned": true,
+      "seconds": 59.77203141599966,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.156100977202026,
+          "crps": 18.312201954404053,
+          "pit_ks": 0.014010260456432277,
+          "strata": 46,
+          "strata_failing_noise_aware": 10,
+          "strata_outside_share": 0.21739130434782608,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.050852628574416,
+          "crps": 12.101705257148833,
+          "pit_ks": 0.010898041985382356,
+          "strata": 62,
+          "strata_failing_noise_aware": 15,
+          "strata_outside_share": 0.24193548387096775,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.088828337612327,
+          "crps": 18.177656675224654,
+          "pit_ks": 0.021095015655834493,
+          "strata": 52,
+          "strata_failing_noise_aware": 19,
+          "strata_outside_share": 0.36538461538461536,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 2,
+      "config": {
+        "width": 48,
+        "depth": 3,
+        "activation": "tanh",
+        "weight_decay": 7.198618222531042e-06,
+        "lr": 0.006543429388435405,
+        "head": "shash"
+      },
+      "pinball_mean": 8.083469926499523,
+      "gate": false,
+      "size_bytes": 22524,
+      "pruned": true,
+      "seconds": 35.532755874999566,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.134016101327042,
+          "crps": 18.268032202654084,
+          "pit_ks": 0.021682795798078303,
+          "strata": 46,
+          "strata_failing_noise_aware": 6,
+          "strata_outside_share": 0.13043478260869565,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.046317187845673,
+          "crps": 12.092634375691347,
+          "pit_ks": 0.017028748525499182,
+          "strata": 62,
+          "strata_failing_noise_aware": 13,
+          "strata_outside_share": 0.20967741935483872,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.070076490325853,
+          "crps": 18.140152980651706,
+          "pit_ks": 0.017107584842672066,
+          "strata": 52,
+          "strata_failing_noise_aware": 14,
+          "strata_outside_share": 0.2692307692307692,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 3,
+      "config": {
+        "width": 96,
+        "depth": 2,
+        "activation": "silu",
+        "weight_decay": 0.005183695800266344,
+        "lr": 0.009749515395899484,
+        "head": "shash"
+      },
+      "pinball_mean": 8.088547323369909,
+      "gate": false,
+      "size_bytes": 44604,
+      "pruned": true,
+      "seconds": 62.14850041600039,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.137975095108114,
+          "crps": 18.27595019021623,
+          "pit_ks": 0.015874598301587772,
+          "strata": 46,
+          "strata_failing_noise_aware": 7,
+          "strata_outside_share": 0.15217391304347827,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.041487384281461,
+          "crps": 12.082974768562922,
+          "pit_ks": 0.01564994876702097,
+          "strata": 62,
+          "strata_failing_noise_aware": 9,
+          "strata_outside_share": 0.14516129032258066,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.086179490720154,
+          "crps": 18.172358981440308,
+          "pit_ks": 0.029724785023241385,
+          "strata": 52,
+          "strata_failing_noise_aware": 24,
+          "strata_outside_share": 0.46153846153846156,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 4,
+      "config": {
+        "width": 64,
+        "depth": 3,
+        "activation": "tanh",
+        "weight_decay": 2.25430169734097e-05,
+        "lr": 0.003280805030725972,
+        "head": "shash"
+      },
+      "pinball_mean": 8.085640323313367,
+      "gate": false,
+      "size_bytes": 38204,
+      "pruned": true,
+      "seconds": 50.55094829200061,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.140874322119819,
+          "crps": 18.281748644239638,
+          "pit_ks": 0.02195869905562109,
+          "strata": 46,
+          "strata_failing_noise_aware": 14,
+          "strata_outside_share": 0.30434782608695654,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.040386619783446,
+          "crps": 12.080773239566891,
+          "pit_ks": 0.012671573828781618,
+          "strata": 62,
+          "strata_failing_noise_aware": 8,
+          "strata_outside_share": 0.12903225806451613,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.075660028036836,
+          "crps": 18.151320056073672,
+          "pit_ks": 0.019880952882813788,
+          "strata": 52,
+          "strata_failing_noise_aware": 20,
+          "strata_outside_share": 0.38461538461538464,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 5,
+      "config": {
+        "width": 32,
+        "depth": 3,
+        "activation": "silu",
+        "weight_decay": 8.026242200506774e-05,
+        "lr": 0.0010198368779420132,
+        "head": "bcpe"
+      },
+      "pinball_mean": 8.093829145829252,
+      "gate": false,
+      "size_bytes": 10940,
+      "pruned": true,
+      "seconds": 106.44142679200013,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.150141423103065,
+          "crps": 18.30028284620613,
+          "pit_ks": 0.005949801116060804,
+          "strata": 46,
+          "strata_failing_noise_aware": 7,
+          "strata_outside_share": 0.15217391304347827,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.05149360658974,
+          "crps": 12.10298721317948,
+          "pit_ks": 0.008742566074358527,
+          "strata": 62,
+          "strata_failing_noise_aware": 11,
+          "strata_outside_share": 0.1774193548387097,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.079852407794947,
+          "crps": 18.159704815589894,
+          "pit_ks": 0.009509324738453673,
+          "strata": 52,
+          "strata_failing_noise_aware": 6,
+          "strata_outside_share": 0.11538461538461539,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 6,
+      "config": {
+        "width": 32,
+        "depth": 2,
+        "activation": "tanh",
+        "weight_decay": 1.2709861832954976e-06,
+        "lr": 0.0026564972435528613,
+        "head": "shash"
+      },
+      "pinball_mean": 8.094808676390253,
+      "gate": false,
+      "size_bytes": 6716,
+      "pruned": true,
+      "seconds": 40.38838779100115,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.151452919283981,
+          "crps": 18.302905838567963,
+          "pit_ks": 0.026126151947829857,
+          "strata": 46,
+          "strata_failing_noise_aware": 12,
+          "strata_outside_share": 0.2608695652173913,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.051579447823544,
+          "crps": 12.103158895647088,
+          "pit_ks": 0.018341230476462522,
+          "strata": 62,
+          "strata_failing_noise_aware": 14,
+          "strata_outside_share": 0.22580645161290322,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.081393662063231,
+          "crps": 18.162787324126462,
+          "pit_ks": 0.01932464438392112,
+          "strata": 52,
+          "strata_failing_noise_aware": 12,
+          "strata_outside_share": 0.23076923076923078,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 7,
+      "config": {
+        "width": 96,
+        "depth": 3,
+        "activation": "tanh",
+        "weight_decay": 3.278449757788477e-05,
+        "lr": 0.003590808117521522,
+        "head": "shash"
+      },
+      "pinball_mean": 8.09168593697015,
+      "gate": false,
+      "size_bytes": 81852,
+      "pruned": true,
+      "seconds": 54.622852042000886,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.14474236678551,
+          "crps": 18.28948473357102,
+          "pit_ks": 0.019858036994811964,
+          "strata": 46,
+          "strata_failing_noise_aware": 11,
+          "strata_outside_share": 0.2391304347826087,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.05188367320968,
+          "crps": 12.10376734641936,
+          "pit_ks": 0.029990862125545692,
+          "strata": 62,
+          "strata_failing_noise_aware": 20,
+          "strata_outside_share": 0.3225806451612903,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.078431770915257,
+          "crps": 18.156863541830514,
+          "pit_ks": 0.03011606588140897,
+          "strata": 52,
+          "strata_failing_noise_aware": 17,
+          "strata_outside_share": 0.3269230769230769,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 8,
+      "config": {
+        "width": 96,
+        "depth": 2,
+        "activation": "tanh",
+        "weight_decay": 1.5008469239121875e-06,
+        "lr": 0.0042522725435618185,
+        "head": "shash"
+      },
+      "pinball_mean": 8.090548120892736,
+      "gate": false,
+      "size_bytes": 44604,
+      "pruned": true,
+      "seconds": 36.0065510000004,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.152793092063279,
+          "crps": 18.305586184126557,
+          "pit_ks": 0.019229034562022185,
+          "strata": 46,
+          "strata_failing_noise_aware": 19,
+          "strata_outside_share": 0.41304347826086957,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.046253943425046,
+          "crps": 12.092507886850091,
+          "pit_ks": 0.00870126681056027,
+          "strata": 62,
+          "strata_failing_noise_aware": 14,
+          "strata_outside_share": 0.22580645161290322,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.072597327189886,
+          "crps": 18.14519465437977,
+          "pit_ks": 0.015466705741238332,
+          "strata": 52,
+          "strata_failing_noise_aware": 16,
+          "strata_outside_share": 0.3076923076923077,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    },
+    {
+      "number": 9,
+      "config": {
+        "width": 64,
+        "depth": 3,
+        "activation": "tanh",
+        "weight_decay": 2.061865689886956e-06,
+        "lr": 0.0031019454218951087,
+        "head": "bcpe"
+      },
+      "pinball_mean": 8.07694359174995,
+      "gate": false,
+      "size_bytes": 38204,
+      "pruned": true,
+      "seconds": 60.41802862499935,
+      "per_lift": {
+        "squat": {
+          "n": 80232,
+          "pinball": 9.1362300546961,
+          "crps": 18.2724601093922,
+          "pit_ks": 0.01773766582748937,
+          "strata": 46,
+          "strata_failing_noise_aware": 11,
+          "strata_outside_share": 0.2391304347826087,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "bench": {
+          "n": 105766,
+          "pinball": 6.03677846104574,
+          "crps": 12.07355692209148,
+          "pit_ks": 0.007471884071962309,
+          "strata": 62,
+          "strata_failing_noise_aware": 8,
+          "strata_outside_share": 0.12903225806451613,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        },
+        "deadlift": {
+          "n": 89988,
+          "pinball": 9.057822259508011,
+          "crps": 18.115644519016023,
+          "pit_ks": 0.00780575270107553,
+          "strata": 52,
+          "strata_failing_noise_aware": 8,
+          "strata_outside_share": 0.15384615384615385,
+          "coverage_gate_pass": false,
+          "crossing_rate": 0.0
+        }
+      }
+    }
+  ],
+  "best": {
+    "number": 9,
+    "config": {
+      "width": 64,
+      "depth": 3,
+      "activation": "tanh",
+      "weight_decay": 2.061865689886956e-06,
+      "lr": 0.0031019454218951087,
+      "head": "bcpe"
+    },
+    "pinball_mean": 8.07694359174995,
+    "gate": false,
+    "size_bytes": 38204,
+    "pruned": true,
+    "seconds": 60.41802862499935,
+    "per_lift": {
+      "squat": {
+        "n": 80232,
+        "pinball": 9.1362300546961,
+        "crps": 18.2724601093922,
+        "pit_ks": 0.01773766582748937,
+        "strata": 46,
+        "strata_failing_noise_aware": 11,
+        "strata_outside_share": 0.2391304347826087,
+        "coverage_gate_pass": false,
+        "crossing_rate": 0.0
+      },
+      "bench": {
+        "n": 105766,
+        "pinball": 6.03677846104574,
+        "crps": 12.07355692209148,
+        "pit_ks": 0.007471884071962309,
+        "strata": 62,
+        "strata_failing_noise_aware": 8,
+        "strata_outside_share": 0.12903225806451613,
+        "coverage_gate_pass": false,
+        "crossing_rate": 0.0
+      },
+      "deadlift": {
+        "n": 89988,
+        "pinball": 9.057822259508011,
+        "crps": 18.115644519016023,
+        "pit_ks": 0.00780575270107553,
+        "strata": 52,
+        "strata_failing_noise_aware": 8,
+        "strata_outside_share": 0.15384615384615385,
+        "coverage_gate_pass": false,
+        "crossing_rate": 0.0
+      }
+    }
+  },
+  "all_pruned": true
+}

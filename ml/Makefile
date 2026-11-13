@@ -22,11 +22,11 @@ train-b:     ## P051: Aday B LightGBM çeyreklik (kısıtlı + kısıtsız) -> r
 train-c:     ## P052: Aday C (sinirsel BCPE/SHASH + kopula) -> reports/candidate_c.md, params_draft/correlation.json
 	uv run python -m gymml.models.neural_run
 
-tune:        ## P053
-	@echo "tune: P053'te eklenecek"; exit 1
+tune:        ## P053: aday başına Optuna + 3 tohum + tek test bakışı + duyarlılık (adaylar ayrı süreçte)
+	for c in A B C; do uv run python -m gymml.tune.bakeoff all --cand $$c; done
 
-bakeoff:     ## P054
-	@echo "bakeoff: P054'te eklenecek"; exit 1
+bakeoff:     ## P053: reports/bakeoff.md (§3 ve sonrası) reports/bakeoff/*.json'dan
+	uv run python -m gymml.tune.bakeoff report
 
 export:      ## P058
 	@echo "export: P058'de eklenecek"; exit 1

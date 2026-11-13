@@ -37,8 +37,10 @@ def evaluate_factory(
     spec: DataSpec | None = None,
     split: str = "val",
     lifts: tuple[str, ...] = LIFTS,
+    *,
+    _allow_test: bool = False,
 ) -> list[LiftResult]:
-    if split == "test":
+    if split == "test" and not _allow_test:
         raise ValueError("test kümesi yalnızca P053 nihai değerlendirmesinde kullanılır")
     spec = spec or DataSpec()
     out = []
