@@ -102,4 +102,25 @@ extension StrengthModel {
             level: levelKey(score: score), patterns: patterns
         )
     }
+
+    /// Score of each covered movement pattern (the overall score's building blocks; P067 pattern bars).
+    public func patternScores(_ scores: [ExerciseScore]) throws(StrengthModelError) -> [String: GroupScore] {
+        let cfg = params.aggregate
+        var byPattern: [String: [ExerciseScore]] = [:]
+        for score in scores {
+            if let pattern = try exercise(score.exerciseId).movementPattern, cfg.patterns.contains(pattern) {
+                byPattern[pattern, default: []].append(score)
+            }
+        }
+        var out: [String: GroupScore] = [:]
+        for (pattern, items) in byPattern {
+            let zv = combineScores(items, extraWeights: Array(repeating: 1, count: items.count))
+            let score = toScore(zv)
+            out[pattern] = GroupScore(
+                key: pattern, score: score, z: zv, count: items.count, confidence: items.map(\.confidence).max() ?? .low,
+                provisional: false, level: levelKey(score: score), patterns: [pattern]
+            )
+        }
+        return out
+    }
 }

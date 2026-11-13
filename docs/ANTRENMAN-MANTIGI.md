@@ -64,3 +64,22 @@ Catalog'da (`progression.*`), Türkçe + İngilizce.
 - Özel hareketler katalog sınıfı taşımadığı için "üst vücut bileşik" sayılır.
 - Süperset, düşürme seti ve başarısızlık setleri çalışma seti olarak hesaba girer (ısınma hariç).
 - Aralık dışı (ör. 20 tekrar) geçmişte öneri ağırlığı artırıp `repMin`'e döner; programsız hareketlerde varsayılan aralık 8–12'dir.
+
+## Haftalık hacim ve kas katkısı (P066)
+
+Kas haritasının "son 7 gün" modu ve kas detayındaki haftalık sütunlar **çalışma hacmi**ne bakar. Hacim `MuscleVolume`
+(DataKit) içinde saf bir fonksiyondur.
+
+| Kural | Değer |
+|---|---|
+| Sayılan set | Biten antrenmanlardaki **tamamlanmış, ısınma olmayan** setler (düşürme ve başarısızlık dahil) |
+| Birincil kas | set başına **1 set** |
+| İkincil kas | set başına **0,5 set** |
+| Hem birincil hem ikincil listelenen kas | yalnızca birincil sayılır |
+| Pencere | "Son 7 gün" bugün dahil 7 gün; haftalık sütunlar art arda 4 adet 7 günlük pencere (takvim haftası değil) |
+| Özel hareketler | Kas bilgisi olmadığı için sayılmaz |
+
+Kas skoruna katkı hacimden ayrıdır: kas skoru modelin ağırlığıyla birincil **1,0**, ikincil **0,4** alır
+(`params.aggregate.muscleWeights`). Detay sayfasındaki "pay" bu rol ağırlıklarının toplamdaki oranıdır; güven, bayatlık ve
+makine ağırlıkları skorun içinde ayrıca uygulanır ama payda gösterilmez.
+

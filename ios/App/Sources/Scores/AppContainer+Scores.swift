@@ -1,4 +1,5 @@
 import DataKit
+import DesignSystem
 import Foundation
 import StrengthKit
 import SwiftData
@@ -42,6 +43,21 @@ extension AppContainer {
         scoreRefreshTask?.cancel()
         scoreCenterState = nil
         await scoreService?.reset()
+    }
+
+    /// Muscle heat map and list of the Analysis tab (P066); nil without a user or local store.
+    func makeMuscleAnalysisModel() async -> MuscleAnalysisModel? {
+        guard let modelContainer, let center = await scoreCenter(), let user = await currentUser() else { return nil }
+        return MuscleAnalysisModel(userId: user.id, center: center, stats: TrainingStats(modelContainer: modelContainer))
+    }
+
+    func makeMuscleDetailModel(muscle: Muscle) async -> MuscleDetailModel? {
+        guard let modelContainer, let service = scoreService, let center = await scoreCenter(),
+              let context = await makeHistoryContext() else { return nil }
+        return MuscleDetailModel(
+            muscle: muscle, userId: context.userId, service: service, stats: TrainingStats(modelContainer: modelContainer),
+            center: center, names: context.loadNames
+        )
     }
 
     static func makeScoreService(

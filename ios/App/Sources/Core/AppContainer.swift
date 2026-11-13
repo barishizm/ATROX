@@ -250,6 +250,16 @@ final class AppContainer {
         )
     }
 
+    /// The Today dashboard (P067); nil without a user, a local store or a score state.
+    func makeTodayModel() async -> TodayModel? {
+        guard let modelContainer, let context = await makeHistoryContext(), let center = await scoreCenter() else { return nil }
+        let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
+        return TodayModel(
+            context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
+            plan: planStore(for: context.userId), profile: profile?.input
+        )
+    }
+
     /// Editor of one program (P033); nil when there is no user or no local store.
     func makeRoutineEditorModel(routineId: UUID) async -> RoutineEditorModel? {
         guard let modelContainer, let user = await currentUser() else { return nil }

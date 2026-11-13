@@ -48,6 +48,10 @@ public struct ScoreOverview: Sendable, Equatable {
     public var exercises: [String: ExerciseEvaluation]
     public var muscles: [String: GroupScore]
     public var overall: GroupScore?
+    /// Movement pattern → score (the overall score's building blocks).
+    public var patterns: [String: GroupScore] = [:]
+    /// Every movement pattern of the model in display order (covered or not).
+    public var allPatterns: [String] = []
 }
 
 /// Pure score computation: sets in, scores out. The service wraps it with storage, caching and snapshots.
@@ -103,8 +107,10 @@ public enum ScoreCalculator {
         let ordered = evaluations.keys.sorted().compactMap { evaluations[$0]?.score }
         let muscles = (try? model.muscleGroupScores(ordered)) ?? [:]
         let overall = (try? model.overallScore(ordered)) ?? nil
+        let patterns = (try? model.patternScores(ordered)) ?? [:]
         return ScoreOverview(
-            population: population, modelVersion: version, asOfDay: asOfDay, exercises: evaluations, muscles: muscles, overall: overall
+            population: population, modelVersion: version, asOfDay: asOfDay, exercises: evaluations, muscles: muscles, overall: overall,
+            patterns: patterns, allPatterns: model.params.aggregate.patterns
         )
     }
 
