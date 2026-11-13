@@ -8,7 +8,7 @@ import polars as pl
 
 from gymml.data.cohort import ML_ROOT
 from gymml.eval.data import DataSpec
-from gymml.eval.metrics import COVERAGE_GATE_PP, MIN_STRATUM_N
+from gymml.eval.metrics import COVERAGE_GATE_PP, MAX_STRATA_OUTSIDE_SHARE, MIN_STRATUM_N
 from gymml.eval.runner import (
     evaluate_factory,
     plot_percentile_curves,
@@ -94,9 +94,9 @@ Adaylar (P050–P052) bu tablodaki **doğrulama** metriklerini geçmek zorundad�
 - Metrikler (`gymml.eval.metrics`): 19 çeyrek (0.05…0.95) ortalama ağırlıklı pinball kaybı (kg); CRPS ≈ 2 ×
   pinball; rastgeleleştirilmiş PIT (gözlem ±1.25 kg titreştirilir, kayıtlar 2.5 kg adımlı) histogramı ve
   KS uzaklığı; katman (cinsiyet × yaş bandı × kilo bandı, n ≥ {MIN_STRATUM_N}) başına 10–90 çeyreklerinde
-  |gözlenen − beklenen| kapsamanın en büyüğü — kapı ≤ {COVERAGE_GATE_PP:g} yüzde puan (`kapı_dışı_katman`).
-  Bilgi amaçlı `gürültü_üstü_katman`: sapması hem kapıyı hem q = 0.5'teki örnekleme gürültüsünü
-  (2.77·√(0.25/n_etkin): 9 çeyrek üzerinde Bonferroni ile katman başına %95, Kish etkin örneklemi) aşan katman sayısı.
+  |gözlenen − beklenen| kapsamanın en büyüğü. Kapı (§4.3, 2026-11-13 onayı): sapma ≤ max({COVERAGE_GATE_PP:g} puan,
+  gürültü bandı), bandı aşan katman oranı ≤ %{MAX_STRATA_OUTSIDE_SHARE * 100:g}. Gürültü bandı 2.77·√(0.25/n_etkin)
+  (9 çeyrekte Bonferroni ile katman başına %95, Kish etkin örneklemi). `2pp_üstü_katman` yalnızca bilgi içindir.
 - Akıl sağlığı testleri (`gymml.eval.sanity`): yükte kesin artan CDF; aynı yükte kiloyla artmayan skor
   (tolerans {sc.bw_tolerance}); yaş eğrisi tek tepeli, tepe {sc.peak_age_range[0]:g}–{sc.peak_age_range[1]:g}, yıllık
   sıçrama ≤ %{sc.max_year_jump * 100:g}; pürüzsüzlük |Δ²medyan|/medyan ≤ {sc.max_rel_second_diff}; eğitim
@@ -152,10 +152,9 @@ def _commentary(results) -> str:
         "- Kalibrasyon kapısı ve örnekleme gürültüsü: hücre modeli katmanlarla aynı hücrelerde eğitildiği hâlde\n"
         "  doğrulamada birçok katmanda 2 puanı aşıyor; sapma 1/√n ile ölçekleniyor (bench'te r ≈ 0.6). Ters-\n"
         "  frekans ağırlıklarıyla n = 500'lük katmanın etkin örneklemi daha da küçük, gürültü bandı 5–8 puan.\n"
-        "  Yani §4.3'teki ≤ 2 puan kapısı küçük katmanlarda kusursuz bir model için de karşılanamaz. Açık soru\n"
-        "  (kullanıcı onayı, P053 öncesi): kapı `max(2 puan, katman gürültü bandı)` olarak mı yorumlansın?\n"
-        '- Açık soru (kullanıcı onayı, P053 öncesi): §4.3 "20\'lerin ortasında tepe" ölçütü ham veride tepe\n'
-        "  27–34 (bench 32–41) olduğundan burada 20–40 aralığı olarak uygulandı."
+        "  Bu yüzden §4.3 kapısı 2026-11-13'te kullanıcı onayıyla gürültüye duyarlı hâle getirildi.\n"
+        "- Yaş tepesi ölçütü ham veride tepe 27–34 (bench 32–41) olduğundan onayla 20–40 aralığına çekildi.\n"
+        "- vdH ölçütü P053'te ağırlıklandırma açık/kapalı iki sürümle raporlanır; karşılaştırma ağırlıksız sürümle."
     )
 
 

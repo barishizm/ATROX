@@ -212,3 +212,9 @@ def test_cell_model_falls_back_outside_bands():
     x = pl.DataFrame({"sex": ["M"], "age": [95.0], "bodyweight_kg": [300.0]})
     assert m.params(x)["cell_found"] == [False]
     assert np.isfinite(m.quantile(x, np.array([0.5]))).all()
+
+
+def test_coverage_gate_passes_truth_and_fails_misspecified_model():
+    df = synthetic(80_000, seed=4)
+    assert metrics.evaluate(LogNormalTruth(), df)["coverage_gate_pass"]
+    assert not metrics.evaluate(LogNormalTruth(bw_power=0.3), df)["coverage_gate_pass"]

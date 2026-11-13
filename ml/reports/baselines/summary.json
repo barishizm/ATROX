@@ -8,8 +8,9 @@
     "pit_ks": 0.005770130380193183,
     "katman": 39,
     "katman_max_pp": 7.107977567962043,
-    "kapı_dışı_katman": 27,
-    "gürültü_üstü_katman": 3,
+    "2pp_üstü_katman": 27,
+    "bant_dışı_katman": 3,
+    "kalibrasyon_kapısı": "✅",
     "akıl_sağlığı": "2/5"
   },
   {
@@ -21,8 +22,9 @@
     "pit_ks": 0.005325952103287866,
     "katman": 55,
     "katman_max_pp": 10.9479259961002,
-    "kapı_dışı_katman": 34,
-    "gürültü_üstü_katman": 7,
+    "2pp_üstü_katman": 34,
+    "bant_dışı_katman": 7,
+    "kalibrasyon_kapısı": "❌",
     "akıl_sağlığı": "2/5"
   },
   {
@@ -34,8 +36,9 @@
     "pit_ks": 0.0054485945199708175,
     "katman": 45,
     "katman_max_pp": 8.809247139715387,
-    "kapı_dışı_katman": 29,
-    "gürültü_üstü_katman": 2,
+    "2pp_üstü_katman": 29,
+    "bant_dışı_katman": 2,
+    "kalibrasyon_kapısı": "✅",
     "akıl_sağlığı": "2/5"
   },
   {
@@ -47,8 +50,9 @@
     "pit_ks": 0.004974977035124617,
     "katman": 39,
     "katman_max_pp": 38.17019953154308,
-    "kapı_dışı_katman": 39,
-    "gürültü_üstü_katman": 33,
+    "2pp_üstü_katman": 39,
+    "bant_dışı_katman": 33,
+    "kalibrasyon_kapısı": "❌",
     "akıl_sağlığı": "4/5"
   },
   {
@@ -60,8 +64,9 @@
     "pit_ks": 0.005133824474230331,
     "katman": 55,
     "katman_max_pp": 41.00885319646938,
-    "kapı_dışı_katman": 55,
-    "gürültü_üstü_katman": 46,
+    "2pp_üstü_katman": 55,
+    "bant_dışı_katman": 46,
+    "kalibrasyon_kapısı": "❌",
     "akıl_sağlığı": "4/5"
   },
   {
@@ -73,8 +78,9 @@
     "pit_ks": 0.006801089758044332,
     "katman": 45,
     "katman_max_pp": 37.81168158132847,
-    "kapı_dışı_katman": 45,
-    "gürültü_üstü_katman": 37,
+    "2pp_üstü_katman": 45,
+    "bant_dışı_katman": 37,
+    "kalibrasyon_kapısı": "❌",
     "akıl_sağlığı": "4/5"
   }
 ]

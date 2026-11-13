@@ -13,6 +13,8 @@ from gymml.eval.interface import QUANTILES, DistributionModel
 MIN_STRATUM_N = 500
 COVERAGE_QUANTILES = np.round(np.arange(1, 10) / 10, 2)  # 0.1 … 0.9
 COVERAGE_GATE_PP = 2.0
+# Kapı (§4.3, 2026-11-13 onayı): sapma ≤ max(2 puan, gürültü bandı); bandı aşan katman oranı ≤ %10.
+MAX_STRATA_OUTSIDE_SHARE = 0.10
 PIT_BINS = 10
 # Kayıtlar 2.5 kg adımlarla yuvarlanır; PIT için gözlem ±yarım adım titreştirilir.
 ROUNDING_STEP_KG = 2.5
@@ -90,7 +92,7 @@ def coverage_table(model: DistributionModel, df: pl.DataFrame, seed: int = 0) ->
         .filter(pl.col("n") >= MIN_STRATUM_N)
     )
     devs = [(pl.col(f"c{int(q * 100)}") - q).abs() * 100 for q in COVERAGE_QUANTILES]
-    # Bilgi amaçlı: q = 0.5'te örnekleme gürültüsü (Kish etkin örneklem). Belge kapısı değişmez.
+    # q = 0.5'te örnekleme gürültüsü (Kish etkin örneklem); §4.3 kapısının parçası.
     noise = NOISE_Z * 100 * (0.25 / pl.col("n_eff")).sqrt()
     return (
         agg.with_columns(max_dev_pp=pl.max_horizontal(devs), noise_pp=noise)
@@ -121,5 +123,8 @@ def evaluate(model: DistributionModel, df: pl.DataFrame) -> dict:
         "strata_max_dev_pp": float(cov["max_dev_pp"].max()) if cov.height else float("nan"),
         "strata_failing": int((cov["max_dev_pp"] > COVERAGE_GATE_PP).sum()),
         "strata_failing_noise_aware": int((~cov["within_noise"]).sum()) if cov.height else 0,
-        "coverage_gate_pass": bool(cov.height and (cov["max_dev_pp"] <= COVERAGE_GATE_PP).all()),
+        "strata_outside_share": float((~cov["within_noise"]).mean()) if cov.height else 1.0,
+        "coverage_gate_pass": bool(
+            cov.height and (~cov["within_noise"]).mean() <= MAX_STRATA_OUTSIDE_SHARE
+        ),
     }

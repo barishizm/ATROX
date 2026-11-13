@@ -82,8 +82,9 @@ def summary_table(results: dict[str, list[LiftResult]]) -> pl.DataFrame:
                     "pit_ks": m["pit_ks"],
                     "katman": m["strata"],
                     "katman_max_pp": m["strata_max_dev_pp"],
-                    "kapı_dışı_katman": m["strata_failing"],
-                    "gürültü_üstü_katman": m["strata_failing_noise_aware"],
+                    "2pp_üstü_katman": m["strata_failing"],
+                    "bant_dışı_katman": m["strata_failing_noise_aware"],
+                    "kalibrasyon_kapısı": "✅" if m["coverage_gate_pass"] else "❌",
                     "akıl_sağlığı": f"{sum(s.passed for s in r.sanity)}/{len(r.sanity)}",
                 }
             )

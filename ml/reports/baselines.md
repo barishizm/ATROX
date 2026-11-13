@@ -14,9 +14,9 @@ Adaylar (P050–P052) bu tablodaki **doğrulama** metriklerini geçmek zorundad�
 - Metrikler (`gymml.eval.metrics`): 19 çeyrek (0.05…0.95) ortalama ağırlıklı pinball kaybı (kg); CRPS ≈ 2 ×
   pinball; rastgeleleştirilmiş PIT (gözlem ±1.25 kg titreştirilir, kayıtlar 2.5 kg adımlı) histogramı ve
   KS uzaklığı; katman (cinsiyet × yaş bandı × kilo bandı, n ≥ 500) başına 10–90 çeyreklerinde
-  |gözlenen − beklenen| kapsamanın en büyüğü — kapı ≤ 2 yüzde puan (`kapı_dışı_katman`).
-  Bilgi amaçlı `gürültü_üstü_katman`: sapması hem kapıyı hem q = 0.5'teki örnekleme gürültüsünü
-  (2.77·√(0.25/n_etkin): 9 çeyrek üzerinde Bonferroni ile katman başına %95, Kish etkin örneklemi) aşan katman sayısı.
+  |gözlenen − beklenen| kapsamanın en büyüğü. Kapı (§4.3, 2026-11-13 onayı): sapma ≤ max(2 puan,
+  gürültü bandı), bandı aşan katman oranı ≤ %10. Gürültü bandı 2.77·√(0.25/n_etkin)
+  (9 çeyrekte Bonferroni ile katman başına %95, Kish etkin örneklemi). `2pp_üstü_katman` yalnızca bilgi içindir.
 - Akıl sağlığı testleri (`gymml.eval.sanity`): yükte kesin artan CDF; aynı yükte kiloyla artmayan skor
   (tolerans 0.005); yaş eğrisi tek tepeli, tepe 20–40, yıllık
   sıçrama ≤ %4; pürüzsüzlük |Δ²medyan|/medyan ≤ 0.01; eğitim
@@ -27,14 +27,14 @@ Adaylar (P050–P052) bu tablodaki **doğrulama** metriklerini geçmek zorundad�
 
 ## Metrikler (doğrulama kümesi)
 
-| model | lift | n_val | pinball_kg | crps_kg | pit_ks | katman | katman_max_pp | kapı_dışı_katman | gürültü_üstü_katman | akıl_sağlığı |
-|---|---|---|---|---|---|---|---|---|---|---|
-| cell_empirical | squat | 80,232 | 9.393 | 18.787 | 0.006 | 39 | 7.108 | 27 | 3 | 2/5 |
-| cell_empirical | bench | 105,766 | 6.186 | 12.371 | 0.005 | 55 | 10.948 | 34 | 7 | 2/5 |
-| cell_empirical | deadlift | 89,988 | 9.310 | 18.620 | 0.005 | 45 | 8.809 | 29 | 2 | 2/5 |
-| dots_empirical | squat | 80,232 | 10.073 | 20.147 | 0.005 | 39 | 38.170 | 39 | 33 | 4/5 |
-| dots_empirical | bench | 105,766 | 6.734 | 13.468 | 0.005 | 55 | 41.009 | 55 | 46 | 4/5 |
-| dots_empirical | deadlift | 89,988 | 10.036 | 20.072 | 0.007 | 45 | 37.812 | 45 | 37 | 4/5 |
+| model | lift | n_val | pinball_kg | crps_kg | pit_ks | katman | katman_max_pp | 2pp_üstü_katman | bant_dışı_katman | kalibrasyon_kapısı | akıl_sağlığı |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| cell_empirical | squat | 80,232 | 9.393 | 18.787 | 0.006 | 39 | 7.108 | 27 | 3 | ✅ | 2/5 |
+| cell_empirical | bench | 105,766 | 6.186 | 12.371 | 0.005 | 55 | 10.948 | 34 | 7 | ❌ | 2/5 |
+| cell_empirical | deadlift | 89,988 | 9.310 | 18.620 | 0.005 | 45 | 8.809 | 29 | 2 | ✅ | 2/5 |
+| dots_empirical | squat | 80,232 | 10.073 | 20.147 | 0.005 | 39 | 38.170 | 39 | 33 | ❌ | 4/5 |
+| dots_empirical | bench | 105,766 | 6.734 | 13.468 | 0.005 | 55 | 41.009 | 55 | 46 | ❌ | 4/5 |
+| dots_empirical | deadlift | 89,988 | 10.036 | 20.072 | 0.007 | 45 | 37.812 | 45 | 37 | ❌ | 4/5 |
 
 ![PIT](baselines/pit.png)
 
@@ -118,7 +118,6 @@ Adaylar (P050–P052) bu tablodaki **doğrulama** metriklerini geçmek zorundad�
 - Kalibrasyon kapısı ve örnekleme gürültüsü: hücre modeli katmanlarla aynı hücrelerde eğitildiği hâlde
   doğrulamada birçok katmanda 2 puanı aşıyor; sapma 1/√n ile ölçekleniyor (bench'te r ≈ 0.6). Ters-
   frekans ağırlıklarıyla n = 500'lük katmanın etkin örneklemi daha da küçük, gürültü bandı 5–8 puan.
-  Yani §4.3'teki ≤ 2 puan kapısı küçük katmanlarda kusursuz bir model için de karşılanamaz. Açık soru
-  (kullanıcı onayı, P053 öncesi): kapı `max(2 puan, katman gürültü bandı)` olarak mı yorumlansın?
-- Açık soru (kullanıcı onayı, P053 öncesi): §4.3 "20'lerin ortasında tepe" ölçütü ham veride tepe
-  27–34 (bench 32–41) olduğundan burada 20–40 aralığı olarak uygulandı.
+  Bu yüzden §4.3 kapısı 2026-11-13'te kullanıcı onayıyla gürültüye duyarlı hâle getirildi.
+- Yaş tepesi ölçütü ham veride tepe 27–34 (bench 32–41) olduğundan onayla 20–40 aralığına çekildi.
+- vdH ölçütü P053'te ağırlıklandırma açık/kapalı iki sürümle raporlanır; karşılaştırma ağırlıksız sürümle.
