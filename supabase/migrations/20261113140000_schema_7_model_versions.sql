@@ -17,7 +17,8 @@ create table public.model_versions (
   constraint model_versions_version_check check (version ~ '^[0-9]+\.[0-9]+\.[0-9]+$'),
   constraint model_versions_min_app_version_check check (min_app_version ~ '^[0-9]+\.[0-9]+\.[0-9]+$'),
   constraint model_versions_schema_version_check check (schema_version > 0),
-  constraint model_versions_storage_path_check check (storage_path ~ '^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$'),
+  constraint model_versions_storage_path_check check (
+    storage_path ~ '^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$' and storage_path !~ '(^|/)\.\.?(/|$)'),
   constraint model_versions_manifest_sha256_check check (manifest_sha256 ~ '^[0-9a-f]{64}$'),
   constraint model_versions_metrics_check check (jsonb_typeof(metrics) = 'object'),
   constraint model_versions_rollout_percent_check check (rollout_percent between 0 and 100)
