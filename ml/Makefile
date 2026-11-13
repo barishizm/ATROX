@@ -1,8 +1,11 @@
 # ATROX ML hattı. Her hedef `uv run` ile çalışır.
-.PHONY: data eda train-a train-b train-c tune bakeoff export test lint smoke
+.PHONY: data calibrate eda train-a train-b train-c tune bakeoff export test lint smoke
 
 data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.parquet
 	uv run python -m gymml.data.opl
+
+calibrate:   ## P055: nüfus kalibrasyonu -> reports/calibration.md, params_draft/calibration.json
+	uv run python -m gymml.calibration.run
 
 eda:         ## P048
 	@echo "eda: P048'de eklenecek"; exit 1

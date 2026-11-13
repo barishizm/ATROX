@@ -133,6 +133,10 @@ s_g(x) = κ_g(cinsiyet, kaldırış) · s_c(x)                   // yayılım or
 g ∈ { yarışmacı, salon, genel }
 ```
 
+**v1 kestirimi (P055):** çapa sayısı az olduğu için `δ_g = D_g(cinsiyet) + L(cinsiyet, kaldırış) + A_g(cinsiyet, yaş bandı)`
+(kaldırış farkı `L` iki nüfusta ortak) ve `κ` nüfus başına tek değer (cinsiyet/kaldırış ayrımı yok) olarak kestirilir.
+Ayrıntı ve gerekçe: `ml/reports/calibration.md`.
+
 **Gerekçe:** Yarışmaya katılma olasılığı güçle üstel artıyorsa (lojistik seçilim), log-normal bir taban dağılımın
 seçilmiş alt kümesi yine yaklaşık log-normaldir ve ortalaması kaymıştır. Yani yer-ölçek dönüşümü keyfi bir düzeltme
 değil, seçilim yanlılığının birinci dereceden modelidir.
@@ -156,8 +160,16 @@ erişim tarihi yazılır, birincil kaynak okunamayan çapa dosyaya girmez.
 
 ### 5.3 Dürüstlük notu
 
-İlk sürümde salon referansındaki skorun **±8–12 yüzdelik puan** belirsizliği olmasını bekliyorum (bu bir tahmindir,
-P055'teki duyarlılık analizi gerçek rakamı verecek). Bu yüzden:
+P055 duyarlılık analizi (kaynak çıkarma, ağırlıklandırma, yarışmacı referansı, varsayım değişiklikleri ve bootstrap
+zarfının yarı genişliği; tipik kullanıcılar) ölçülen belirsizlik bandı:
+
+- **Salon referansı:** medyan **±9 yüzdelik puan**, en kötü ±19 (squat: kaldırış farkı tek kaynağa dayanıyor).
+  Örnek: 80 kg, 30 yaş erkek, bench 80 kg → salon skoru ≈ 26 (bant 19–31).
+- **Genel nüfus referansı:** medyan **±18 puan**, en kötü ±24 — çapası az; v1'de "çok tahmini" olarak gösterilmeli.
+- Yarışmacı referansı doğrudan veriye dayanır; bu bant ona uygulanmaz.
+
+Ayrıntı: `ml/reports/calibration.md`; değerler `ml/params_draft/calibration.json` → `uncertainty_band_pct_points`.
+Rakamlar P053 kazananı takılınca (P057) yeniden üretilir. Bu yüzden:
 
 - Skorun yanında güven göstergesi ve "tahmini" etiketi bulunur.
 - Yarışmacı referansı her zaman seçilebilir; o referans doğrudan veriye dayanır ve en güvenilir olandır.
@@ -207,6 +219,9 @@ Yarışma verisinde boy yok; bu yüzden v1'de boy çapa dağılım modelinin gir
 - **v1:** Boy toplanır; BMI üzerinden bir **vücut kompozisyonu düzeltmesi deneyi** yapılır (P055): yüksek BMI'li
   salon/genel nüfus kullanıcısında kilonun tamamı yağsız kütle sayılmamalıdır. Düzeltme değerlendirmede iyileşme
   göstermezse kapalı kalır (özellik bayrağı). Boy ayrıca koçun bağlamına ve anonim katkıya girer.
+  **P055 sonucu: kapalı.** Çapalarda bireysel boy yok; varsayılan boylarla yapılan deneyde düzeltme hatayı artırdı
+  (salon çapaları ağır kullanıcıları yarışmacı VA eğrisinin öngördüğünden *güçlü* gösteriyor, düzeltmenin tersi
+  yönde). Ayrıntı `ml/reports/calibration.md`.
 - **v2:** Uygulama verisi biriktiğinde boy tam kovaryat olur (literatür, kuvvetin boy² ile ölçeklendiğini gösteriyor).
 
 ## 8. Birleştirme: kas grubu ve genel skor
