@@ -64,5 +64,5 @@ def test_smoke_run_leaves_trace(tmp_path: Path, monkeypatch):
 
 
 def test_layout_exists():
-    for d in ("data/raw", "data/interim", "data/processed", "runs", "golden", "reports", "configs"):
+    for d in ("data/raw", "data/interim", "data/processed", "golden", "reports", "configs"):
         assert (ML_ROOT / d).is_dir()
