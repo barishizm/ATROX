@@ -10,6 +10,7 @@ from catalog import taxonomy, taxonomy_build as tb, taxonomy_cli
 ROOT = Path(__file__).resolve().parent.parent
 BASE = json.loads((ROOT / "out" / "exercises.base.json").read_text(encoding="utf-8"))
 OVERRIDES = tb.load_overrides(ROOT / "taxonomy_overrides.yaml")
+RATIOS = tb.load_ratios()
 
 
 def ex(name, equipment="barbell", category="strength", mechanic="compound", muscle="chest"):
@@ -74,25 +75,26 @@ def test_every_catalog_exercise_has_pattern_and_scoring_type():
 
 
 def test_real_taxonomy_is_valid_and_core_is_about_150():
-    doc = tb.build(BASE, OVERRIDES)
+    doc = tb.build(BASE, OVERRIDES, None, RATIOS)
     assert tb.validate(doc, BASE) == []
     assert 140 <= sum(e["is_core"] for e in doc["exercises"]) <= 170
 
 
-def test_p056_fields_are_null():
-    for e in tb.build(BASE, OVERRIDES)["exercises"]:
-        assert all(e[k] is None for k in ("anchor", "ratio", "tau", "ratio_confidence", "bw_fraction"))
+def test_without_ratios_scored_core_rows_fail_the_strict_rule():
+    """P028 relaxed the P011 rule to complete-or-empty; P056 restores it: scored core rows need every parameter."""
+    errors = tb.validate(tb.build(BASE, OVERRIDES), BASE)
+    assert any("scored core exercise needs anchor" in m for m in errors)
 
 
 def test_committed_yaml_is_up_to_date():
     doc = tb.build(BASE, OVERRIDES, __import__("hashlib").sha256(
-        (ROOT / "out" / "exercises.base.json").read_bytes()).hexdigest())
+        (ROOT / "out" / "exercises.base.json").read_bytes()).hexdigest(), RATIOS)
     assert (ROOT / "scoring_taxonomy.yaml").read_text(encoding="utf-8") == tb.render(doc)
     assert yaml.safe_load(tb.render(doc)) == doc
 
 
 def test_validator_rejects_bad_enum_missing_and_inconsistent_entries():
-    doc = tb.build(BASE, OVERRIDES)
+    doc = tb.build(BASE, OVERRIDES, None, RATIOS)
     bad = copy.deepcopy(doc)
     bad["exercises"][0]["movement_pattern"] = "nonsense"
     assert any("movement_pattern" in m for m in tb.validate(bad, BASE))
@@ -129,8 +131,8 @@ def test_overrides_win_and_reject_unknowns():
 
 
 def test_core_doc_lists_every_core_row():
-    doc = tb.build(BASE, OVERRIDES)
-    text = taxonomy_cli.render_doc(doc)
+    doc = tb.build(BASE, OVERRIDES, None, RATIOS)
+    text = taxonomy_cli.render_doc(doc, RATIOS)
     for e in doc["exercises"]:
         if e["is_core"]:
             assert f"| {e['name']} |" in text

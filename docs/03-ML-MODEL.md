@@ -180,11 +180,11 @@ olmadığımız harekette uç skor vermeyiz).
 | Alan | Açıklama |
 |---|---|
 | `anchor` | `squat` / `bench` / `deadlift` |
-| `ratio` (ρ) | Çapaya göre tipik güç oranı (ör. overhead press ≈ 0.60–0.67 × bench) |
+| `ratio` (ρ) | Çapaya göre tipik güç oranı (ör. overhead press ≈ 0.60–0.67 × bench); kullanıcının yazdığı birimde (yük kuralına göre), değerler ve kaynaklar `tools/catalog/ratios.yaml` (P056) |
 | `tau` | Oran belirsizliği |
 | `ratio_confidence` | `A` (literatür/çoklu kaynak), `B` (tek kaynak), `C` (uzman tahmini) |
 | `load_convention` | `total` (bar dahil), `per_hand` (dumbbell), `per_side` (plaka yüklü), `machine_stack`, `bodyweight_plus` |
-| `bw_fraction` | Vücut ağırlığı hareketlerinde taşınan vücut ağırlığı oranı (barfiks/dips ≈ 1.0; şınav kaynaklardan doğrulanacak) |
+| `bw_fraction` | Vücut ağırlığı hareketlerinde taşınan vücut ağırlığı oranı (barfiks 1.0, dips ≈ 0.95 — segment kütleleri, de Leva 1996; şınav ≈ 0.70 — Suprak 2011, Ebben 2011) |
 | `scoring_type` | `weighted`, `bodyweight_loaded`, `reps_only`, `time`, `none` |
 
 **Skorlama türleri**

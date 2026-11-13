@@ -205,3 +205,13 @@ overrides:
     note: "Filed as shoulder isolation (rear delt / external rotation emphasis)."
   donkey-calf-raises:
     note: "Loaded with a partner or belt; total load."
+  bent-arm-dumbbell-pullover:
+    load_convention: total
+    note: "One dumbbell held with both hands: the logged weight is the total (P056)."
+  standing-dumbbell-triceps-extension:
+    load_convention: total
+    note: "One dumbbell held overhead with both hands: the logged weight is the total (P056)."
+  glute-ham-raise:
+    scoring_type: bodyweight_loaded
+    load_convention: bodyweight_plus
+    note: "Body weight over the knees, optionally holding a plate; not a stack machine (P056)."

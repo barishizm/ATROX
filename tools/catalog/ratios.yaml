@@ -1,0 +1,319 @@
+# Anchor ratios and load rules for the core exercises (P056, docs/03-ML-MODEL.md §6).
+#
+# Read by `uv run catalog-taxonomy`, which copies the values into scoring_taxonomy.yaml. Edit here, then regenerate.
+#
+# Units: `ratio` (ρ) relates the e1RM of the number the user TYPES for this exercise (its load_convention) to the
+# 1RM of the anchor lift:  e1RM_logged ≈ ρ · e1RM_anchor.
+#   total            whole implement incl. the bar (Smith machine: incl. the Smith bar, whatever it weighs)
+#   per_hand         one dumbbell / kettlebell (the user types 30 for a pair of 30s)
+#   per_side         plates on one side of a plate-loaded machine (sled/carriage weight unknown → not added)
+#   machine_stack    the number on the stack or plate-loaded lever machine
+#   bodyweight_plus  effective load = bw_fraction · body weight + added load (assistance band: not subtracted)
+#
+# tau (§6): log-scale spread of the ratio between people. Unless a row overrides it, tau comes from the grade:
+#   anchor lift itself → tau_anchor, A → 0.08, B → 0.15, C → 0.40, and any machine/cable row → tau_machine.
+#   Scale: OpenPowerlifting gives a between-person SD of log(bench/squat) ≈ 0.15 and log(deadlift/squat) ≈ 0.12–0.14
+#   (source `opl`), so 0.08 is "close variant of the anchor" and 0.40 is "we only know the order of magnitude".
+#   tau_c_min is the floor the tests enforce for grade C so that a C exercise can never give an extreme score (§6):
+#   with the largest within-cell SD of log 1RM seen in OPL (s_max), |z_anchor| = 3 maps to a score inside [5, 95].
+#
+# Grades (ratio_confidence): A = two or more agreeing primary sources (or the anchor itself), B = one primary source
+# or a product of A/B sources, C = expert estimate. Machines and cables are capped at C (brand/pulley differences).
+tau:
+  anchor: 0.02
+  A: 0.08
+  B: 0.15
+  C: 0.40
+  machine: 0.50
+consistency:
+  s_max: 0.25          # ≥ largest robust/raw within-cell SD of log 1RM in OPL (M: 0.19–0.23, F: 0.23–0.26 → see opl)
+  z_extreme: 3.0
+  score_bounds: [5, 95]
+
+sources:
+  anchor:
+    cite: "Definition — the anchor lift itself (docs/03-ML-MODEL.md §4)."
+  opl:
+    cite: >-
+      OpenPowerlifting snapshot 2026-11-07 (ml/data/SOURCES.md), computed in P056: first raw SBD meet per athlete,
+      286,293 men / 133,646 women. Median bench/squat 0.667 M, 0.556 F; deadlift/squat 1.178 M, 1.227 F;
+      robust SD of log ratios 0.12–0.17. Residual SD of log 1RM given sex, body weight and age 0.19–0.26.
+    url: https://openpowerlifting.gitlab.io/opl-csv/
+    accessed: 2026-11-13
+  saeterbakken2011:
+    cite: >-
+      Saeterbakken AH, van den Tillaar R, Fimland MS. A comparison of muscle activity and 1-RM strength of three
+      chest-press exercises with different stability requirements. J Sports Sci 2011;29(5):533-8.
+      Dumbbell 1RM (sum of both) 17% below barbell; Smith machine 3% below barbell (12 trained men).
+    url: https://doi.org/10.1080/02640414.2010.543916
+    accessed: 2026-11-13
+  saeterbakken2013:
+    cite: >-
+      Saeterbakken AH, Fimland MS. Effects of body position and loading modality on muscle activity and strength in
+      shoulder presses. J Strength Cond Res 2013;27(7):1824-31. Standing dumbbell 1RM ~7% below standing barbell
+      and ~10% below seated dumbbell (15 men).
+    url: https://doi.org/10.1519/JSC.0b013e318276b873
+    accessed: 2026-11-13
+  cotterman2005:
+    cite: >-
+      Cotterman ML, Darby LA, Skelly WA. Comparison of muscle force production using the Smith machine and free
+      weights for bench press and squat exercises. J Strength Cond Res 2005;19(1):169-76.
+      Smith bench 1RM = −6.76 + 0.95 × free bench 1RM; Smith squat 1RM ≥ free squat (16 men, 16 women).
+    url: https://doi.org/10.1519/14433.1
+    accessed: 2026-11-13
+  swinton2011:
+    cite: >-
+      Swinton PA et al. A biomechanical analysis of straight and hexagonal barbell deadlifts using submaximal loads.
+      J Strength Cond Res 2011;25(7):2000-9. Hexagonal bar 1RM 265 ± 41 kg vs straight bar 245 ± 39 kg (19 men).
+    url: https://doi.org/10.1519/JSC.0b013e3181e73f87
+    accessed: 2026-11-13
+  lockie2018:
+    cite: >-
+      Lockie RG et al. The 1 repetition maximum mechanics of a high-handle hexagonal bar deadlift compared with a
+      conventional deadlift as measured by a linear position transducer. J Strength Cond Res 2018;32(1):150-161.
+      High-handle hex bar 154.5 ± 45.3 kg vs conventional 134.7 ± 40.6 kg (21 men, 10 women).
+    url: https://doi.org/10.1519/JSC.0000000000001781
+    accessed: 2026-11-13
+  rodriguezridao2020:
+    cite: >-
+      Rodríguez-Ridao D et al. Effect of five bench inclinations on the electromyographic activity of the pectoralis
+      major, anterior deltoid, and triceps brachii during the bench press exercise. Int J Environ Res Public Health
+      2020;17(19):7339, Table 1. 1RM 81.4 kg at 0°, 63.3 kg at 30°, 57.9 kg at 45° (30 trained adults).
+    url: https://doi.org/10.3390/ijerph17197339
+    accessed: 2026-11-13
+  larsen2021:
+    cite: >-
+      Larsen S, Gomo O, van den Tillaar R. A biomechanical analysis of wide, medium, and narrow grip width effects on
+      ... 1-RM bench pressing. Front Sports Act Living 2021;2:637066. 1RM wide 109.8, medium 108.9, narrow 103.7 kg.
+    url: https://doi.org/10.3389/fspor.2020.637066
+    accessed: 2026-11-13
+  suprak2011:
+    cite: >-
+      Suprak DN, Dawes J, Stephenson MD. The effect of position on the percentage of body mass supported during
+      traditional and modified push-up variants. J Strength Cond Res 2011;25(2):497-503. Traditional push-up
+      69.16% (up) / 75.04% (down) of body mass — values as reported by the Cooper Institute summary.
+    url: https://doi.org/10.1519/JSC.0b013e3181bde2cf
+    accessed: 2026-11-13
+  ebben2011:
+    cite: >-
+      Ebben WP et al. Kinetic analysis of several variations of push-ups. J Strength Cond Res 2011;25(10):2891-4.
+      Peak GRF as share of body mass: regular ≈ 0.64–0.66, feet on 30.5 cm box ≈ 0.70, on 61 cm box ≈ 0.74
+      (values from secondary summaries; the abstract states the ordering only).
+    url: https://doi.org/10.1519/JSC.0b013e31820c8587
+    accessed: 2026-11-13
+  deleva1996:
+    cite: >-
+      de Leva P. Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters. J Biomech 1996;29(9):1223-30.
+      Segment mass shares (male/female %): head 6.94/6.68, trunk 43.46/42.57, upper arm 2.71/2.55, forearm
+      1.62/1.38, hand 0.61/0.56, thigh 14.16/14.78, shank 4.33/4.81, foot 1.37/1.29.
+    url: https://doi.org/10.1016/0021-9290(95)00178-6
+    accessed: 2026-11-13
+  expert:
+    cite: >-
+      Expert estimate (ATROX P056): typical gym loads for a lifter whose anchor lift is known, cross-checked with the
+      implied-load table in docs/CEKIRDEK-HAREKETLER.md. To be replaced by app data (docs/03-ML-MODEL.md §12).
+
+exercises:
+  # ---------------------------------------------------------------- squat family (anchor: squat)
+  barbell-full-squat: {anchor: squat, ratio: 1.00, grade: A, sources: [anchor]}
+  front-barbell-squat: {anchor: squat, ratio: 0.82, grade: C, sources: [expert],
+    note: "Coaching rule of thumb 80–90% of back squat; no primary 1RM comparison found."}
+  goblet-squat: {anchor: squat, ratio: 0.28, grade: C, sources: [expert], note: "Limited by holding one implement."}
+  dumbbell-squat: {anchor: squat, ratio: 0.30, grade: C, sources: [expert], note: "Per hand; grip-limited."}
+  leg-press: {anchor: squat, ratio: 0.85, grade: C, sources: [expert],
+    note: "Per side plates; sled weight and angle vary by machine."}
+  hack-squat: {anchor: squat, ratio: 0.45, grade: C, sources: [expert], note: "Per side plates; carriage not added."}
+  smith-machine-squat: {anchor: squat, ratio: 1.00, grade: C, sources: [cotterman2005],
+    note: "Total incl. the Smith bar (7–25 kg depending on machine); capped at C as a machine."}
+  barbell-lunge: {anchor: squat, ratio: 0.55, grade: C, sources: [expert]}
+  dumbbell-lunges: {anchor: squat, ratio: 0.27, grade: C, sources: [expert], note: "Per hand."}
+  barbell-walking-lunge: {anchor: squat, ratio: 0.50, grade: C, sources: [expert]}
+  dumbbell-rear-lunge: {anchor: squat, ratio: 0.27, grade: C, sources: [expert], note: "Per hand."}
+  split-squat-with-dumbbells: {anchor: squat, ratio: 0.30, grade: C, sources: [expert], note: "Per hand."}
+  barbell-step-ups: {anchor: squat, ratio: 0.45, grade: C, sources: [expert]}
+  bodyweight-squat: {bw_fraction: 0.88, grade: B, sources: [deleva1996],
+    note: "reps_only; body minus both shanks and feet (1 − 2·(4.33+1.37)%)."}
+
+  # ---------------------------------------------------------------- hinge family (anchor: deadlift)
+  barbell-deadlift: {anchor: deadlift, ratio: 1.00, grade: A, sources: [anchor]}
+  sumo-deadlift: {anchor: deadlift, ratio: 1.00, grade: B, tau: 0.10, sources: [opl],
+    note: "OPL mixes sumo and conventional pulls in one deadlift column; stance preference adds spread."}
+  romanian-deadlift: {anchor: deadlift, ratio: 0.75, grade: C, sources: [expert]}
+  stiff-legged-barbell-deadlift: {anchor: deadlift, ratio: 0.70, grade: C, sources: [expert]}
+  stiff-legged-dumbbell-deadlift: {anchor: deadlift, ratio: 0.30, grade: C, sources: [expert], note: "Per hand."}
+  trap-bar-deadlift: {anchor: deadlift, ratio: 1.10, grade: A, sources: [swinton2011, lockie2018],
+    note: "1.08 (powerlifters) and 1.15 (trained, high handles); total incl. the bar."}
+  good-morning: {anchor: deadlift, ratio: 0.40, grade: C, sources: [expert]}
+  barbell-hip-thrust: {anchor: deadlift, ratio: 1.00, grade: C, sources: [expert]}
+  hyperextensions-back-extensions: {anchor: deadlift, ratio: 0.55, bw_fraction: 0.60, grade: C,
+    sources: [deleva1996, expert],
+    note: "bw_fraction = head + trunk + arms (≈ 60%, de Leva); ratio is an expert estimate."}
+  one-arm-kettlebell-swings: {anchor: deadlift, ratio: 0.17, grade: C, sources: [expert],
+    note: "Ballistic; loads limited by available bell sizes."}
+  rack-pulls: {anchor: deadlift, ratio: 1.15, grade: C, sources: [expert], note: "Pin at/below knee."}
+
+  # ---------------------------------------------------------------- horizontal push (anchor: bench)
+  barbell-bench-press-medium-grip: {anchor: bench, ratio: 1.00, grade: A, sources: [anchor]}
+  barbell-incline-bench-press-medium-grip: {anchor: bench, ratio: 0.76, grade: B, sources: [rodriguezridao2020],
+    note: "0.78 at 30°, 0.71 at 45°; gym benches sit between."}
+  decline-barbell-bench-press: {anchor: bench, ratio: 1.03, grade: C, sources: [expert]}
+  close-grip-barbell-bench-press: {anchor: bench, ratio: 0.92, grade: B, sources: [larsen2021],
+    note: "Narrow grip 0.95 of medium in the study; gym close grip is narrower."}
+  wide-grip-barbell-bench-press: {anchor: bench, ratio: 1.00, grade: B, sources: [larsen2021]}
+  dumbbell-bench-press: {anchor: bench, ratio: 0.415, grade: B, sources: [saeterbakken2011],
+    note: "Pair = 0.83 × barbell, per hand half of that."}
+  incline-dumbbell-press: {anchor: bench, ratio: 0.32, grade: B, sources: [saeterbakken2011, rodriguezridao2020],
+    note: "Product of the dumbbell (0.415) and incline (0.76) factors."}
+  decline-dumbbell-bench-press: {anchor: bench, ratio: 0.43, grade: C, sources: [expert], note: "Per hand."}
+  machine-bench-press: {anchor: bench, ratio: 0.90, grade: C, sources: [expert]}
+  leverage-chest-press: {anchor: bench, ratio: 0.90, grade: C, sources: [expert]}
+  cable-chest-press: {anchor: bench, ratio: 0.50, grade: C, sources: [expert]}
+  smith-machine-bench-press: {anchor: bench, ratio: 0.93, grade: C, sources: [saeterbakken2011, cotterman2005],
+    note: "0.97 and ≈0.88–0.92 in the two studies; total incl. the Smith bar; capped at C as a machine."}
+  smith-machine-incline-bench-press: {anchor: bench, ratio: 0.72, grade: C,
+    sources: [cotterman2005, rodriguezridao2020]}
+  pushups: {bw_fraction: 0.70, grade: A, sources: [suprak2011, ebben2011],
+    note: "reps_only; 0.64–0.75 of body mass across studies and positions."}
+  push-ups-with-feet-elevated: {bw_fraction: 0.72, grade: B, sources: [ebben2011], note: "reps_only."}
+
+  # ---------------------------------------------------------------- dips (anchor: bench, bodyweight_loaded)
+  dips-chest-version: {anchor: bench, ratio: 1.30, bw_fraction: 0.95, grade: C, sources: [deleva1996, expert],
+    note: "bw_fraction = body minus hands and forearms (de Leva); ratio expert."}
+  dips-triceps-version: {anchor: bench, ratio: 1.25, bw_fraction: 0.95, grade: C, sources: [deleva1996, expert]}
+  parallel-bar-dip: {anchor: bench, ratio: 1.30, bw_fraction: 0.95, grade: C, sources: [deleva1996, expert]}
+  dip-machine: {anchor: bench, ratio: 1.00, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- vertical push (anchor: bench)
+  standing-military-press: {anchor: bench, ratio: 0.65, grade: C, sources: [expert],
+    note: "Widely quoted 60–67% of bench; no same-subject primary study found."}
+  barbell-shoulder-press: {anchor: bench, ratio: 0.66, grade: C, sources: [expert], note: "Seated."}
+  seated-barbell-military-press: {anchor: bench, ratio: 0.66, grade: C, sources: [expert]}
+  push-press: {anchor: bench, ratio: 0.85, grade: C, sources: [expert]}
+  dumbbell-shoulder-press: {anchor: bench, ratio: 0.33, grade: C, sources: [saeterbakken2013, expert],
+    note: "Seated pair ≈ 1.03 × standing barbell (Saeterbakken 2013) × press/bench 0.65 (expert), per hand."}
+  arnold-dumbbell-press: {anchor: bench, ratio: 0.29, grade: C, sources: [expert], note: "Per hand."}
+  seated-dumbbell-press: {anchor: bench, ratio: 0.33, grade: C, sources: [saeterbakken2013, expert]}
+  standing-dumbbell-press: {anchor: bench, ratio: 0.30, grade: C, sources: [saeterbakken2013, expert],
+    note: "Pair ≈ 0.93 × standing barbell, per hand."}
+  dumbbell-one-arm-shoulder-press: {anchor: bench, ratio: 0.32, grade: C, sources: [expert]}
+  machine-shoulder-military-press: {anchor: bench, ratio: 0.60, grade: C, sources: [expert]}
+  leverage-shoulder-press: {anchor: bench, ratio: 0.65, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- vertical pull (anchor: bench)
+  pullups: {anchor: bench, ratio: 1.15, bw_fraction: 1.00, grade: C, sources: [expert],
+    note: "Whole body hangs from the bar; ratio expert."}
+  chin-up: {anchor: bench, ratio: 1.20, bw_fraction: 1.00, grade: C, sources: [expert]}
+  band-assisted-pull-up: {anchor: bench, ratio: 1.15, bw_fraction: 0.70, grade: C, tau: 0.50, sources: [expert],
+    note: "Band assistance is not logged; assumes a typical 30% assist."}
+  wide-grip-lat-pulldown: {anchor: bench, ratio: 0.75, grade: C, sources: [expert]}
+  close-grip-front-lat-pulldown: {anchor: bench, ratio: 0.75, grade: C, sources: [expert]}
+  underhand-cable-pulldowns: {anchor: bench, ratio: 0.78, grade: C, sources: [expert]}
+  v-bar-pulldown: {anchor: bench, ratio: 0.78, grade: C, sources: [expert]}
+  straight-arm-pulldown: {anchor: bench, ratio: 0.35, grade: C, sources: [expert]}
+  one-arm-lat-pulldown: {anchor: bench, ratio: 0.40, grade: C, sources: [expert]}
+  upright-barbell-row: {anchor: bench, ratio: 0.45, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- horizontal pull (anchor: bench)
+  bent-over-barbell-row: {anchor: bench, ratio: 0.80, grade: C, sources: [expert]}
+  reverse-grip-bent-over-rows: {anchor: bench, ratio: 0.78, grade: C, sources: [expert]}
+  one-arm-dumbbell-row: {anchor: bench, ratio: 0.40, grade: C, sources: [expert], note: "Per hand (one dumbbell)."}
+  bent-over-two-dumbbell-row: {anchor: bench, ratio: 0.32, grade: C, sources: [expert], note: "Per hand."}
+  dumbbell-incline-row: {anchor: bench, ratio: 0.33, grade: C, sources: [expert], note: "Per hand."}
+  seated-cable-rows: {anchor: bench, ratio: 0.80, grade: C, sources: [expert]}
+  t-bar-row-with-handle: {anchor: bench, ratio: 0.70, grade: C, sources: [expert], note: "Total incl. the bar."}
+  lying-t-bar-row: {anchor: bench, ratio: 0.35, grade: C, sources: [expert], note: "Per side plates."}
+  leverage-high-row: {anchor: bench, ratio: 0.80, grade: C, sources: [expert]}
+  leverage-iso-row: {anchor: bench, ratio: 0.45, grade: C, sources: [expert]}
+  inverted-row: {anchor: bench, ratio: 0.80, bw_fraction: 0.65, grade: C, sources: [suprak2011, expert],
+    note: "bw_fraction by analogy with the push-up (feet on the floor, body straight)."}
+
+  # ---------------------------------------------------------------- shoulders (anchor: bench)
+  face-pull: {anchor: bench, ratio: 0.30, grade: C, sources: [expert]}
+  side-lateral-raise: {anchor: bench, ratio: 0.14, grade: C, sources: [expert], note: "Per hand."}
+  front-two-dumbbell-raise: {anchor: bench, ratio: 0.14, grade: C, sources: [expert], note: "Per hand."}
+  seated-side-lateral-raise: {anchor: bench, ratio: 0.13, grade: C, sources: [expert], note: "Per hand."}
+  cable-seated-lateral-raise: {anchor: bench, ratio: 0.10, grade: C, sources: [expert]}
+  reverse-flyes: {anchor: bench, ratio: 0.12, grade: C, sources: [expert], note: "Per hand."}
+  reverse-machine-flyes: {anchor: bench, ratio: 0.45, grade: C, sources: [expert]}
+  cable-rear-delt-fly: {anchor: bench, ratio: 0.12, grade: C, sources: [expert]}
+  bent-over-low-pulley-side-lateral: {anchor: bench, ratio: 0.10, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- chest isolation (anchor: bench)
+  dumbbell-flyes: {anchor: bench, ratio: 0.22, grade: C, sources: [expert], note: "Per hand."}
+  incline-dumbbell-flyes: {anchor: bench, ratio: 0.20, grade: C, sources: [expert], note: "Per hand."}
+  cable-crossover: {anchor: bench, ratio: 0.25, grade: C, sources: [expert]}
+  low-cable-crossover: {anchor: bench, ratio: 0.22, grade: C, sources: [expert]}
+  butterfly: {anchor: bench, ratio: 0.70, grade: C, sources: [expert]}
+  incline-cable-flye: {anchor: bench, ratio: 0.22, grade: C, sources: [expert]}
+  bent-arm-dumbbell-pullover: {anchor: bench, ratio: 0.35, grade: C, sources: [expert],
+    note: "One dumbbell held with both hands → total."}
+
+  # ---------------------------------------------------------------- biceps (anchor: bench)
+  barbell-curl: {anchor: bench, ratio: 0.50, grade: C, sources: [expert]}
+  ez-bar-curl: {anchor: bench, ratio: 0.48, grade: C, sources: [expert]}
+  dumbbell-bicep-curl: {anchor: bench, ratio: 0.22, grade: C, sources: [expert], note: "Per hand."}
+  dumbbell-alternate-bicep-curl: {anchor: bench, ratio: 0.23, grade: C, sources: [expert], note: "Per hand."}
+  hammer-curls: {anchor: bench, ratio: 0.24, grade: C, sources: [expert], note: "Per hand."}
+  incline-dumbbell-curl: {anchor: bench, ratio: 0.19, grade: C, sources: [expert], note: "Per hand."}
+  preacher-curl: {anchor: bench, ratio: 0.42, grade: C, sources: [expert]}
+  concentration-curls: {anchor: bench, ratio: 0.20, grade: C, sources: [expert], note: "Per hand."}
+  standing-biceps-cable-curl: {anchor: bench, ratio: 0.45, grade: C, sources: [expert]}
+  high-cable-curls: {anchor: bench, ratio: 0.20, grade: C, sources: [expert]}
+  machine-bicep-curl: {anchor: bench, ratio: 0.45, grade: C, sources: [expert]}
+  cross-body-hammer-curl: {anchor: bench, ratio: 0.23, grade: C, sources: [expert], note: "Per hand."}
+  reverse-barbell-curl: {anchor: bench, ratio: 0.40, grade: C, sources: [expert]}
+  zottman-curl: {anchor: bench, ratio: 0.18, grade: C, sources: [expert], note: "Per hand."}
+  machine-preacher-curls: {anchor: bench, ratio: 0.40, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- triceps (anchor: bench)
+  triceps-pushdown: {anchor: bench, ratio: 0.50, grade: C, sources: [expert]}
+  triceps-pushdown-rope-attachment: {anchor: bench, ratio: 0.42, grade: C, sources: [expert]}
+  triceps-pushdown-v-bar-attachment: {anchor: bench, ratio: 0.52, grade: C, sources: [expert]}
+  reverse-grip-triceps-pushdown: {anchor: bench, ratio: 0.38, grade: C, sources: [expert]}
+  standing-overhead-barbell-triceps-extension: {anchor: bench, ratio: 0.40, grade: C, sources: [expert]}
+  cable-rope-overhead-triceps-extension: {anchor: bench, ratio: 0.42, grade: C, sources: [expert]}
+  standing-dumbbell-triceps-extension: {anchor: bench, ratio: 0.30, grade: C, sources: [expert],
+    note: "One dumbbell held with both hands → total."}
+  lying-dumbbell-tricep-extension: {anchor: bench, ratio: 0.15, grade: C, sources: [expert], note: "Per hand."}
+  dumbbell-one-arm-triceps-extension: {anchor: bench, ratio: 0.12, grade: C, sources: [expert], note: "Per hand."}
+  cable-one-arm-tricep-extension: {anchor: bench, ratio: 0.18, grade: C, sources: [expert]}
+  machine-triceps-extension: {anchor: bench, ratio: 0.50, grade: C, sources: [expert]}
+  tricep-dumbbell-kickback: {anchor: bench, ratio: 0.10, grade: C, sources: [expert], note: "Per hand."}
+
+  # ---------------------------------------------------------------- legs isolation (anchor: squat)
+  leg-extensions: {anchor: squat, ratio: 0.60, grade: C, sources: [expert]}
+  lying-leg-curls: {anchor: squat, ratio: 0.40, grade: C, sources: [expert]}
+  seated-leg-curl: {anchor: squat, ratio: 0.45, grade: C, sources: [expert]}
+  standing-leg-curl: {anchor: squat, ratio: 0.20, grade: C, sources: [expert], note: "One leg."}
+  glute-ham-raise: {anchor: squat, ratio: 0.60, bw_fraction: 0.88, grade: C, sources: [deleva1996, expert],
+    note: "Body above the knees (de Leva); hinge at the knee makes the ratio a rough estimate."}
+  standing-calf-raises: {anchor: squat, ratio: 1.00, grade: C, sources: [expert]}
+  seated-calf-raise: {anchor: squat, ratio: 0.55, grade: C, sources: [expert]}
+  standing-barbell-calf-raise: {anchor: squat, ratio: 0.80, grade: C, sources: [expert]}
+  calf-press-on-the-leg-press-machine: {anchor: squat, ratio: 0.70, grade: C, sources: [expert],
+    note: "Per side plates."}
+  donkey-calf-raises: {anchor: squat, ratio: 0.80, grade: C, sources: [expert]}
+  thigh-abductor: {anchor: squat, ratio: 0.55, grade: C, sources: [expert]}
+  thigh-adductor: {anchor: squat, ratio: 0.55, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- traps, forearms (anchor: deadlift / bench)
+  barbell-shrug: {anchor: deadlift, ratio: 0.85, grade: C, sources: [expert]}
+  dumbbell-shrug: {anchor: deadlift, ratio: 0.30, grade: C, sources: [expert], note: "Per hand."}
+  palms-up-barbell-wrist-curl-over-a-bench: {anchor: bench, ratio: 0.40, grade: C, sources: [expert]}
+  palms-down-wrist-curl-over-a-bench: {anchor: bench, ratio: 0.25, grade: C, sources: [expert]}
+  seated-dumbbell-palms-up-wrist-curl: {anchor: bench, ratio: 0.18, grade: C, sources: [expert], note: "Per hand."}
+
+  # ---------------------------------------------------------------- core (anchor: deadlift)
+  ab-crunch-machine: {anchor: deadlift, ratio: 0.35, grade: C, sources: [expert]}
+  cable-crunch: {anchor: deadlift, ratio: 0.40, grade: C, sources: [expert]}
+  pallof-press: {anchor: deadlift, ratio: 0.15, grade: C, sources: [expert]}
+  barbell-side-bend: {anchor: deadlift, ratio: 0.35, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- olympic lifts (anchor: squat)
+  power-clean: {anchor: squat, ratio: 0.60, grade: C, sources: [expert]}
+  hang-clean: {anchor: squat, ratio: 0.58, grade: C, sources: [expert]}
+  clean-and-jerk: {anchor: squat, ratio: 0.65, grade: C, sources: [expert]}
+  snatch: {anchor: squat, ratio: 0.50, grade: C, sources: [expert]}
+
+  # ---------------------------------------------------------------- carry (anchor: deadlift)
+  farmers-walk: {anchor: deadlift, ratio: 0.40, grade: C, sources: [expert], note: "Per hand."}

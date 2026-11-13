@@ -117,9 +117,15 @@ def validate(exercises: list[dict[str, Any]]) -> list[str]:
             if not e["translations"][loc]["name"].strip():
                 errors.append(f"{i}: empty {loc} name")
         if e["scoring_type"] in ("weighted", "bodyweight_loaded"):
+            # Strict P011 rule, restored in P056 (= the exercises_*_fields_check constraints of schema_6).
             params = [e["anchor_lift"], e["ratio"], e["tau"], e["ratio_confidence"]]
-            if any(p is not None for p in params) and any(p is None for p in params):
-                errors.append(f"{i}: scoring parameters are partially filled")
+            if e["is_core"]:
+                if any(p is None for p in params):
+                    errors.append(f"{i}: scored core exercise is missing scoring parameters")
+                if e["scoring_type"] == "bodyweight_loaded" and e["bw_fraction"] is None:
+                    errors.append(f"{i}: bodyweight_loaded needs bw_fraction")
+            elif any(p is not None for p in params):
+                errors.append(f"{i}: only core exercises carry scoring parameters")
     return errors
 
 
