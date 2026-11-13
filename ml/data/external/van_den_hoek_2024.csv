@@ -1,0 +1,13 @@
+sex,lift,age_group,percentile,ratio_bw,source,accessed,note
+M,squat,18-35,90,2.83,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,squat,18-35,90,2.26,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+M,bench,18-35,90,1.95,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,bench,18-35,90,1.35,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+M,deadlift,18-35,90,3.25,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,deadlift,18-35,90,2.66,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+M,squat,>80,90,1.72,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,squat,>80,90,1.01,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+M,bench,>80,90,1.31,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,bench,>80,90,0.92,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+M,deadlift,>80,90,2.30,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
+F,deadlift,>80,90,1.68,https://pubmed.ncbi.nlm.nih.gov/39060209/,2026-11-13,abstract RESULTS (doi:10.1016/j.jsams.2024.07.005)
