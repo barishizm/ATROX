@@ -1,0 +1,55 @@
+{
+  "schema": "gymml.progress.draft/1",
+  "_note": "Draft tunables for gymml/progress.py (P058). Merged into the shared params.json in P060. Every block carries 'provenance': 'definition' (unit/statistical constant), 'convention' (standard method default), 'source' (cited) or 'assumption' (our choice, to be learned from app data in Phase 10).",
+  "units": {
+    "provenance": "definition",
+    "days_per_month": 30.4375,
+    "_doc": "Mean Gregorian month (365.25 / 12)."
+  },
+  "trend": {
+    "provenance": "assumption",
+    "_doc": "Theil-Sen slope on ln(e1RM) over the last window_weeks_max weeks. Min-data rule: >= min_sessions sessions spanning >= min_span_weeks. ci_z is the two-sided normal quantile for ci_level (Sen 1968 rank-based slope CI, no tie correction).",
+    "window_weeks_max": 12,
+    "min_sessions": 4,
+    "min_span_weeks": 3,
+    "ci_level": 0.9,
+    "ci_z": 1.6448536269514722
+  },
+  "expected_curve": {
+    "provenance": "assumption",
+    "_doc": "Expected monthly e1RM gain g(p, y) = floor + (novice - floor) * exp(-level_decay * p/100) / (1 + y / experience_half_life_years), p = strength percentile (0-100), y = training years (omitted -> level only). Shape (diminishing returns with training status) follows ACSM Position Stand 2009 (Med Sci Sports Exerc 41(3):687-708), which reports much larger gains for untrained than for advanced/elite lifters. The NUMBERS below are NOT taken from a source: they are labelled assumptions, to be re-fit on app data in Phase 10.",
+    "novice_monthly_gain": 0.05,
+    "floor_monthly_gain": 0.003,
+    "level_decay": 3.0,
+    "experience_half_life_years": 2.0
+  },
+  "score": {
+    "provenance": "assumption",
+    "_doc": "Progress Score: piecewise-linear map of ratio r = observed / expected monthly log-gain to 0-100, clamped at both ends. Anchors read: r <= -1 (losing as fast as you should gain) -> 0, r = 0 (holding) -> 30, r = 1 (on track) -> 70, r >= 2 (twice expected) -> 100.",
+    "ratio_anchors": [-1.0, 0.0, 1.0, 2.0],
+    "score_anchors": [0.0, 30.0, 70.0, 100.0]
+  },
+  "plateau": {
+    "provenance": "assumption",
+    "_doc": "Self-starting one-sided upper CUSUM (Page 1954; self-starting form after Hawkins 1987) over the sessions of the last window_weeks (doc 03 section 9 asks for '4+ weeks'; 6 gives usable power). Each window session x is compared with the median ln(e1RM) of all earlier recent sessions (the reference_weeks before the window plus earlier window sessions), step z = (x - median) / (sigma * sqrt(1 + median_variance_factor / n_prev)) (median variance ~ (pi/2) sigma^2 / n), winsorized at clip_z so one outlier cannot clear h alone. sigma = mad_to_sigma * MAD of Theil-Sen residuals over reference+window, floored at sigma_floor. Frequency rule: >= min_sessions_per_week * window_weeks sessions in the window and >= reference_min_sessions in the reference. k = 0.5, h = 4 are the classic CUSUM defaults (Montgomery, Introduction to Statistical Quality Control). Synthetic check (3 sessions/week, 300 seeds): flat series flagged as plateau >= 92% at 1-3% session noise; FALSE plateau on a +4%/month lifter 0% / 1% / 20% at 1% / 2% / 3% noise. Re-tune on app data in Phase 10.",
+    "window_weeks": 6,
+    "reference_weeks": 2,
+    "reference_min_sessions": 3,
+    "median_variance_factor": 1.5707963267948966,
+    "min_sessions_per_week": 1.0,
+    "k": 0.5,
+    "h": 4.0,
+    "clip_z": 2.5,
+    "sigma_floor": 0.01,
+    "mad_to_sigma": 1.4826
+  },
+  "forecast": {
+    "provenance": "assumption",
+    "_doc": "ln(e1RM)(t_last + h) = level + slope_eff * D * (1 - exp(-h / D)), D = damping_days (trend fades, no linear runaway). slope_eff is the Theil-Sen slope clamped to [-max_monthly_loss, max_ratio_to_expected * expected] (as log-gains per month). Band half-width = ci_z * sqrt(sigma^2 + (se_slope * D * (1 - exp(-h / D)))^2), strictly widening with h. Horizons above max_horizon_weeks are refused.",
+    "horizons_weeks": [4, 8, 12],
+    "max_horizon_weeks": 12,
+    "damping_days": 84.0,
+    "max_ratio_to_expected": 2.0,
+    "max_monthly_loss": 0.05
+  }
+}
