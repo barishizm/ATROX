@@ -10,11 +10,8 @@ eda:         ## P048: kohort tabloları (data/processed/) + reports/eda.md
 baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
 	uv run python -m gymml.eval.baselines
 
-train-a:     ## P050
-	@echo "baselines:   ## P049: ortak değerlendirme koşumu + temel çizgiler -> reports/baselines.md
-	uv run python -m gymml.eval.baselines
-
-train-a: P050'de eklenecek"; exit 1
+train-a:     ## P050: Spline-LMS (BCCG + BCPE) -> reports/candidate_a.md
+	uv run python -m gymml.models.train_a
 
 train-b:     ## P051
 	@echo "train-b: P051'de eklenecek"; exit 1
