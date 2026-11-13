@@ -2,11 +2,6 @@
 import Foundation
 import Testing
 
-private let realCatalogURL = URL(fileURLWithPath: #filePath)
-    .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    .deletingLastPathComponent().deletingLastPathComponent()
-    .appendingPathComponent("App/Resources/Catalog/catalog.v1.json")
-
 private struct Fixture {
     let library: TemplateLibrary
     let records: [CatalogRecord]

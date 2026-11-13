@@ -10,11 +10,6 @@ private func item(
         id: id, nameEn: en, nameTr: tr, aliases: aliases, primaryMuscles: muscles, equipment: equipment, isScorable: scorable)
 }
 
-private let realCatalogURL = URL(fileURLWithPath: #filePath)
-    .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-    .deletingLastPathComponent().deletingLastPathComponent()
-    .appendingPathComponent("App/Resources/Catalog/catalog.v1.json")
-
 private let sample = [
     item("pushup", en: "Push-Up", tr: "Şınav", aliases: ["Sinav", "Press-up"], equipment: "body_only"),
     item("bench", en: "Barbell Bench Press", tr: "Barbell Bench Press", aliases: ["Bench"]),

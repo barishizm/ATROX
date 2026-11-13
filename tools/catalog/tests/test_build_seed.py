@@ -19,7 +19,7 @@ BASE = [
 ]
 TAX = [
     {"id": "bench-press", "movement_pattern": "horizontal_push", "scoring_type": "weighted", "load_convention": "total",
-     "is_unilateral": False, "is_core": True, "anchor": None, "ratio": None, "tau": None, "ratio_confidence": None,
+     "is_unilateral": False, "is_core": True, "anchor": "bench", "ratio": 1.0, "tau": 0.02, "ratio_confidence": "A",
      "bw_fraction": None},
     {"id": "plank", "movement_pattern": "core", "scoring_type": "time", "load_convention": None,
      "is_unilateral": False, "is_core": False, "anchor": None, "ratio": None, "tau": None, "ratio_confidence": None,
@@ -52,11 +52,17 @@ def test_validate_flags_unknown_vocabulary_and_partial_scoring():
     ex = merged()
     ex[0]["equipment"] = "body only"
     ex[0]["primary_muscles"] = ["lower back"]
-    ex[0]["ratio"] = 1.0  # anchor/tau/confidence still null
+    ex[0]["tau"] = None  # a scored core row must carry every parameter (strict rule, P056)
     ex[1]["translations"]["tr"]["name"] = " "
     errors = "\n".join(cb.validate(ex))
     assert "equipment='body only'" in errors and "lower back" in errors
-    assert "partially filled" in errors and "empty tr name" in errors
+    assert "missing scoring parameters" in errors and "empty tr name" in errors
+
+
+def test_validate_rejects_scoring_parameters_on_non_core_rows():
+    ex = merged()
+    ex[0]["is_core"] = False
+    assert any("only core exercises" in m for m in cb.validate(ex))
 
 
 def test_checksum_is_stable_and_order_independent_of_keys():

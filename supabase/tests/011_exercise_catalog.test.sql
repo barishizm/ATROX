@@ -1,7 +1,7 @@
 -- P011 · Catalog tables: RLS, constraints, accent-insensitive search.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(42);
+select plan(45);
 
 -- Fixtures (inserted as the superuser, i.e. like the service role).
 insert into auth.users (id, instance_id, aud, role, email)
@@ -61,9 +61,19 @@ select throws_ok($$ insert into public.exercises (id, level, category, primary_m
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles) values ('x3', 'beginner', 'strength', '{}') $$,
   '23514', null, 'exercises: primary muscles must not be empty');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, anchor_lift) values ('x4', 'beginner', 'strength', '{chest}', 'weighted', 'bench') $$,
-  '23514', null, 'exercises: weighted scoring parameters are complete-or-empty');
-select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, anchor_lift, ratio, tau, ratio_confidence)
-                    values ('x5', 'beginner', 'strength', '{chest}', 'bodyweight_loaded', 'bench', 0.5, 0.2, 'B') $$,
+  '23514', null, 'exercises: a non-core weighted row carries no anchor parameters');
+select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, load_convention, is_core)
+                    values ('x8', 'beginner', 'strength', '{chest}', 'weighted', 'total', true) $$,
+  '23514', null, 'exercises: a core weighted row needs every scoring parameter (strict rule, P056)');
+select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, load_convention, is_core,
+                                                  anchor_lift, ratio, tau, ratio_confidence)
+                    values ('x9', 'beginner', 'strength', '{chest}', 'weighted', null, true, 'bench', 0.5, 0.4, 'C') $$,
+  '23514', null, 'exercises: a core weighted row needs a load convention');
+select lives_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, load_convention)
+                   values ('x10', 'beginner', 'strength', '{chest}', 'weighted', 'per_hand') $$,
+  'exercises: a non-core weighted row without parameters is allowed (logged, not scored)');
+select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, scoring_type, anchor_lift, ratio, tau, ratio_confidence, is_core)
+                    values ('x5', 'beginner', 'strength', '{chest}', 'bodyweight_loaded', 'bench', 0.5, 0.2, 'B', true) $$,
   '23514', null, 'exercises: bodyweight_loaded requires bw_fraction');
 select throws_ok($$ insert into public.exercises (id, level, category, primary_muscles, ratio_confidence) values ('x6', 'beginner', 'strength', '{chest}', 'D') $$,
   '23514', null, 'exercises: ratio_confidence must be A/B/C');
@@ -76,7 +86,7 @@ select throws_ok($$ insert into public.exercise_translations (exercise_id, local
 
 -- Search (as anon: the catalog is public)
 set local role anon;
-select is((select count(*)::int from public.exercises), 5, 'anon can read exercises');
+select is((select count(*)::int from public.exercises), 6, 'anon can read exercises');
 select is((select count(*)::int from public.catalog_versions), 1, 'anon can read catalog_versions');
 
 select is((select exercise_id from public.search_exercises('barfiks', 'tr') limit 1), 'pull_up', 'search: Turkish name');
