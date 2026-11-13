@@ -1,0 +1,39 @@
+[project]
+name = "gymml"
+version = "0.1.0"
+description = "ATROX Güç Skoru modeli eğitim hattı"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "polars>=1.0",
+  "duckdb>=1.0",
+  "pyarrow>=16",
+  "numpy>=2.0",
+  "scipy>=1.13",
+  "torch>=2.4",
+  "lightgbm>=4.3",
+  "optuna>=3.6",
+  "coremltools>=8.0",
+  "matplotlib>=3.9",
+  "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gymml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
