@@ -16,8 +16,8 @@ train-a:     ## P050
 
 train-a: P050'de eklenecek"; exit 1
 
-train-b:     ## P051
-	@echo "train-b: P051'de eklenecek"; exit 1
+train-b:     ## P051: Aday B LightGBM çeyreklik (kısıtlı + kısıtsız) -> reports/candidate_b.md
+	uv run python -m gymml.models.train_b
 
 train-c:     ## P052
 	@echo "train-c: P052'de eklenecek"; exit 1
