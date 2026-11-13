@@ -310,7 +310,7 @@ Kullanıcı onayı gereği ±%3 ölçütü **ağırlıksız** sürümle değerle
 
 **Hiçbir aday §1'deki bütün kapıları geçmedi.** Kazanan ilan edilmedi; karar kullanıcıya bırakıldı.
 
-## 11. Yorum ve öneri (kullanıcı onayı bekliyor)
+## 11. Yorum ve karar
 
 **Kurallara göre sonuç:** Hiçbir aday §1'deki bütün kapıları geçmedi; kazanan ilan edilmedi.
 
@@ -342,3 +342,6 @@ A'ya göre yeniden kestirilir.
 **Bilinen zayıflıklar:** Yarışmacı verisindeki kilo sınıfı dişi pürüzsüz modelle temsil edilmez (salon için
 bilinçli tercih). 70+ yaş ve uç kilolarda veri seyrek (P048). Ağırlıklı model van den Hoek'in kayıt bazlı
 değerlerinin %2–8 altında kalıyor (nicelik farkı, §8).
+
+**Kullanıcı kararı (2026-11-13):** Kazanan **A · Spline-LMS**. İki sınır durumu (19 yaştaki pürüzsüzlük aşımı ve
+bench kilo testinin eşikte olması) kabul edildi. P060 bu yapılandırmayı dışa aktarır.
