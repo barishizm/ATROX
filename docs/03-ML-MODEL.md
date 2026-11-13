@@ -96,12 +96,19 @@ Kazanan, sonuçlar görülmeden önce yazılmış şu kurallarla seçilir:
 
 1. **Birincil metrik:** Test kümesinde ortalama pinball kaybı (CRPS yaklaşımı), 19 çeyrek üzerinden.
 2. **Kalibrasyon kapısı:** Her katmanda (cinsiyet × yaş bandı × kilo bandı, n ≥ 500) PIT histogramı tekdüze olmalı;
-   10–90 arası çeyreklerde gözlenen-beklenen kapsama farkı ≤ 2 yüzdelik puan.
+   10–90 arası çeyreklerde gözlenen-beklenen kapsama farkı ≤ `max(2 yüzdelik puan, katman gürültü bandı)`.
+   Gürültü bandı = 2.77 · √(0.25 / n_etkin) · 100 (9 çeyrekte Bonferroni ile katman başına %95; n_etkin Kish etkin
+   örneklemi). Kusursuz bir model de katmanların ~%5'inde bandı rastlantıyla aşacağından kapı, bandı aşan katman
+   oranı ≤ %10 ise geçilmiş sayılır. *(2026-11-13 kullanıcı onayı: n≈500 ağırlıklı katmanlarda yalnız örnekleme
+   gürültüsü 5–8 puan olduğundan düz 2 puan sınırı karşılanamıyordu; bkz. `ml/reports/baselines.md`.)*
 3. **Akıl sağlığı testleri (hepsi geçmeli):**
    - Skor, kaldırılan ağırlıkta kesin artan.
    - Aynı kaldırış için skor, vücut ağırlığı arttıkça **artmamalı** (daha ağır kişi için aynı yük daha az etkileyicidir).
-   - Beklenen medyan yaşta 20'lerin ortasında tepe yapıp sonra azalmalı; ani sıçrama olmamalı.
-   - van den Hoek 2024 tablolarındaki 90. yüzdelik değerlerine ±%3 içinde uyum.
+   - Beklenen medyan yaşla tek tepeli olmalı, tepe 20–40 yaş arasında; ani sıçrama olmamalı. *(2026-11-13 kullanıcı
+     onayı: OPL ham verisinde tepe 27–34, bench'te 32–41 yaş; "20'lerin ortası" ifadesi bu aralıkla değiştirildi.)*
+   - van den Hoek 2024 tablolarındaki 90. yüzdelik değerlerine ±%3 içinde uyum. vdH her yarışma kaydını ayrı sayar,
+     modeller sporcu başına eşit ağırlıkla eğitilir; bu yüzden P053 bu ölçütü ağırlıklandırma açık ve kapalı iki
+     sürümle raporlar ve karşılaştırmayı ağırlıksız sürüm üzerinden yapar. *(2026-11-13 kullanıcı onayı.)*
 4. **Dağıtım kısıtı:** Model < 1 MB, tek çıkarım < 1 ms.
 5. **Eşitlik durumunda** (birincil metrik farkı < %1) daha basit model kazanır (A > C > B).
 
