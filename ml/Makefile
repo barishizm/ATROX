@@ -34,5 +34,6 @@ smoke:
 lint:
 	uv run ruff check src tests
 
-test:
+test:        ## macOS'ta LightGBM testleri ayrı süreçte koşar (bkz. tests/conftest.py)
 	uv run pytest
+	@if [ "$$(uname)" = "Darwin" ]; then ATROX_LGBM_TESTS=1 uv run pytest tests/test_lgbm_quantile.py; fi
