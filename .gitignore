@@ -44,6 +44,8 @@ ml/data/raw/*
 !ml/data/raw/.gitkeep
 ml/data/interim/*
 !ml/data/interim/.gitkeep
+ml/data/processed/*
+!ml/data/processed/.gitkeep
 ml/runs/
 
 # Deno

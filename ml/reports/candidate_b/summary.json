@@ -1,0 +1,150 @@
+{
+  "metrics": [
+    {
+      "model": "lgbm_mono",
+      "lift": "squat",
+      "n_val": 80232,
+      "pinball_kg": 9.07319607559206,
+      "crps_kg": 18.14639215118412,
+      "pit_ks": 0.008712248084551392,
+      "katman": 39,
+      "katman_max_pp": 8.129712079185424,
+      "2pp_üstü_katman": 24,
+      "bant_dışı_katman": 1,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    },
+    {
+      "model": "lgbm_mono",
+      "lift": "bench",
+      "n_val": 105766,
+      "pinball_kg": 6.013052143188986,
+      "crps_kg": 12.026104286377972,
+      "pit_ks": 0.007589999422284874,
+      "katman": 55,
+      "katman_max_pp": 10.33915620006165,
+      "2pp_üstü_katman": 42,
+      "bant_dışı_katman": 4,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    },
+    {
+      "model": "lgbm_mono",
+      "lift": "deadlift",
+      "n_val": 89988,
+      "pinball_kg": 9.016230102826214,
+      "crps_kg": 18.032460205652427,
+      "pit_ks": 0.009310014394739899,
+      "katman": 45,
+      "katman_max_pp": 8.670599979678496,
+      "2pp_üstü_katman": 32,
+      "bant_dışı_katman": 3,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "squat",
+      "n_val": 80232,
+      "pinball_kg": 9.019270697515362,
+      "crps_kg": 18.038541395030723,
+      "pit_ks": 0.009239163687252284,
+      "katman": 39,
+      "katman_max_pp": 5.544512275021285,
+      "2pp_üstü_katman": 27,
+      "bant_dışı_katman": 0,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "bench",
+      "n_val": 105766,
+      "pinball_kg": 5.991128326349969,
+      "crps_kg": 11.982256652699938,
+      "pit_ks": 0.008061358327784318,
+      "katman": 55,
+      "katman_max_pp": 9.686539634317182,
+      "2pp_üstü_katman": 36,
+      "bant_dışı_katman": 4,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "deadlift",
+      "n_val": 89988,
+      "pinball_kg": 8.96715850630131,
+      "crps_kg": 17.93431701260262,
+      "pit_ks": 0.009982549862980014,
+      "katman": 45,
+      "katman_max_pp": 8.394111678096483,
+      "2pp_üstü_katman": 29,
+      "bant_dışı_katman": 2,
+      "kalibrasyon_kapısı": "✅",
+      "akıl_sağlığı": "2/5"
+    }
+  ],
+  "deployment": [
+    {
+      "model": "lgbm_mono",
+      "lift": "squat",
+      "kesişme_eğitim_%": 2.1252474164652657,
+      "kesişme_doğrulama_%": 2.177435437232027,
+      "boyut_MB": 13.817831,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.7036683399928734,
+      "çıkarım<1ms": "✅"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "squat",
+      "kesişme_eğitim_%": 1.3986032640300474,
+      "kesişme_doğrulama_%": 1.4121547512214578,
+      "boyut_MB": 13.710842,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.6707599999936065,
+      "çıkarım<1ms": "✅"
+    },
+    {
+      "model": "lgbm_mono",
+      "lift": "bench",
+      "kesişme_eğitim_%": 2.322935163119735,
+      "kesişme_doğrulama_%": 2.296579240965906,
+      "boyut_MB": 13.840101,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.6464508199860575,
+      "çıkarım<1ms": "✅"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "bench",
+      "kesişme_eğitim_%": 1.4535301609026912,
+      "kesişme_doğrulama_%": 1.4938638125673656,
+      "boyut_MB": 13.713704,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.6637266599864233,
+      "çıkarım<1ms": "✅"
+    },
+    {
+      "model": "lgbm_mono",
+      "lift": "deadlift",
+      "kesişme_eğitim_%": 1.7314158126644632,
+      "kesişme_doğrulama_%": 1.7446770680535184,
+      "boyut_MB": 13.83798,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.6666000000041095,
+      "çıkarım<1ms": "✅"
+    },
+    {
+      "model": "lgbm_free",
+      "lift": "deadlift",
+      "kesişme_eğitim_%": 1.379058339482782,
+      "kesişme_doğrulama_%": 1.5868782504333914,
+      "boyut_MB": 13.715492,
+      "boyut<1MB": "❌",
+      "tek_çıkarım_ms": 0.6541808399924776,
+      "çıkarım<1ms": "✅"
+    }
+  ]
+}
