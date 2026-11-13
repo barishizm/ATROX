@@ -36,7 +36,7 @@ final class OnboardingViewModel {
         profiles: any ProfileRepository,
         measurements: any MeasurementRepository,
         consents: ConsentService,
-        engine: any ScoreEngine = PlaceholderScoreEngine(),
+        engine: any ScoreEngine = ModelScoreEngine(),
         health: any HealthService = UnavailableHealthService(),
         workouts: any WorkoutRepository,
         deviceLocale: Locale = .current,

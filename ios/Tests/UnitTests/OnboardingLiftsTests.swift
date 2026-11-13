@@ -73,7 +73,7 @@ struct OnboardingLiftsTests {
         #expect(env.model.step == .result)
         let result = try #require(env.model.results.first)
         #expect(env.model.results.count == 1 && result.lift == .benchPress)
-        #expect(abs(result.score - 50) < 1e-9)  // 1.0 x bodyweight against the placeholder's 2.0
+        #expect(result.score > 1 && result.score < 99)  // real model (P062): a 1RM of bodyweight is mid-range
         let stored = try await env.workouts.workouts(userId: env.userId, from: .distantPast, to: .distantFuture)
         let workout = try #require(stored.first)
         #expect(stored.count == 1 && workout.source == .onboarding && !workout.isActive)
