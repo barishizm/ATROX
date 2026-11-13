@@ -40,7 +40,10 @@ __pycache__/
 dist/
 
 # ML verisi ve çalıştırma çıktıları
-ml/data/raw/
+ml/data/raw/*
+!ml/data/raw/.gitkeep
+ml/data/interim/*
+!ml/data/interim/.gitkeep
 ml/runs/
 
 # Deno
