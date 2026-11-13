@@ -49,6 +49,10 @@ Saklama yerleri:
   (`trustedPublicKeyBase64`) ve `ml/src/gymml/export/keys.py` (`PUBLIC_KEY_B64`) içine yazılır.
 - `.pem` dosyasını PM'e dosya eki olarak yedekle; depoya, CI'ya veya Edge Function secret'larına koyma.
 - `make export` paketi imzalar; doğrulama: `uv run python -m gymml.export.keys verify <paket klasörü>`.
+- Yayın (P063): `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… uv run python -m gymml.export.publish dist/model-bundle-vX.Y.Z
+  [--rollout 10] [--activate]` (service role anahtarı PM'den, yalnızca o komutun ortamında). Satır varsayılan olarak
+  `is_active=false` eklenir; etkinleştirme/kademeli dağıtım/geri alma `model_versions.is_active` ve `rollout_percent`
+  ile yapılır.
 - Anahtar değişirse eski uygulama sürümleri yeni paketleri reddeder (gömülü pakete düşer); anahtarı yalnızca
   sızıntıda değiştir ve yeni açık anahtarla uygulama sürümü çıkar.
 

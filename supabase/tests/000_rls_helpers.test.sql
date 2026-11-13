@@ -25,7 +25,7 @@ $$;
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).
 create or replace function tests.catalog_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['exercises', 'exercise_translations', 'catalog_versions']
+  select array['exercises', 'exercise_translations', 'catalog_versions', 'model_versions']
 $$;
 
 -- Two fake users, created as the superuser. Returns the ids as a convenience.

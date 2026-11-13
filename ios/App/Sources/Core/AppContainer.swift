@@ -32,6 +32,8 @@ final class AppContainer {
     let catalog: CatalogService?
     /// Public Storage bucket with the exercise images (P027); nil without Supabase.
     let exerciseImageBaseURL: URL?
+    /// Keeps the score model bundle current (P063); nil without Supabase (the embedded bundle is used).
+    let modelUpdater: ModelUpdater?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).
@@ -57,9 +59,11 @@ final class AppContainer {
         health: any HealthService = UnavailableHealthService(),
         catalog: CatalogService? = nil,
         exerciseImageBaseURL: URL? = nil,
-        sync: SyncCoordinator? = nil
+        sync: SyncCoordinator? = nil,
+        modelUpdater: ModelUpdater? = nil
     ) {
         self.sync = sync
+        self.modelUpdater = modelUpdater
         self.exerciseImageBaseURL = exerciseImageBaseURL
         self.health = health
         self.catalog = catalog
@@ -149,6 +153,31 @@ final class AppContainer {
         root.didSignIn(onboardingComplete: false)
     }
     #endif
+
+    /// Launch / foreground: checks for a newer model bundle at most once a day (P063). Score recomputation and the
+    /// one-time explanation of the change come with score orchestration (P064, `ModelUpdater.pendingChange()`).
+    func checkModelUpdate() async {
+        guard let modelUpdater else { return }
+        let outcome = await modelUpdater.checkIfDue()
+        if case let .failed(reason) = outcome { Log.app.error("Model update failed: \(reason, privacy: .public)") }
+    }
+
+    private static func makeModelUpdater(config: SupabaseConfiguration, info: [String: Any]) -> ModelUpdater? {
+        guard let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        let defaults = UserDefaults.standard
+        let deviceKey = "ModelRolloutDeviceID"
+        let deviceId = defaults.string(forKey: deviceKey) ?? {
+            let id = UUID().uuidString
+            defaults.set(id, forKey: deviceKey)
+            return id
+        }()
+        return ModelUpdater(
+            source: SupabaseModelVersionSource(configuration: config),
+            directory: support.appendingPathComponent("ModelBundles", isDirectory: true),
+            appVersion: info["CFBundleShortVersionString"] as? String ?? "1.0.0",
+            deviceId: deviceId
+        )
+    }
 
     /// Builds the onboarding model for the signed-in user; nil when there is no user or no local store.
     func makeOnboardingModel() async -> OnboardingViewModel? {
@@ -459,7 +488,8 @@ final class AppContainer {
             health: HealthKitService(),
             catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) },
             exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images"),
-            sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) }
+            sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) },
+            modelUpdater: makeModelUpdater(config: config, info: info)
         )
     }
 

@@ -117,6 +117,12 @@ public struct SemanticVersion: Comparable, Sendable, CustomStringConvertible {
         self.parts = parts.compactMap(\.self)
     }
 
+    private init(parts: [Int]) {
+        self.parts = parts
+    }
+
+    public static let zero = SemanticVersion(parts: [0, 0, 0])
+
     public var description: String { parts.map(String.init).joined(separator: ".") }
 
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.parts.lexicographicallyPrecedes(rhs.parts) }

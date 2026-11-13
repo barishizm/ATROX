@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting line_length optional_data_string_conversion
 import Foundation
 @testable import StrengthKit
 import Testing

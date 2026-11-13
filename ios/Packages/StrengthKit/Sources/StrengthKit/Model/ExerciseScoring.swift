@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// 1–99 score of one exercise with its ±1 band (docs/03-ML-MODEL.md §4–§6), from `gymml.scoring.exercise_score`.

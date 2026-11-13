@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Imbalance analysis (docs/03-ML-MODEL.md §10), a 1:1 port of `gymml.imbalance`. Findings carry no text; the app
@@ -146,6 +147,13 @@ public struct ImbalanceAnalyzer: Sendable {
         return x
     }
 
+    private struct Candidate {
+        let absR: Double
+        let target: Int
+        let mean: Double
+        let sd: Double
+    }
+
     func residualFindings(_ scores: [ScoreInput]) throws(StrengthModelError) -> [Finding] {
         var byKey: [String: ScoreInput] = [:]
         for score in scores {
@@ -158,14 +166,14 @@ public struct ImbalanceAnalyzer: Sendable {
         var active = variables.indices.filter { byKey[variables[$0]] != nil }
         var findings: [Finding] = []
         while active.count >= params.minVariables {
-            var best: (absR: Double, target: Int, mean: Double, sd: Double)?
+            var best: Candidate?
             for target in active {
                 let given = active.filter { $0 != target }
                 let zGiven = given.compactMap { byKey[variables[$0]]?.z }
                 guard let moments = conditionalMoments(target: target, given: given, zGiven: zGiven), moments.sd > 0,
                       let observed = byKey[variables[target]]?.z else { continue }
                 let resid = (observed - moments.mean) / moments.sd
-                if best == nil || abs(resid) > best?.absR ?? 0 { best = (abs(resid), target, moments.mean, moments.sd) }
+                if best == nil || abs(resid) > best?.absR ?? 0 { best = Candidate(absR: abs(resid), target: target, mean: moments.mean, sd: moments.sd) }
             }
             guard let best, let sev = severity(best.absR, params.severitySd),
                   let target = byKey[variables[best.target]] else { break }

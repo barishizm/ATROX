@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Progress analytics (docs/03-ML-MODEL.md §9), a 1:1 port of `gymml.progress`. Input: one (day, e1RM kg) per

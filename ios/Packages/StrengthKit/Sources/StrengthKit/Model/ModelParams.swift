@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Errors of the scoring model. Invalid input never crashes; it surfaces as one of these.

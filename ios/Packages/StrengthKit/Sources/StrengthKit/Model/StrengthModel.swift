@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// The person being scored. `sex == nil` scores a 50/50 mixture (docs/03-ML-MODEL.md §4.5).

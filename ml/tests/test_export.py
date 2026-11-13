@@ -108,3 +108,32 @@ def test_golden_vectors_reproduce_from_committed_bundle(tmp_path):
     smoke = _read("smoke.json")
     e2e = json.loads((golden.GOLDEN_DIR / "end_to_end.json").read_text())
     assert smoke["cases"] == e2e["cases"][: bundle.SMOKE_CASES]
+
+
+def test_publish_uploads_every_file_then_inserts_inactive_row():
+    from gymml.export import publish
+
+    calls = []
+
+    def transport(method, url, headers, body):
+        calls.append((method, url, headers, body))
+        return 200
+
+    row = publish.publish(EMBEDDED, "https://example.supabase.co/", "service-key", rollout=10, transport=transport)
+    uploads = [c[1].rsplit("/", 1)[1] for c in calls[:-1]]
+    assert uploads == ["manifest.json", "manifest.sig", "anchor_tables.json", "params.json", "smoke.json", "taxonomy.json"]
+    assert all("/storage/v1/object/model-bundles/v1.0.0/" in c[1] for c in calls[:-1])
+    assert calls[-1][1] == "https://example.supabase.co/rest/v1/model_versions"
+    assert json.loads(calls[-1][3]) == row
+    assert row["is_active"] is False and row["rollout_percent"] == 10
+    assert row["manifest_sha256"] == keys.sha256(EMBEDDED / "manifest.json")
+
+
+def test_publish_refuses_tampered_bundle(tmp_path):
+    from gymml.export import publish
+
+    copy = tmp_path / "b"
+    shutil.copytree(EMBEDDED, copy)
+    (copy / "taxonomy.json").write_text("{}")
+    with pytest.raises(ValueError):
+        publish.publish(copy, "https://x", "k", transport=lambda *a: 200)

@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Competitor distribution of an anchor lift given sex, age and bodyweight (docs/03-ML-MODEL.md §4, §11).

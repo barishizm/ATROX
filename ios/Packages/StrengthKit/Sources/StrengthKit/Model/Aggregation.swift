@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Muscle-group or overall score (docs/03-ML-MODEL.md §8), from `gymml.scoring.GroupScore`.

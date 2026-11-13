@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// An estimated one-rep max together with how much to trust it (docs/03-ML-MODEL.md §2, "güven ağırlığı").

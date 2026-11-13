@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name nesting
 import Foundation
 
 /// Double-precision special functions used by the score model (pure Swift, Linux-safe).
