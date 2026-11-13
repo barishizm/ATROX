@@ -1,5 +1,6 @@
 import DataKit
 import Foundation
+import StrengthKit
 import SwiftData
 import Testing
 
@@ -170,7 +171,7 @@ import Testing
         #expect(model.progress.sessionCount == 3)
         #expect(model.chartPoints.count == 3)
         #expect(model.chartPoints.map(\.date) == model.chartPoints.map(\.date).sorted())
-        let firstKg = 100 * (1 + 5.0 / 30)
+        let firstKg = try #require(E1RMModel.standard.estimate(weightKg: 100, reps: 5)?.valueKg)
         #expect(abs(model.chartPoints[0].value - firstKg * 2.2046226) < 0.01)
         #expect(model.heaviestText == "88 lb × 5" || model.heaviestText?.hasSuffix("lb × 5") == true)
         #expect(model.recordText(.weight) != nil)
