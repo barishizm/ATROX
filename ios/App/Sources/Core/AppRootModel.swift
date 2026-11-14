@@ -1,3 +1,4 @@
+import DataKit
 import Foundation
 import Observation
 
@@ -49,6 +50,7 @@ final class AppRootModel {
             return Log.app.info("Ignored didCompleteOnboarding in state \(state)", privacy: .public)
         }
         state = .ready
+        AppAnalytics.shared.send(.onboardingCompleted)
         completionTask = Task { [service] in await service.markOnboardingComplete() }
     }
 

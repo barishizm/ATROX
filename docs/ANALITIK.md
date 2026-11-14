@@ -1,6 +1,8 @@
 # ATROX — Analitik ve gözlemlenebilirlik (P100)
 
-Durum: **olay sözlüğü onay bekliyor.** Onaylanmadan hiçbir ekrana olay çağrısı eklenmedi; altyapı hazır.
+Durum: **sözlük onaylandı; olay çağrıları ekranlara bağlandı.**
+
+Bağlama notları: `shareCompleted` paylaşım sayfası bitişini değil dokunuşu sayar (`ShareLink` tamamlanma geri çağrısı vermez). `signUpCompleted` kurulum başına bir kez ilk başarılı girişte gider; Apple/Google'da kayıt ile girişi ayırt edemediğimiz için dönen kullanıcının yeni kurulumdaki girişi de sayılır. `firstScoreViewed` skor ekranı ilk yüklendiğinde gider.
 
 ## İlkeler
 

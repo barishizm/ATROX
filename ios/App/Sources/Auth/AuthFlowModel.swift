@@ -51,11 +51,17 @@ final class AuthFlowModel {
     // MARK: Native providers
 
     func signInWithApple() async {
-        await perform(.apple) { onSignedIn(try await service.signInWithApple()) }
+        await perform(.apple) { signedUp(try await service.signInWithApple(), .apple) }
     }
 
     func signInWithGoogle() async {
-        await perform(.google) { onSignedIn(try await service.signInWithGoogle()) }
+        await perform(.google) { signedUp(try await service.signInWithGoogle(), .google) }
+    }
+
+    /// The funnel milestone fires once per install, so a returning user's first sign-in on a new install counts too.
+    private func signedUp(_ user: AuthUser, _ method: AnalyticsEvent.SignInMethod) {
+        AppAnalytics.shared.send(.signUpCompleted(method: method))
+        onSignedIn(user)
     }
 
     // MARK: E-mail
@@ -64,7 +70,7 @@ final class AuthFlowModel {
         let email = AuthValidation.normalizedEmail(email)
         await perform(.email) {
             switch try await service.signUp(email: email, password: password, locale: localeCode()) {
-            case .signedIn(let user): onSignedIn(user)
+            case .signedIn(let user): signedUp(user, .email)
             case .confirmationRequired(let address): path.append(.verify(email: address))
             }
         }
