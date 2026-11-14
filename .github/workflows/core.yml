@@ -11,6 +11,7 @@ on:
       - "supabase/tests/**"
       - "supabase/config.toml"
       - ".github/workflows/core.yml"
+      - "tools/scan-secrets.sh"
   pull_request:
     paths:
       - "ios/Packages/StrengthKit/**"
@@ -30,6 +31,15 @@ permissions:
   contents: read
 
 jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Scan tracked files for credentials
+        run: tools/scan-secrets.sh
+
   strengthkit:
     name: StrengthKit (Linux)
     runs-on: ubuntu-latest

@@ -6,6 +6,20 @@ import Testing
 
 @testable import ATROX
 
+@Suite struct MarkdownInlineTests {
+    @Test func linksAndImagesAreNeverActive() {
+        let value = MarkdownInline.attributed("See [my plan](https://evil.example/phish) and ![x](https://evil.example/p.png) or [go](atrox://start/1/2)")
+        #expect(value.runs.allSatisfy { $0.link == nil && $0.imageURL == nil })
+        #expect(String(value.characters).contains("my plan"))
+    }
+
+    @Test func emphasisStillWorks() {
+        let value = MarkdownInline.attributed("**heavy** day")
+        #expect(String(value.characters) == "heavy day")
+        #expect(value.runs.contains { $0.inlinePresentationIntent?.contains(.stronglyEmphasized) == true })
+    }
+}
+
 @Suite struct MarkdownBlocksTests {
     @Test func parsesParagraphsListsHeadingsAndCode() {
         let blocks = MarkdownBlocks.parse("""
