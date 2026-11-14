@@ -12,12 +12,12 @@ where n.nspname = 'public' and c.relkind in ('r', 'p');
 
 select is(
   (select string_agg(name, ', ' order by name) from _pub_tables
-    where name <> all (tests.owner_tables() || tests.catalog_tables())),
+    where name <> all (tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables())),
   null,
   'every public table is registered in tests.owner_tables() or tests.catalog_tables() (add RLS tests for new tables)');
 
 select is(
-  (select string_agg(t, ', ' order by t) from unnest(tests.owner_tables() || tests.catalog_tables()) t
+  (select string_agg(t, ', ' order by t) from unnest(tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables()) t
     where t not in (select name from _pub_tables)),
   null,
   'registry lists no table that does not exist');
@@ -37,7 +37,7 @@ select is(
 select is(
   (select string_agg(p.name || '.' || pol.polname, ', ' order by p.name, pol.polname)
      from _pub_tables p join pg_policy pol on pol.polrelid = p.oid
-    where p.name = any (tests.owner_tables())
+    where p.name = any (tests.owner_tables() || tests.owner_readonly_tables())
       and (coalesce(pg_get_expr(pol.polqual, pol.polrelid), '') || coalesce(pg_get_expr(pol.polwithcheck, pol.polrelid), ''))
           not like '%auth.uid()%'),
   null,
@@ -46,7 +46,7 @@ select is(
 select is(
   (select string_agg(p.name || '.' || pol.polname, ', ' order by p.name, pol.polname)
      from _pub_tables p join pg_policy pol on pol.polrelid = p.oid
-    where p.name = any (tests.owner_tables())
+    where p.name = any (tests.owner_tables() || tests.owner_readonly_tables())
       and (pol.polroles = '{0}' or pol.polroles @> array[(select oid from pg_roles where rolname = 'anon')])),
   null,
   'no owner-table policy applies to public/anon');
