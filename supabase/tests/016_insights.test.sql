@@ -1,6 +1,6 @@
 -- P069 · insights: constraints, owner-only access, no hard delete.
 begin;
-select plan(9);
+select plan(10);
 
 select tests.create_two_users();
 select has_table('public', 'insights', 'insights exists');
@@ -31,8 +31,10 @@ select throws_ok($$ delete from public.insights where id = '76000000-0000-0000-0
 
 select tests.authenticate_as(tests.user_b());
 select is((select count(*)::int from public.insights), 0, 'another user sees nothing');
-select is((with u as (update public.insights set is_active = false returning 1) select count(*)::int from u), 0,
-  'another user updates nothing');
+select lives_ok($$ update public.insights set is_active = false $$, 'another user update matches no rows');
+select tests.authenticate_as(tests.user_a());
+select is((select is_active from public.insights where id = '76000000-0000-0000-0000-000000000001'), true,
+  'the owner row is untouched');
 
 select * from finish();
 rollback;
