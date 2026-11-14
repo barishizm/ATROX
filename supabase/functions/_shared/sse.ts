@@ -4,11 +4,12 @@ export type CoachEvent =
   | { type: "text_delta"; text: string }
   | { type: "tool_activity"; name: string; status: "started" | "finished" }
   | { type: "proposal"; proposal: Record<string, unknown> }
+  | { type: "quota"; remaining: number; daily_messages: number; reset_at: string; tier: "free" | "pro" }
   | { type: "usage"; prompt_tokens: number; cached_tokens: number; completion_tokens: number }
   | { type: "error"; code: string; message: string }
   | { type: "done"; thread_id: string };
 
-export const EVENT_TYPES = ["text_delta", "tool_activity", "proposal", "usage", "error", "done"] as const;
+export const EVENT_TYPES = ["text_delta", "tool_activity", "proposal", "quota", "usage", "error", "done"] as const;
 
 export function encodeEvent(event: CoachEvent): string {
   const { type, ...data } = event;

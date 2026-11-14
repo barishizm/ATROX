@@ -14,6 +14,10 @@ export const USER_TABLES = [
   "workout_exercises",
   "sets",
   "personal_records",
+  "coach_threads",
+  "coach_messages",
+  "coach_memory",
+  "coach_usage",
 ] as const;
 
 export type UserTable = (typeof USER_TABLES)[number];

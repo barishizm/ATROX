@@ -293,8 +293,10 @@ export const proposeGoalUpdate = defineTool({
 export const saveMemory = defineTool({
   name: "save_memory",
   description:
-    "Remember a lasting fact the user told you (injury, preference, equipment). Short, one fact. Not for secrets " +
-    "or anything sensitive beyond training. The user sees and can delete it.",
+    "Remember a lasting fact the user told you (injury, preference, equipment). Short, one fact. Save health-related " +
+    "facts (injuries, conditions) only when the user stated them explicitly in this chat; never infer them. Not for " +
+    "secrets or anything sensitive beyond training. A repeated or refined fact is merged into the existing note. " +
+    "The user sees, edits and can delete it.",
   parameters: {
     type: "object",
     properties: { note: { type: "string", description: "≤ 300 characters." } },
@@ -311,8 +313,13 @@ export const saveMemory = defineTool({
       }
       throw new Error(error.message);
     }
-    const saved = data as { id: string; note: string };
-    const value: Proposal = { id: context.newId(), kind: "memory_saved", data: { memory_id: saved.id, note: saved.note }, warnings: [] };
+    const saved = data as { id: string; note: string; merged?: boolean };
+    const value: Proposal = {
+      id: context.newId(),
+      kind: "memory_saved",
+      data: { memory_id: saved.id, note: saved.note, merged: saved.merged === true },
+      warnings: [],
+    };
     return { ok: true, proposal: value, data: { saved: true } };
   },
 });

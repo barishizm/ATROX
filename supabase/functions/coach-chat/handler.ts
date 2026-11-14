@@ -14,6 +14,7 @@ import { costUsd } from "../_shared/llm/pricing.ts";
 import { type LLMProvider, type ProviderError } from "../_shared/llm/types.ts";
 import { coachChatRequest, looksLikeSpam, sameMessage } from "../_shared/schema.ts";
 import { type CoachEvent, sseResponse } from "../_shared/sse.ts";
+import { summarizeOverflow, type OverflowMessage } from "./summarize.ts";
 import { type AgentOutcome, type CallRecord, emptyOutcome, runAgent } from "./agent.ts";
 import { buildMessages, buildUserSummary, HISTORY_LIMIT, type HistoryMessage, type UserContext } from "./context.ts";
 import { PROPOSAL_TOOLS } from "./tools/propose.ts";
@@ -127,14 +128,26 @@ export function createCoachChatHandler(deps: CoachChatDeps) {
 
       const threadId = input.thread_id ?? newId();
       let history: HistoryMessage[] = [];
+      let conversationSummary: string | null = null;
+      let overflow: OverflowMessage[] = [];
+      let decisions: { kind: string; decision: string }[] = [];
       if (input.thread_id) {
-        const thread = await rpc<{ messages: HistoryMessage[]; last_user_message: string | null; last_turn_complete: boolean }>(
+        const thread = await rpc<{
+          messages: HistoryMessage[];
+          summary?: string | null;
+          overflow?: OverflowMessage[];
+          last_user_message: string | null;
+          last_turn_complete: boolean;
+        }>(
           db, "coach_thread_history", { p_thread_id: input.thread_id, p_limit: HISTORY_LIMIT },
         );
         if (thread.last_turn_complete && thread.last_user_message && sameMessage(thread.last_user_message, input.message)) {
           return errorResponse("duplicate_message", "This message was just answered.");
         }
+        decisions = (await rpc<{ kind: string; decision: string }[] | null>(db, "coach_recent_decisions", { p_thread_id: input.thread_id })) ?? [];
         history = thread.messages;
+        conversationSummary = thread.summary ?? null;
+        overflow = thread.overflow ?? [];
       }
 
       const quota = await deps.service.consumeQuota(userId, input.time_zone ?? "UTC");
@@ -151,10 +164,16 @@ export function createCoachChatHandler(deps: CoachChatDeps) {
       const context = await rpc<UserContext>(db, "coach_user_context", { p_locale: input.locale });
       const messages = buildMessages({
         userSummary: buildUserSummary(context ?? {}, today(), input.locale),
+        conversationSummary,
+        pendingOverflow: overflow,
+        decisions,
         history,
         message: input.message,
       });
-      return sseResponse(streamTurn({ deps, db, userId, threadId, input, messages, quota, context, newId }), CORS_HEADERS);
+      return sseResponse(
+        streamTurn({ deps, db, userId, threadId, input, messages, quota, context, newId, summary: conversationSummary, overflow }),
+        CORS_HEADERS,
+      );
     } catch (error) {
       console.error("coach-chat failed before streaming", error instanceof Error ? error.message : error);
       return errorResponse("internal", "Something went wrong.");
@@ -172,6 +191,8 @@ async function* streamTurn(turn: {
   quota: QuotaDecision;
   context: UserContext | null;
   newId: () => string;
+  summary: string | null;
+  overflow: OverflowMessage[];
 }): AsyncGenerator<CoachEvent> {
   const { deps, db, threadId, input, quota, newId } = turn;
   const calls: CallRecord[] = [];
@@ -189,6 +210,7 @@ async function* streamTurn(turn: {
   );
 
   try {
+    yield { type: "quota", remaining: quota.remaining, daily_messages: quota.limits.daily_messages, reset_at: quota.reset_at, tier: quota.tier };
     yield* runAgent(turn.messages, {
       provider,
       tools: COACH_TOOLS,
@@ -217,17 +239,46 @@ async function* streamTurn(turn: {
     await persist(turn, outcome, calls).catch((error) =>
       console.error("coach-chat could not store the turn", error instanceof Error ? error.message : error)
     );
+    if (outcome.status === "complete" && outcome.stopped !== "error") await rollSummary(turn, provider);
+  }
+}
+
+/** Folds the overflow into the thread summary (best effort; on failure the old messages are just trimmed). */
+async function rollSummary(
+  turn: { deps: CoachChatDeps; db: CoachDb; userId: string; threadId: string; summary: string | null; overflow: OverflowMessage[] },
+  provider: LLMProvider,
+): Promise<void> {
+  const result = await summarizeOverflow(provider, turn.summary, turn.overflow);
+  if (!result) return;
+  try {
+    const { error } = await turn.db.rpc("coach_set_summary", { p_thread_id: turn.threadId, p_summary: result.summary, p_through: result.through });
+    if (error) throw new Error(error.message);
+    await turn.deps.service.recordUsage([{
+      user_id: turn.userId,
+      thread_id: turn.threadId,
+      provider: provider.name,
+      model: provider.model,
+      prompt_tokens: result.usage.prompt_tokens,
+      cached_tokens: result.usage.cached_tokens,
+      completion_tokens: result.usage.completion_tokens,
+      cost_usd: costUsd(result.usage, provider.name, provider.model, turn.deps.settings.prices),
+      latency_ms: Math.max(0, Math.round(result.latencyMs)),
+      agent_steps: 0,
+      status: "ok",
+    }]);
+  } catch (error) {
+    console.error("coach-chat could not store the summary", error instanceof Error ? error.message : error);
   }
 }
 
 async function persist(
-  turn: { deps: CoachChatDeps; db: CoachDb; userId: string; threadId: string; input: { message: string }; newId: () => string },
+  turn: { deps: CoachChatDeps; db: CoachDb; userId: string; threadId: string; input: { message: string; client_message_id?: string }; newId: () => string },
   outcome: AgentOutcome,
   calls: CallRecord[],
 ): Promise<void> {
   const { deps, db, userId, threadId, input, newId } = turn;
   const rows = [
-    { id: newId(), role: "user", content: input.message, status: "complete" },
+    { id: input.client_message_id ?? newId(), role: "user", content: input.message, status: "complete" },
     ...outcome.messages.map((message) => ({ id: newId(), ...message, status: message.status ?? "complete" })),
   ];
   const saved = db.rpc("coach_save_turn", { p_thread_id: threadId, p_title: input.message.slice(0, 60), p_messages: rows })
