@@ -9,6 +9,8 @@ struct ATROXApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        DiagnosticsCollector.shared.start()
+        AppAnalytics.shared.appLaunched()
         BackgroundSync.shared.register()
         WeeklySummaryBackground.shared.register()
         UNUserNotificationCenter.current().delegate = NotificationRouter.shared

@@ -37,6 +37,9 @@ SLASH = /
 LEGAL_TERMS_URL = https:/$(SLASH)example.com/terms
 LEGAL_PRIVACY_URL = https:/$(SLASH)example.com/privacy
 
+// ---- Analytics (P100): TelemetryDeck app ID, set per configuration. Empty keeps analytics off. ----
+TELEMETRYDECK_APP_ID =
+
 // ---- Secrets (gitignored). Optional so a fresh clone still builds. ----
 #include? "Secrets.xcconfig"
 
