@@ -18,31 +18,56 @@ iOS (CoachKit) ──HTTPS + SSE──► Edge Function `coach-chat`
                                    6. Metni ve olayları SSE ile akıt
                                    7. Mesajı, token ve maliyeti kaydet
                                         │
-                     ┌──────────────────┴──────────────────┐
-              OpenRouter (birincil)                 DeepSeek resmi API (yedek)
-        deepseek/deepseek-v4.1-flash                    deepseek-flash
+                                DeepSeek resmi API
+                                  deepseek-flash
 ```
 
 API anahtarları yalnızca Edge Function ortamındadır. Uygulama LLM sağlayıcısıyla hiçbir zaman doğrudan konuşmaz.
 
 ## 3. Sağlayıcı katmanı
 
-İki sağlayıcı da OpenAI uyumlu sohbet arayüzü sunar; tek bir `LLMProvider` arabirimi ikisini de sarar.
+Koç yalnızca resmi DeepSeek API'yi kullanır (OpenRouter kullanılmaz — kullanıcı kararı 2026-11-14,
+`docs/00-KARARLAR.md` #9). API OpenAI uyumludur; `LLMProvider` arabirimi sağlayıcıdan bağımsız kalır.
 
-- **OpenRouter yönlendirmesi:** Sağlayıcı **izin listesi** (araç çağırmayı düzgün destekleyen, nicemlemesi bilinen
-  2–3 sağlayıcı), fiyat sırasına göre; veri saklamayan sağlayıcı tercihi. İzin listesi değerlendirme setiyle (§9)
-  belirlenir: en ucuz sağlayıcı araç çağrısında hata yapıyorsa listeye girmez.
-- **Yedekleme:** OpenRouter 5xx/zaman aşımı/kota hatasında aynı istek resmi DeepSeek API'ye gider.
-- **Düşünme modu:** Sıradan sohbet için kapalı (hız ve maliyet), program oluşturma gibi çok adımlı işlerde açık.
-  Parametre adları sağlayıcıya göre değişir; P073'te güncel belgelerden doğrulanır.
+- **Yeniden deneme:** 408/429/5xx/zaman aşımı/ağ hatasında, akış başlamadan önce aynı API'ye bir kez daha
+  gidilir. Akış başladıktan sonra yeniden başlatılmaz; anahtar eksikse denenmez.
+- **Düşünme modu:** Sıradan sohbet için kapalı (hız ve maliyet), program oluşturma gibi çok adımlı işlerde açık
+  (yalnızca Pro). `thinking: {type: "enabled" | "disabled"}` her istekte açıkça gönderilir.
 - **Maliyet kaydı:** Her istekte sağlayıcı, girdi/önbellek/çıktı token'ları, hesaplanan maliyet ve gecikme
-  `coach_usage` tablosuna yazılır. İki hafta sonra "OpenRouter mı, önbellekli resmi API mi ucuz?" sorusu veriyle yanıtlanır.
+  `coach_usage` tablosuna yazılır; kotalar bu veriyle ayarlanır.
 
 ### Kaba maliyet tahmini (ölçülmemiştir)
 
-Varsayım: kullanıcı turu başına ~2 LLM çağrısı, çağrı başına ~3.000 girdi + ~400 çıktı token'ı,
-fiyat $0.112 / $0.336 (1M token). Tur başına ≈ $0.001. Günde 5 mesaj atan ücretsiz kullanıcı ≈ ayda $0.15.
+Varsayım: kullanıcı turu başına ~2 LLM çağrısı, çağrı başına ~3.000 girdi (~2.500'ü önbellekten) + ~400 çıktı
+token'ı, resmi API yoğun saat fiyatı. Çağrı başına ≈ $0.00065, tur başına ≈ $0.0013 (sakin saatte yarısı). Günde 5
+mesaj atan ücretsiz kullanıcı ≈ ayda $0.20.
 Gerçek rakam `coach_usage` tablosundan okunacak; kotalar ona göre ayarlanacak.
+
+### Doğrulanmış API notları (2026-11-14, P073)
+
+Kaynaklar: api-docs.deepseek.com (create-chat-completion, pricing). Değerler bu tarihte okundu; değişirse burayı
+güncelle.
+
+**DeepSeek resmi API — `deepseek-flash`**
+- Uç nokta `POST https://api.deepseek.com/chat/completions` (OpenAI biçimi). Model kimlikleri `deepseek-flash`,
+  `deepseek-v4-pro`.
+- Düşünme modu: `thinking: { type: "enabled" | "disabled" }`; verilmezse `reasoning_effort` (`none|low|high|max`,
+  varsayılan `high`) belirler — **ikisi de verilmezse düşünme açıktır**, bu yüzden her istekte açıkça gönderiyoruz.
+  `max_tokens` varsayılanı düşünmesiz 8K, düşünmeli 64K; biz her zaman tavan veriyoruz.
+- `stream_options: { include_usage: true }` yalnızca `stream: true` ile geçerli (aksi 400); son parçada tam kullanım.
+- Kullanım: `prompt_tokens = prompt_cache_hit_tokens + prompt_cache_miss_tokens`,
+  `prompt_tokens_details.cached_tokens` (= isabet), `completion_tokens`, `completion_tokens_details.reasoning_tokens`.
+- Araç çağırma OpenAI biçimi: `delta.tool_calls[]` parçaları `index` ile birleştirilir; ilk parçada `id`, `type` ve
+  `function.name`, sonrakilerde `function.arguments` ekleri. Belge, modelin geçersiz JSON üretebileceğini söylüyor →
+  argümanlar her zaman Zod ile doğrulanır.
+- Fiyat (1M token): girdi önbellek isabeti $0.003 (sakin saat) / $0.006 (yoğun), önbellek ıskası $0.15 / $0.30,
+  çıktı $0.60 / $1.20. Yoğun saatler hafta içi 01–04 ve 06–10 UTC. Maliyet kaydı yoğun saat fiyatını kullanır (üst sınır).
+- Eşzamanlılık sınırı 2500; 429/5xx davranışı ayrıntılı belgelenmemiş → 408/429/5xx ve ağ hatası bir kez yeniden denenir.
+
+**Doğrulanmayan / açık:** (1) DeepSeek düşünme modunda araç çağrılı çok turlu konuşmada `reasoning_content`'in
+geri gönderilmesi gerekip gerekmediği bu sayfalarda yazmıyor; düşünme yalnızca Pro + program işlerinde açık, P082
+değerlendirmesinde kontrol edilecek. (2) Gerçek anahtarla akış alma (kabul ölçütü) kullanıcı tarafından
+`docs/KURULUM.md` → "AI Koç anahtarları" adımıyla doğrulanacak.
 
 ## 4. Bağlam kurulumu
 
@@ -143,8 +168,7 @@ değişikliğinde tüm set yeniden koşar ve sonuç `evals/results/` altına yaz
 ## 10. Uygulama tarafı
 
 - **Onay ekranı (App Store 5.1.2(i)):** Koç ilk açıldığında, hiçbir istek atılmadan önce: hangi verinin (profil
-  özeti, skorlar, antrenman geçmişi, yazdığın mesajlar) hangi şirketlere (OpenRouter ve onun yönlendirdiği model
-  sağlayıcıları, DeepSeek) gittiği ve ne amaçla kullanıldığı. "Kabul ediyorum" / "Şimdi değil". Onay sürümlüdür ve
+  özeti, skorlar, antrenman geçmişi, yazdığın mesajlar) hangi şirkete (DeepSeek) gittiği ve ne amaçla kullanıldığı. "Kabul ediyorum" / "Şimdi değil". Onay sürümlüdür ve
   `consents` tablosuna yazılır; sağlayıcı listesi değişirse yeniden istenir.
 - **Sohbet arayüzü:** Akan metin, Markdown, araç etkinliği göstergesi ("Antrenman geçmişine bakıyorum…"), önerilen
   sorular, onay kartları, hata/yeniden dene, kota göstergesi.

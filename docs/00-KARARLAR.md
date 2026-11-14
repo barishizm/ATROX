@@ -27,7 +27,7 @@ Son güncelleme: 2026-11-11. Bu dosya projenin "anayasası"dır; buradaki bir ka
 | 6 | Skor referansı | Varsayılan: düzenli salon kullanıcıları. Seçilebilir: genel nüfus, yarışmacı sporcular |
 | 7 | Skor seviyeleri | Hareket + kas grubu + genel skor + gelişim hızı + dengesizlik |
 | 8 | Çıkarım | Cihaz üstünde; model paketi buluttan güncellenir |
-| 9 | LLM | DeepSeek V4.1 Flash; birincil OpenRouter (ucuz sağlayıcı), yedek resmi DeepSeek API |
+| 9 | LLM | DeepSeek V4.1 Flash, yalnızca resmi DeepSeek API (`deepseek-flash`). OpenRouter kullanılmaz (kullanıcı kararı, 2026-11-14) |
 | 10 | Koç yetkisi | Ajan: veriyi okur, değişiklik **önerir**, kullanıcı onayıyla uygulanır |
 | 11 | Görseller | free-exercise-db fotoğrafları + kendi kas haritamız |
 | 12 | Diller | Türkçe + İngilizce |
@@ -78,11 +78,10 @@ yol olduğu için katılım oranı yüksek kalır. Hukuki metinler yayın önces
   1M bağlam, araç çağırma, JSON çıktısı, görsel girdi; düşünme modu varsayılan açık.
 - Resmi fiyat (1M token): girdi $0.30 (yoğun) / $0.15 (sakin), önbellek isabeti $0.006 / $0.003, çıktı $1.20 / $0.60.
   Yoğun saat: hafta içi 01:00–04:00 ve 06:00–10:00 UTC.
-- OpenRouter kimliği `deepseek/deepseek-v4.1-flash`. Sağlayıcı fiyatları çok değişken (ör. DeepInfra $0.112 / $0.336).
-  AB bölge içi yönlendirme şu an yok. Ucuz sağlayıcılarda nicemleme ve araç çağırma kalitesi farklı olabilir →
-  **sağlayıcı izin listesi** kullanılacak ve koç değerlendirme seti (P082) ile doğrulanacak.
-- Uzun ve sabit sistem istemi kullandığımız için resmi API'nin önbellek indirimi toplam maliyette OpenRouter'daki
-  ucuz sağlayıcıyı geçebilir. Proxy her isteğin maliyetini kaydeder; karar veriyle verilir (P073).
+- **2026-11-14 kararı:** OpenRouter kullanılmaz; koç yalnızca resmi DeepSeek API'yi kullanır (tek anahtar
+  `DEEPSEEK_API_KEY`). Gerekçe: uzun ve sabit sistem istemiyle resmi API'nin önbellek indirimi; tek sağlayıcı = tek
+  veri işleyen şirket (onay metni sade). Yedek sağlayıcı yok; ilk olaydan önceki 408/429/5xx/zaman aşımında aynı
+  API'ye bir kez yeniden denenir. Proxy her isteğin maliyetini kaydeder (P073).
 
 ### 5.2 ML verisi
 
@@ -137,7 +136,6 @@ herkese açık küresel sıralama · Android · Core AI'a geçiş · antrenör�
 ## 8. Kaynaklar
 
 - DeepSeek fiyat/model sayfası: https://api-docs.deepseek.com/quick_start/pricing
-- OpenRouter model sayfası: https://openrouter.ai/deepseek/deepseek-v4.1-flash
 - OpenPowerlifting CSV belgeleri: https://openpowerlifting.gitlab.io/opl-csv/bulk-csv-docs.html
 - van den Hoek ve ark. 2024: https://pubmed.ncbi.nlm.nih.gov/39060209/
 - El kavrama gücü ve allometri (Nevill, Tomkinson): https://acsm.org/handgrip-strength-normalized-body-size/

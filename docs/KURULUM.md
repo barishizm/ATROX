@@ -27,9 +27,8 @@ Saklama yerleri:
 | Supabase (prod) | Veritabanı parolası | **Evet** | PM |
 | Supabase (her ikisi) | Kişisel erişim jetonu (CLI/MCP) | **Evet** | PM; `supabase login` ile macOS anahtar zincirine yazılır |
 | Supabase (her ikisi) | Model paketi Ed25519 **özel** anahtarı | **Evet** | Yerelde `~/.config/atrox/model-signing-ed25519.pem` (izin 600; başka yol için `ATROX_MODEL_SIGNING_KEY`) + PM'de çevrimdışı yedek. **Açık** anahtar Depo'da (`ModelBundle.trustedPublicKeyBase64`, `ml/src/gymml/export/keys.py`); bkz. "Model paketi imzası (P060)" |
-| OpenRouter | API anahtarı | **Evet** | EF (`OPENROUTER_API_KEY`, staging ve prod ayrı) + PM |
-| OpenRouter | Aylık harcama limiti | Hayır | OpenRouter panelinde anahtar başına ayarlanır; değeri PM notuna yaz |
-| DeepSeek platformu | Yedek API anahtarı | **Evet** | EF (`DEEPSEEK_API_KEY`) + PM |
+| DeepSeek platformu | API anahtarı (koçun tek LLM sağlayıcısı) | **Evet** | EF (`DEEPSEEK_API_KEY`, staging ve prod ayrı) + PM |
+| DeepSeek platformu | Bakiye / harcama uyarısı | Hayır | DeepSeek panelinde; eşiği PM notuna yaz |
 | Apple Developer Program | Sign in with Apple token iptali (P045 `delete-account`): Team ID, Key ID, Services ID / bundle id, `.p8` | **Evet** (`.p8`) | EF (`APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_CLIENT_ID`, `APPLE_PRIVATE_KEY`; PEM, satır sonları `\n` olabilir). Yoksa iptal atlanır |
 | Google Cloud | iOS OAuth istemci kimliği (Client ID) | Hayır | xcconfig / Info.plist (`GIDClientID`) |
 | Google Cloud | Reversed Client ID (URL scheme) | Hayır | Info.plist (`project.yml` üzerinden) |
@@ -55,6 +54,37 @@ Saklama yerleri:
   ile yapılır.
 - Anahtar değişirse eski uygulama sürümleri yeni paketleri reddeder (gömülü pakete düşer); anahtarı yalnızca
   sızıntıda değiştir ve yeni açık anahtarla uygulama sürümü çıkar.
+
+## AI Koç anahtarları ve ayarları (P073, P077)
+
+Gizli değerler yalnızca Edge Function secret'ıdır (staging ve prod ayrı anahtar):
+
+```bash
+supabase secrets set DEEPSEEK_API_KEY=…   # PM'den (OpenRouter kullanılmaz)
+```
+
+Gizli olmayan ayarlar (hepsinin varsayılanı var; yalnızca değiştirmek istediğinde `supabase secrets set` ile ver):
+
+| Değişken | Varsayılan | Anlamı |
+|---|---|---|
+| `COACH_DEEPSEEK_MODEL` | `deepseek-flash` | Resmi DeepSeek API model kimliği |
+| `COACH_LLM_TIMEOUT_MS` | `20000` | API'nin yanıt başlıklarını gönderme süresi; aşılırsa bir kez yeniden denenir |
+| `COACH_MAX_OUTPUT_TOKENS` | `1500` | Tek LLM çağrısında azami çıktı token'ı |
+| `COACH_PRICES` | kod içi tablo | JSON, `{"sağlayıcı:model": {"input":…, "cached_input":…, "output":…}}` (USD / 1M token) |
+| `COACH_AI_CONSENT_VERSION` | `2026-11` | Geçerli `ai_sharing` onay sürümü; sağlayıcı değişince artırılır (uygulama yeniden onay ister) |
+| `COACH_DAILY_SPEND_CAP_USD` | `25` | Küresel devre kesici: UTC günü içindeki toplam `coach_usage.cost_usd` bu tutarı aşarsa koç kibarca kapanır |
+| `COACH_TURN_TIMEOUT_MS` | `60000` | Bir kullanıcı turunun (tüm ajan adımları) toplam süresi |
+
+Katman başına sınırlar (günlük mesaj, dakikalık istek, ajan adımı, tur başına çıktı token'ı, düşünme modu)
+`public.coach_limits` tablosundadır; göçle tohumlanır, servis rolüyle güncellenir:
+
+```sql
+update public.coach_limits set daily_messages = 8 where tier = 'free';
+```
+
+Doğrulama: `supabase functions serve coach-chat` ve geçerli bir kullanıcı JWT'siyle
+`curl -N -H "Authorization: Bearer $JWT" -d '{"message":"Merhaba","locale":"tr"}' http://localhost:54321/functions/v1/coach-chat`
+→ `text_delta … usage … done` olayları. Anahtar yoksa ya da API iki denemede de hata verirse akış `error` olayıyla biter.
 
 ## Supabase kurulumu (P009)
 

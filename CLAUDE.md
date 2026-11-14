@@ -33,8 +33,8 @@ göre yüzdelik dilim) üretir; DeepSeek V4.1 Flash tabanlı **AI Spor Koçu** k
 - **Giriş:** Sign in with Apple + Google + e-posta.
 - **ML:** Python (`ml/`) ile eğitim → Core ML + `params.json` model paketi → cihazda çıkarım (`StrengthKit`).
   Model paketi Supabase Storage'dan imzalı (Ed25519) olarak güncellenir.
-- **AI Koç:** Supabase Edge Function proxy → OpenRouter `deepseek/deepseek-v4.1-flash` (birincil),
-  resmi DeepSeek API `deepseek-flash` (yedek). API anahtarı asla uygulamaya girmez.
+- **AI Koç:** Supabase Edge Function proxy → yalnızca resmi DeepSeek API `deepseek-flash` (OpenRouter kullanılmaz,
+  2026-11-14). API anahtarı asla uygulamaya girmez.
 - **Gelir:** Freemium, StoreKit 2 aboneliği. **Diller:** Türkçe + İngilizce (String Catalog).
 - **Tasarım:** Koyu, atletik, veri odaklı; tek vurgu rengi; Liquid Glass ile uyumlu.
 
