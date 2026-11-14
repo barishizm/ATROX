@@ -70,7 +70,9 @@ final class LibraryModel {
     func load() async {
         loadState = .loading
         do {
-            try fetchItems()
+            // Reading ~800 rows and folding their names stays off the main thread (P098).
+            let fetched = try await Self.fetchItemsOffMain(container: modelContainer, userId: userId, catalogOnly: catalogOnly)
+            apply(fetched)
             if catalogOnly {
                 filter.scorableOnly = true
             } else if hasEquipmentSuggestion {
@@ -84,8 +86,23 @@ final class LibraryModel {
         }
     }
 
+    private func apply(_ fetched: [ExerciseListItem]) {
+        items = fetched
+        byID = Dictionary(fetched.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    }
+
     private func fetchItems() throws {
-        let context = ModelContext(modelContainer)
+        apply(try Self.fetchItems(container: modelContainer, userId: userId, catalogOnly: catalogOnly))
+    }
+
+    nonisolated private static func fetchItemsOffMain(
+        container: ModelContainer, userId: UUID?, catalogOnly: Bool
+    ) async throws -> [ExerciseListItem] {
+        try fetchItems(container: container, userId: userId, catalogOnly: catalogOnly)
+    }
+
+    nonisolated static func fetchItems(container: ModelContainer, userId: UUID?, catalogOnly: Bool) throws -> [ExerciseListItem] {
+        let context = ModelContext(container)
         var descriptor = FetchDescriptor<Exercise>(predicate: #Predicate { !$0.isArchived })
         descriptor.sortBy = [SortDescriptor(\.id)]
         var fetched = try context.fetch(descriptor).map(ExerciseListItem.init)
@@ -93,8 +110,7 @@ final class LibraryModel {
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
             fetched += try context.fetch(own).map(ExerciseListItem.init)
         }
-        items = fetched
-        byID = Dictionary(fetched.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        return fetched
     }
 
     /// Re-reads the exercises after a custom exercise was created, edited or deleted; keeps query and filters.
