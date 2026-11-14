@@ -90,6 +90,7 @@ final class PurchaseService {
         switch result {
         case .success:
             hasPendingPurchase = false
+            await submitToServer()
             await refresh()
         case .pending: hasPendingPurchase = true
         case .cancelled: break
@@ -102,8 +103,16 @@ final class PurchaseService {
     func restore() async throws -> Bool {
         guard accountToken != nil else { throw Failure.notSignedIn }
         try await store.sync()
+        await submitToServer()
         await refresh()
         return isPro
+    }
+
+    /// Best effort: the server learns the purchase now (`verify-purchase`); Apple's notification would follow anyway.
+    private func submitToServer() async {
+        for jws in await store.signedTransactions() {
+            try? await server.verify(signedTransaction: jws)
+        }
     }
 
     func showManageSubscriptions() async throws { try await store.showManageSubscriptions() }
@@ -159,4 +168,5 @@ final class FakeStoreClient: StoreClient, @unchecked Sendable {
 
     func sync() async throws { if let error = lock.withLock({ _syncError }) { throw error } }
     func showManageSubscriptions() async throws {}
+    func signedTransactions() async -> [String] { lock.withLock { _records.map { "fake-jws.\($0.productID)" } } }
 }

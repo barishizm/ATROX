@@ -6,7 +6,13 @@ import Testing
 /// Server stand-in whose answer the test controls.
 fileprivate final class StubServer: EntitlementServerSource, @unchecked Sendable {
     var result: Result<ProEntitlement?, Error> = .success(nil)
+    var verified: [String] = []
+    var verifyError: Error?
     func fetch() async throws -> ProEntitlement? { try result.get() }
+    func verify(signedTransaction: String) async throws {
+        verified.append(signedTransaction)
+        if let verifyError { throw verifyError }
+    }
 }
 
 fileprivate final class MemoryCache: EntitlementCache, @unchecked Sendable {
@@ -20,11 +26,13 @@ fileprivate final class MemoryCache: EntitlementCache, @unchecked Sendable {
 struct PurchaseServiceTests {
     let user = UUID()
 
+    // swiftlint:disable large_tuple
     fileprivate func make(
         store: FakeStoreClient = FakeStoreClient(), server: StubServer = StubServer(), cache: MemoryCache = MemoryCache()
     ) -> (PurchaseService, FakeStoreClient, StubServer, MemoryCache) {
         (PurchaseService(store: store, server: server, entitlements: Entitlements(cache: cache)), store, server, cache)
     }
+    // swiftlint:enable large_tuple
 
     @Test func startLoadsProductsYearlyFirst() async {
         let (service, _, _, _) = make()
@@ -40,6 +48,21 @@ struct PurchaseServiceTests {
         #expect(result == .success)
         #expect(service.isPro)
         #expect(store.purchasedTokens == [AppAccountToken.make(for: user)])
+    }
+
+    @Test func successfulPurchaseIsSentToTheServer() async throws {
+        let (service, _, server, _) = make()
+        await service.start(userId: user)
+        try await service.purchase(service.products[0])
+        #expect(server.verified == ["fake-jws.\(ProProduct.yearly)"])
+    }
+
+    @Test func serverVerificationFailureDoesNotBlockThePurchase() async throws {
+        let (service, _, server, _) = make()
+        server.verifyError = URLError(.notConnectedToInternet)
+        await service.start(userId: user)
+        #expect(try await service.purchase(service.products[0]) == .success)
+        #expect(service.isPro)
     }
 
     @Test func pendingAndCancelledPurchasesDoNotGrantAccess() async throws {

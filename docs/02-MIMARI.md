@@ -88,7 +88,7 @@ Bu bölüm bilinçli olarak basit tutuldu: tek kullanıcı kendi verisini düzen
 `profiles` · `user_settings` · `consents` (tür, sürüm, verildi/geri alındı, zaman) · `body_measurements` ·
 `custom_exercises` · `routines` · `routine_days` · `routine_exercises` · `workouts` · `workout_exercises` · `sets` ·
 `personal_records` · `score_snapshots` · `insights` · `coach_threads` · `coach_messages` · `coach_memory` · `coach_usage` ·
-`entitlements` (yalnızca servis rolü yazar)
+`entitlements` (yalnızca servis rolü yazar; işlem+ortam başına bir satır, Pro kuralı `entitlement_tier()`)
 
 **Herkese açık okuma**
 
@@ -111,7 +111,7 @@ Senkronize edilen her tabloda `(user_id, updated_at)` indeksi bulunur.
 | Fonksiyon | Görev |
 |---|---|
 | `coach-chat` | Kimlik doğrula → kota/yetki → bağlam kur → LLM ajan döngüsü → SSE akışı → kullanım kaydı |
-| `appstore-notifications` | App Store Server Notifications V2 imzasını doğrula → `entitlements` güncelle |
+| `appstore-notifications` | App Store Server Notifications V2 imzasını Apple kök zinciriyle doğrula → `entitlements` güncelle (bildirim UUID'siyle idempotent; JWT'siz, `verify_jwt = false`) |
 | `verify-purchase` | İstemciden gelen imzalı işlemi doğrula (ilk satın almada anında yetki) |
 | `delete-account` | Kullanıcının tüm verisini ve Auth kaydını sil; Apple token'ını iptal et |
 | `export-data` | Kullanıcının verisini JSON olarak üret |
