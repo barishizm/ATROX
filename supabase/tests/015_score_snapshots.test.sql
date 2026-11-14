@@ -1,6 +1,6 @@
 -- P064 · score_snapshots: constraints, owner-only access, no hard delete.
 begin;
-select plan(12);
+select plan(11);
 
 select tests.create_two_users();
 select has_table('public', 'score_snapshots', 'score_snapshots exists');
