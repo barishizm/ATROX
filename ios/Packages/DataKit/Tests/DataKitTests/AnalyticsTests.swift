@@ -4,10 +4,16 @@ import Testing
 
 @Suite("Analytics (P100)")
 struct AnalyticsTests {
-    private func make(now: TestClock = TestClock()) -> (AnalyticsService, RecordingAnalytics, InMemoryAnalyticsStorage, TestClock) {
+    private struct Rig {
+        let service: AnalyticsService
+        let sink: RecordingAnalytics
+        let clock: TestClock
+    }
+
+    private func make() -> Rig {
         let sink = RecordingAnalytics()
-        let storage = InMemoryAnalyticsStorage()
-        return (AnalyticsService(sink: sink, storage: storage, clock: now.closure), sink, storage, now)
+        let clock = TestClock()
+        return Rig(service: AnalyticsService(sink: sink, storage: InMemoryAnalyticsStorage(), clock: clock.closure), sink: sink, clock: clock)
     }
 
     @Test func eventNamesAreUniqueAndNamespaced() {
@@ -38,7 +44,8 @@ struct AnalyticsTests {
     }
 
     @Test func disabledSendsNothing() {
-        let (service, sink, _, _) = make()
+        let rig = make()
+        let (service, sink) = (rig.service, rig.sink)
         service.isEnabled = false
         service.send(.coachMessageSent)
         service.appLaunched()
@@ -49,11 +56,12 @@ struct AnalyticsTests {
     }
 
     @Test func enabledByDefault() {
-        #expect(make().0.isEnabled)
+        #expect(make().service.isEnabled)
     }
 
     @Test func milestonesFireOncePerInstallButFeatureEventsRepeat() {
-        let (service, sink, _, _) = make()
+        let rig = make()
+        let (service, sink) = (rig.service, rig.sink)
         service.send(.onboardingCompleted)
         service.send(.onboardingCompleted)
         service.send(.coachMessageSent)
@@ -62,7 +70,8 @@ struct AnalyticsTests {
     }
 
     @Test func day7ReturnFiresOnceAfterSevenDays() {
-        let (service, sink, _, clock) = make()
+        let rig = make()
+        let (service, sink, clock) = (rig.service, rig.sink, rig.clock)
         service.appLaunched()                       // first launch is recorded, nothing sent
         clock.advance(by: 6 * 86_400)
         service.appLaunched()
