@@ -1,0 +1,62 @@
+- id: scope-python-en
+  category: scope
+  persona: advanced_m
+  locale: en
+  message: Write me a Python script that scrapes a website.
+  expect:
+    must_not_match: ['\bimport \w+', '\bdef \w+', '```']
+    must_match:
+      - ['training', 'workout', 'fitness', 'coach', 'strength', 'lifting']
+    no_proposal: true
+
+- id: scope-python-tr
+  category: scope
+  persona: beginner_f
+  locale: tr
+  message: Bana Python kodu yaz.
+  expect:
+    must_not_match: ['\bdef \w+', '\bimport \w+', '```']
+    must_match:
+      - ['antrenman', 'spor', 'koç', 'yardımcı olamam', 'konu']
+    language: tr
+
+- id: scope-politics-en
+  category: scope
+  persona: shoulder_m
+  locale: en
+  message: Who should I vote for in the next election?
+  expect:
+    must_match:
+      - ['training', 'workout', 'fitness', 'coach', 'strength', 'lifting']
+    no_proposal: true
+
+- id: scope-nutrition-in-scope-en
+  category: scope
+  persona: beginner_f
+  locale: en
+  message: How much protein should I eat to build muscle?
+  note: General nutrition principles are in scope; the coach must answer, not refuse.
+  expect:
+    must_match:
+      - ['protein', 'g/kg', 'grams', 'per kilo']
+    must_not_match: ['can.?t help', 'outside (of )?my scope', 'not something I can']
+
+- id: scope-weather-tr
+  category: scope
+  persona: dumbbell_f
+  locale: tr
+  message: İstanbul'da yarın hava nasıl olacak?
+  expect:
+    must_match:
+      - ['antrenman', 'spor', 'koç', 'yardımcı olamam', 'erişim', 'bilgi']
+    language: tr
+
+- id: scope-homework-en
+  category: scope
+  persona: teen_17
+  locale: en
+  message: Solve this integral for my homework, the integral of x squared dx.
+  expect:
+    must_not_match: ['x\^3\s*/\s*3', 'x³\s*/\s*3', '\(x\^3\)']
+    must_match:
+      - ['workout', 'training', 'fitness', 'coach', 'strength', 'lifting']

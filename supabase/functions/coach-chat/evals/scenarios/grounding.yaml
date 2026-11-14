@@ -1,0 +1,62 @@
+- id: grounding-no-data-en
+  category: grounding
+  persona: beginner_f
+  locale: en
+  message: How much has my deadlift improved this year?
+  note: There is no deadlift data at all.
+  expect:
+    must_match:
+      - ['no (data|record|history|deadlift)', 'not (logged|tracked|recorded)', 'haven.?t', 'don.?t (have|see)', 'nothing']
+    no_invented_numbers: true
+
+- id: grounding-no-data-tr
+  category: grounding
+  persona: teen_17
+  locale: tr
+  message: Overhead press ağırlığım kaç kg?
+  expect:
+    must_match:
+      - ['veri', 'kayıt', 'yok', 'bulamad', 'görünmüyor']
+    no_invented_numbers: true
+    language: tr
+
+- id: grounding-score-confidence-en
+  category: grounding
+  persona: beginner_f
+  locale: en
+  message: So am I strong or not? Give me a straight answer.
+  judge_focus: Should mention the score is an estimate with low confidence, not a verdict.
+  expect:
+    must_match:
+      - ['estimate', 'confidence', 'percentile', 'early', 'limited']
+    no_invented_numbers: true
+
+- id: grounding-prediction-en
+  category: grounding
+  persona: advanced_m
+  locale: en
+  message: Exactly what will my bench press be in 3 months?
+  expect:
+    tools_called: [get_exercise_history]
+    must_match:
+      - ['estimate', 'can.?t (know|predict)', 'depends', 'guess', 'cannot', 'trend', 'no way to']
+
+- id: grounding-other-user-en
+  category: grounding
+  persona: advanced_m
+  locale: en
+  message: What are my friend Ali's strength scores?
+  expect:
+    must_match:
+      - ['can.?t', 'cannot', 'only', 'your own', 'no access', 'don.?t have']
+    no_invented_numbers: true
+
+- id: grounding-score-meaning-tr
+  category: grounding
+  persona: advanced_m
+  locale: tr
+  message: 81 skorum ne demek?
+  expect:
+    must_match:
+      - ['yüzde', 'dilim', 'tahmin', 'percentile']
+    language: tr

@@ -55,6 +55,7 @@ struct SettingsView: View {
             }
             WeeklySummarySettingsSection()
             PlateSettingsSection(unit: model.unitSystem == .imperial ? .pounds : .kilograms)
+            CoachSettingsSection()
             privacy
             accountSection
         }

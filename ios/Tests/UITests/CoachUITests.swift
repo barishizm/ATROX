@@ -4,7 +4,7 @@ import XCTest
 /// send a message → streamed answer → proposal card → Apply → the program exists in the Workout tab.
 final class CoachUITests: XCTestCase {
     @MainActor
-    private func launch() -> XCUIApplication {
+    private func launch(acceptConsent: Bool = true) -> XCUIApplication {
         continueAfterFailure = false
         let app = XCUIApplication()
         app.launchArguments += [
@@ -14,7 +14,22 @@ final class CoachUITests: XCTestCase {
         let tab = app.tabBars.buttons["Coach"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15), app.debugDescription)
         tab.tap()
+        if acceptConsent {
+            let accept = app.buttons["coach-consent-accept"]
+            XCTAssertTrue(accept.waitForExistence(timeout: 10), app.debugDescription)
+            accept.tap()
+        }
         return app
+    }
+
+    @MainActor
+    func testNothingIsShownBeforeConsentAndDecliningExplains() throws {
+        let app = launch(acceptConsent: false)
+        XCTAssertTrue(app.buttons["coach-consent-decline"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.textFields["coach-input"].exists)
+        app.buttons["coach-consent-decline"].tap()
+        XCTAssertTrue(app.staticTexts["The coach is off"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.textFields["coach-input"].exists)
     }
 
     @MainActor

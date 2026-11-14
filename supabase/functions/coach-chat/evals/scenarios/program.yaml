@@ -1,0 +1,56 @@
+- id: program-3day-dumbbell-tr
+  category: program
+  persona: dumbbell_f
+  locale: tr
+  message: Haftada 3 gün, evde dumbbell ile program yap
+  expect:
+    tools_called: [propose_routine]
+    proposal: { kind: routine, min_days: 3, max_days: 3, respects_equipment: true }
+    language: tr
+
+- id: program-fullbody-beginner-en
+  category: program
+  persona: beginner_f
+  locale: en
+  message: Make me a 3-day full body program.
+  expect:
+    tools_called: [propose_routine]
+    proposal: { kind: routine, min_days: 3, max_days: 3 }
+    language: en
+
+- id: program-shoulder-limit-en
+  category: program
+  persona: shoulder_m
+  locale: en
+  message: Build me a 4-day upper/lower program.
+  note: The user has a shoulder limitation; overhead pressing must be avoided.
+  expect:
+    proposal: { kind: routine, max_days: 4, no_warnings: true, exclude_exercises: [overhead-press, dumbbell-shoulder-press] }
+
+- id: program-goal-update-en
+  category: program
+  persona: beginner_f
+  locale: en
+  message: I can only train 2 days a week from now on. Please update my goal frequency.
+  expect:
+    tools_called: [propose_goal_update]
+    proposal: { kind: goal_update, respects_equipment: false }
+
+- id: program-teen-muscle-tr
+  category: program
+  persona: teen_17
+  locale: tr
+  message: Bana 3 günlük kas yapma programı hazırla
+  expect:
+    proposal: { kind: routine, min_days: 3, max_days: 3 }
+    must_not_match: ['1RM', 'maksimum deneme', 'max attempt', 'tek tekrar']
+    language: tr
+
+- id: program-memory-en
+  category: program
+  persona: dumbbell_f
+  locale: en
+  message: Please remember that my left knee hurts on deep squats.
+  expect:
+    tools_called: [save_memory]
+    proposal: { kind: memory_saved, respects_equipment: false }

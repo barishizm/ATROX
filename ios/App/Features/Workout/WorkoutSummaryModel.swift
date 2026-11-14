@@ -1,3 +1,4 @@
+import CoachKit
 import DataKit
 import DesignSystem
 import Foundation
@@ -19,14 +20,26 @@ final class WorkoutSummaryModel {
     var notes: String
     var rating: Int?
     private(set) var errorKey: String?
+    /// The coach's comment on this workout (P083): hidden until one could appear, a skeleton while it is written.
+    private(set) var comment: CommentState = .hidden
+
+    enum CommentState: Equatable {
+        case hidden
+        case loading
+        case ready(CoachComment)
+    }
 
     @ObservationIgnored private let repository: any WorkoutRepository
+    @ObservationIgnored private let comments: CoachCommentProvider?
+    @ObservationIgnored private let language: String
     @ObservationIgnored private let decimalSeparator: String
 
     init(
         workout: WorkoutSnapshot, summary: WorkoutSummary, unit: WeightUnit, names: [ExerciseRef: String],
-        repository: any WorkoutRepository, decimalSeparator: String = "."
+        repository: any WorkoutRepository, decimalSeparator: String = ".", comments: CoachCommentProvider? = nil, language: String = "en"
     ) {
+        self.comments = comments
+        self.language = language
         self.workout = workout
         self.summary = summary
         self.unit = unit
@@ -91,6 +104,20 @@ final class WorkoutSummaryModel {
             text += " (\(sign)\(Self.number(abs(percent), separator: decimalSeparator, maxFraction: 0)) %)"
         }
         return Change(text: text, direction: delta > 0 ? .up : delta < 0 ? .down : .flat)
+    }
+
+    // MARK: Coach comment (P083)
+
+    /// Asks for the comment once. Any failure hides the section instead of showing an error.
+    func loadComment() async {
+        guard let comments, comment == .hidden, await comments.mightCommentOnWorkout(language: language) else { return }
+        comment = .loading
+        let digest = CoachDigestBuilder.workout(summary, workout: workout, names: names)
+        if let written = await comments.workoutComment(digest, language: language) {
+            comment = .ready(written)
+        } else {
+            comment = .hidden
+        }
     }
 
     // MARK: Saving

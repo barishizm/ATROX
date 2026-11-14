@@ -18,7 +18,10 @@ extension AppContainer {
         let directory = (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? FileManager.default.temporaryDirectory
         let cache = FileCoachCache(url: directory.appendingPathComponent("Coach/conversations.json"))
-        return CoachDependencies(chat: chat, repository: CoachRepository(remote: remote, cache: cache))
+        let digest = SupabaseCoachDigestService(
+            baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken
+        )
+        return CoachDependencies(chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest)
     }
 
     #if DEBUG
@@ -33,9 +36,26 @@ extension AppContainer {
     static func uiTestCoach() -> CoachDependencies? { nil }
     #endif
 
+    /// The user's AI-sharing decision (P081); nil without a local store or a user. One per user.
+    func coachConsent() async -> CoachConsentModel? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        if let existing = coachConsentState, existing.userId == user.id { return existing }
+        let model = CoachConsentModel(
+            service: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)), userId: user.id
+        )
+        coachConsentState = model
+        await model.load()
+        return model
+    }
+
     /// The coach tab's model; nil without Supabase (no coach) or without a user / local store.
+    /// Every turn is checked against the stored consent first: without it the coach endpoint is never called.
     func makeCoachModel() async -> CoachModel? {
         guard let coach, let modelContainer, let user = await currentUser() else { return nil }
+        let consents = ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer))
+        let gated = ConsentGatedChatService(coach.chat, requiredVersion: ConsentVersions.current.aiSharing) {
+            (try? await consents.isAISharingGranted(userId: user.id)) ?? false
+        }
         let locale = language.effectiveLocale()
         let plan = planStore(for: user.id)
         let routines = SwiftDataRoutineRepository(modelContainer: modelContainer)
@@ -44,7 +64,7 @@ extension AppContainer {
             activeRoutineId: { plan.activeRoutineId }, activate: { plan.setActive($0) }
         )
         let session = CoachSession(
-            service: coach.chat, locale: { locale.language.languageCode?.identifier == "tr" ? "tr" : "en" },
+            service: gated, locale: { locale.language.languageCode?.identifier == "tr" ? "tr" : "en" },
             decisionSink: { [repository = coach.repository] id, decision in
                 await repository.recordDecision(proposalID: id, decision: decision)
             }
@@ -60,6 +80,15 @@ extension AppContainer {
             facts.hasRoutine = plan.activeRoutineId != nil
             return facts
         }
+    }
+
+    /// Proactive comments (P083) for the signed-in user; nil without a local store or a user. The consent is read at
+    /// every request, so withdrawing it in Settings stops the next comment at once.
+    func makeCommentProvider() async -> CoachCommentProvider? {
+        guard let modelContainer, let user = await currentUser() else { return nil }
+        let consents = ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer))
+        let userId = user.id
+        return CoachCommentProvider(digest: coach?.digest) { (try? await consents.isAISharingGranted(userId: userId)) ?? false }
     }
 
     /// "Ask the coach" entry points (insight cards, exercise screens): the tab opens with the text in the input.

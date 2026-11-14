@@ -18,6 +18,7 @@ export const USER_TABLES = [
   "coach_messages",
   "coach_memory",
   "coach_usage",
+  "coach_digests",
 ] as const;
 
 export type UserTable = (typeof USER_TABLES)[number];

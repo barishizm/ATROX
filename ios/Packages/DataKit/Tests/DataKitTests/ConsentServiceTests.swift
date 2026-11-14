@@ -113,4 +113,27 @@ import Testing
         #expect(history[1].granted)
         #expect(try await service.history(userId: otherUser).isEmpty)
     }
+
+    @Test func aiSharingIsNeverImpliedAndCanBeWithdrawn() async throws {
+        let (service, repo) = try make()
+        #expect(try await !service.isAISharingGranted(userId: testUser))
+        #expect(try await service.aiSharingStatus(userId: testUser) == .notAsked)
+        try await service.setAISharing(true, userId: testUser)
+        #expect(try await service.isAISharingGranted(userId: testUser))
+        #expect(try await repo.current(kind: .aiSharing, userId: testUser)?.version == ConsentVersions.current.aiSharing)
+        clock.advance(by: 60)
+        try await service.setAISharing(false, userId: testUser)
+        #expect(try await !service.isAISharingGranted(userId: testUser))
+        #expect(try await service.aiSharingStatus(userId: testUser) == .declined)
+        #expect(try await repo.history(userId: testUser).count == 2)  // the audit trail keeps both answers
+    }
+
+    @Test func aChangedAIConsentVersionAsksAgain() async throws {
+        let (v1, repo) = try make()
+        try await v1.setAISharing(true, userId: testUser)
+        clock.advance(by: 60)
+        let v2 = ConsentService(repository: repo, versions: ConsentVersions(aiSharing: "2027-01"))
+        #expect(try await !v2.isAISharingGranted(userId: testUser))
+        #expect(try await v2.aiSharingStatus(userId: testUser) == .outdated(previous: true))
+    }
 }

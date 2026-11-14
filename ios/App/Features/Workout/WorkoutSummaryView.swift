@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Shown right after a workout is finished (P041): duration, volume, sets, muscles, records, comparison with the
 /// last similar workout, and an optional name, note and feeling. The coach comment and the score change are
-/// placeholders until phases 6–7.
+/// placeholder until the score change lands.
 struct WorkoutSummaryView: View {
     @Bindable var model: WorkoutSummaryModel
     let done: () -> Void
@@ -43,6 +43,7 @@ struct WorkoutSummaryView: View {
                 }
             }
         }
+        .task { await model.loadComment() }
         .interactiveDismissDisabled()
         .alert("workout.error.title", isPresented: Binding(get: { model.errorKey != nil }, set: { if !$0 { model.clearError() } })) {
             Button("workout.ok", role: .cancel) {}
@@ -162,14 +163,38 @@ struct WorkoutSummaryView: View {
 
     private var placeholders: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            Card {
-                Label("summary.coach.placeholder", systemImage: "bubble.left.and.text.bubble.right")
-                    .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-            }
+            coachComment
             Card {
                 Label("summary.score.placeholder", systemImage: "chart.line.uptrend.xyaxis")
                     .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
             }
+        }
+    }
+
+    @ViewBuilder private var coachComment: some View {
+        switch model.comment {
+        case .hidden:
+            EmptyView()
+        case .loading:
+            Card {
+                Text(verbatim: "Placeholder comment text that stands in while the coach writes, spanning two lines.")
+                    .font(DSFont.callout).redacted(reason: .placeholder)
+            }
+            .accessibilityIdentifier("summary-coach-loading")
+        case .ready(let comment):
+            Card {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Label("summary.coach.title", systemImage: "bubble.left.and.text.bubble.right")
+                        .font(DSFont.overline).foregroundStyle(DSColor.textSecondary)
+                    Text(verbatim: comment.text).font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
+                    if comment.onDevice {
+                        Label("summary.coach.onDevice", systemImage: "iphone")
+                            .font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
+                    }
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("summary-coach-comment")
         }
     }
 
