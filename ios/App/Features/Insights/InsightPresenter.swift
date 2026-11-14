@@ -19,6 +19,10 @@ struct InsightItem: Identifiable, Equatable {
 /// language) and fills in its arguments.
 enum LocalizedText {
     static func string(_ key: String, locale: Locale, _ args: CVarArg...) -> String {
+        string(key, locale: locale, arguments: args)
+    }
+
+    static func string(_ key: String, locale: Locale, arguments args: [CVarArg]) -> String {
         let format = bundle(for: locale).localizedString(forKey: key, value: key, table: nil)
         return args.isEmpty ? format : String(format: format, locale: locale, arguments: args)
     }

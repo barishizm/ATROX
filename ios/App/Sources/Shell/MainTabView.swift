@@ -21,6 +21,7 @@ struct MainTabView: View {
                             case .workoutSummary: FeaturePlaceholderView(title: "shell.tabbar.today", systemImage: "sun.max")
                             case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
                             case .templates: TemplateListView()
+                            case .weeklySummary: WeeklySummaryView()
                             }
                         }
                 }
@@ -78,6 +79,13 @@ struct MainTabView: View {
             guard let tab else { return }
             selection = tab
             container.requestedTab = nil
+        }
+        .onChange(of: container.requestedWeeklySummary, initial: true) { _, requested in
+            guard requested else { return }
+            container.requestedWeeklySummary = false
+            selection = .today
+            today.popToRoot()
+            today.push(.weeklySummary)
         }
         .task { await workoutPresenter.prepare(container: container) }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {

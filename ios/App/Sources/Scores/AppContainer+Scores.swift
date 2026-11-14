@@ -21,6 +21,7 @@ extension AppContainer {
     func refreshScores() async {
         guard let center = await scoreCenter(), let user = await currentUser() else { return }
         await center.refresh(userId: user.id)
+        await rescheduleWeeklySummary()
     }
 
     /// The score state of the signed-in user; the first call per user backfills history and computes everything.

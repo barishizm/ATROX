@@ -53,6 +53,7 @@ struct SettingsView: View {
                     .accessibilityIdentifier("settings-workout-live-activity")
                     .onChange(of: liveActivity) { Task { await container.liveActivity?.preferenceChanged() } }
             }
+            WeeklySummarySettingsSection()
             PlateSettingsSection(unit: model.unitSystem == .imperial ? .pounds : .kilograms)
             privacy
             accountSection
@@ -221,5 +222,46 @@ struct PlateSettingsSection: View {
         }
         guard let weight = type.weight(in: unit) else { return name }
         return "\(name) · \(PlateCalculatorView.format(weight)) \(unit == .kilograms ? "kg" : "lb")"
+    }
+}
+
+/// Weekly summary notification: on/off and the time of day (Sundays).
+struct WeeklySummarySettingsSection: View {
+    @Environment(AppContainer.self) private var container
+    @AppStorage(WeeklySummarySettings.enabledKey) private var enabled = true
+    @AppStorage(WeeklySummarySettings.hourKey) private var hour = WeeklySchedule.defaultHour
+    @AppStorage(WeeklySummarySettings.minuteKey) private var minute = 0
+
+    var body: some View {
+        Section {
+            Toggle("settings.weekly.enabled", isOn: $enabled).accessibilityIdentifier("settings-weekly-enabled")
+            if enabled {
+                DatePicker("settings.weekly.time", selection: time, displayedComponents: .hourAndMinute)
+                    .accessibilityIdentifier("settings-weekly-time")
+            }
+        } header: {
+            Text("settings.weekly.section")
+        } footer: {
+            Text("settings.weekly.footer")
+        }
+        .onChange(of: enabled) { _, isOn in
+            Task {
+                if isOn { _ = await UserNotificationService().requestAuthorization() }
+                await container.rescheduleWeeklySummary()
+            }
+        }
+        .onChange(of: hour) { Task { await container.rescheduleWeeklySummary() } }
+        .onChange(of: minute) { Task { await container.rescheduleWeeklySummary() } }
+    }
+
+    private var time: Binding<Date> {
+        Binding(
+            get: { Calendar.current.date(from: DateComponents(hour: hour, minute: minute)) ?? .now },
+            set: { value in
+                let parts = Calendar.current.dateComponents([.hour, .minute], from: value)
+                hour = parts.hour ?? WeeklySchedule.defaultHour
+                minute = parts.minute ?? 0
+            }
+        )
     }
 }

@@ -69,7 +69,8 @@ final class ProfileUITests: XCTestCase {
         let app = launch()
         open(app, "Settings")
         let delete = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Delete my account")).firstMatch
-        if !delete.waitForExistence(timeout: 5) { app.swipeUp() }
+        // The Settings form grew (weekly summary section), so one swipe may not reach the bottom.
+        for _ in 0..<4 where !delete.waitForExistence(timeout: 2) { app.swipeUp() }
         XCTAssertTrue(delete.waitForExistence(timeout: 5), app.debugDescription)
         delete.tap()
 

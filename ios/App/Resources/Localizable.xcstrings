@@ -14728,6 +14728,1542 @@
           }
         }
       }
+    },
+    "weekly.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly summary"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık özet"
+          }
+        }
+      }
+    },
+    "weekly.link": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly summary"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık özet"
+          }
+        }
+      }
+    },
+    "weekly.error": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The weekly summary could not be loaded."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık özet yüklenemedi."
+          }
+        }
+      }
+    },
+    "weekly.layout": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görünüm"
+          }
+        }
+      }
+    },
+    "weekly.layout.stories": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cards"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kartlar"
+          }
+        }
+      }
+    },
+    "weekly.layout.list": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "List"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste"
+          }
+        }
+      }
+    },
+    "weekly.card.workouts": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WORKOUTS"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ANTRENMAN"
+          }
+        }
+      }
+    },
+    "weekly.card.volume": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VOLUME"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HACİM"
+          }
+        }
+      }
+    },
+    "weekly.card.records": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEW RECORDS"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "YENİ REKORLAR"
+          }
+        }
+      }
+    },
+    "weekly.card.scores": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "STRENGTH SCORE"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GÜÇ SKORU"
+          }
+        }
+      }
+    },
+    "weekly.card.muscles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MUSCLES"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KASLAR"
+          }
+        }
+      }
+    },
+    "weekly.card.insight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "INSIGHT OF THE WEEK"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HAFTANIN İÇGÖRÜSÜ"
+          }
+        }
+      }
+    },
+    "weekly.card.coach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "COACH"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KOÇ"
+          }
+        }
+      }
+    },
+    "weekly.workouts.met": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You reached your weekly goal."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık hedefine ulaştın."
+          }
+        }
+      }
+    },
+    "weekly.workouts.left %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld more to reach your goal."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hedefe %lld antrenman kaldı."
+          }
+        }
+      }
+    },
+    "weekly.volume.sets %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld working sets"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld çalışma seti"
+          }
+        }
+      }
+    },
+    "weekly.volume.change %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@%% vs. the week before"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önceki haftaya göre %@%%"
+          }
+        }
+      }
+    },
+    "weekly.volume.nocompare": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to compare with last week yet."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen hafta ile karşılaştırılacak veri yok."
+          }
+        }
+      }
+    },
+    "weekly.record.weight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "heaviest weight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en ağır ağırlık"
+          }
+        }
+      }
+    },
+    "weekly.record.reps": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "most reps"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en çok tekrar"
+          }
+        }
+      }
+    },
+    "weekly.record.e1rm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "estimated 1RM"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tahmini 1TM"
+          }
+        }
+      }
+    },
+    "weekly.record.volume": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "most volume"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en yüksek hacim"
+          }
+        }
+      }
+    },
+    "weekly.scores.overall %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overall Strength Score: %lld"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel Güç Skoru: %lld"
+          }
+        }
+      }
+    },
+    "weekly.muscles.top %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most worked: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En çok çalışılan: %@"
+          }
+        }
+      }
+    },
+    "weekly.muscles.neglected %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not trained this week: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta çalışılmayan: %@"
+          }
+        }
+      }
+    },
+    "weekly.group.chest": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Göğüs"
+          }
+        }
+      }
+    },
+    "weekly.group.back": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sırt"
+          }
+        }
+      }
+    },
+    "weekly.group.shoulders": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoulders"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omuz"
+          }
+        }
+      }
+    },
+    "weekly.group.arms": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arms"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kollar"
+          }
+        }
+      }
+    },
+    "weekly.group.legs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacaklar"
+          }
+        }
+      }
+    },
+    "weekly.group.core": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Core"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karın"
+          }
+        }
+      }
+    },
+    "weekly.restart.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A fresh start"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeniden başlamak için güzel bir an"
+          }
+        }
+      }
+    },
+    "weekly.restart.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No workouts this week, and that is fine. One short session is enough to get going again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta antrenman yok, sorun değil. Yeniden başlamak için kısa bir antrenman yeter."
+          }
+        }
+      }
+    },
+    "weekly.coach.placeholder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your coach's take on the week will appear here."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koçunun haftaya dair yorumu burada görünecek."
+          }
+        }
+      }
+    },
+    "weekly.notification.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your weekly summary is ready"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık özetin hazır"
+          }
+        }
+      }
+    },
+    "weekly.notification.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A quiet week. Open your summary and plan a short restart."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sakin bir hafta. Özetine bak, kısa bir yeniden başlangıç planla."
+          }
+        }
+      }
+    },
+    "weekly.notification.body %lld %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld workouts done this week."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta %lld/%lld antrenman tamamlandı."
+          }
+        }
+      }
+    },
+    "weekly.notification.body.records %lld %lld %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld of %lld workouts and %lld new records this week."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta %lld/%lld antrenman ve %lld yeni rekor."
+          }
+        }
+      }
+    },
+    "settings.weekly.section": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly summary"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık özet"
+          }
+        }
+      }
+    },
+    "settings.weekly.enabled": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunday summary notification"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pazar özeti bildirimi"
+          }
+        }
+      }
+    },
+    "settings.weekly.time": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saat"
+          }
+        }
+      }
+    },
+    "settings.weekly.footer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent on Sundays at the time you choose. Notifications must be allowed for ATROX."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçtiğin saatte her pazar gönderilir. ATROX için bildirimlere izin verilmiş olmalı."
+          }
+        }
+      }
+    },
+    "how.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How is it calculated?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasıl hesaplanıyor?"
+          }
+        }
+      }
+    },
+    "how.done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bitti"
+          }
+        }
+      }
+    },
+    "how.open": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How is it calculated?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasıl hesaplanıyor?"
+          }
+        }
+      }
+    },
+    "how.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Strength Score shows where you stand among gym-goers of the same sex, age and body weight. Here is how it is worked out, in five steps."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç Skorun, aynı cinsiyet, yaş ve kiloda salon kullanıcılarına göre nerede durduğunu gösterir. İşte beş adımda nasıl hesaplandığı."
+          }
+        }
+      }
+    },
+    "how.steps.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Five steps"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beş adım"
+          }
+        }
+      }
+    },
+    "how.step1.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your sets to a 1RM estimate"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setlerinden 1TM tahminine"
+          }
+        }
+      }
+    },
+    "how.step1.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every set you log is turned into an estimate of the heaviest single repetition you could lift. Sets with fewer reps are trusted more."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydettiğin her set, tek tekrarda kaldırabileceğin en yüksek ağırlığın tahminine çevrilir. Az tekrarlı setlere daha çok güvenilir."
+          }
+        }
+      }
+    },
+    "how.step2.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your current strength"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncel gücün"
+          }
+        }
+      }
+    },
+    "how.step2.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent sessions count more than old ones, so the estimate follows you as you get stronger or take a break."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yakın antrenmanlar eskilerden daha ağır basar; böylece tahmin güçlendikçe ya da ara verdikçe seni takip eder."
+          }
+        }
+      }
+    },
+    "how.step3.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparison with similar people"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benzer kişilerle karşılaştırma"
+          }
+        }
+      }
+    },
+    "how.step3.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your estimate is placed on the strength distribution of people with your sex, age and body weight. The result is a percentile from 0 to 100."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahminin; cinsiyet, yaş ve kilona uyan kişilerin güç dağılımı üzerine yerleştirilir. Sonuç 0–100 arası bir yüzdelik dilimdir."
+          }
+        }
+      }
+    },
+    "how.step4.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adjusting for the population"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nüfus ayarı"
+          }
+        }
+      }
+    },
+    "how.step4.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most data comes from people who compete. We adjust it so the score reflects regular gym-goers rather than athletes."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verinin büyük kısmı yarışan sporculardan gelir. Skoru sporcular yerine sıradan salon kullanıcılarını yansıtacak şekilde ayarlarız."
+          }
+        }
+      }
+    },
+    "how.step5.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Putting it together"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birleştirme"
+          }
+        }
+      }
+    },
+    "how.step5.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercise scores are combined into muscle group scores and your overall score, weighting lifts we are more sure about more heavily."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket skorları kas grubu skorlarında ve genel skorunda birleşir; daha emin olduğumuz hareketler daha çok ağırlık taşır."
+          }
+        }
+      }
+    },
+    "how.groups.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reference groups"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referans grupları"
+          }
+        }
+      }
+    },
+    "how.groups.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A reference group is the set of people your score is compared with. You can switch between them."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referans grubu, skorunun karşılaştırıldığı kişilerin kümesidir. Aralarında geçiş yapabilirsin."
+          }
+        }
+      }
+    },
+    "how.group.competitor.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Competitors"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yarışmacılar"
+          }
+        }
+      }
+    },
+    "how.group.competitor.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lifters who compete in strength sports. The toughest comparison."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç sporlarında yarışan sporcular. En zorlu karşılaştırma."
+          }
+        }
+      }
+    },
+    "how.group.gym.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gym-goers"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salon kullanıcıları"
+          }
+        }
+      }
+    },
+    "how.group.gym.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular gym-goers. This is the default and the fairest comparison for most people."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Düzenli salon kullanıcıları. Varsayılan seçenektir ve çoğu kişi için en adil karşılaştırmadır."
+          }
+        }
+      }
+    },
+    "how.group.general.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General population"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel nüfus"
+          }
+        }
+      }
+    },
+    "how.group.general.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone, including people who do not train. Based on little data, so it is the roughest."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman yapmayanlar dahil herkes. Az veriye dayanır, bu yüzden en kaba olanıdır."
+          }
+        }
+      }
+    },
+    "how.groups.reliable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The competitor group is the most reliable, because it rests directly on measured results. The gym-goer group relies on an adjustment and is less certain, and the general-population group the least."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yarışmacı grubu en güvenilir olandır, çünkü doğrudan ölçülmüş sonuçlara dayanır. Salon grubu bir ayara dayanır ve daha az kesindir; genel nüfus grubu en az kesin olandır."
+          }
+        }
+      }
+    },
+    "how.confidence.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confidence"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güven düzeyi"
+          }
+        }
+      }
+    },
+    "how.confidence.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next to a score you see how sure we are about it."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skorun yanında ne kadar emin olduğumuzu görürsün."
+          }
+        }
+      }
+    },
+    "how.confidence.high": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A barbell lift with enough recent, well-recorded sets."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeterli sayıda yakın ve düzgün kaydedilmiş seti olan bir halter hareketi."
+          }
+        }
+      }
+    },
+    "how.confidence.medium": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some data is missing, old, or the lift is estimated from a similar one."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bazı veriler eksik ya da eski; ya da hareket benzer bir hareketten tahmin ediliyor."
+          }
+        }
+      }
+    },
+    "how.confidence.low": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Few sets, machines, or a lift that is only loosely related to the data we have."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Az set, makine hareketi ya da elimizdeki veriyle yalnızca gevşek bağlı bir hareket."
+          }
+        }
+      }
+    },
+    "how.confidence.uncertain": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What makes a score less certain: missing or outdated body weight, very few sets, unusual reps (very high counts), machine lifts, and the choice of reference group. Even with high confidence the score can be off by several points."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skoru belirsizleştirenler: eksik ya da eski vücut ağırlığı, çok az set, alışılmadık tekrarlar (çok yüksek sayılar), makine hareketleri ve referans grubu seçimi. Güven yüksek olsa bile skor birkaç puan sapabilir."
+          }
+        }
+      }
+    },
+    "how.limits.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limits"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sınırlar"
+          }
+        }
+      }
+    },
+    "how.limit1": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The score is an estimate, not an exact measurement."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor bir tahmindir, kesin bir ölçüm değildir."
+          }
+        }
+      }
+    },
+    "how.limit2": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It is not a measure of health or fitness."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sağlık ya da kondisyon ölçüsü değildir."
+          }
+        }
+      }
+    },
+    "how.limit3": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Machines differ from brand to brand, so machine exercises are scored with low confidence."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makineler markadan markaya farklıdır; bu yüzden makine hareketleri düşük güvenle skorlanır."
+          }
+        }
+      }
+    },
+    "how.limit4": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We assume good technique and a full range of motion. Partial reps or loose form make a score look better than it is."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İyi teknik ve tam hareket açıklığı varsayıyoruz. Yarım tekrarlar ya da gevşek form skoru gerçeğinden iyi gösterir."
+          }
+        }
+      }
+    },
+    "how.limit5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do not chase the score with weights you cannot handle safely. Progress matters more than the number."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skoru, güvenle kaldıramayacağın ağırlıklarla kovalama. Gelişim, sayıdan daha önemlidir."
+          }
+        }
+      }
+    },
+    "how.sources.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data sources and credits"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veri kaynakları ve atıflar"
+          }
+        }
+      }
+    },
+    "how.sources.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thank you to the people and projects behind the data we build on."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üzerine kurduğumuz verilerin ardındaki kişi ve projelere teşekkürler."
+          }
+        }
+      }
+    },
+    "how.source.opl": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Public competition results that the strength model is trained on. Thank you, OpenPowerlifting."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç modelinin eğitildiği herkese açık yarışma sonuçları. Teşekkürler, OpenPowerlifting."
+          }
+        }
+      }
+    },
+    "how.source.fedb": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The exercise list and exercise photos (Unlicense)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket listesi ve hareket fotoğrafları (Unlicense)."
+          }
+        }
+      }
+    },
+    "how.source.muscle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The paths of the muscle map (MIT license)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas haritasının çizim yolları (MIT lisansı)."
+          }
+        }
+      }
+    },
+    "how.model.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring model"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor modeli"
+          }
+        }
+      }
+    },
+    "how.model.version": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sürüm"
+          }
+        }
+      }
+    },
+    "how.model.source": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaynak"
+          }
+        }
+      }
+    },
+    "how.model.source.downloaded": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloaded update"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İndirilen güncelleme"
+          }
+        }
+      }
+    },
+    "how.model.source.embedded": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Built into the app"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamayla gelen"
+          }
+        }
+      }
+    },
+    "how.model.checked": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last update check"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son güncelleme kontrolü"
+          }
+        }
+      }
+    },
+    "how.model.checked.never": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not yet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz yok"
+          }
+        }
+      }
+    },
+    "how.model.unavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The scoring model could not be read."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor modeli okunamadı."
+          }
+        }
+      }
+    },
+    "how.model.check": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check for updates"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güncellemeleri denetle"
+          }
+        }
+      }
+    },
+    "how.model.uptodate": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have the latest model."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En güncel modeli kullanıyorsun."
+          }
+        }
+      }
+    },
+    "how.model.updated %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated to version %@. Your scores were recalculated."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sürümüne güncellendi. Skorların yeniden hesaplandı."
+          }
+        }
+      }
+    },
+    "how.model.failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The check did not work. Please try again later."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denetleme olmadı. Lütfen sonra tekrar dene."
+          }
+        }
+      }
+    },
+    "how.disclaimer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX is not medical advice. Check with a doctor or other health professional before starting a new training program, especially if you have an injury or a health condition."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX tıbbi tavsiye değildir. Yeni bir antrenman programına başlamadan önce, özellikle bir sakatlığın ya da sağlık sorunun varsa, doktoruna ya da bir sağlık uzmanına danış."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -90,7 +90,7 @@ targets:
         NSSupportsLiveActivities: true
         # Opportunistic background sync (P045, BackgroundSync.swift).
         UIBackgroundModes: [fetch]
-        BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh]
+        BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh, com.barishizm.atrox.weekly.refresh]
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)

@@ -1,6 +1,7 @@
 import DesignSystem
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 @main
 struct ATROXApp: App {
@@ -9,6 +10,8 @@ struct ATROXApp: App {
 
     init() {
         BackgroundSync.shared.register()
+        WeeklySummaryBackground.shared.register()
+        UNUserNotificationCenter.current().delegate = NotificationRouter.shared
     }
 
     var body: some Scene {
@@ -18,6 +21,11 @@ struct ATROXApp: App {
                 .modifier(LocalStoreModifier(container: container.modelContainer))
                 .task { await container.prepareCatalog() }
                 .task { BackgroundSync.shared.coordinator = container.sync }
+                .task {
+                    WeeklySummaryBackground.shared.container = container
+                    NotificationRouter.shared.onWeeklySummary = { container.requestedWeeklySummary = true }
+                    await container.rescheduleWeeklySummary()
+                }
                 .task { await container.checkModelUpdate() }
         }
         .onChange(of: scenePhase) { _, phase in
@@ -26,6 +34,7 @@ struct ATROXApp: App {
             case .active:
                 container.sync?.appBecameActive()
                 Task { await container.checkModelUpdate() }
+                Task { await container.rescheduleWeeklySummary() }
             case .background:
                 container.sync?.appEnteredBackground()
                 BackgroundSync.shared.schedule()
