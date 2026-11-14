@@ -53,6 +53,8 @@ final class TodayModel {
     private(set) var bars: [PatternBar] = []
     private(set) var facts: DashboardFacts?
     private(set) var plan: Plan = .none
+    /// Every day of the active program (P096: the choices of the "Start workout" shortcut).
+    private(set) var programDays: [PlannedDay] = []
     private(set) var record: RecordLine?
     private(set) var improved: ImprovedLine?
     private(set) var unavailable: ScoreUnavailable?
@@ -162,7 +164,11 @@ final class TodayModel {
 
     private func resolvePlan() async -> Plan {
         let routines = (try? await context.routines.all(userId: context.userId)) ?? []
+        programDays = []
         if let id = planStore.activeRoutineId, let routine = routines.first(where: { $0.id == id }) {
+            programDays = routine.days.map {
+                PlannedDay(routineId: routine.id, dayId: $0.id, routineName: routine.name, dayName: $0.name, exerciseCount: $0.exercises.count)
+            }
             let last = await stats.lastRoutineDayId(userId: context.userId, routineId: routine.id)
             let weekday = calendar.component(.weekday, from: Date())
             if let day = NextWorkout.pick(routine: routine, weekdayPlan: planStore.dayByWeekday, weekday: weekday, lastDayId: last) {

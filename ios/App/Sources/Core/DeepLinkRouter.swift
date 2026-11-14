@@ -9,6 +9,8 @@ enum DeepLink: Equatable, Sendable {
     case friendInvite(username: String)
     case tab(AppTab)
     case weeklySummary
+    /// A widget, control or Shortcut asks to start this program day (P096).
+    case startWorkout(routineId: UUID, dayId: UUID)
 
     /// Where universal links live (`APP_LINK_HOST` in the xcconfig files) and the app's own scheme.
     struct Configuration: Equatable, Sendable {
@@ -55,6 +57,10 @@ enum DeepLink: Equatable, Sendable {
         case "coach": self = .tab(.coach)
         case "profile": self = .tab(.profile)
         case "weekly": self = .weeklySummary
+        case "start":
+            // atrox://start/<routine uuid>/<day uuid>
+            guard parts.count == 3, let routine = UUID(uuidString: parts[1]), let day = UUID(uuidString: parts[2]) else { return nil }
+            self = .startWorkout(routineId: routine, dayId: day)
         default: return nil
         }
     }
@@ -65,6 +71,7 @@ enum DeepLink: Equatable, Sendable {
         case .friendInvite(let name): URL(string: "\(scheme)://u/\(name)")
         case .tab(let tab): URL(string: "\(scheme)://\(tab.rawValue)")
         case .weeklySummary: URL(string: "\(scheme)://weekly")
+        case .startWorkout(let routine, let day): URL(string: "\(scheme)://start/\(routine.uuidString)/\(day.uuidString)")
         }
     }
 

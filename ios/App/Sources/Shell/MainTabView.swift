@@ -111,6 +111,9 @@ struct MainTabView: View {
             selection = .today
             today.popToRoot()
             today.push(.weeklySummary)
+        case .startWorkout(let routineId, let dayId):
+            selection = .workout
+            Task { await workoutPresenter.start(routineId: routineId, dayId: dayId, container: container) }
         case .friendInvite(let username):
             selection = .profile
             profile.popToRoot()
