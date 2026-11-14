@@ -5,5 +5,9 @@ import WidgetKit
 struct ATROXWidgetsBundle: WidgetBundle {
     var body: some Widget {
         WorkoutLiveActivity()
+        ScoreWidget()
+        TodayWorkoutWidget()
+        WeeklyGoalWidget()
+        StartWorkoutControl()
     }
 }

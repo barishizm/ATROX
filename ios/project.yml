@@ -155,6 +155,9 @@ targets:
       properties:
         CFBundleDisplayName: $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
         CFBundleLocalizations: [en, tr]
+        # The widgets read the snapshot from the app group and build atrox:// links (P096).
+        AppGroupID: $(APP_GROUP_ID)
+        AppURLScheme: $(APP_URL_SCHEME)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

@@ -122,3 +122,22 @@ ve ikinci bir cihaz) Debug yapılandırmasında yerel Supabase'e bağlı.
 | 7 | "Satın alımları geri yükle" (silinip yeniden kurulmuş uygulamada) | Pro geri gelir | _bekliyor_ |
 
 Sonuçlar ve tarih: _(doldurulacak)_
+
+## P096 · Widget'lar ve App Intents (simülatör/cihaz)
+
+Ön koşul: giriş yapılmış, en az bir antrenmanı ve etkin programı olan kullanıcı; uygulama bir kez açılmış (özet yazılır).
+
+| # | Adım | Beklenen | Sonuç |
+|---|---|---|---|
+| 1 | Ana ekrana Güç Skoru (küçük) ekle | Halka + skor + 30 gün değişimi; dokununca Analiz sekmesi | _bekliyor_ |
+| 2 | Bugünün antrenmanı (orta) ekle | Sıradaki gün, rutin adı, hareket sayısı, "Başlat"; dokununca antrenman başlar | _bekliyor_ |
+| 3 | Haftalık hedef (küçük) + kilit ekranı dairesel/dikdörtgen | Bu haftaki sayı/hedef ve hafta serisi; dokununca Bugün | _bekliyor_ |
+| 4 | Antrenman bitir | Widget'lar birkaç saniye içinde yeni sayıyı/skoru gösterir | _bekliyor_ |
+| 5 | Çıkış yap | Widget'lar "giriş yapmak için ATROX'u aç" yer tutucusu | _bekliyor_ |
+| 6 | Widget galerisi / önizleme | Örnek verili önizleme; dil TR ve EN | _bekliyor_ |
+| 7 | Kısayollar uygulaması > ATROX | Üç eylem: Antrenmanı başlat (gün seçilebilir), Kilomu kaydet, Güç skorumu göster | _bekliyor_ |
+| 8 | Siri/Spotlight: "ATROX ile kilomu kaydet" | Kilo sorulur, kayıt Profil > Ölçümler'de görünür | _bekliyor_ |
+| 9 | Kontrol Merkezi > Kontrol ekle > Antrenmanı başlat; Action Button'a ata | Dokununca uygulama açılır, sıradaki gün başlar | _bekliyor_ |
+
+Sonuçlar ve tarih: _(doldurulacak)_
+

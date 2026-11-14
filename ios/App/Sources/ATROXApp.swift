@@ -40,6 +40,8 @@ struct ATROXApp: App {
                 Task { await container.checkModelUpdate() }
                 Task { await container.rescheduleWeeklySummary() }
                 Task { await container.purchases.refresh() }
+                container.openPendingIntentLink()
+                Task { await container.refreshWidgets() }
             case .background:
                 container.sync?.appEnteredBackground()
                 BackgroundSync.shared.schedule()

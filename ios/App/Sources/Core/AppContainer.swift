@@ -60,6 +60,7 @@ final class AppContainer {
     @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
+    @ObservationIgnored var isRefreshingWidgets = false
     /// Version counter and pending undo of the workout history (P042).
     let historyEvents = HistoryEvents()
     /// One rest timer for the app; it outlives the workout screen (minimizing keeps it running).
@@ -119,6 +120,7 @@ final class AppContainer {
         )
         self.passwordRecovery = PasswordRecoveryModel(service: authService)
         installRestIntentHandler()
+        installIntentHandlers()
         observeLocalSaves()
     }
 
@@ -133,6 +135,7 @@ final class AppContainer {
         debugUser = nil
         #endif
         await resetScores()
+        clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
         purchases.stop()
@@ -282,10 +285,11 @@ final class AppContainer {
     }
 
     /// The Today dashboard (P067); nil without a user, a local store or a score state.
-    func makeTodayModel() async -> TodayModel? {
+    /// `forWidgets`: the same numbers without the insight refresh and the score publication (P096).
+    func makeTodayModel(forWidgets: Bool = false) async -> TodayModel? {
         guard let modelContainer, let context = await makeHistoryContext(), let center = await scoreCenter() else { return nil }
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
-        let publish: (@Sendable (ScorePublication) async -> Void)? = social.map { service in
+        let publish: (@Sendable (ScorePublication) async -> Void)? = forWidgets ? nil : social.map { service in
             { @Sendable publication in
                 // Nothing leaves the device unless the user joined and switched score sharing on.
                 guard let profile = try? await service.myProfile(), profile.sharesScore else { return }
@@ -294,7 +298,7 @@ final class AppContainer {
         }
         return TodayModel(
             context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
-            plan: planStore(for: context.userId), profile: profile?.input, insights: insightService(),
+            plan: planStore(for: context.userId), profile: profile?.input, insights: forWidgets ? nil : insightService(),
             publishScore: publish
         )
     }
