@@ -1,5 +1,5 @@
 # ATROX ML hattı. Her hedef `uv run` ile çalışır.
-.PHONY: data calibrate eda baselines profiles train-a train-b train-c tune bakeoff export test lint smoke
+.PHONY: data calibrate eda baselines profiles train-a train-b train-c tune bakeoff export retrain retrain-synthetic latent test lint smoke
 
 data:        ## P047: OpenPowerlifting'i indir/içe aktar -> data/interim/opl.parquet
 	uv run python -m gymml.data.opl
@@ -34,6 +34,15 @@ profiles:    ## P057: A modelinden çapa korelasyonu + örnek profil skorları -
 
 export:      ## P060: imzalı model paketi (dist/) + altın vektörler (golden/) + gömülü paket (StrengthKit)
 	uv run python -m gymml.export.bundle
+
+retrain:     ## P094: ml_contributions (servis rolü) -> k-anonimlik -> δ/κ + oran güncellemesi -> kapılar -> dist/ + reports/retrain-<sürüm>.md
+	uv run python -m gymml.retrain.run --fetch --sign
+
+retrain-synthetic: ## P094: aynı hat sentetik katkılarla (runs/ altına; imzasız, MODEL_CARD'a dokunmaz)
+	uv run python -m gymml.retrain.run --synthetic 6000
+
+latent:      ## P095: v2 gizil faktör modeli araştırma prototipi -> reports/v2-latent-model.md
+	uv run python -m gymml.research.latent
 
 smoke:
 	uv run python -m gymml.cli smoke

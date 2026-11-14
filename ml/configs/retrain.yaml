@@ -1,0 +1,44 @@
+# P094 · retraining pipeline (docs/03-ML-MODEL.md §12). `make retrain` reads this file.
+export:
+  k_anonymity: 20              # min distinct contributors per cell (sex × age band × weight band × exercise)
+  weight_band_kg: 10           # weight band width of the k-anonymity cell (contributions hold integer kg)
+  min_contributors: 300        # after the filter; below this the pipeline stops with a message
+  min_anchor_contributors_per_sex: 100   # contributors with at least one anchor lift (squat/bench/deadlift)
+  holdout_fraction: 0.2        # contributors (by key) held out for the gates, never used for fitting
+  seed: 20261114
+
+calibration:
+  population: gym              # app users are gym-goers; the general population keeps its P055 prior
+  prior_pseudo_n: 200          # prior weight in contributors: w_prior = n0 / (n0 + n) ...
+  prior_weight_floor: 0.25     # ... but never below this (app users are a biased sample, see report)
+  min_cell_contributors: 20    # cells (sex × lift × age band) with fewer contributors keep the prior
+  kappa_bounds: [1.0, 3.5]
+
+ratios:
+  prior_sd:                    # prior SD of the population log ratio, by P056 grade
+    anchor: 0.01
+    A: 0.03
+    B: 0.07
+    C: 0.20
+  tau_pseudo_df: 50            # prior weight of tau² (scaled inverse chi-square pseudo degrees of freedom)
+  tau_floor:                   # tau never drops below the floor of the (new) grade; same ladder as ratios.yaml
+    A: 0.08
+    B: 0.15
+    C: 0.40
+    machine: 0.50
+  upgrade:                     # C → B → A from data (machines and cables stay C)
+    B: {min_contributors: 300, max_posterior_sd: 0.04, max_between_sd: 0.30}
+    A: {min_contributors: 1000, max_posterior_sd: 0.02, max_between_sd: 0.20}
+  min_pair_contributors: 30    # below this an exercise keeps its prior ratio
+  max_ratio_change: 2.0        # sanity: new/prior ratio outside [1/x, x] fails the bundle
+
+gates:
+  golden_tolerance: 1.0e-4     # Python reference with the base params must reproduce ml/golden/*.json
+  calibration_ks_max: 0.15     # held-out anchor-lift PIT (gym population) vs uniform
+  calibration_ks_margin: 0.01  # candidate KS may not exceed base KS by more than this
+  drift_median_max: 5.0        # median |score change| on held-out contributions, points
+  max_rows: 4000               # held-out rows scored per gate (sampled, seeded)
+  monotonic_grid: 25           # loads per anchor lift for the monotonicity check
+
+rollout:
+  initial_percent: 10          # first publish goes to 10 % of devices (P063 `--rollout`)

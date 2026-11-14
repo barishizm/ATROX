@@ -45,6 +45,18 @@ bükümünde sınırı aşar (0,011–0,012; 20+ yaşta 0,008–0,009); bench'te
 - Çapa olmayan hareketler için doğrudan veri yoktur (§6).
 - Cinsiyet belirtmeyen kullanıcılar için ortak dağılım kullanılır (§4.5).
 
+## Yeniden eğitim (P094)
+`make retrain` (`gymml.retrain.run`) uygulama katkılarıyla (`ml_contributions`, P093) yeni paket üretir:
+- **Veri:** yalnızca hücre başına (cinsiyet × 5 yıllık yaş bandı × 10 kg kilo bandı × hareket) ≥ 20 farklı katkıcısı olan
+  satırlar; süzülen hücre sayısı her raporda. Ham satırlar diske yazılmaz. Katkıcıların %20'si (anahtara göre) kapılar için ayrılır.
+- **Güncellenen:** salon nüfusu δ/κ (önsel = mevcut değer, ağırlığı en az %25 — uygulama kullanıcıları yanlı bir örnek),
+  çapa dışı hareketlerin ρ/τ'su (büzülmeli kestirim; makine/kablo C'de kalır, τ sınıf tabanının altına inmez).
+- **Güncellenmeyen:** çapa dağılım modeli (yarışmacı verisi), genel nüfus kalibrasyonu, 1RM eğrisi (katkı şeması
+  ay başına tek set taşıdığı için öz-denetimli kayıp kurulamıyor; önerilen şema eki raporda, kullanıcı kararı bekliyor).
+- **Kapılar:** altın vektör regresyonu, dışarıda tutulan katkılarda kalibrasyon (KS), skor kayması (medyan |Δ| ≤ 5 puan),
+  akıl sağlığı (tekdüzelik, κ sınırları, oran değişimi ≤ 2×). Kapıdan geçemeyen paket yazılmaz.
+- **Yayın:** P063 betiği, önce %10 kademeli dağıtım. Her sürüm aşağıdaki tabloya satır ekler (hat yazar).
+
 ## Sürüm tablosu
 | Sürüm | Tarih | Veri | Model | Metrikler | Not |
 |---|---|---|---|---|---|
