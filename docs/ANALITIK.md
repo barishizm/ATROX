@@ -6,7 +6,7 @@ Bağlama notları: `shareCompleted` paylaşım sayfası bitişini değil dokunu�
 
 ## İlkeler
 
-- Olaylar kimlik toplamaz: kullanıcı kimliği, e-posta, cihaz tanıtıcısı gönderilmez (TelemetryDeck kimliksiz çalışır).
+- Olaylar kimlik toplamaz: kullanıcı kimliği ve e-posta gönderilmez. TelemetryDeck SDK'sı kendiliğinden uygulama/OS sürümü, cihaz modeli, dil ve tuzlanıp özetlenmiş (hash) bir cihaz tanıtıcısı ekler; bu kullanıcıyla ilişkilendirilmez ama `DeviceID` olarak bildirilir (`docs/VERI-ENVANTERI.md`, `PrivacyInfo.xcprivacy`).
 - Olaylarda **kişisel veri, ağırlık, skor değeri, mesaj içeriği yok**; yalnızca sayım ve kategori. Bu kural tür düzeyinde
   zorlanır: `AnalyticsEvent` (DataKit) kapalı bir enum'dur; serbest metin veya sayı alan bir durum yoktur.
 - Kapatma anahtarı: Ayarlar → Gizlilik → "Anonim kullanım istatistiklerini paylaş" (varsayılan açık). Kapalıyken hiçbir olay

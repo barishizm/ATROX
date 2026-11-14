@@ -8,3 +8,17 @@ p { color: var(--muted); margin: .25rem 0; }
 .name { color: var(--fg); font-size: 1.5rem; font-weight: 700; margin: 1rem 0 .25rem; }
 .button { display: inline-block; margin-top: 1.5rem; padding: .85rem 1.6rem; border-radius: 999px; background: var(--accent);
   color: #fff; font-weight: 700; text-decoration: none; }
+
+/* Legal pages (P101): long-form, left aligned. */
+body.legal { display: block; place-items: unset; }
+body.legal main { max-width: 44rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; text-align: left; }
+body.legal h1 { letter-spacing: .08em; }
+body.legal h2 { margin: 2rem 0 .5rem; font-size: 1.15rem; }
+body.legal p, body.legal li { color: var(--fg); }
+body.legal ul { padding-left: 1.2rem; margin: .5rem 0; }
+body.legal table { width: 100%; border-collapse: collapse; margin: .75rem 0; font-size: .92rem; }
+body.legal th, body.legal td { border-bottom: 1px solid #2a2a2e; padding: .45rem .4rem; text-align: left; vertical-align: top; }
+body.legal a { color: var(--accent); }
+.draft { border: 1px solid var(--accent); border-radius: 12px; padding: .75rem 1rem; color: var(--fg); margin: 1rem 0; }
+.langs a { margin-right: 1rem; }
+.fill { background: #3a2a10; color: #ffd9a0; padding: 0 .25rem; border-radius: 4px; }

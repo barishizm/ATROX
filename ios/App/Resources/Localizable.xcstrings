@@ -3054,13 +3054,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "If you turn it off later, we ask for your data to be deleted."
+            "value": "If you turn it off later, everything shared under your random key is deleted."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Daha sonra kapatırsan, verilerinin silinmesini isteriz."
+            "value": "Daha sonra kapatırsan, rastgele anahtarınla paylaşılan her şey silinir."
           }
         }
       }
