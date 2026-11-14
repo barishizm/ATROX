@@ -54,6 +54,7 @@ final class ActiveWorkoutPresenter {
     /// discarded one just closes the screen.
     func finished(_ result: WorkoutSession.FinishResult, model: ActiveWorkoutModel, container: AppContainer) async {
         guard case .finished(let workout) = result else { return ended() }
+        AppAnalytics.shared.send(.firstWorkoutFinished)
         let records = model.summaryRecords(for: workout)
         let names = model.exerciseNames(of: workout)
         model.recordHits = []

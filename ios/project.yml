@@ -40,6 +40,9 @@ packages:
   GoogleSignIn:
     url: https://github.com/google/GoogleSignIn-iOS
     exactVersion: 10.1.0
+  TelemetryDeck:
+    url: https://github.com/TelemetryDeck/SwiftSDK
+    exactVersion: 2.14.2
 
 schemes:
   ATROX:
@@ -78,6 +81,7 @@ targets:
       - package: DataKit
       - package: DesignSystem
       - package: CoachKit
+      - package: TelemetryDeck
       - package: GoogleSignIn
         product: GoogleSignIn
     # Bundle ID and display name come from Config/Base.xcconfig
@@ -105,6 +109,8 @@ targets:
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
         # Terms of Use / Privacy Policy links on the welcome screen (URLs live in the xcconfig files).
+        # Anonymous analytics (P100). Empty = analytics off (local builds). The ID is not a secret.
+        TelemetryDeckAppID: $(TELEMETRYDECK_APP_ID)
         LegalTermsURL: $(LEGAL_TERMS_URL)
         LegalPrivacyURL: $(LEGAL_PRIVACY_URL)
         # HealthKit (P023). English defaults; TR/EN translations live in App/Resources/InfoPlist.xcstrings.

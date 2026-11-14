@@ -1,3 +1,4 @@
+import DataKit
 import DesignSystem
 import SwiftUI
 
@@ -22,10 +23,23 @@ struct PaywallView: View {
         .navigationTitle("paywall.main.title")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            if model == nil { model = PaywallModel(purchases: container.purchases) }
+            if model == nil {
+                model = PaywallModel(purchases: container.purchases)
+                AppAnalytics.shared.send(.paywallViewed(source: Self.analyticsSource(feature)))
+            }
             await model?.load()
         }
         .accessibilityIdentifier("paywall")
+    }
+
+    private static func analyticsSource(_ feature: ProFeature?) -> AnalyticsEvent.PaywallSource {
+        switch feature {
+        case .coachUnlimited, .proactiveCoach: .coach
+        case .forecast, .allReferenceGroups: .scores
+        case .fullInsightHistory: .history
+        case .advancedShareCards: .other
+        case nil: .settings
+        }
     }
 
     @ViewBuilder

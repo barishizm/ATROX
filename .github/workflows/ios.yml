@@ -8,6 +8,8 @@ on:
       - "ios/**"
       - ".swiftlint.yml"
       - ".swiftformat"
+      - "tools/check_localization.py"
+      - "tools/test_check_localization.py"
       - ".github/workflows/ios.yml"
   workflow_dispatch:
 
@@ -48,6 +50,10 @@ jobs:
           echo "${SWIFTLINT_SHA256}  swiftlint.zip" | shasum -a 256 -c -
           unzip -q swiftlint.zip -d swiftlint
           echo "$RUNNER_TEMP/swiftlint" >> "$GITHUB_PATH"
+      - name: Localization audit (missing keys, format specifiers)
+        run: |
+          python3 tools/test_check_localization.py
+          python3 tools/check_localization.py
       - name: Lint
         # Not --strict: 54 pre-existing warnings are deferred (docs/ILERLEME.md). Errors fail the job.
         run: swiftlint lint --reporter github-actions-logging

@@ -1,3 +1,4 @@
+import DataKit
 import DesignSystem
 import SwiftUI
 
@@ -77,8 +78,10 @@ struct ShareCardSheet: View {
                 .buttonStyle(.borderedProminent)
                 .tint(DSColor.accent)
                 .accessibilityIdentifier("share-link")
+                .simultaneousGesture(TapGesture().onEnded { AppAnalytics.shared.send(.shareCompleted(target: .shareSheet)) })
                 if InstagramStories.isAvailable {
                     Button {
+                        AppAnalytics.shared.send(.shareCompleted(target: .instagramStories))
                         InstagramStories.share(image)
                     } label: {
                         Label("share.instagram", systemImage: "camera").frame(maxWidth: .infinity)

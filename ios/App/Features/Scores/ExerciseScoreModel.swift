@@ -91,7 +91,17 @@ final class ExerciseScoreModel {
     func select(_ group: ReferencePopulation) async {
         guard group != population else { return }
         population = group
+        AppAnalytics.shared.send(.referenceGroupChanged(group: Self.analyticsGroup(group)))
         await reload()
+
+    }
+
+    private static func analyticsGroup(_ group: ReferencePopulation) -> AnalyticsEvent.ReferenceGroup {
+        switch group {
+        case .gym: .gym
+        case .general: .general
+        case .competitor: .competitor
+        }
     }
 
     private func reload() async {
@@ -103,6 +113,7 @@ final class ExerciseScoreModel {
             return
         }
         state = .ready(insight)
+        AppAnalytics.shared.send(.firstScoreViewed)
     }
 
     // MARK: Derived values
