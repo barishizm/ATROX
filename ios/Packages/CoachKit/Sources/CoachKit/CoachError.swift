@@ -29,7 +29,7 @@ public enum CoachError: Error, Sendable, Equatable {
 
     /// From an error body `{ "error": { "code", "message", "details" } }` and the HTTP status.
     public static func from(status: Int, body: Data) -> CoachError {
-        let error = (try? JSONDecoder().decode(JSONValue.self, from: body))?["error"]
+        let error = (try? JSONDecoder().decode(CoachJSON.self, from: body))?["error"]
         let code = error?["code"]?.string
         let details = error?["details"]
         let date = { (key: String) in details?[key]?.string.flatMap(CoachDates.parse) }

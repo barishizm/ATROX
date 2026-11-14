@@ -21,6 +21,11 @@ public struct CoachProposal: Sendable, Equatable, Identifiable, Codable {
         public let exerciseId: String
         public let area: String
 
+        public init(exerciseId: String, area: String) {
+            self.exerciseId = exerciseId
+            self.area = area
+        }
+
         enum CodingKeys: String, CodingKey {
             case exerciseId = "exercise_id"
             case area
@@ -29,11 +34,11 @@ public struct CoachProposal: Sendable, Equatable, Identifiable, Codable {
 
     public let id: String
     public let kind: Kind
-    public let data: JSONValue
+    public let data: CoachJSON
     public let warnings: [Warning]
     public var decision: Decision?
 
-    public init(id: String, kind: Kind, data: JSONValue = .null, warnings: [Warning] = [], decision: Decision? = nil) {
+    public init(id: String, kind: Kind, data: CoachJSON = .null, warnings: [Warning] = [], decision: Decision? = nil) {
         self.id = id
         self.kind = kind
         self.data = data
@@ -47,7 +52,7 @@ public struct CoachProposal: Sendable, Equatable, Identifiable, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         kind = (try? container.decode(Kind.self, forKey: .kind)) ?? .unknown
-        data = try container.decodeIfPresent(JSONValue.self, forKey: .data) ?? .null
+        data = try container.decodeIfPresent(CoachJSON.self, forKey: .data) ?? .null
         warnings = try container.decodeIfPresent([Warning].self, forKey: .warnings) ?? []
         decision = (try? container.decodeIfPresent(Decision.self, forKey: .decision)) ?? nil
     }

@@ -31,7 +31,11 @@ import Testing
 
     @Test func messagesParseProposalsOnToolRows() async throws {
         let spy = Spy()
-        spy.reply = Data(#"[{"id":"22222222-2222-4222-8222-222222222222","role":"tool","content":"{}","status":"complete","created_at":"2026-11-14T10:00:00+00:00","proposal":{"id":"p","kind":"exercise_swap","data":{},"decision":"applied"}}]"#.utf8)
+        spy.reply = Data(
+            ("[{\"id\":\"22222222-2222-4222-8222-222222222222\",\"role\":\"tool\",\"content\":\"{}\",\"status\":\"complete\","
+                + "\"created_at\":\"2026-11-14T10:00:00+00:00\","
+                + "\"proposal\":{\"id\":\"p\",\"kind\":\"exercise_swap\",\"data\":{},\"decision\":\"applied\"}}]").utf8
+        )
         let rows = try await remote(spy).messages(threadId: UUID(), limit: 10, before: Date())
         #expect(rows.first?.proposal?.kind == .exerciseSwap && rows.first?.proposal?.decision == .applied)
         #expect(spy.requests.first?.url?.absoluteString.contains("created_at=lt.") == true)

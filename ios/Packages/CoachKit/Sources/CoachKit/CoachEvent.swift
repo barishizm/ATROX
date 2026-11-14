@@ -31,7 +31,7 @@ public enum CoachEvent: Sendable, Equatable {
     case done(threadId: UUID)
 
     public static func decode(_ frame: SSEFrame) -> CoachEvent? {
-        guard let data = frame.data.data(using: .utf8), let object = try? JSONDecoder().decode(JSONValue.self, from: data) else {
+        guard let data = frame.data.data(using: .utf8), let object = try? JSONDecoder().decode(CoachJSON.self, from: data) else {
             return nil
         }
         switch frame.event {
@@ -61,7 +61,7 @@ public enum CoachEvent: Sendable, Equatable {
         }
     }
 
-    private static func decode<T: Decodable>(_ type: T.Type, from value: JSONValue) throws -> T {
+    private static func decode<T: Decodable>(_ type: T.Type, from value: CoachJSON) throws -> T {
         try JSONDecoder().decode(type, from: JSONEncoder().encode(value))
     }
 }

@@ -95,11 +95,11 @@ public struct SupabaseCoachRemote: CoachRemote {
 
     // MARK: HTTP
 
-    private static func date(_ value: JSONValue?) -> Date? { value?.string.flatMap(CoachDates.parse) }
+    private static func date(_ value: CoachJSON?) -> Date? { value?.string.flatMap(CoachDates.parse) }
 
-    private func get(_ table: String, _ query: [URLQueryItem]) async throws -> [JSONValue] {
+    private func get(_ table: String, _ query: [URLQueryItem]) async throws -> [CoachJSON] {
         let data = try await perform(request("GET", "rest/v1/\(table)", query: query, body: nil))
-        return (try? JSONDecoder().decode([JSONValue].self, from: data)) ?? []
+        return (try? JSONDecoder().decode([CoachJSON].self, from: data)) ?? []
     }
 
     private func send(_ method: String, _ table: String, query: [URLQueryItem], body: [String: String]) async throws {

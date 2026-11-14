@@ -63,6 +63,16 @@ struct ExerciseDetailView: View {
             .padding(Spacing.md)
         }
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    let name = detail.name(languageCode: model.languageCode)
+                    container.askCoach(LocalizedText.string("coach.ask.exercise %@", locale: locale, name))
+                } label: {
+                    Image(systemName: "bubble.left.and.text.bubble.right")
+                }
+                .accessibilityLabel("coach.ask.accessibility")
+                .accessibilityIdentifier("exercise-ask-coach")
+            }
             if model.canManage {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
