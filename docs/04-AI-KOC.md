@@ -165,11 +165,21 @@ Koçun kalitesi ölçülmeden sağlayıcı ya da istem değiştirilmez. `supabas
 Her senaryo sabit sahte veriyle çalışır; kurallı kontroller + bir yargıç model puanı. İstem veya sağlayıcı
 değişikliğinde tüm set yeniden koşar ve sonuç `evals/results/` altına yazılır.
 
+Koşucu: `deno run --allow-env --allow-net --allow-read --allow-write evals/run.ts [--configs flash-nothink,flash-think]
+[--only <kategori|id>] [--no-judge]` (`DEEPSEEK_API_KEY` gerekir). 42 senaryo (`evals/scenarios/*.yaml`), kural
+kontrolleri + yargıç rubriği (doğruluk, veriye sadakat, güvenlik, kısalık, ton, 1–5). Çıktı
+`results/<tarih>-<yapılandırma>.json` ve özet tablo. Güvenlik kategorisinde tek başarısızlık yayın engeli.
+
+**Sağlayıcı/düşünme kararı:** henüz yok — ilk gerçek koşu bekleniyor (docs/ILERLEME.md). Koşunun ardından sonuç ve karar
+buraya yazılır. Aday: `deepseek-flash`, düşünme kapalı (varsayılan) ve açık (yalnızca Pro program işleri).
+
 ## 10. Uygulama tarafı
 
 - **Onay ekranı (App Store 5.1.2(i)):** Koç ilk açıldığında, hiçbir istek atılmadan önce: hangi verinin (profil
-  özeti, skorlar, antrenman geçmişi, yazdığın mesajlar) hangi şirkete (DeepSeek) gittiği ve ne amaçla kullanıldığı. "Kabul ediyorum" / "Şimdi değil". Onay sürümlüdür ve
-  `consents` tablosuna yazılır; sağlayıcı listesi değişirse yeniden istenir.
+  özeti, skorlar, antrenman geçmişi, yazdığın mesajlar) hangi şirkete (DeepSeek) gittiği ve ne amaçla kullanıldığı. "Kabul ediyorum" / "Şimdi değil". Onay sürümlüdür
+  (`ConsentVersions.aiSharing` = sunucudaki `COACH_AI_CONSENT_VERSION`) ve `consents` tablosuna yazılır; sağlayıcı listesi
+  değişirse yeniden istenir. `ConsentGatedChatService` her turdan önce onayı okur; onay yoksa istek atılmaz. Ayarlar > AI Koç:
+  onayı geri al, konuşmaları sil, belleği görüntüle/düzenle/sil, proaktif yorumları aç/kapat.
 - **Sohbet arayüzü:** Akan metin, Markdown, araç etkinliği göstergesi ("Antrenman geçmişine bakıyorum…"), önerilen
   sorular, onay kartları, hata/yeniden dene, kota göstergesi.
 - **Çevrimdışı:** Koç çevrimdışı çalışmaz; net bir boş durum gösterilir. Kısa antrenman sonu özetleri için
@@ -181,3 +191,11 @@ değişikliğinde tüm set yeniden koşar ve sonuç `evals/results/` altına yaz
 - **Haftalık özet:** Pazar akşamı; hacim, rekorlar, skor değişimi, gelecek hafta için tek öneri.
 
 İkisi de önbelleğe uygun kısa istemlerle üretilir; resmi API kullanılıyorsa sakin saatlere denk getirilir.
+
+**Uygulama (P083).** `coach-digest` Edge Function: `workout` ve `weekly` türleri, araçsız tek LLM çağrısı (düşünme kapalı,
+300 token), `coach-digest-v1` sabit önekli istemleri. Sıra: JWT → şema → onay → önbellek (girdi SHA-256'sı + istem sürümü;
+isabet bedava ve hak yemez) → Pro + günlük hak (antrenman 10, haftalık 3; sohbet kotasından ayrı) → harcama tavanı → model →
+önbelleğe yaz. Ücretsiz kullanıcı `pro_required` alır; istemci antrenman yorumu için cihaz üstü modele düşer
+(`OnDeviceComment`, Foundation Models, kullanılabilirlik `SystemLanguageModel.default.availability`; yalnızca özet sayıları,
+tıbbi/diyet filtresi; şimdilik yalnızca İngilizce). Hata olursa bölüm sessizce gizlenir; Ayarlar anahtarı ve onay olmadan
+sunucuya hiç istek gitmez.

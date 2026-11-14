@@ -96,6 +96,10 @@ struct WeeklySummaryView: View {
                                         Text(verbatim: card.value).font(DSFont.headline).foregroundStyle(DSColor.accent)
                                     }
                                 }
+                                if card.isLoading {
+                                    Text(verbatim: "Placeholder comment text that stands in while the coach writes.")
+                                        .font(DSFont.callout).redacted(reason: .placeholder)
+                                }
                                 ForEach(card.lines, id: \.self) { line in
                                     Text(verbatim: line).font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                                 }
@@ -133,6 +137,10 @@ private struct StoryCardView: View {
                 if !card.value.isEmpty {
                     Text(verbatim: card.value).font(DSFont.display).foregroundStyle(DSColor.textPrimary)
                         .minimumScaleFactor(0.5).lineLimit(1)
+                }
+                if card.isLoading {
+                    Text(verbatim: "Placeholder comment text that stands in while the coach writes.")
+                        .font(DSFont.body).multilineTextAlignment(.center).redacted(reason: .placeholder)
                 }
                 ForEach(card.lines, id: \.self) { line in
                     Text(verbatim: line).font(DSFont.body).foregroundStyle(DSColor.textSecondary).multilineTextAlignment(.center)

@@ -47,7 +47,8 @@ extension AppContainer {
               let context = await makeHistoryContext() else { return nil }
         _ = await scoreCenter()
         return WeeklySummaryModel(
-            context: context, stats: TrainingStats(modelContainer: modelContainer), scores: service, insights: insights
+            context: context, stats: TrainingStats(modelContainer: modelContainer), scores: service, insights: insights,
+            comments: await makeCommentProvider()
         )
     }
 }

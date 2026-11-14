@@ -26,7 +26,7 @@ $$;
 -- Owner-readable tables only the service role writes (the app cannot insert or update).
 create or replace function tests.owner_readonly_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['coach_usage', 'entitlements', 'coach_quota']
+  select array['coach_usage', 'entitlements', 'coach_quota', 'coach_digests']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).

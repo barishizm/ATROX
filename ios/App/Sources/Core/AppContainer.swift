@@ -50,6 +50,8 @@ final class AppContainer {
     var requestedRoutine: UUID?
     /// AI Koç (P079/P080): the chat client and the conversation cache; nil without Supabase.
     let coach: CoachDependencies?
+    /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
+    @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).
@@ -120,6 +122,7 @@ final class AppContainer {
         #endif
         await resetScores()
         await coach?.repository.clear()
+        coachConsentState = nil
         await sync?.signOut()
         await root.signOut()
     }
@@ -399,7 +402,8 @@ final class AppContainer {
         )
         return WorkoutSummaryModel(
             workout: workout, summary: summary, unit: unit, names: names, repository: repository,
-            decimalSeparator: decimalSeparator
+            decimalSeparator: decimalSeparator, comments: await makeCommentProvider(),
+            language: language.effectiveLocale().language.languageCode?.identifier == "tr" ? "tr" : "en"
         )
     }
 

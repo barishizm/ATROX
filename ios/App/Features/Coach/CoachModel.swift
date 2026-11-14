@@ -7,6 +7,14 @@ import Observation
 struct CoachDependencies: Sendable {
     let chat: any CoachChatService
     let repository: CoachRepository
+    /// Proactive comments (P083); nil when the server is not configured.
+    let digest: (any CoachDigestService)?
+
+    init(chat: any CoachChatService, repository: CoachRepository, digest: (any CoachDigestService)? = nil) {
+        self.chat = chat
+        self.repository = repository
+        self.digest = digest
+    }
 }
 
 /// The coach tab (P080): one open conversation, the list of conversations, proposal decisions and the starter questions.

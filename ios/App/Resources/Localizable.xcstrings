@@ -17896,6 +17896,758 @@
           }
         }
       }
+    },
+    "coach.consent.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you use the AI Coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Koç'u kullanmadan önce"
+          }
+        }
+      }
+    },
+    "coach.consent.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach answers using your own training data. To do that, some of it is sent to an AI provider. Please read what is shared and decide."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç, kendi antrenman verine bakarak yanıt verir. Bunun için verinin bir kısmı bir yapay zekâ sağlayıcısına gönderilir. Nelerin paylaşıldığını oku ve karar ver."
+          }
+        }
+      }
+    },
+    "coach.consent.sent.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is sent"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neler gönderilir"
+          }
+        }
+      }
+    },
+    "coach.consent.sent.profile": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A profile summary: age, sex, body weight, goal, experience, weekly frequency and equipment"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil özeti: yaş, cinsiyet, vücut ağırlığı, hedef, deneyim, haftalık sıklık ve ekipman"
+          }
+        }
+      }
+    },
+    "coach.consent.sent.scores": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your strength scores and muscle group scores"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç skorların ve kas grubu skorların"
+          }
+        }
+      }
+    },
+    "coach.consent.sent.history": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your workout history: exercises, weights, reps and records"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman geçmişin: hareketler, ağırlıklar, tekrarlar ve rekorlar"
+          }
+        }
+      }
+    },
+    "coach.consent.sent.messages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The messages you write to the coach, and the short notes it keeps about you"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koça yazdığın mesajlar ve koçun senin hakkında tuttuğu kısa notlar"
+          }
+        }
+      }
+    },
+    "coach.consent.recipient.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who receives it"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kimlere gider"
+          }
+        }
+      }
+    },
+    "coach.consent.recipient.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your data goes through ATROX's server to DeepSeek, the company that runs the AI model, and is processed on its servers. DeepSeek handles it under its own privacy policy."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verin ATROX sunucusu üzerinden, yapay zekâ modelini işleten DeepSeek'e gider ve onun sunucularında işlenir. DeepSeek veriyi kendi gizlilik politikasına göre işler."
+          }
+        }
+      }
+    },
+    "coach.consent.purpose.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne amaçla"
+          }
+        }
+      }
+    },
+    "coach.consent.purpose.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only to answer your questions and suggest programs. It is not used for advertising."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yalnızca sorularını yanıtlamak ve program önermek için. Reklam amacıyla kullanılmaz."
+          }
+        }
+      }
+    },
+    "coach.consent.notsent.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is not sent"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neler gönderilmez"
+          }
+        }
+      }
+    },
+    "coach.consent.notsent.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name, email address, account identifiers and raw Apple Health data."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adın, e-posta adresin, hesap kimliklerin ve Apple Sağlık'tan ham veriler."
+          }
+        }
+      }
+    },
+    "coach.consent.withdraw": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can withdraw this at any time in Settings > AI Coach. The rest of the app works without it."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bunu istediğin zaman Ayarlar > AI Koç bölümünden geri alabilirsin. Uygulamanın geri kalanı onsuz da çalışır."
+          }
+        }
+      }
+    },
+    "coach.consent.accept": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I agree"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kabul ediyorum"
+          }
+        }
+      }
+    },
+    "coach.consent.decline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdi değil"
+          }
+        }
+      }
+    },
+    "coach.consent.failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice could not be saved. Please try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçimin kaydedilemedi. Lütfen tekrar dene."
+          }
+        }
+      }
+    },
+    "coach.consent.declined.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach is off"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç kapalı"
+          }
+        }
+      }
+    },
+    "coach.consent.declined.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach needs your permission to share your training data with its AI provider. Nothing is sent without it, and the rest of the app is not affected."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç, antrenman verini yapay zekâ sağlayıcısıyla paylaşmak için iznine ihtiyaç duyar. İzin olmadan hiçbir şey gönderilmez; uygulamanın geri kalanı etkilenmez."
+          }
+        }
+      }
+    },
+    "coach.consent.declined.action": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review and allow"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İncele ve izin ver"
+          }
+        }
+      }
+    },
+    "settings.coach.section": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI Koç"
+          }
+        }
+      }
+    },
+    "settings.coach.sharing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI data sharing"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yapay zekâ veri paylaşımı"
+          }
+        }
+      }
+    },
+    "settings.coach.sharing.on": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İzin verildi"
+          }
+        }
+      }
+    },
+    "settings.coach.sharing.off": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapalı"
+          }
+        }
+      }
+    },
+    "settings.coach.withdraw": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Withdraw consent"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Onayı geri al"
+          }
+        }
+      }
+    },
+    "settings.coach.withdraw.confirm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Withdraw AI data sharing?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veri paylaşımı onayı geri alınsın mı?"
+          }
+        }
+      }
+    },
+    "settings.coach.withdraw.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach is switched off and nothing more is sent. Past conversations stay until you delete them."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç devre dışı kalır ve artık hiçbir şey gönderilmez. Geçmiş konuşmalar sen silene kadar durur."
+          }
+        }
+      }
+    },
+    "settings.coach.grant": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review and allow"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İncele ve izin ver"
+          }
+        }
+      }
+    },
+    "settings.coach.proactive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach comments"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç yorumları"
+          }
+        }
+      }
+    },
+    "settings.coach.memory": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach memory"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç belleği"
+          }
+        }
+      }
+    },
+    "settings.coach.deleteChats": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete conversation history"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konuşma geçmişini sil"
+          }
+        }
+      }
+    },
+    "settings.coach.deleteChats.confirm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all coach conversations?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm koç konuşmaları silinsin mi?"
+          }
+        }
+      }
+    },
+    "settings.coach.deleteChats.message": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This permanently deletes them from this device and the server. The coach's memory notes are kept."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hem bu cihazdan hem sunucudan kalıcı olarak silinir. Koçun bellek notları kalır."
+          }
+        }
+      }
+    },
+    "settings.coach.deleted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conversations deleted."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konuşmalar silindi."
+          }
+        }
+      }
+    },
+    "settings.coach.deleteFailed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not delete. Check your connection and try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silinemedi. Bağlantını kontrol edip tekrar dene."
+          }
+        }
+      }
+    },
+    "settings.coach.footer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach comments are short notes after a workout and in the weekly summary. They need AI data sharing to be allowed."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç yorumları, antrenman sonunda ve haftalık özette görünen kısa notlardır. Yapay zekâ veri paylaşımına izin verilmiş olmasını gerektirir."
+          }
+        }
+      }
+    },
+    "coach.memory.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach memory"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç belleği"
+          }
+        }
+      }
+    },
+    "coach.memory.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach has not saved anything about you yet."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç henüz senin hakkında bir şey kaydetmedi."
+          }
+        }
+      }
+    },
+    "coach.memory.failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load the notes."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notlar yüklenemedi."
+          }
+        }
+      }
+    },
+    "coach.memory.source.coach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved by the coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç kaydetti"
+          }
+        }
+      }
+    },
+    "coach.memory.source.user": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Written by you"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen yazdın"
+          }
+        }
+      }
+    },
+    "coach.memory.edit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Düzenle"
+          }
+        }
+      }
+    },
+    "coach.memory.save": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydet"
+          }
+        }
+      }
+    },
+    "coach.memory.delete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sil"
+          }
+        }
+      }
+    },
+    "coach.memory.footer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The coach keeps at most 20 short notes. Swipe to edit or delete."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç en fazla 20 kısa not tutar. Düzenlemek veya silmek için kaydır."
+          }
+        }
+      }
+    },
+    "summary.coach.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç"
+          }
+        }
+      }
+    },
+    "summary.coach.onDevice": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Written on your device"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cihazında yazıldı"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

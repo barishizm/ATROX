@@ -42,7 +42,7 @@ export interface QuotaDecision {
 
 export interface UsageRow {
   user_id: string;
-  thread_id: string;
+  thread_id: string | null;
   provider: string;
   model: string;
   prompt_tokens: number;

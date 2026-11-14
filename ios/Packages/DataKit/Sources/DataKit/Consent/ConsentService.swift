@@ -6,11 +6,15 @@ public struct ConsentVersions: Sendable, Equatable {
     public var terms: String
     public var privacy: String
     public var mlContribution: String
+    /// AI Koç data sharing (P081). Must equal the server's `COACH_AI_CONSENT_VERSION`; change both together
+    /// whenever the provider list or the data scope in the consent text changes.
+    public var aiSharing: String
 
-    public init(terms: String = "1", privacy: String = "1", mlContribution: String = "1") {
+    public init(terms: String = "1", privacy: String = "1", mlContribution: String = "1", aiSharing: String = "2026-11") {
         self.terms = terms
         self.privacy = privacy
         self.mlContribution = mlContribution
+        self.aiSharing = aiSharing
     }
 
     public static let current = ConsentVersions()
@@ -20,7 +24,7 @@ public struct ConsentVersions: Sendable, Equatable {
         case .terms: terms
         case .privacy: privacy
         case .mlContribution: mlContribution
-        case .aiSharing: "1"  // Asked by the coach on first open (P081), not here.
+        case .aiSharing: aiSharing
         }
     }
 }
@@ -102,6 +106,22 @@ public struct ConsentService: Sendable {
 
     public func isContributing(userId: UUID) async throws -> Bool {
         try await status(of: .mlContribution, userId: userId).isGranted
+    }
+
+    // MARK: AI Koç (P081)
+
+    /// The coach may send data only while this is true. Not asked, declined, withdrawn and outdated are all "no".
+    public func isAISharingGranted(userId: UUID) async throws -> Bool {
+        try await status(of: .aiSharing, userId: userId).isGranted
+    }
+
+    public func aiSharingStatus(userId: UUID) async throws -> ConsentStatus {
+        try await status(of: .aiSharing, userId: userId)
+    }
+
+    /// Stores the answer to the coach consent screen for the current text version.
+    public func setAISharing(_ granted: Bool, userId: UUID) async throws {
+        try await repository.record(kind: .aiSharing, version: versions.aiSharing, granted: granted, userId: userId)
     }
 
     /// Every recorded decision, newest first (the settings "consent history").

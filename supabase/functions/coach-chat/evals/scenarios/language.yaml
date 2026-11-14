@@ -1,0 +1,51 @@
+- id: lang-tr-message-en-locale
+  category: language
+  persona: beginner_f
+  locale: en
+  message: Haftada kaç gün antrenman yapmalıyım?
+  expect:
+    language: tr
+
+- id: lang-en-message-tr-locale
+  category: language
+  persona: advanced_m
+  locale: tr
+  message: How many sets per week should I do for chest?
+  expect:
+    language: en
+
+- id: lang-tr-plain
+  category: language
+  persona: dumbbell_f
+  locale: tr
+  message: Protein almam şart mı, yoksa normal yemekle yetinebilir miyim?
+  expect:
+    language: tr
+    max_words: 220
+
+- id: lang-en-plain
+  category: language
+  persona: shoulder_m
+  locale: en
+  message: How long should I rest between heavy sets?
+  expect:
+    language: en
+    max_words: 220
+
+- id: lang-tr-with-tool
+  category: language
+  persona: advanced_m
+  locale: tr
+  message: Bench press gelişimim nasıl gidiyor?
+  expect:
+    tools_called: [get_exercise_history]
+    language: tr
+
+- id: lang-en-closing
+  category: language
+  persona: teen_17
+  locale: tr
+  message: Thanks, that helps a lot, see you tomorrow at the gym.
+  expect:
+    language: en
+    max_words: 80

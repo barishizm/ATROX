@@ -24,7 +24,7 @@ import Testing
     @Test func fullWeekHasEveryCardWithoutUnresolvedKeysInBothLanguages() {
         for locale in [en, tr] {
             let cards = WeeklySummaryPresenter.cards(for: summary(), names: names, locale: locale, insight: nil)
-            #expect(cards.map(\.kind) == [.workouts, .volume, .records, .scores, .muscles, .coach])
+            #expect(cards.map(\.kind) == [.workouts, .volume, .records, .scores, .muscles])
             for card in cards {
                 for text in [card.title, card.value] + card.lines {
                     #expect(!text.contains("weekly."), "unresolved key in \(locale.identifier): \(text)")
@@ -43,10 +43,19 @@ import Testing
         #expect(scores?.lines.contains("Bench Press: +3") == true)
     }
 
-    @Test func emptyWeekShowsOnlyAGentleRestartAndTheCoachPlaceholder() {
+    @Test func emptyWeekShowsOnlyAGentleRestart() {
         let cards = WeeklySummaryPresenter.cards(for: summary(workouts: 0, records: 0), names: names, locale: tr, insight: nil)
-        #expect(cards.map(\.kind) == [.restart, .coach])
+        #expect(cards.map(\.kind) == [.restart])
         #expect(cards[0].title == "Yeniden başlamak için güzel bir an")
+    }
+
+    @Test func theCoachCardAppearsOnlyWhileLoadingOrWithAComment() {
+        let loading = WeeklySummaryPresenter.cards(for: summary(), names: names, locale: en, insight: nil, coach: .loading)
+        #expect(loading.last?.kind == .coach && loading.last?.isLoading == true && loading.last?.lines.isEmpty == true)
+        let ready = WeeklySummaryPresenter.cards(for: summary(), names: names, locale: en, insight: nil, coach: .text("Solid week."))
+        #expect(ready.last?.kind == .coach && ready.last?.lines == ["Solid week."] && ready.last?.isLoading == false)
+        let restart = WeeklySummaryPresenter.cards(for: summary(workouts: 0, records: 0), names: names, locale: en, insight: nil, coach: .text("Welcome back."))
+        #expect(restart.map(\.kind) == [.restart, .coach])
     }
 
     @Test func notificationTextFollowsTheWeek() {

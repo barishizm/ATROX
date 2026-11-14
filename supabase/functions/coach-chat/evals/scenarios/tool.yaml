@@ -1,0 +1,65 @@
+- id: tool-bench-history-en
+  category: tool
+  persona: advanced_m
+  locale: en
+  message: How has my bench press been going over the last two months?
+  note: Must look up the bench press history, not answer from memory.
+  expect:
+    tools_called: [get_exercise_history]
+    tool_args:
+      get_exercise_history: { exercise_id: barbell-bench-press }
+    must_match:
+      - ['140', '137\.5', '135', '132\.5']
+    no_invented_numbers: true
+    language: en
+
+- id: tool-recent-workouts-tr
+  category: tool
+  persona: beginner_f
+  locale: tr
+  message: Son antrenmanlarım nasıl geçti?
+  expect:
+    tools_called: [get_recent_workouts]
+    language: tr
+    no_invented_numbers: true
+
+- id: tool-scores-tr
+  category: tool
+  persona: advanced_m
+  locale: tr
+  message: Güç skorum kaç ve en zayıf yerim neresi?
+  expect:
+    tools_called: [get_scores]
+    must_match:
+      - ['81']
+    language: tr
+
+- id: tool-routine-en
+  category: tool
+  persona: advanced_m
+  locale: en
+  message: What is in my current routine?
+  expect:
+    tools_called: [get_routine]
+    must_match:
+      - ['Upper']
+    no_proposal: true
+
+- id: tool-weekly-volume-en
+  category: tool
+  persona: dumbbell_f
+  locale: en
+  message: Is my weekly training volume going up or down?
+  expect:
+    tools_called: [get_weekly_volume]
+    tools_not_called: [propose_routine]
+
+- id: tool-search-en
+  category: tool
+  persona: dumbbell_f
+  locale: en
+  message: Which exercises can I do at home that hit my back?
+  note: Equipment is dumbbells only; the search must respect that.
+  expect:
+    tools_called: [search_exercises]
+    must_not_match: ['barbell row', 'lat pulldown']

@@ -11,22 +11,39 @@ struct WeeklyCard: Identifiable, Equatable {
     /// The big number or phrase; empty for text-only cards.
     let value: String
     let lines: [String]
+    /// The coach's comment is still being written (P083): the card shows a skeleton.
+    var isLoading = false
 
     var id: String { kind.rawValue }
 }
 
+/// What the coach card shows (P083). Anything but a ready comment keeps the card out of the list.
+enum CoachCardState: Equatable {
+    case hidden
+    case loading
+    case text(String)
+}
+
 /// Turns a `WeeklySummary` into localized text (P070).
 enum WeeklySummaryPresenter {
-    static func cards(for summary: WeeklySummary, names: [String: String], locale: Locale, insight: InsightItem?) -> [WeeklyCard] {
+    static func cards(
+        for summary: WeeklySummary, names: [String: String], locale: Locale, insight: InsightItem?, coach state: CoachCardState = .hidden
+    ) -> [WeeklyCard] {
         func text(_ key: String, _ args: CVarArg...) -> String {
             LocalizedText.string(key, locale: locale, arguments: args)
         }
-        let coach = WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [text("weekly.coach.placeholder")])
+        let coach: [WeeklyCard]
+        switch state {
+        case .hidden: coach = []
+        case .loading:
+            coach = [WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [], isLoading: true)]
+        case .text(let comment):
+            coach = [WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [comment])]
+        }
         guard !summary.isEmpty else {
             return [
-                WeeklyCard(kind: .restart, icon: "arrow.clockwise", title: text("weekly.restart.title"), value: "", lines: [text("weekly.restart.body")]),
-                coach,
-            ]
+                WeeklyCard(kind: .restart, icon: "arrow.clockwise", title: text("weekly.restart.title"), value: "", lines: [text("weekly.restart.body")])
+            ] + coach
         }
         var cards: [WeeklyCard] = []
         let goalLine = summary.metGoal ? text("weekly.workouts.met") : text("weekly.workouts.left %lld", summary.goal - summary.workouts)
@@ -53,8 +70,7 @@ enum WeeklySummaryPresenter {
         if let insight {
             cards.append(WeeklyCard(kind: .insight, icon: insight.icon, title: text("weekly.card.insight"), value: "", lines: [insight.title, insight.body]))
         }
-        cards.append(coach)
-        return cards
+        return cards + coach
     }
 
     /// "9 Nov – 15 Nov".
