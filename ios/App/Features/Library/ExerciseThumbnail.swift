@@ -18,10 +18,16 @@ actor ThumbnailLoader {
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         session = URLSession(configuration: configuration)
         memory.countLimit = 400
+        // Decoded bitmaps, not files, fill memory: cap them by size so a long scroll cannot grow without bound (P098).
+        memory.totalCostLimit = 24 << 20
     }
 
     /// `https://<project>.supabase.co/storage/v1/object/public/exercise-images`
     func configure(storageBaseURL: URL?) { baseURL = storageBaseURL }
+
+    private static func cost(of image: UIImage) -> Int {
+        Int(image.size.width * image.scale * image.size.height * image.scale) * 4
+    }
 
     func image(named fileName: String) async -> UIImage? {
         let key = fileName as NSString
@@ -36,8 +42,11 @@ actor ThumbnailLoader {
         } else {
             image = nil
         }
-        if let image { memory.setObject(image, forKey: key) }
-        return image
+        // Decode here, off the main thread, instead of lazily during the first draw.
+        guard let image else { return nil }
+        let ready = image.preparingForDisplay() ?? image
+        memory.setObject(ready, forKey: key, cost: Self.cost(of: ready))
+        return ready
     }
 }
 

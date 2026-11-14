@@ -11,17 +11,28 @@ public struct CatalogService: Sendable {
 
     private let importer: CatalogImporter
     private let loadBundled: PackageLoader
+    /// Version of the bundled file read from its name alone; nil when unknown (then the file is decoded to find out).
+    private let bundledVersion: @Sendable () -> Int?
     private let remote: (any CatalogRemote)?
     private let clock: @Sendable () -> Date
 
     public init(
         modelContainer: ModelContainer,
-        bundled: @escaping PackageLoader = { try BundledCatalog.load() },
+        bundled: PackageLoader? = nil,
+        bundledVersion: (@Sendable () -> Int?)? = nil,
         remote: (any CatalogRemote)? = nil,
         clock: @escaping @Sendable () -> Date = { Date() }
     ) {
         importer = CatalogImporter(modelContainer: modelContainer)
-        loadBundled = bundled
+        loadBundled = bundled ?? { try BundledCatalog.load() }
+        // Only the real bundle can be checked by file name; an injected loader is always decoded unless told otherwise.
+        if let bundledVersion {
+            self.bundledVersion = bundledVersion
+        } else if bundled == nil {
+            self.bundledVersion = { BundledCatalog.bundledVersion() }
+        } else {
+            self.bundledVersion = { nil }
+        }
         self.remote = remote
         self.clock = clock
     }
@@ -33,6 +44,10 @@ public struct CatalogService: Sendable {
     @discardableResult
     public func bootstrap() async throws -> CatalogBootstrapResult {
         let installed = try await importer.installedInfo()
+        // Every launch after the first: the file name already says nothing newer is bundled, so skip decoding ~2 MB (P098).
+        if let installed, let bundled = bundledVersion(), installed.version >= bundled {
+            return .upToDate(version: installed.version)
+        }
         let package = try loadBundled()
         if let installed, installed.version >= package.version {
             return .upToDate(version: installed.version)
@@ -69,9 +84,14 @@ public enum BundledCatalog {
             .max { $0.0 < $1.0 }?.1
     }
 
-    static func version(ofFileNamed name: String) -> Int? {
+    public static func version(ofFileNamed name: String) -> Int? {
         guard name.hasPrefix("catalog.v"), name.hasSuffix(".json") else { return nil }
         return Int(name.dropFirst("catalog.v".count).dropLast(".json".count))
+    }
+
+    /// Version of the bundled file taken from its name, without reading the file.
+    public static func bundledVersion(in bundle: Bundle = .main) -> Int? {
+        url(in: bundle).flatMap { version(ofFileNamed: $0.lastPathComponent) }
     }
 
     public static func load(bundle: Bundle = .main) throws -> CatalogPackage {
