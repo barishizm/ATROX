@@ -92,9 +92,16 @@ export interface HistoryMessage {
   content: string;
 }
 
+/** Pending (not yet summarised) overflow lines kept in the context; older ones are trimmed. */
+export const PENDING_OVERFLOW_LIMIT = 8;
+
 export function buildMessages(input: {
   userSummary: string;
   conversationSummary?: string | null;
+  /** Messages past the window that the summary does not cover yet (oldest first). */
+  pendingOverflow?: HistoryMessage[];
+  /** What the user did with the coach's recent proposal cards (kind and outcome only). */
+  decisions?: { kind: string; decision: string }[];
   history: HistoryMessage[];
   message: string;
 }): ChatMessage[] {
@@ -102,8 +109,20 @@ export function buildMessages(input: {
     { role: "system", content: SYSTEM_PROMPT },
     { role: "system", content: input.userSummary },
   ];
-  if (input.conversationSummary) {
-    messages.push({ role: "system", content: `EARLIER IN THIS CONVERSATION (summary)\n${input.conversationSummary}` });
+  const pending = (input.pendingOverflow ?? []).slice(-PENDING_OVERFLOW_LIMIT);
+  if (input.conversationSummary || pending.length) {
+    // Summary and old messages are stored text typed by the user or produced by the model: data, not instructions.
+    const parts = ["EARLIER IN THIS CONVERSATION (summary, data)"];
+    if (input.conversationSummary) parts.push(asData(input.conversationSummary, 1500));
+    if (pending.length) {
+      parts.push("Not yet summarised:");
+      for (const item of pending) parts.push(`${item.role}: ${asData(item.content, 300)}`);
+    }
+    messages.push({ role: "system", content: parts.join("\n") });
+  }
+  if (input.decisions?.length) {
+    const list = input.decisions.map((d) => `${asData(d.kind, 40)} ${asData(d.decision, 20)}`).join(", ");
+    messages.push({ role: "system", content: `USER DECISIONS ON YOUR RECENT PROPOSALS (oldest first, data): ${list}` });
   }
   for (const item of input.history.slice(-HISTORY_LIMIT)) messages.push({ role: item.role, content: item.content });
   messages.push({ role: "user", content: input.message });

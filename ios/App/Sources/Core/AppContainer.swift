@@ -1,3 +1,4 @@
+import CoachKit
 import DataKit
 import Foundation
 import Observation
@@ -45,6 +46,10 @@ final class AppContainer {
     var pendingCoachPrompt: String?
     /// A tap on the weekly summary notification (P070); the shell opens the summary and clears it.
     var requestedWeeklySummary = false
+    /// A routine another screen wants opened in the Workout tab (the coach's "open program"); the shell clears it.
+    var requestedRoutine: UUID?
+    /// AI Koç (P079/P080): the chat client and the conversation cache; nil without Supabase.
+    let coach: CoachDependencies?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).
@@ -71,8 +76,10 @@ final class AppContainer {
         catalog: CatalogService? = nil,
         exerciseImageBaseURL: URL? = nil,
         sync: SyncCoordinator? = nil,
-        modelUpdater: ModelUpdater? = nil
+        modelUpdater: ModelUpdater? = nil,
+        coach: CoachDependencies? = nil
     ) {
+        self.coach = coach
         self.sync = sync
         self.modelUpdater = modelUpdater
         self.scoreService = Self.makeScoreService(
@@ -112,6 +119,7 @@ final class AppContainer {
         debugUser = nil
         #endif
         await resetScores()
+        await coach?.repository.clear()
         await sync?.signOut()
         await root.signOut()
     }
@@ -457,7 +465,7 @@ final class AppContainer {
         modelContainer.map { WorkoutHealthRecorder(workouts: SwiftDataWorkoutRepository(modelContainer: $0), health: health) }
     }
 
-    private func planStore(for userId: UUID) -> RoutinePlanStore {
+    func planStore(for userId: UUID) -> RoutinePlanStore {
         if let existing = planStores[userId] { return existing }
         let store = RoutinePlanStore(userId: userId)
         planStores[userId] = store
@@ -486,7 +494,7 @@ final class AppContainer {
             return AppContainer(
                 sessionService: AuthSessionService(auth: fake), authService: fake,
                 accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth(),
-                catalog: store.map { CatalogService(modelContainer: $0) }
+                catalog: store.map { CatalogService(modelContainer: $0) }, coach: uiTestCoach()
             )
         }
         #endif
@@ -511,13 +519,14 @@ final class AppContainer {
         }
         let account = SupabaseAccountService(configuration: config, accessToken: accessToken, appleAuthorizationCode: appleCode)
         let remote = SupabaseRemoteStore(configuration: config, accessToken: accessToken)
+        let coach = makeCoach(config: config, accessToken: accessToken, refreshedToken: { await auth.refreshedAccessToken() })
         return AppContainer(
             sessionService: AuthSessionService(auth: auth), authService: auth, accountService: account, modelContainer: store,
             health: HealthKitService(),
             catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) },
             exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images"),
             sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) },
-            modelUpdater: makeModelUpdater(config: config, info: info)
+            modelUpdater: makeModelUpdater(config: config, info: info), coach: coach
         )
     }
 

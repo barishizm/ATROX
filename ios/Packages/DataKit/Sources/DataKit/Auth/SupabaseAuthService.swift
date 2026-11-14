@@ -178,6 +178,11 @@ public final class SupabaseAuthService: AuthService {
         try? await client.auth.session.accessToken
     }
 
+    /// Forces a token refresh (the coach stream got a 401 although the cached token looked valid); nil on failure.
+    public func refreshedAccessToken() async -> String? {
+        try? await client.auth.refreshSession().accessToken
+    }
+
     /// Whether the signed-in account has a Sign in with Apple identity (account deletion must revoke its tokens).
     public func hasAppleIdentity() async -> Bool {
         guard let user = try? await client.auth.session.user else { return false }

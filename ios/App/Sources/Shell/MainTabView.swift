@@ -87,6 +87,13 @@ struct MainTabView: View {
             today.popToRoot()
             today.push(.weeklySummary)
         }
+        .onChange(of: container.requestedRoutine, initial: true) { _, id in
+            guard let id else { return }
+            container.requestedRoutine = nil
+            selection = .workout
+            workout.popToRoot()
+            workout.push(.routine(id: id))
+        }
         .task { await workoutPresenter.prepare(container: container) }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
             if let summary = workoutPresenter.summary {

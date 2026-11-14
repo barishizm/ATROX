@@ -195,9 +195,9 @@ Deno.test("coach-chat streams text, tool activity and a proposal; stores the tur
   assertEquals(response.status, 200);
   assert(response.headers.get("Content-Type")?.startsWith("text/event-stream"));
   const events = frames(await response.text());
-  assertEquals(events.map((event) => event.type), ["tool_activity", "tool_activity", "proposal", "text_delta", "usage", "done"]);
-  assertEquals(events[0].data, { name: "coach.tool.propose_routine", status: "started" });
-  assertEquals(events[2].data.proposal.kind, "routine");
+  assertEquals(events.map((event) => event.type), ["quota", "tool_activity", "tool_activity", "proposal", "text_delta", "usage", "done"]);
+  assertEquals(events[1].data, { name: "coach.tool.propose_routine", status: "started" });
+  assertEquals(events[3].data.proposal.kind, "routine");
   assertEquals(events.at(-2)?.data, { prompt_tokens: 3100, cached_tokens: 2500, completion_tokens: 90 });
   assertEquals(events.at(-1)?.data, { thread_id: THREAD });
   assert((llm as ScriptedLLM).calls[0].thinking, "pro + program request → thinking on");
@@ -234,4 +234,47 @@ Deno.test("coach-chat: free tier keeps thinking off; a new thread gets a fresh i
   const events = frames(await response.text());
   assertEquals((llm as ScriptedLLM).calls[0].thinking, false);
   assert(/^[0-9a-f-]{36}$/.test(events.at(-1)?.data.thread_id));
+});
+
+Deno.test("an overflowing thread is summarised after the turn and the summary is stored with usage", async () => {
+  const overflow = Array.from({ length: 4 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: `old ${i}`, created_at: `2026-11-01T10:00:0${i}+00:00` }));
+  const { handler, db, service } = setup({
+    script: [say("Answer."), say("Summary of the old part.")],
+    history: { messages: [], summary: "Earlier summary", overflow, last_user_message: null, last_turn_complete: false },
+  });
+  const response = await handler(chat({ message: "Next question", locale: "en", thread_id: THREAD }));
+  await response.text();
+  const stored = db.called("coach_set_summary");
+  assertEquals(stored.length, 1);
+  assertEquals(stored[0].args.p_summary, "Summary of the old part.");
+  assertEquals(stored[0].args.p_through, "2026-11-01T10:00:03+00:00");
+  assert(service.usage.some((row) => row.agent_steps === 0 && row.status === "ok"), "the summary call is accounted for");
+});
+
+Deno.test("a failing summary never fails the turn", async () => {
+  const overflow = Array.from({ length: 4 }, (_, i) => ({ role: "user", content: `old ${i}`, created_at: `2026-11-01T10:00:0${i}+00:00` }));
+  const { handler, db } = setup({
+    script: [say("Answer."), new Error("provider down")],
+    history: { messages: [], summary: null, overflow, last_user_message: null, last_turn_complete: false },
+  });
+  const response = await handler(chat({ message: "Next question", locale: "en", thread_id: THREAD }));
+  assertEquals(response.status, 200);
+  assert((await response.text()).includes("event: done"));
+  assertEquals(db.called("coach_set_summary").length, 0);
+});
+
+Deno.test("a client message id becomes the user row id, so a retry cannot store the message twice", async () => {
+  const { handler, db } = setup();
+  const id = "22222222-2222-4222-8222-222222222222";
+  await (await handler(chat({ message: "Hello", locale: "en", client_message_id: id }))).text();
+  const rows = db.called("coach_save_turn")[0].args.p_messages as { id: string; role: string }[];
+  assertEquals(rows[0], { ...rows[0], id, role: "user" });
+});
+
+Deno.test("the stream opens with the remaining quota for the app's meter", async () => {
+  const { handler } = setup();
+  const events = frames(await (await handler(chat({ message: "Hello", locale: "en" }))).text());
+  assertEquals(events[0].type, "quota");
+  assertEquals(events[0].data.daily_messages, 5);
+  assertEquals(events[0].data.tier, "free");
 });

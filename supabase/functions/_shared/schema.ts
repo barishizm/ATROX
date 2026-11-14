@@ -6,6 +6,8 @@ export const MAX_MESSAGE_LENGTH = 2000;
 
 export const coachChatRequest = z.object({
   thread_id: z.string().uuid().optional(),
+  /** Id of the user's message row. A retry sends the same id, so the server never stores the message twice (P079). */
+  client_message_id: z.string().uuid().optional(),
   message: z.string().trim().min(1).max(MAX_MESSAGE_LENGTH),
   locale: z.string().regex(/^[a-z]{2}(-[A-Za-z0-9]{2,8})?$/),
   /** IANA zone of the device; the daily quota resets at the user's local midnight (P077). */
