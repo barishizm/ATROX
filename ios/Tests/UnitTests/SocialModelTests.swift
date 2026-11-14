@@ -103,3 +103,59 @@ import Testing
         #expect(model.connections.isEmpty)
     }
 }
+
+@MainActor
+@Suite struct SocialRankingModelTests {
+    private let bob = SocialPerson(id: UUID(), username: "bob", displayName: "Bob", relation: .friend, score: 72, weeklyWorkouts: 2)
+    private let me = SocialProfile(username: "me_lifts", displayName: "Me", sharesScore: true)
+
+    @Test func ranksMeAmongFriendsAndMarksMyRow() async throws {
+        let service = FakeSocialService(profile: me, people: [bob])
+        try await service.publishScore(ScorePublication(score: 80, isProvisional: false, weeklyWorkouts: 4))
+        let model = SocialRankingModel(service: service)
+        await model.load()
+        #expect(model.phase == .ready)
+        #expect(model.current.map(\.username) == ["me_lifts", "bob"])
+        #expect(model.current.first?.isMe == true)
+        #expect(model.hasCompetition)
+        await model.select(.weekly)
+        #expect(model.current.map(\.username) == ["me_lifts", "bob"])
+    }
+
+    @Test func sharingOffLeavesMyValueEmptyAndOffersAHint() async {
+        let service = FakeSocialService(profile: SocialProfile(username: "me_lifts", displayName: "Me"), people: [bob])
+        let model = SocialRankingModel(service: service)
+        await model.load()
+        #expect(model.myValueMissing)
+        #expect(model.current.first?.username == "bob")
+        #expect(!model.hasCompetition)
+    }
+
+    @Test func failureOnFirstLoadShowsFailed() async {
+        let service = FakeSocialService(profile: me)
+        await service.setFailure(.failed)
+        let model = SocialRankingModel(service: service)
+        await model.load()
+        #expect(model.phase == .failed)
+    }
+
+    @Test func monthlyValuesCarryASignOnlyWhenPositive() {
+        #expect(SocialRankingModel.valueText(3, period: .month) == "+3")
+        #expect(SocialRankingModel.valueText(0, period: .month) == "0")
+        #expect(SocialRankingModel.valueText(3, period: .score) == "3")
+    }
+
+    @Test func inviteLinkResolvesHiddenPeopleAndEdgeCases() async {
+        let hidden = SocialPerson(id: UUID(), username: "hidden_one", displayName: "Hidden", relation: .none)
+        let model = SocialModel(service: FakeSocialService(profile: me, people: [hidden]))
+        await model.loadInvite("Hidden_One")
+        #expect(model.invite == .person(hidden))
+        await model.loadInvite("me_lifts")
+        #expect(model.invite == .itsMe)
+        await model.loadInvite("nobody_here")
+        #expect(model.invite == .notFound)
+        let signedOut = SocialModel(service: FakeSocialService())
+        await signedOut.loadInvite("hidden_one")
+        #expect(signedOut.invite == .needsProfile)
+    }
+}

@@ -70,6 +70,53 @@ import Testing
     }
 }
 
+@Suite struct RankingTests {
+    private func entry(_ name: String, _ value: Int?) -> RankingEntry {
+        RankingEntry(id: UUID(), rank: 0, username: name, displayName: name, value: value)
+    }
+
+    @Test func ranksHighestFirstWithSharedRanksOnTies() {
+        let ranked = RankingEntry.ranked([entry("c", 50), entry("a", 70), entry("b", 70), entry("d", nil)])
+        #expect(ranked.map(\.username) == ["a", "b", "c", "d"])
+        #expect(ranked.map(\.rank) == [1, 1, 3, 4])
+    }
+
+    @Test func rowsWithoutAValueShareTheLastRank() {
+        let ranked = RankingEntry.ranked([entry("a", nil), entry("b", nil), entry("c", 10)])
+        #expect(ranked.map(\.rank) == [1, 2, 2])
+    }
+
+    @Test func decodesRankingAndPublishResult() async throws {
+        let id = UUID()
+        let body = """
+        [{"rank":1,"user_id":"\(id.uuidString.lowercased())","username":"alice","display_name":"Alice","avatar_emoji":"🔥",\
+        "avatar_color":"sky","value":61,"provisional":true,"is_me":true}]
+        """
+        let recorder = Recorder()
+        let rows = try await SupabaseSocialService(baseURL: URL(string: "https://x.test")!, anonKey: "a", accessToken: { "t" }) { request in
+            recorder.requests.withLock { $0.append(request) }
+            return (Data(body.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+        }.ranking(.month)
+        #expect(rows.first?.value == 61 && rows.first?.isProvisional == true && rows.first?.isMe == true)
+        #expect(recorder.requests.withLock { $0.first?.url?.path } == "/rest/v1/rpc/friends_leaderboard")
+
+        let published = SupabaseSocialService(baseURL: URL(string: "https://x.test")!, anonKey: "a", accessToken: { "t" }) { request in
+            #expect(request.url?.path == "/functions/v1/publish-score")
+            return (Data(#"{"published":false,"reason":"sharing_off"}"#.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+        }
+        #expect(try await published.publishScore(ScorePublication(score: 60, isProvisional: false, weeklyWorkouts: 2)) == false)
+    }
+
+    @Test func fakePublishesOnlyWhileSharing() async throws {
+        let off = FakeSocialService(profile: SocialProfile(username: "me", displayName: "Me"))
+        #expect(try await off.publishScore(ScorePublication(score: 60, isProvisional: false, weeklyWorkouts: 2)) == false)
+        #expect(try await off.ranking(.score).first?.value == nil)
+        let on = FakeSocialService(profile: SocialProfile(username: "me", displayName: "Me", sharesScore: true))
+        #expect(try await on.publishScore(ScorePublication(score: 60, isProvisional: false, weeklyWorkouts: 2)) == true)
+        #expect(try await on.ranking(.score).first?.value == 60)
+    }
+}
+
 @Suite struct FakeSocialServiceTests {
     @Test func requestFlowAndBlock() async throws {
         let bob = SocialPerson(id: UUID(), username: "bob", displayName: "Bob", relation: .none)

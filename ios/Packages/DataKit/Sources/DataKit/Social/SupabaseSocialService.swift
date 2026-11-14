@@ -59,6 +59,11 @@ public struct SupabaseSocialService: SocialService {
         try Self.decode([PersonRow].self, try await rpc("search_users", ["p_query": SocialTextPolicy.canonical(query)])).map(\.person)
     }
 
+    public func resolveInvite(_ username: String) async throws -> SocialPerson? {
+        let data = try await rpc("resolve_invite", ["p_username": SocialTextPolicy.canonical(username)])
+        return try Self.decode([PersonRow].self, data).first?.person
+    }
+
     public func connections() async throws -> [SocialPerson] {
         try Self.decode([PersonRow].self, try await rpc("list_social", [:])).map(\.person)
     }
@@ -84,7 +89,47 @@ public struct SupabaseSocialService: SocialService {
         _ = try await rpc("report_user", body)
     }
 
+    public func ranking(_ period: RankingPeriod) async throws -> [RankingEntry] {
+        try Self.decode([RankRow].self, try await rpc("friends_leaderboard", ["p_period": period.rawValue])).map(\.entry)
+    }
+
+    @discardableResult
+    public func publishScore(_ publication: ScorePublication) async throws -> Bool {
+        let body: [String: Any] = [
+            "overall_score": publication.score, "provisional": publication.isProvisional, "weekly_workouts": publication.weeklyWorkouts
+        ]
+        let url = baseURL.appendingPathComponent("functions/v1/publish-score")
+        let data = try await perform(try await request("POST", url: url, body: try JSONSerialization.data(withJSONObject: body)))
+        return (try? JSONDecoder().decode(PublishResult.self, from: data))?.published ?? false
+    }
+
     // MARK: Wire rows
+
+    private struct PublishResult: Decodable { let published: Bool }
+
+    private struct RankRow: Decodable {
+        let rank: Int
+        let userId: UUID
+        let username: String
+        let displayName: String
+        let avatarEmoji: String
+        let avatarColor: String
+        let value: Int?
+        let provisional: Bool?
+        let isMe: Bool
+
+        enum CodingKeys: String, CodingKey {
+            case rank, userId = "user_id", username, displayName = "display_name", avatarEmoji = "avatar_emoji"
+            case avatarColor = "avatar_color", value, provisional, isMe = "is_me"
+        }
+
+        var entry: RankingEntry {
+            RankingEntry(
+                id: userId, rank: rank, username: username, displayName: displayName, avatarEmoji: avatarEmoji,
+                avatarColor: AvatarColor(rawValue: avatarColor) ?? .ember, value: value, isProvisional: provisional ?? false, isMe: isMe
+            )
+        }
+    }
 
     private struct ProfileRow: Decodable {
         let username: String

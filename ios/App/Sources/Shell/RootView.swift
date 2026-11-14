@@ -33,6 +33,8 @@ struct RootView: View {
             // Google returns through its reversed-client-ID scheme; everything else is a Supabase auth link
             // (email confirmation, password reset) on the app's deep-link scheme.
             if GIDSignIn.sharedInstance.handle(url) { return }
+            // Navigation links (friend invites, tabs) wait in the router until the main shell is up.
+            if container.deepLinks.receive(url: url) { return }
             Task { _ = await container.authService?.handle(url: url) }
         }
     }

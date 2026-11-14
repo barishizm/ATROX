@@ -97,6 +97,8 @@ targets:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
         AppURLScheme: $(APP_URL_SCHEME)
+        # Universal links for friend invites (P088); the same host is in the Associated Domains entitlement.
+        AppLinkHost: $(APP_LINK_HOST)
         AppGroupID: $(APP_GROUP_ID)
         SupabaseURL: $(SUPABASE_URL)
         SupabaseAnonKey: $(SUPABASE_ANON_KEY)
@@ -132,7 +134,8 @@ targets:
     # later steps (entitlements + Apple Developer portal App ID):
     #   - In-App Purchase               (StoreKit 2 subscriptions)
     #   - Push Notifications            (rest timer / coach reminders)
-    #   - Associated Domains            (universal links / Google sign-in callback)
+    #   - Associated Domains            (P088: applinks:$(APP_LINK_HOST) is in App/ATROX.entitlements; the App ID needs the
+    #                                    capability and the domain must serve /.well-known/apple-app-site-association)
     #   - Background Modes              (Live Activity push updates; background fetch for sync is in Info.plist, P045)
     # Widgets extension (WidgetKit + Live Activity): ATROXWidgets below (P038).
 

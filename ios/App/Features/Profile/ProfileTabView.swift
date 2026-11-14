@@ -38,6 +38,7 @@ struct ProfileTabView: View {
     private func destination(_ route: ProfileRoute, model: ProfileModel, account: AccountModel) -> some View {
         switch route {
         case .social: SocialRootView()
+        case .invite(let username): SocialInviteView(username: username)
         case .paywall: PaywallPlaceholderView()
         case .editProfile: ProfileEditView(model: model)
         case .measurements: MeasurementsView(model: model)

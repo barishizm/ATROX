@@ -80,12 +80,9 @@ struct MainTabView: View {
             selection = tab
             container.requestedTab = nil
         }
-        .onChange(of: container.requestedWeeklySummary, initial: true) { _, requested in
-            guard requested else { return }
-            container.requestedWeeklySummary = false
-            selection = .today
-            today.popToRoot()
-            today.push(.weeklySummary)
+        .onChange(of: container.deepLinks.pending, initial: true) { _, pending in
+            guard pending != nil, let link = container.deepLinks.consume() else { return }
+            open(link)
         }
         .onChange(of: container.requestedRoutine, initial: true) { _, id in
             guard let id else { return }
@@ -104,5 +101,21 @@ struct MainTabView: View {
             }
         }
         .accessibilityIdentifier("main-tabs")
+    }
+
+    /// Opens a deep link in the right tab (P088).
+    private func open(_ link: DeepLink) {
+        switch link {
+        case .tab(let tab): selection = tab
+        case .weeklySummary:
+            selection = .today
+            today.popToRoot()
+            today.push(.weeklySummary)
+        case .friendInvite(let username):
+            selection = .profile
+            profile.popToRoot()
+            profile.push(.social)
+            profile.push(.invite(username: username))
+        }
     }
 }

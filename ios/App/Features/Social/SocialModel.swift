@@ -31,6 +31,18 @@ final class SocialModel {
     private(set) var errorKey: String?
     private(set) var isBusy = false
     private(set) var searched = false
+    private(set) var invite: InviteState = .loading
+
+    /// What an invite link leads to (P088).
+    enum InviteState: Equatable {
+        case loading
+        case failed
+        /// I have no profile yet: joining comes first.
+        case needsProfile
+        case itsMe
+        case notFound
+        case person(SocialPerson)
+    }
 
     @ObservationIgnored private let service: any SocialService
 
@@ -114,6 +126,34 @@ final class SocialModel {
             phase = .off
         }
     }
+
+    // MARK: Invite links
+
+    /// Resolves the username in an invite link into someone I can send a request to.
+    func loadInvite(_ username: String) async {
+        invite = .loading
+        await load()
+        switch phase {
+        case .loading, .failed: invite = .failed
+        case .off: invite = .needsProfile
+        case .on:
+            let name = SocialTextPolicy.canonical(username)
+            if name == profile?.username { invite = .itsMe; return }
+            do {
+                invite = try await service.resolveInvite(name).map { .person($0) } ?? .notFound
+            } catch {
+                invite = .failed
+            }
+        }
+    }
+
+    func sendInviteRequest(to person: SocialPerson) async {
+        await perform { _ = try await self.service.sendRequest(to: person.id) }
+        if errorKey == nil { await loadInvite(person.username) }
+    }
+
+    /// The service behind this model, for screens that need their own calls (the ranking).
+    var socialService: any SocialService { service }
 
     // MARK: Search and requests
 

@@ -44,8 +44,8 @@ final class AppContainer {
     var requestedTab: AppTab?
     /// Message an insight staged for the coach tab ("Ask the coach"); the coach consumes it when it opens.
     var pendingCoachPrompt: String?
-    /// A tap on the weekly summary notification (P070); the shell opens the summary and clears it.
-    var requestedWeeklySummary = false
+    /// Links, notification taps and widget taps waiting to be opened (P088); the main shell consumes them.
+    let deepLinks = DeepLinkRouter()
     /// A routine another screen wants opened in the Workout tab (the coach's "open program"); the shell clears it.
     var requestedRoutine: UUID?
     /// AI Koç (P079/P080): the chat client and the conversation cache; nil without Supabase.
@@ -278,7 +278,14 @@ final class AppContainer {
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
         return TodayModel(
             context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
-            plan: planStore(for: context.userId), profile: profile?.input, insights: insightService()
+            plan: planStore(for: context.userId), profile: profile?.input, insights: insightService(),
+            publishScore: social.map { service in
+                { publication in
+                    // Nothing leaves the device unless the user joined and switched score sharing on.
+                    guard let profile = try? await service.myProfile(), profile.sharesScore else { return }
+                    _ = try? await service.publishScore(publication)
+                }
+            }
         )
     }
 
