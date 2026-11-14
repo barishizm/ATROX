@@ -293,10 +293,8 @@ export const proposeGoalUpdate = defineTool({
 export const saveMemory = defineTool({
   name: "save_memory",
   description:
-    "Remember a lasting fact the user told you (injury, preference, equipment). Short, one fact. Save health-related " +
-    "facts (injuries, conditions) only when the user stated them explicitly in this chat; never infer them. Not for " +
-    "secrets or anything sensitive beyond training. A repeated or refined fact is merged into the existing note. " +
-    "The user sees, edits and can delete it.",
+    "Remember a lasting fact the user told you (injury, preference, equipment). One short fact. Health facts only if " +
+    "the user said them explicitly; never infer. Repeats are merged. The user can edit or delete it.",
   parameters: {
     type: "object",
     properties: { note: { type: "string", description: "≤ 300 characters." } },

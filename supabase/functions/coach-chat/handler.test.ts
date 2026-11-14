@@ -196,8 +196,8 @@ Deno.test("coach-chat streams text, tool activity and a proposal; stores the tur
   assert(response.headers.get("Content-Type")?.startsWith("text/event-stream"));
   const events = frames(await response.text());
   assertEquals(events.map((event) => event.type), ["quota", "tool_activity", "tool_activity", "proposal", "text_delta", "usage", "done"]);
-  assertEquals(events[0].data, { name: "coach.tool.propose_routine", status: "started" });
-  assertEquals(events[2].data.proposal.kind, "routine");
+  assertEquals(events[1].data, { name: "coach.tool.propose_routine", status: "started" });
+  assertEquals(events[3].data.proposal.kind, "routine");
   assertEquals(events.at(-2)?.data, { prompt_tokens: 3100, cached_tokens: 2500, completion_tokens: 90 });
   assertEquals(events.at(-1)?.data, { thread_id: THREAD });
   assert((llm as ScriptedLLM).calls[0].thinking, "pro + program request → thinking on");

@@ -50,7 +50,7 @@ select is(public.coach_save_memory('78300000-0000-0000-0000-000000000003',
   'Left knee hurts on deep squats, also on lunges') ->> 'note', 'Left knee hurts on deep squats, also on lunges',
   'memory: a refined note replaces the old text');
 select is((select count(*)::int from public.coach_memory where user_id = tests.user_a()), 1, 'memory: refinement did not add a note');
-select lives_ok($$select public.coach_save_memory(('78300000-0000-0000-0000-0000000001' || lpad(g::text, 2, '0'))::uuid, 'unique fact number ' || g)
+select lives_ok($$select public.coach_save_memory(('78300000-0000-0000-0000-0000000001' || lpad(g::text, 2, '0'))::uuid, 'fact ' || md5(g::text))
   from generate_series(1, 19) g$$, 'memory: fills up to 20 notes');
 select throws_ok($$select public.coach_save_memory('78300000-0000-0000-0000-000000000999', 'one fact too many')$$,
   'P0001', 'coach_memory_full', 'memory: the 21st note is refused');
