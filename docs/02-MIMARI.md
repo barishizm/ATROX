@@ -17,8 +17,7 @@
                 │ PostgREST (RLS)           │ SSE
 ┌───────────────▼───────────────────────────▼─────────────────┐
 │ Supabase:  Postgres · Auth · Storage · Edge Functions        │
-│   coach-chat ─► OpenRouter (deepseek/deepseek-v4.1-flash)    │
-│               └► DeepSeek resmi API (yedek)                  │
+│   coach-chat ─► DeepSeek resmi API (deepseek-flash)          │
 │   appstore-notifications · delete-account · contribute       │
 └───────────────▲──────────────────────────────────────────────┘
                 │ SQL dışa aktarma (anonim katkılar)

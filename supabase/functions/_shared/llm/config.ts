@@ -11,9 +11,8 @@ export interface Price {
 }
 
 export interface LLMConfig {
-  openrouter: { apiKey?: string; model: string; providers: string[]; baseUrl: string };
   deepseek: { apiKey?: string; model: string; baseUrl: string };
-  /** Time allowed until the provider starts answering (headers received). */
+  /** Time allowed until the provider starts answering (headers received); then one retry. */
   timeoutMs: number;
   maxOutputTokens: number;
   /** Keyed `provider:model`. */
@@ -23,10 +22,8 @@ export interface LLMConfig {
 /**
  * Defaults verified 2026-11-14 (docs/04-AI-KOC.md "Doğrulanmış API notları").
  * DeepSeek: peak-hour list price (off-peak is half), so the recorded cost is an upper bound.
- * OpenRouter: the price varies per upstream provider; the reported `usage.cost` wins when present.
  */
 export const DEFAULT_PRICES: Record<string, Price> = {
-  "openrouter:deepseek/deepseek-v4.1-flash": { input: 0.15, cached_input: 0.015, output: 0.60 },
   "deepseek:deepseek-flash": { input: 0.30, cached_input: 0.006, output: 1.20 },
 };
 
@@ -48,12 +45,6 @@ export function loadLLMConfig(env: Env = (name) => Deno.env.get(name)): LLMConfi
     }
   }
   return {
-    openrouter: {
-      apiKey: env("OPENROUTER_API_KEY") || undefined,
-      model: env("COACH_OPENROUTER_MODEL") || "deepseek/deepseek-v4.1-flash",
-      providers: (env("COACH_OPENROUTER_PROVIDERS") ?? "").split(",").map((slug) => slug.trim()).filter(Boolean),
-      baseUrl: env("COACH_OPENROUTER_BASE_URL") || "https://openrouter.ai/api/v1",
-    },
     deepseek: {
       apiKey: env("DEEPSEEK_API_KEY") || undefined,
       model: env("COACH_DEEPSEEK_MODEL") || "deepseek-flash",

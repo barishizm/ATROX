@@ -21,7 +21,6 @@ interface RawUsage {
   prompt_tokens_details?: { cached_tokens?: number } | null;
   completion_tokens_details?: { reasoning_tokens?: number } | null;
   prompt_cache_hit_tokens?: number;
-  cost?: number;
 }
 
 export function parseUsage(raw: RawUsage): Usage {
@@ -31,7 +30,6 @@ export function parseUsage(raw: RawUsage): Usage {
     cached_tokens: cached,
     completion_tokens: raw.completion_tokens ?? 0,
     reasoning_tokens: raw.completion_tokens_details?.reasoning_tokens ?? 0,
-    ...(typeof raw.cost === "number" ? { reported_cost_usd: raw.cost } : {}),
   };
 }
 
@@ -57,7 +55,7 @@ export async function* parseChatStream(body: ReadableStream<Uint8Array>): AsyncG
   let usage: Usage | undefined;
 
   for await (const line of lines(body)) {
-    if (!line.startsWith("data:")) continue; // comments (": OPENROUTER PROCESSING"), event names, blank lines
+    if (!line.startsWith("data:")) continue; // keep-alive comments, event names, blank lines
     const data = line.slice(5).trim();
     if (data === "[DONE]") break;
     let chunk: Chunk;

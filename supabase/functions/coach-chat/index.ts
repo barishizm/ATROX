@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadLLMConfig } from "../_shared/llm/config.ts";
-import { deepSeekProvider, openRouterProvider, withFallback } from "../_shared/llm/providers.ts";
+import { deepSeekProvider, withRetry } from "../_shared/llm/providers.ts";
 import { createCoachChatHandler, type QuotaDecision } from "./handler.ts";
 
 const url = Deno.env.get("SUPABASE_URL");
@@ -46,12 +46,7 @@ Deno.serve(createCoachChatHandler({
       if (error) throw new Error(`coach_usage: ${error.message}`);
     },
   },
-  provider: (onSwitch) =>
-    withFallback(
-      openRouterProvider({ ...llm.openrouter, timeoutMs: llm.timeoutMs }),
-      deepSeekProvider({ ...llm.deepseek, timeoutMs: llm.timeoutMs }),
-      onSwitch,
-    ),
+  provider: (onRetry) => withRetry(deepSeekProvider({ ...llm.deepseek, timeoutMs: llm.timeoutMs }), onRetry),
   settings: {
     consentVersion: Deno.env.get("COACH_AI_CONSENT_VERSION") || "2026-11",
     dailySpendCapUsd: number("COACH_DAILY_SPEND_CAP_USD", 25),

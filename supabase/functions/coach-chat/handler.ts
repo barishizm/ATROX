@@ -73,8 +73,8 @@ export interface CoachChatDeps {
   /** A database handle acting as the caller (their JWT, RLS applies). */
   userDb: (token: string) => CoachDb;
   service: CoachService;
-  /** A fresh provider per request; `onSwitch` is told when the primary failed and the fallback takes over. */
-  provider: (onSwitch: (error: ProviderError, failed: LLMProvider) => void) => LLMProvider;
+  /** A fresh provider per request; `onRetry` is told when the first attempt failed and is retried. */
+  provider: (onRetry: (error: ProviderError, failed: LLMProvider) => void) => LLMProvider;
   settings: CoachSettings;
   newId?: () => string;
   today?: () => string;

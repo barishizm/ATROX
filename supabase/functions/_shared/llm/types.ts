@@ -1,4 +1,4 @@
-// Provider-neutral chat types (docs/04-AI-KOC.md §3). Both providers speak the OpenAI chat-completions format.
+// Provider-neutral chat types (docs/04-AI-KOC.md §3), in the OpenAI chat-completions format the DeepSeek API speaks.
 
 export type ChatMessage =
   | { role: "system"; content: string }
@@ -23,8 +23,6 @@ export interface Usage {
   cached_tokens: number;
   completion_tokens: number;
   reasoning_tokens: number;
-  /** What the provider says it charged, when it reports it (OpenRouter `usage.cost`). */
-  reported_cost_usd?: number;
 }
 
 export type LLMEvent =
@@ -40,7 +38,7 @@ export interface ChatOptions {
   signal?: AbortSignal;
 }
 
-export type ProviderName = "openrouter" | "deepseek" | "fake";
+export type ProviderName = "deepseek" | "fake";
 
 export interface LLMProvider {
   readonly name: ProviderName;
@@ -48,7 +46,7 @@ export interface LLMProvider {
   streamChat(messages: ChatMessage[], tools: ToolDefinition[], options: ChatOptions): AsyncIterable<LLMEvent>;
 }
 
-/** `retryable`: 5xx, 429, timeout or network failure — worth one try on the other provider. */
+/** `retryable`: 5xx, 429, timeout or network failure — worth one more try. */
 export class ProviderError extends Error {
   constructor(
     message: string,

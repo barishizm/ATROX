@@ -1,4 +1,5 @@
-// OpenRouter (primary) and the official DeepSeek API (fallback) behind one interface (docs/04-AI-KOC.md §3).
+// The official DeepSeek API behind the provider-neutral interface (docs/04-AI-KOC.md §3). OpenRouter is not used
+// (decision 2026-11-14, docs/00-KARARLAR.md #9); the OpenAI-compatible core stays generic so a provider can be added.
 import { parseChatStream } from "./openai-stream.ts";
 import {
   type ChatMessage,
@@ -19,7 +20,6 @@ interface EndpointSpec {
   apiKey?: string;
   timeoutMs: number;
   fetch: Fetch;
-  extraHeaders?: Record<string, string>;
   /** Provider-specific fields (routing, thinking switch). */
   extraBody: (options: ChatOptions) => Record<string, unknown>;
 }
@@ -39,7 +39,7 @@ class OpenAICompatibleProvider implements LLMProvider {
 
   async *streamChat(messages: ChatMessage[], tools: ToolDefinition[], options: ChatOptions): AsyncGenerator<LLMEvent> {
     const { spec } = this;
-    if (!spec.apiKey) throw new ProviderError(`${spec.name}: API key missing`, true);
+    if (!spec.apiKey) throw new ProviderError(`${spec.name}: API key missing`, false);
 
     // The timeout covers the wait for the response headers; the caller's signal (turn deadline) covers the rest.
     const timeout = AbortSignal.timeout(spec.timeoutMs);
@@ -62,7 +62,6 @@ class OpenAICompatibleProvider implements LLMProvider {
           "Authorization": `Bearer ${spec.apiKey}`,
           "Content-Type": "application/json",
           "Accept": "text/event-stream",
-          ...spec.extraHeaders,
         },
         body: JSON.stringify(body),
         signal,
@@ -77,38 +76,6 @@ class OpenAICompatibleProvider implements LLMProvider {
     }
     yield* parseChatStream(response.body);
   }
-}
-
-export interface OpenRouterSettings {
-  apiKey?: string;
-  model: string;
-  /** Allow-list of upstream provider slugs; empty = OpenRouter picks among all that pass the filters. */
-  providers: string[];
-  baseUrl: string;
-  timeoutMs: number;
-  fetch?: Fetch;
-}
-
-export function openRouterProvider(settings: OpenRouterSettings): LLMProvider {
-  return new OpenAICompatibleProvider({
-    name: "openrouter",
-    model: settings.model,
-    url: `${settings.baseUrl}/chat/completions`,
-    apiKey: settings.apiKey,
-    timeoutMs: settings.timeoutMs,
-    fetch: settings.fetch ?? fetch,
-    extraHeaders: { "X-Title": "ATROX Coach" },
-    extraBody: (options) => ({
-      provider: {
-        ...(settings.providers.length ? { only: settings.providers } : {}),
-        sort: "price",
-        data_collection: "deny",
-        require_parameters: true,
-      },
-      // Reasoning is used internally and never shown, so it is excluded from the stream.
-      reasoning: options.thinking ? { effort: "medium", exclude: true } : { enabled: false },
-    }),
-  });
 }
 
 export interface DeepSeekSettings {
@@ -133,7 +100,7 @@ export function deepSeekProvider(settings: DeepSeekSettings): LLMProvider {
 
 /**
  * Tries `primary`; on a retryable failure *before the first event* it switches once to `secondary`. Once the stream
- * has started, errors propagate (a half-sent answer is never restarted on another provider).
+ * has started, errors propagate (a half-sent answer is never restarted).
  * `onSwitch` lets the caller record the failed attempt.
  */
 export function withFallback(
@@ -172,4 +139,9 @@ export function withFallback(
       }
     },
   };
+}
+
+/** One retry on the same provider (429/5xx/timeout/network before the first event). */
+export function withRetry(provider: LLMProvider, onRetry?: (error: ProviderError, failed: LLMProvider) => void) {
+  return withFallback(provider, provider, onRetry);
 }

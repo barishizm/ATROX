@@ -3,10 +3,9 @@ import { type Usage } from "./types.ts";
 
 /**
  * Cost of one call in USD, rounded to 6 decimals (the `coach_usage.cost_usd` scale).
- * The provider-reported cost wins; otherwise the configured price table; an unknown model costs 0 and is logged.
+ * From the configured price table; an unknown model costs 0 and is logged.
  */
 export function costUsd(usage: Usage, provider: string, model: string, prices: Record<string, Price>): number {
-  if (usage.reported_cost_usd !== undefined && usage.reported_cost_usd >= 0) return round6(usage.reported_cost_usd);
   const price = prices[`${provider}:${model}`];
   if (!price) {
     if (provider !== "fake") console.error(`no price configured for ${provider}:${model}`);
