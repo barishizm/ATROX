@@ -43,6 +43,8 @@ final class AppContainer {
     var requestedTab: AppTab?
     /// Message an insight staged for the coach tab ("Ask the coach"); the coach consumes it when it opens.
     var pendingCoachPrompt: String?
+    /// A tap on the weekly summary notification (P070); the shell opens the summary and clears it.
+    var requestedWeeklySummary = false
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).

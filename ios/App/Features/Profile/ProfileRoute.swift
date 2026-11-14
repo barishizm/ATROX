@@ -8,4 +8,5 @@ enum ProfileRoute: Hashable, Sendable {
     case deleteAccount
     case about
     case licenses
+    case howItWorks
 }

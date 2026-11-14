@@ -25,6 +25,7 @@ struct MuscleDetailView: View {
         .background(DSColor.background)
         .navigationTitle(Muscle(rawValue: muscleName)?.localizedName(locale: locale) ?? muscleName)
         .navigationBarTitleDisplayMode(.inline)
+        .howItWorksButton()
         .task { await prepare() }
         .accessibilityIdentifier("muscle-detail-root")
     }

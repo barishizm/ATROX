@@ -1,14 +1,22 @@
 import DesignSystem
 import SwiftUI
 
-/// App version, scoring-model version (placeholder until the model download lands) and the licenses screen.
+/// App version, scoring-model version, the "How is it calculated?" screen and the licenses screen.
 struct AboutView: View {
+    @Environment(AppContainer.self) private var container
+    @State private var modelVersion: String?
+
     var body: some View {
         List {
             Section {
                 LabeledContent("about.version") { Text(verbatim: Self.versionString) }
                     .accessibilityIdentifier("about-version")
-                LabeledContent("about.model") { Text("about.model.none").foregroundStyle(DSColor.textSecondary) }
+                LabeledContent("about.model") {
+                    if let modelVersion { Text(verbatim: modelVersion) } else { Text("about.model.none").foregroundStyle(DSColor.textSecondary) }
+                }
+                .accessibilityIdentifier("about-model")
+                NavigationLink(value: ProfileRoute.howItWorks) { Text("how.title") }
+                    .accessibilityIdentifier("about-how-it-works")
                 NavigationLink(value: ProfileRoute.licenses) { Text("about.licenses") }
                     .accessibilityIdentifier("about-licenses")
             }
@@ -18,6 +26,7 @@ struct AboutView: View {
         .background(DSColor.background)
         .navigationTitle("about.title")
         .navigationBarTitleDisplayMode(.inline)
+        .task { modelVersion = await container.scoringModelInfo()?.version }
         .accessibilityIdentifier("about-screen")
     }
 

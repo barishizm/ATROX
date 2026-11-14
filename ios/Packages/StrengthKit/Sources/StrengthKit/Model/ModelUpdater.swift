@@ -106,6 +106,9 @@ public actor ModelUpdater {
 
     public var activeVersion: String? { state.active }
 
+    /// When the version list was last fetched successfully (the "how it works" screen shows it).
+    public var lastCheckedAt: Date? { state.lastCheck }
+
     public func pendingChange() -> Change? { state.pendingChange }
 
     public func acknowledgeChange() {

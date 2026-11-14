@@ -46,6 +46,7 @@ struct ProfileTabView: View {
         case .deleteAccount: DeleteAccountView(account: account)
         case .about: AboutView()
         case .licenses: LicensesView()
+        case .howItWorks: HowItWorksView()
         }
     }
 

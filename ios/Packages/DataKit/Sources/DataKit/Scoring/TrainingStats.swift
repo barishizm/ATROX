@@ -31,6 +31,13 @@ public struct RecordHighlight: Sendable, Equatable {
     public var kind: RecordKind
     public var value: Double
     public var date: Date
+
+    public init(exerciseId: String, kind: RecordKind, value: Double, date: Date) {
+        self.exerciseId = exerciseId
+        self.kind = kind
+        self.value = value
+        self.date = date
+    }
 }
 
 /// Facts the Today dashboard needs besides the scores (P067).
@@ -61,9 +68,9 @@ public actor TrainingStats {
     public static let changeDays = 30
     public static let muscleChangeDays = 28
 
-    private let modelContainer: ModelContainer
-    private let clock: @Sendable () -> Date
-    private let calendar: Calendar
+    let modelContainer: ModelContainer
+    let clock: @Sendable () -> Date
+    let calendar: Calendar
 
     public init(modelContainer: ModelContainer, clock: @escaping @Sendable () -> Date = { Date() }, calendar: Calendar = .current) {
         self.modelContainer = modelContainer
@@ -154,7 +161,7 @@ public actor TrainingStats {
 
     // MARK: Queries
 
-    private struct FinishedWorkout {
+    struct FinishedWorkout {
         var id: UUID
         var startedAt: Date
         var routineId: UUID?
@@ -162,7 +169,7 @@ public actor TrainingStats {
     }
 
     /// Finished, non-deleted workouts, newest first.
-    private func finishedWorkouts(context: ModelContext, userId: UUID) -> [FinishedWorkout] {
+    func finishedWorkouts(context: ModelContext, userId: UUID) -> [FinishedWorkout] {
         let rows = (try? context.fetch(FetchDescriptor<Workout>(
             predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.endedAt != nil }, sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
         ))) ?? []
@@ -170,7 +177,7 @@ public actor TrainingStats {
     }
 
     /// Completed working sets (warm-ups excluded) of catalog exercises per workout day and exercise.
-    private func volumeEntries(context: ModelContext, userId: UUID, sinceDay: Int) -> [VolumeEntry] {
+    func volumeEntries(context: ModelContext, userId: UUID, sinceDay: Int) -> [VolumeEntry] {
         let since = ScoreCalculator.date(ofDay: sinceDay - 1, calendar: calendar)
         let workouts = (try? context.fetch(FetchDescriptor<Workout>(
             predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.endedAt != nil && $0.startedAt >= since }
@@ -197,7 +204,7 @@ public actor TrainingStats {
         return merged.keys.sorted().compactMap { merged[$0] }
     }
 
-    private func muscleRoles(context: ModelContext) -> [String: MuscleRoles] {
+    func muscleRoles(context: ModelContext) -> [String: MuscleRoles] {
         var out: [String: MuscleRoles] = [:]
         for exercise in (try? context.fetch(FetchDescriptor<Exercise>())) ?? [] {
             out[exercise.id] = MuscleRoles(primary: exercise.primaryMuscles, secondary: exercise.secondaryMuscles)
@@ -205,7 +212,7 @@ public actor TrainingStats {
         return out
     }
 
-    private func profileGoal(context: ModelContext, userId: UUID) -> Int {
+    func profileGoal(context: ModelContext, userId: UUID) -> Int {
         ((try? context.fetch(UserProfile.syncDescriptor(.user(userId)))) ?? []).first { $0.deletedAt == nil }?.weeklyFrequency ?? 3
     }
 
@@ -219,7 +226,7 @@ public actor TrainingStats {
     }
 
     /// Score series per key over the last `days` days plus one older point to compare against.
-    private func snapshotSeries(
+    func snapshotSeries(
         context: ModelContext, userId: UUID, scope: SnapshotScope, population: ReferencePopulation, days: Int
     ) -> [String: [ScorePoint]] {
         let scopeRaw = scope.rawValue, group = population.rawValue

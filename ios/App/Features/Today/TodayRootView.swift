@@ -26,6 +26,7 @@ struct TodayRootView: View {
         }
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.today")
+        .howItWorksButton()
         .task { await prepare() }
         .task(id: container.historyEvents.version) { await model?.load() }
         .sheet(item: $actions.sheet) { sheet in
@@ -53,6 +54,21 @@ struct TodayRootView: View {
         }
     }
 
+    private var weeklyLink: some View {
+        NavigationLink(value: TodayRoute.weeklySummary) {
+            Card {
+                HStack(spacing: Spacing.md) {
+                    Image(systemName: "calendar.badge.clock").foregroundStyle(DSColor.accent).accessibilityHidden(true)
+                    Text("weekly.link").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right").font(DSFont.caption).foregroundStyle(DSColor.textTertiary).accessibilityHidden(true)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("today-weekly-link")
+    }
+
     @ViewBuilder
     private func content(_ model: TodayModel) -> some View {
         if model.isLoading {
@@ -64,6 +80,7 @@ struct TodayRootView: View {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     scoreCard(model)
                     insightCard(model)
+                    weeklyLink
                     if model.showsBodyweightReminder && model.insight?.insight.kind != .bodyweightStale { reminderCard }
                     if !model.bars.isEmpty { patternSection(model) }
                     planCard(model)
