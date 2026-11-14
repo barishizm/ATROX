@@ -13,6 +13,9 @@ export type ErrorCode =
   | "method_not_allowed"
   | "consent_required"
   | "rate_limited"
+  | "quota_exceeded"
+  | "duplicate_message"
+  | "coach_unavailable"
   | "internal";
 
 const STATUS: Record<ErrorCode, number> = {
@@ -21,13 +24,21 @@ const STATUS: Record<ErrorCode, number> = {
   method_not_allowed: 405,
   consent_required: 403,
   rate_limited: 429,
+  quota_exceeded: 429,
+  duplicate_message: 400,
+  coach_unavailable: 503,
   internal: 500,
 };
 
-export function errorResponse(code: ErrorCode, message: string, details?: unknown): Response {
+export function errorResponse(
+  code: ErrorCode,
+  message: string,
+  details?: unknown,
+  headers: Record<string, string> = {},
+): Response {
   return new Response(JSON.stringify({ error: { code, message, ...(details === undefined ? {} : { details }) } }), {
     status: STATUS[code],
-    headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8" },
+    headers: { ...CORS_HEADERS, "Content-Type": "application/json; charset=utf-8", ...headers },
   });
 }
 

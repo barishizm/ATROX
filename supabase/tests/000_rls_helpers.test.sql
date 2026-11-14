@@ -26,13 +26,13 @@ $$;
 -- Owner-readable tables only the service role writes (the app cannot insert or update).
 create or replace function tests.owner_readonly_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['coach_usage']
+  select array['coach_usage', 'entitlements', 'coach_quota']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).
 create or replace function tests.catalog_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['exercises', 'exercise_translations', 'catalog_versions', 'model_versions']
+  select array['exercises', 'exercise_translations', 'catalog_versions', 'model_versions', 'coach_limits']
 $$;
 
 -- Two fake users, created as the superuser. Returns the ids as a convenience.
