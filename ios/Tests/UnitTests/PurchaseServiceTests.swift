@@ -26,11 +26,13 @@ fileprivate final class MemoryCache: EntitlementCache, @unchecked Sendable {
 struct PurchaseServiceTests {
     let user = UUID()
 
+    // swiftlint:disable large_tuple
     fileprivate func make(
         store: FakeStoreClient = FakeStoreClient(), server: StubServer = StubServer(), cache: MemoryCache = MemoryCache()
     ) -> (PurchaseService, FakeStoreClient, StubServer, MemoryCache) {
         (PurchaseService(store: store, server: server, entitlements: Entitlements(cache: cache)), store, server, cache)
     }
+    // swiftlint:enable large_tuple
 
     @Test func startLoadsProductsYearlyFirst() async {
         let (service, _, _, _) = make()
