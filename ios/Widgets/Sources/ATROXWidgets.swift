@@ -154,9 +154,9 @@ struct TodayWorkoutView: View {
                     VStack {
                         Spacer(minLength: 0)
                         Label("widget.today.start", systemImage: "play.fill")
-                            .font(.subheadline.weight(.bold)).foregroundStyle(.black)
+                            .font(.subheadline.weight(.bold)).foregroundStyle(.white)
                             .padding(.horizontal, 14).padding(.vertical, 10)
-                            .background(LiveStyle.accent, in: Capsule())
+                            .background(LiveStyle.accentFill, in: Capsule())
                         Spacer(minLength: 0)
                     }
                 }

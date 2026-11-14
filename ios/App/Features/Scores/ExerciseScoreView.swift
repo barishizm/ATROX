@@ -341,7 +341,7 @@ struct ScoreDistributionChart: View {
                     .annotation(position: .overlay, alignment: .topLeading, spacing: 4) {
                         Text("scorescreen.distribution.you").font(.system(size: 11, weight: .bold))
                             .foregroundStyle(DSColor.onAccent).padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(DSColor.accent, in: Capsule())
+                            .background(DSColor.accentFill, in: Capsule())
                     }
             }
         }

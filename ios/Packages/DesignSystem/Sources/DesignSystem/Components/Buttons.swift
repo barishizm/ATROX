@@ -12,7 +12,7 @@ struct DSButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity, minHeight: HitTarget.button)
             .padding(.horizontal, Spacing.lg)
             .foregroundStyle(kind == .primary ? DSColor.onAccent : DSColor.textPrimary)
-            .background(kind == .primary ? DSColor.accent : DSColor.surfaceRaised, in: shape)
+            .background(kind == .primary ? DSColor.accentFill : DSColor.surfaceRaised, in: shape)
             .overlay {
                 if kind == .secondary { shape.strokeBorder(DSColor.separator, lineWidth: 1) }
             }

@@ -131,7 +131,7 @@ private struct ProgressBar: View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 Capsule().fill(DSColor.surfaceRaised)
-                Capsule().fill(DSColor.accent)
+                Capsule().fill(DSColor.accentFill)
                     .frame(width: proxy.size.width * min(max(value, 0), 1))
             }
         }

@@ -43,9 +43,11 @@ struct WorkoutLiveActivity: Widget {
 // MARK: Style
 
 enum LiveStyle {
-    /// Same lime as `DSColor.accent` on the dark palette; the extension does not link DesignSystem.
-    static let accent = Color(red: 198 / 255, green: 241 / 255, blue: 53 / 255)
-    static let background = Color(red: 10 / 255, green: 12 / 255, blue: 15 / 255)
+    /// Same values as `DSColor` on the dark palette; the extension does not link DesignSystem.
+    /// `accent` is the foreground-safe blue (#74A0FF), `accentFill` the exact brand blue (#105BFF).
+    static let accent = Color(red: 0x74 / 255, green: 0xA0 / 255, blue: 1)
+    static let accentFill = Color(red: 0x10 / 255, green: 0x5B / 255, blue: 1)
+    static let background = Color(red: 0x21 / 255, green: 0x23 / 255, blue: 0x2E / 255)
 }
 
 // MARK: Content

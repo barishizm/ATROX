@@ -188,7 +188,7 @@ struct RoutineDayView: View {
         .padding(.leading, group == nil ? 0 : Spacing.sm)
         .overlay(alignment: .leading) {
             if group != nil {
-                Rectangle().fill(DSColor.accent).frame(width: 3)
+                Rectangle().fill(DSColor.accentFill).frame(width: 3)
                     .padding(.top, joinsPrevious ? 0 : Spacing.sm)
                     .padding(.bottom, joinsNext ? 0 : Spacing.sm)
                     .accessibilityHidden(true)

@@ -3,7 +3,7 @@ import SwiftUI
 /// Small status / category pill.
 public struct TagChip: View {
     public enum Style: Sendable {
-        case neutral, accent, success, warning, error
+        case neutral, accent, highlight, success, warning, error
         case level(ScoreLevel)
     }
 
@@ -21,6 +21,7 @@ public struct TagChip: View {
         switch style {
         case .neutral: DSColor.textSecondary
         case .accent: DSColor.accent
+        case .highlight: DSColor.highlight
         case .success: DSColor.success
         case .warning: DSColor.warning
         case .error: DSColor.error

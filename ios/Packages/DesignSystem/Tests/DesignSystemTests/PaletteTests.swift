@@ -22,9 +22,26 @@ import Testing
     }
 
     @Test(arguments: palettes) func accentAndOnAccentMeetAA(name: String, p: Palette) {
-        #expect(RGB.contrast(p.onAccent, p.accent) >= 4.5, "\(name) onAccent/accent")
+        #expect(RGB.contrast(p.onAccent, p.accentFill) >= 4.5, "\(name) onAccent/accentFill")
         for surface in [p.background, p.surface, p.surfaceRaised] {
             #expect(RGB.contrast(p.accent, surface) >= 4.5, "\(name) accent on \(surface)")
+        }
+    }
+
+    @Test(arguments: palettes) func highlightAndOnHighlightMeetAA(name: String, p: Palette) {
+        #expect(RGB.contrast(p.onHighlight, p.highlightFill) >= 4.5, "\(name) onHighlight/highlightFill")
+        for surface in [p.background, p.surface, p.surfaceRaised] {
+            #expect(RGB.contrast(p.highlight, surface) >= 4.5, "\(name) highlight on \(surface)")
+        }
+    }
+
+    /// The three brand colors are exact: #21232E base, #105BFF blue fill, #FE8500 orange fill.
+    @Test func brandColorsAreExact() {
+        #expect(Palette.dark.background == RGB(hex: 0x21232E))
+        #expect(Palette.light.textPrimary == RGB(hex: 0x21232E))
+        for p in [Palette.dark, Palette.light] {
+            #expect(p.accentFill == RGB(hex: 0x105BFF))
+            #expect(p.highlightFill == RGB(hex: 0xFE8500))
         }
     }
 
@@ -35,7 +52,7 @@ import Testing
     }
 
     @Test(arguments: palettes) func tintedChipsMeetAA(name: String, p: Palette) {
-        let tints = [p.accent, p.success, p.warning, p.error, p.textSecondary] + p.levels
+        let tints = [p.accent, p.highlight, p.success, p.warning, p.error, p.textSecondary] + p.levels
         for tint in tints {
             let chipBackground = tint.blended(over: p.background, alpha: TagChip.tintOpacity)
             #expect(RGB.contrast(tint, chipBackground) >= 4.5, "\(name) chip \(tint)")

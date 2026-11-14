@@ -376,7 +376,7 @@ struct ActiveWorkoutView: View {
             .foregroundStyle(active ? DSColor.onAccent : tint)
             .frame(minWidth: width, minHeight: HitTarget.button - 8)
             .fixedSize(horizontal: true, vertical: false)
-            .background(active ? DSColor.accent : DSColor.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous))
+            .background(active ? DSColor.accentFill : DSColor.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous))
             .contentShape(Rectangle())
     }
 

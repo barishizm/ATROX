@@ -5,7 +5,7 @@ import SwiftUI
 extension AvatarColor {
     var color: Color {
         switch self {
-        case .ember: DSColor.accent
+        case .ember: DSColor.highlight
         case .sky: .blue
         case .mint: .mint
         case .violet: .purple

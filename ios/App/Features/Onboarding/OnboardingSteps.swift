@@ -369,7 +369,7 @@ struct FrequencyStepView: View {
                                 .foregroundStyle(model.draft.weeklyFrequency == day ? DSColor.onAccent : DSColor.textPrimary)
                                 .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
                                 .background(
-                                    model.draft.weeklyFrequency == day ? DSColor.accent : DSColor.surfaceRaised,
+                                    model.draft.weeklyFrequency == day ? DSColor.accentFill : DSColor.surfaceRaised,
                                     in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous)
                                 )
                         }

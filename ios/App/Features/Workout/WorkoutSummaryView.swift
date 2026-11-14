@@ -79,7 +79,7 @@ struct WorkoutSummaryView: View {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     ForEach(model.recordRows) { row in
                         HStack {
-                            Image(systemName: "trophy.fill").foregroundStyle(DSColor.accent).accessibilityHidden(true)
+                            Image(systemName: "trophy.fill").foregroundStyle(DSColor.highlight).accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(verbatim: row.exercise).font(DSFont.callout)
                                 Text(ActiveWorkoutView.recordName(row.kind))

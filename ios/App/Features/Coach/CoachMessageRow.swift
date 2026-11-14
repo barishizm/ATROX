@@ -22,7 +22,7 @@ struct CoachMessageRow: View {
             Text(verbatim: message.text)
                 .font(DSFont.body).foregroundStyle(DSColor.onAccent)
                 .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
-                .background(DSColor.accent, in: RoundedRectangle(cornerRadius: Radius.lg))
+                .background(DSColor.accentFill, in: RoundedRectangle(cornerRadius: Radius.lg))
                 .textSelection(.enabled)
         }
         .accessibilityIdentifier("coach-user-message")

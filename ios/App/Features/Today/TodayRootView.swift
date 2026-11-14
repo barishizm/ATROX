@@ -268,7 +268,7 @@ struct TodayRootView: View {
             .accessibilityIdentifier("today-week-goal")
             Card {
                 HStack(spacing: Spacing.sm) {
-                    Image(systemName: "flame.fill").foregroundStyle(model.streakWeeks > 0 ? DSColor.accent : DSColor.textTertiary).accessibilityHidden(true)
+                    Image(systemName: "flame.fill").foregroundStyle(model.streakWeeks > 0 ? DSColor.highlight : DSColor.textTertiary).accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("today.streak.title").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                         Text("today.streak.weeks \(model.streakWeeks)").font(DSFont.numericSmall).foregroundStyle(DSColor.textPrimary)
@@ -354,7 +354,7 @@ struct PatternBarRow: View {
                 ZStack(alignment: .leading) {
                     Capsule().fill(DSColor.surfaceOverlay)
                     if let score = bar.score {
-                        Capsule().fill(DSColor.accent).frame(width: max(6, proxy.size.width * min(max(score, 0), 100) / 100))
+                        Capsule().fill(DSColor.accentFill).frame(width: max(6, proxy.size.width * min(max(score, 0), 100) / 100))
                     }
                 }
             }

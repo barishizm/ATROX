@@ -19,7 +19,7 @@ struct RestTimerView: View {
                     Text("workout.rest.skip").font(DSFont.headline).foregroundStyle(DSColor.onAccent)
                         .padding(.horizontal, Spacing.md)
                         .frame(minHeight: HitTarget.button)
-                        .background(DSColor.accent, in: Capsule())
+                        .background(DSColor.accentFill, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("rest-skip")
@@ -84,7 +84,7 @@ struct RestNotificationPrimerView: View {
             Button { Task { await timer.acceptPrimer() } } label: {
                 Text("workout.rest.primer.allow").font(DSFont.headline).foregroundStyle(DSColor.onAccent)
                     .frame(maxWidth: .infinity, minHeight: HitTarget.button)
-                    .background(DSColor.accent, in: RoundedRectangle(cornerRadius: Radius.md, style: .continuous))
+                    .background(DSColor.accentFill, in: RoundedRectangle(cornerRadius: Radius.md, style: .continuous))
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("rest-primer-allow")
