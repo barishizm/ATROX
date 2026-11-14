@@ -44,6 +44,52 @@ Varsayım: kullanıcı turu başına ~2 LLM çağrısı, çağrı başına ~3.00
 fiyat $0.112 / $0.336 (1M token). Tur başına ≈ $0.001. Günde 5 mesaj atan ücretsiz kullanıcı ≈ ayda $0.15.
 Gerçek rakam `coach_usage` tablosundan okunacak; kotalar ona göre ayarlanacak.
 
+### Doğrulanmış API notları (2026-11-14, P073)
+
+Kaynaklar: openrouter.ai/docs (provider-routing, reasoning-tokens, usage-accounting), openrouter.ai model sayfası,
+api-docs.deepseek.com (create-chat-completion, pricing). Değerler bu tarihte okundu; değişirse burayı güncelle.
+
+**OpenRouter — `deepseek/deepseek-v4.1-flash`**
+- Uç nokta `POST https://openrouter.ai/api/v1/chat/completions` (OpenAI biçimi), `stream: true` ile SSE; akış
+  arada `: OPENROUTER PROCESSING` yorum satırları gönderir (yok sayılır), sonda `data: [DONE]`.
+- Yönlendirme `provider` nesnesi: `only` (izin listesi, sağlayıcı slug'ları), `order`, `ignore`, `allow_fallbacks`
+  (varsayılan true), `sort` (`"price" | "throughput" | "latency"`), `data_collection` (`"allow" | "deny"`), `zdr`,
+  `require_parameters` (yalnızca istekteki tüm parametreleri destekleyen sağlayıcılar), `quantizations`, `max_price`.
+  Kullandığımız: `only` (yapılandırmadan), `sort: "price"`, `data_collection: "deny"`, `require_parameters: true`.
+- Düşünme modu: `reasoning: { effort: "none"|"minimal"|"low"|"medium"|"high"|"xhigh"|"max", exclude, enabled }`.
+  Kapatmak için `enabled: false` (veya `effort: "none"`); açıkken `exclude: true` ile akıl yürütme metni yanıta
+  konmaz. Akışta akıl yürütme `choices[].delta.reasoning_details` ile gelir (kullanmıyoruz).
+- Araç çağırma OpenAI biçimi: `delta.tool_calls[]` parçaları `index` ile birleştirilir; ilk parçada `id` ve
+  `function.name`, sonrakilerde `function.arguments` ekleri.
+- Kullanım: ek parametre gerekmez (`usage: {include: true}` artık etkisiz). Alanlar `prompt_tokens`,
+  `completion_tokens`, `prompt_tokens_details.cached_tokens`, `completion_tokens_details.reasoning_tokens`,
+  `cost` (USD, gerçekten kesilen), `cost_details.upstream_inference_cost`. `stream_options.include_usage` yine de
+  gönderilir (son parçada kullanım).
+- Fiyat sağlayıcıya göre değişir (model sayfasında 35 giriş; ör. DeepInfra $0.112 / $0.336, birçok sağlayıcı
+  $0.15 / $0.60, pahalı uç $0.30–3 / $1.20–12 per 1M). §3'teki kaba tahmin en ucuz satırı varsayar; izin listesi
+  olmadan `sort: "price"` ucuz uca yönlendirir. Önbellek okuma fiyatı model sayfasında yayımlanmıyor; `cost`
+  alanı geldiği için fiyat tablosu yalnızca yedek hesaptır.
+
+**DeepSeek resmi API — `deepseek-flash`**
+- Uç nokta `POST https://api.deepseek.com/chat/completions` (OpenAI biçimi). Model kimlikleri `deepseek-flash`,
+  `deepseek-v4-pro`.
+- Düşünme modu: `thinking: { type: "enabled" | "disabled" }`; verilmezse `reasoning_effort` (`none|low|high|max`,
+  varsayılan `high`) belirler — **ikisi de verilmezse düşünme açıktır**, bu yüzden her istekte açıkça gönderiyoruz.
+  `max_tokens` varsayılanı düşünmesiz 8K, düşünmeli 64K; biz her zaman tavan veriyoruz.
+- `stream_options: { include_usage: true }` yalnızca `stream: true` ile geçerli (aksi 400); son parçada tam kullanım.
+- Kullanım: `prompt_tokens = prompt_cache_hit_tokens + prompt_cache_miss_tokens`,
+  `prompt_tokens_details.cached_tokens` (= isabet), `completion_tokens`, `completion_tokens_details.reasoning_tokens`.
+- Araç çağırma parçaları OpenRouter'la aynı biçimde (`index`, ilk parçada `id`/`name`). Belge, modelin geçersiz JSON
+  üretebileceğini söylüyor → argümanlar her zaman Zod ile doğrulanır.
+- Fiyat (1M token): girdi önbellek isabeti $0.003 (sakin saat) / $0.006 (yoğun), önbellek ıskası $0.15 / $0.30,
+  çıktı $0.60 / $1.20. Yoğun saatler hafta içi 01–04 ve 06–10 UTC. Maliyet kaydı yoğun saat fiyatını kullanır (üst sınır).
+- Eşzamanlılık sınırı 2500; 429/5xx davranışı ayrıntılı belgelenmemiş → 408/429/5xx ve ağ hatası "yeniden denenebilir".
+
+**Doğrulanmayan / açık:** (1) DeepSeek düşünme modunda araç çağrılı çok turlu konuşmada `reasoning_content`'in
+geri gönderilmesi gerekip gerekmediği bu sayfalarda yazmıyor; düşünme yalnızca Pro + program işlerinde açık, P082
+değerlendirmesinde kontrol edilecek. (2) Gerçek anahtarla iki sağlayıcıdan akış alma (kabul ölçütü) kullanıcı
+tarafından `docs/KURULUM.md` → "AI Koç anahtarları" adımıyla doğrulanacak.
+
 ## 4. Bağlam kurulumu
 
 Sıra, sağlayıcı önbelleğinden en çok yararlanacak biçimde **sabit olandan değişkene** doğrudur:

@@ -56,6 +56,40 @@ Saklama yerleri:
 - Anahtar değişirse eski uygulama sürümleri yeni paketleri reddeder (gömülü pakete düşer); anahtarı yalnızca
   sızıntıda değiştir ve yeni açık anahtarla uygulama sürümü çıkar.
 
+## AI Koç anahtarları ve ayarları (P073, P077)
+
+Gizli değerler yalnızca Edge Function secret'ıdır (staging ve prod ayrı anahtar):
+
+```bash
+supabase secrets set OPENROUTER_API_KEY=…   # PM'den
+supabase secrets set DEEPSEEK_API_KEY=…     # PM'den (yedek sağlayıcı)
+```
+
+Gizli olmayan ayarlar (hepsinin varsayılanı var; yalnızca değiştirmek istediğinde `supabase secrets set` ile ver):
+
+| Değişken | Varsayılan | Anlamı |
+|---|---|---|
+| `COACH_OPENROUTER_MODEL` | `deepseek/deepseek-v4.1-flash` | OpenRouter model kimliği |
+| `COACH_OPENROUTER_PROVIDERS` | boş (filtrelerden geçen tüm sağlayıcılar) | Virgülle ayrılmış sağlayıcı izin listesi (`only`); P082 değerlendirmesinden sonra doldurulur |
+| `COACH_DEEPSEEK_MODEL` | `deepseek-flash` | Resmi DeepSeek API model kimliği |
+| `COACH_LLM_TIMEOUT_MS` | `20000` | Sağlayıcının yanıt başlıklarını gönderme süresi; aşılırsa yedeğe geçilir |
+| `COACH_MAX_OUTPUT_TOKENS` | `1500` | Tek LLM çağrısında azami çıktı token'ı |
+| `COACH_PRICES` | kod içi tablo | JSON, `{"sağlayıcı:model": {"input":…, "cached_input":…, "output":…}}` (USD / 1M token) |
+| `COACH_AI_CONSENT_VERSION` | `2026-11` | Geçerli `ai_sharing` onay sürümü; sağlayıcı listesi değişince artırılır (uygulama yeniden onay ister) |
+| `COACH_DAILY_SPEND_CAP_USD` | `25` | Küresel devre kesici: UTC günü içindeki toplam `coach_usage.cost_usd` bu tutarı aşarsa koç kibarca kapanır |
+| `COACH_TURN_TIMEOUT_MS` | `60000` | Bir kullanıcı turunun (tüm ajan adımları) toplam süresi |
+
+Katman başına sınırlar (günlük mesaj, dakikalık istek, ajan adımı, tur başına çıktı token'ı, düşünme modu)
+`public.coach_limits` tablosundadır; göçle tohumlanır, servis rolüyle güncellenir:
+
+```sql
+update public.coach_limits set daily_messages = 8 where tier = 'free';
+```
+
+Doğrulama: `supabase functions serve coach-chat` ve geçerli bir kullanıcı JWT'siyle
+`curl -N -H "Authorization: Bearer $JWT" -d '{"message":"Merhaba","locale":"tr"}' http://localhost:54321/functions/v1/coach-chat`
+→ `text_delta … usage … done` olayları. Anahtar yoksa ya da iki sağlayıcı da hata verirse akış `error` olayıyla biter.
+
 ## Supabase kurulumu (P009)
 
 ### Ön koşullar
