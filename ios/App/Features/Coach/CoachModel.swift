@@ -96,6 +96,7 @@ final class CoachModel {
     func send() {
         guard canSend, let text = CoachSession.sendable(draft) else { return }
         draft = ""
+        AppAnalytics.shared.send(.coachMessageSent)
         deliver(text)
     }
 
@@ -149,6 +150,7 @@ final class CoachModel {
         do {
             let outcome = try await applier.apply(proposal)
             decide(proposal, thenEdit ? .edited : .applied)
+            AppAnalytics.shared.send(.coachSuggestionDecided(.applied))
             switch outcome {
             case .routineCreated(let id, _), .routineChanged(let id, _): banner = .applied(routineId: id)
             case .goalUpdated, .nothingToChange: banner = .applied(routineId: nil)
@@ -159,6 +161,7 @@ final class CoachModel {
     }
 
     func reject(_ proposal: CoachProposal) {
+        AppAnalytics.shared.send(.coachSuggestionDecided(.rejected))
         decide(proposal, .rejected)
     }
 

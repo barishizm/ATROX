@@ -1,3 +1,4 @@
+import DataKit
 import Foundation
 import Observation
 
@@ -70,7 +71,11 @@ final class PaywallModel {
         message = nil
         do {
             switch try await purchases.purchase(product) {
-            case .success, .cancelled: break
+            case .success:
+                let plan: AnalyticsEvent.SubscriptionPlan = product.period == .year ? .yearly : .monthly
+                let isTrial = product.trialDays != nil && product.isTrialEligible
+                AppAnalytics.shared.send(isTrial ? .trialStarted(plan: plan) : .subscriptionStarted(plan: plan))
+            case .cancelled: break
             case .pending: message = .pending
             }
         } catch {

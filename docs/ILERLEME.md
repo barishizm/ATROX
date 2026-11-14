@@ -138,8 +138,8 @@ Toplam: 104 adım.
 - [x] **P096** · Widget'lar ve App Intents — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
 - [x] **P097** · Erişilebilirlik geçişi — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
 - [x] **P098** · Performans geçişi — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
-- [ ] **P099** · Test sertleştirme — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
-- [ ] **P100** · Analitik ve çökme izleme — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
+- [x] **P099** · Test sertleştirme (kısmen — bkz. Ertelenenler) — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
+- [x] **P100** · Analitik ve çökme izleme (`docs/ANALITIK.md`) — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
 - [ ] **P101** · Gizlilik ve hukuk — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
 - [x] **P102** · Güvenlik incelemesi — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
 - [ ] **P103** · Mağaza varlıkları ve inceleme hazırlığı — [`04-koc-sosyal-abonelik-yayin.md`](prompts/04-koc-sosyal-abonelik-yayin.md)
@@ -387,3 +387,6 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (P098) `docs/PERFORMANS.md`: ölçümler `PerformanceBudgetTests` (DataKit; katalog çözme/içe aktarma, 1.752 öğede arama, 520 antrenmanlı geçmiş ve skor) + `PerformanceUITests` (soğuk açılış, CI). Değişiklikler: bundled katalog yalnızca dosya adındaki sürüm yüklüden büyükse çözülür; `LibraryModel.load` arka planda okur; küçük resim önbelleği 24 MB maliyet sınırı + arka planda çözme. Cihaz Instruments geçişi (açılış < 1 sn, hitch, sızıntı, pil) `[MANUEL]`; yerelde yalnızca `swift test` ve `LibraryModelTests`.
 - (P102) `docs/GUVENLIK.md`: tehdit modeli, bulgular, kabul edilen riskler. Düzeltmeler: göç `schema_23` (`social_are_friends`/`social_is_blocked` yalnızca çağıran için cevap verir, üçüncü kişi ilişki sorgusu kapandı; pgTAP `029_security_hardening`), koç Markdown'ında bağlantı/görsel etkisiz (`MarkdownInline`), `tools/scan-secrets.sh` + `core.yml` `secrets` işi. Yüksek önemli bulgu yok.
 - (P102) Ertelenen: (1) App Attest (gerekçe `docs/GUVENLIK.md`; tetikleyici: harcama tavanına tekrar ulaşma). (2) Prod danışman çıktısı ve Auth ayarları `[MANUEL]`. (3) Yerel doğrulama yapılmadı: pgTAP `029` ve `MarkdownInlineTests` CI'da koşar; `MarkdownInline` mantığı ayrı bir Swift betiğiyle yerelde doğrulandı. (4) `social_*` göçü P100'ün `schema_22` göçünden sonra gelir (zaman damgası 20261120); P100 PR'ı birleşmeden önce sıra çakışması yok.
+- (P099) Eksik kritik UI yolları: "program oluştur → antrenman → özet" ve "satın alma (StoreKit test) → kilit açılır" XCUITest'leri yazılmadı (yerelde koşturulamadığı için CI'da kırılma riski). Kayıt/onboarding, koç öneri uygula, hesap silme ve antrenman akışı testleri zaten var. Dal kapsamı raporu da alınmadı (`swift test --enable-code-coverage` CI adımı eklenmedi).
+- (P100) Olay çağrıları bağlandı; `shareCompleted` dokunuşu sayar (bkz. ANALITIK.md). TelemetryDeck App ID ve `ops_alerts()` zamanlaması [MANUEL] (bkz. `docs/ANALITIK.md`).
+- (P099/P100) `supabase/tests/028_ops_dashboards.test.sql` ve migration 22 yerelde koşturulamadı (Docker kapalı); `core.yml` CI'da koşar.

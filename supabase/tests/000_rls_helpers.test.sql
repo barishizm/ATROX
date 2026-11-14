@@ -39,7 +39,7 @@ $$;
 -- Anonymous tables (P093): no user_id, no client grants; only the service role touches them (027_ml_contributions).
 create or replace function tests.anonymous_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['ml_contributions']
+  select array['ml_contributions', 'ops_alert_thresholds']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).

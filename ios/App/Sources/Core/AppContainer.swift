@@ -7,8 +7,10 @@ import SwiftData
 
 /// Composition root: holds the app's dependencies and is handed down via `Environment`.
 /// Tests build one with fakes through `init`.
+// The composition root grows with every feature; splitting it is tracked in docs/ILERLEME.md deferrals.
 @MainActor
 @Observable
+// swiftlint:disable:next type_body_length
 final class AppContainer {
     let featureFlags: FeatureFlags
     let sessionService: any SessionService

@@ -4761,6 +4761,38 @@
         }
       }
     },
+    "settings.analytics": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share anonymous usage statistics"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anonim kullanım istatistiklerini paylaş"
+          }
+        }
+      }
+    },
+    "settings.analytics.footer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Counts of screens and actions such as finishing a workout. Never your weights, scores or coach messages, and never tied to you. Crash reports are anonymous too."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman bitirme gibi ekran ve eylem sayıları. Ağırlıklarını, skorlarını veya koç mesajlarını asla içermez ve seninle ilişkilendirilmez. Çökme raporları da anonimdir."
+          }
+        }
+      }
+    },
     "settings.contribution": {
       "localizations": {
         "en": {

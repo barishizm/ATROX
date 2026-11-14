@@ -40,8 +40,8 @@ select throws_ok($$ select * from public.ml_contributions $$, '42501', null, 'an
 reset role;
 
 select is((select count(*)::int from public.ml_contributions), 1, 'the service side sees the row');
-select is((with d as (delete from public.ml_contributions where contribution_key = '0b6f1c1e-5d3a-4f7e-9a41-6c1d2e3f4a5b' returning 1)
-  select count(*)::int from d), 1, 'delete by key removes the rows');
+delete from public.ml_contributions where contribution_key = '0b6f1c1e-5d3a-4f7e-9a41-6c1d2e3f4a5b';
+select is((select count(*)::int from public.ml_contributions), 0, 'delete by key removes the rows');
 
 select * from finish();
 rollback;

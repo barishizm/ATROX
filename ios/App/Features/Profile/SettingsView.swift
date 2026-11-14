@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.restAutoStartKey) private var restAutoStart = true
     @AppStorage(WorkoutPreferences.liveActivityKey) private var liveActivity = true
+    @AppStorage(AnalyticsService.enabledKey) private var analyticsEnabled = true
 
     var body: some View {
         @Bindable var language = container.language
@@ -85,12 +86,17 @@ struct SettingsView: View {
                 NavigationLink(value: ProfileRoute.contributionPreview) { Text("settings.contribution.preview") }
                     .accessibilityIdentifier("settings-contribution-preview")
             }
+            Toggle("settings.analytics", isOn: $analyticsEnabled)
+                .accessibilityIdentifier("settings-analytics")
             NavigationLink(value: ProfileRoute.consentHistory) { Text("settings.consentHistory") }
                 .accessibilityIdentifier("settings-consent-history")
         } header: {
             Text("settings.section.privacy")
         } footer: {
-            Text("settings.contribution.footer")
+            VStack(alignment: .leading, spacing: 8) {
+                Text("settings.contribution.footer")
+                Text("settings.analytics.footer")
+            }
         }
     }
 
