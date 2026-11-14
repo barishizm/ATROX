@@ -50,6 +50,8 @@ final class AppContainer {
     var requestedRoutine: UUID?
     /// AI Koç (P079/P080): the chat client and the conversation cache; nil without Supabase.
     let coach: CoachDependencies?
+    /// Friends and blocks (P085/P086); nil without Supabase, in which case the social screens say they are unavailable.
+    let social: (any SocialService)?
     /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
     @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
@@ -79,9 +81,11 @@ final class AppContainer {
         exerciseImageBaseURL: URL? = nil,
         sync: SyncCoordinator? = nil,
         modelUpdater: ModelUpdater? = nil,
-        coach: CoachDependencies? = nil
+        coach: CoachDependencies? = nil,
+        social: (any SocialService)? = nil
     ) {
         self.coach = coach
+        self.social = social
         self.sync = sync
         self.modelUpdater = modelUpdater
         self.scoreService = Self.makeScoreService(
@@ -498,7 +502,7 @@ final class AppContainer {
             return AppContainer(
                 sessionService: AuthSessionService(auth: fake), authService: fake,
                 accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth(),
-                catalog: store.map { CatalogService(modelContainer: $0) }, coach: uiTestCoach()
+                catalog: store.map { CatalogService(modelContainer: $0) }, coach: uiTestCoach(), social: uiTestSocial()
             )
         }
         #endif
@@ -530,7 +534,8 @@ final class AppContainer {
             catalog: store.map { CatalogService(modelContainer: $0, remote: SupabaseCatalogRemote(configuration: config)) },
             exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images"),
             sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) },
-            modelUpdater: makeModelUpdater(config: config, info: info), coach: coach
+            modelUpdater: makeModelUpdater(config: config, info: info), coach: coach,
+            social: SupabaseSocialService(configuration: config, accessToken: accessToken)
         )
     }
 

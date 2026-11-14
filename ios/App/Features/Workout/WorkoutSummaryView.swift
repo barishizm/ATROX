@@ -87,6 +87,7 @@ struct WorkoutSummaryView: View {
                             }
                             Spacer()
                             Text(verbatim: row.valueText).font(DSFont.numericSmall)
+                            RecordShareButton(exercise: row.exercise, kind: row.kind, value: row.valueText)
                         }
                         .accessibilityElement(children: .combine)
                     }

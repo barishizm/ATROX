@@ -28,6 +28,7 @@ struct ExerciseScoreView: View {
         .background(DSColor.background)
         .navigationTitle("scorescreen.title")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .primaryAction) { ShareCardButton(content: model?.shareContent).labelStyle(.iconOnly) } }
         .howItWorksButton()
         .task { await prepare() }
         .accessibilityIdentifier("exercise-score-root")

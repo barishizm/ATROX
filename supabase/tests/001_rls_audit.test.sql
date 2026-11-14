@@ -12,12 +12,12 @@ where n.nspname = 'public' and c.relkind in ('r', 'p');
 
 select is(
   (select string_agg(name, ', ' order by name) from _pub_tables
-    where name <> all (tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables())),
+    where name <> all (tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables() || tests.social_tables())),
   null,
   'every public table is registered in tests.owner_tables() or tests.catalog_tables() (add RLS tests for new tables)');
 
 select is(
-  (select string_agg(t, ', ' order by t) from unnest(tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables()) t
+  (select string_agg(t, ', ' order by t) from unnest(tests.owner_tables() || tests.owner_readonly_tables() || tests.catalog_tables() || tests.social_tables()) t
     where t not in (select name from _pub_tables)),
   null,
   'registry lists no table that does not exist');

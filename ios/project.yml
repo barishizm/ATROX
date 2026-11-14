@@ -90,6 +90,8 @@ targets:
         NSSupportsLiveActivities: true
         # Opportunistic background sync (P045, BackgroundSync.swift).
         UIBackgroundModes: [fetch]
+        # Direct share to Instagram Stories (P084); falls back to the share sheet without Instagram.
+        LSApplicationQueriesSchemes: [instagram-stories]
         BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh, com.barishizm.atrox.weekly.refresh]
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

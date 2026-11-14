@@ -26,7 +26,14 @@ $$;
 -- Owner-readable tables only the service role writes (the app cannot insert or update).
 create or replace function tests.owner_readonly_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['coach_usage', 'entitlements', 'coach_quota', 'coach_digests']
+  select array['coach_usage', 'entitlements', 'coach_quota', 'coach_digests', 'social_rate_limits']
+$$;
+
+-- Social tables (P085): readable under bespoke rules (discoverable / friends / blocks), written only through
+-- security definer functions. Covered by 023_social.test.sql instead of the generic owner matrix.
+create or replace function tests.social_tables() returns text[]
+language sql immutable set search_path = '' as $$
+  select array['public_profiles', 'friendships', 'reports']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).

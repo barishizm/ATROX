@@ -48,6 +48,8 @@ final class TodayModel {
     private(set) var isLoading = true
     private(set) var status: DashboardStatus = .noData
     private(set) var overall: GroupScore?
+    /// Reference group the overall score was computed against (shown on the share card).
+    private(set) var population: ReferencePopulation = .gym
     private(set) var bars: [PatternBar] = []
     private(set) var facts: DashboardFacts?
     private(set) var plan: Plan = .none
@@ -93,6 +95,7 @@ final class TodayModel {
         let names = await context.loadNames()
         let overview = center.overview
         overall = overview?.overall
+        population = overview?.population ?? .gym
         unavailable = overview == nil ? center.unavailable : nil
         status = DashboardStatus.make(overall: overview?.overall, allPatterns: overview?.allPatterns ?? [])
         bars = (overview?.allPatterns ?? []).map { PatternBar(pattern: $0, score: overview?.patterns[$0]?.score) }
