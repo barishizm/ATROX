@@ -26,19 +26,24 @@ export const SSE_HEADERS: Record<string, string> = {
 export function sseResponse(events: AsyncIterable<CoachEvent>, headers: Record<string, string> = {}): Response {
   const encoder = new TextEncoder();
   const iterator = events[Symbol.asyncIterator]();
+  let cancelled = false;
   const body = new ReadableStream<Uint8Array>({
     async pull(controller) {
       try {
         const next = await iterator.next();
+        if (cancelled) return;
         if (next.done) controller.close();
         else controller.enqueue(encoder.encode(encodeEvent(next.value)));
       } catch (error) {
+        if (cancelled) return;
         console.error("coach stream failed", error instanceof Error ? error.message : error);
         controller.enqueue(encoder.encode(encodeEvent({ type: "error", code: "internal", message: "Stream failed." })));
         controller.close();
       }
     },
     async cancel() {
+      // The client went away: stop the producer (its `finally` blocks still run, e.g. to store a partial turn).
+      cancelled = true;
       await iterator.return?.();
     },
   });
