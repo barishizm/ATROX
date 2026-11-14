@@ -2,12 +2,21 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// The Analysis tab. P066 puts the muscle views here; progress charts (P068) and insights (P069) come next.
+/// The Analysis tab: muscle views (P066), progress charts (P068) and insights (P069).
 struct AnalysisRootView: View {
+    enum Section: String, CaseIterable, Identifiable {
+        case muscles, progress, insights
+        var id: String { rawValue }
+    }
+
     let router: TabRouter<AnalysisRoute>
     @Environment(AppContainer.self) private var container
     @Environment(\.locale) private var locale
+    @State private var section: Section = .muscles
     @State private var model: MuscleAnalysisModel?
+    @State private var progressModel: ProgressModel?
+    @State private var insightsModel: InsightsModel?
+    @State private var actions = InsightActions()
     @State private var failed = false
 
     var body: some View {
@@ -23,26 +32,86 @@ struct AnalysisRootView: View {
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.analysis")
         .task { await prepare() }
-        .task(id: container.historyEvents.version) { await model?.load() }
+        .task(id: section) { await prepareSection() }
+        .task(id: container.historyEvents.version) {
+            await model?.load()
+            await progressModel?.load()
+            await insightsModel?.load()
+        }
+        .sheet(item: $actions.sheet) { sheet in
+            InsightSuggestionsSheet(sheet: sheet) { id in
+                actions.sheet = nil
+                router.push(.exerciseDetail(catalogId: id))
+            }
+        }
         .accessibilityIdentifier("analysis-root")
     }
 
     private func content(_ model: MuscleAnalysisModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.lg) {
-                SectionHeader("muscles.title", subtitle: "muscles.subtitle")
-                Picker("muscles.mode", selection: Binding(get: { model.mode }, set: { model.mode = $0 })) {
-                    Text("muscles.mode.score").tag(MuscleAnalysisModel.Mode.score)
-                    Text("muscles.mode.load").tag(MuscleAnalysisModel.Mode.load)
+                Picker("analysis.section", selection: $section) {
+                    Text("analysis.section.muscles").tag(Section.muscles)
+                    Text("analysis.section.progress").tag(Section.progress)
+                    Text("analysis.section.insights").tag(Section.insights)
                 }
                 .pickerStyle(.segmented)
-                .accessibilityIdentifier("muscle-mode-picker")
-                mapCard(model)
-                if model.mode == .score, let reason = model.unavailable { unavailableCard(reason) }
-                legend(model)
-                list(model)
+                .accessibilityIdentifier("analysis-section-picker")
+                switch section {
+                case .muscles: muscleContent(model)
+                case .progress: progressContent
+                case .insights: insightsContent
+                }
             }
             .padding(Spacing.md)
+        }
+    }
+
+    private func muscleContent(_ model: MuscleAnalysisModel) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.lg) {
+            SectionHeader("muscles.title", subtitle: "muscles.subtitle")
+            Picker("muscles.mode", selection: Binding(get: { model.mode }, set: { model.mode = $0 })) {
+                Text("muscles.mode.score").tag(MuscleAnalysisModel.Mode.score)
+                Text("muscles.mode.load").tag(MuscleAnalysisModel.Mode.load)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("muscle-mode-picker")
+            mapCard(model)
+            if model.mode == .score, let reason = model.unavailable { unavailableCard(reason) }
+            legend(model)
+            list(model)
+        }
+    }
+
+    @ViewBuilder private var progressContent: some View {
+        if let progressModel {
+            ProgressChartsView(model: progressModel)
+        } else {
+            LoadingState()
+        }
+    }
+
+    @ViewBuilder private var insightsContent: some View {
+        if let insightsModel {
+            InsightsSection(model: insightsModel) { item in
+                Task { await actions.perform(item, container: container) { router.push(.exerciseDetail(catalogId: $0)) } }
+            }
+        } else {
+            LoadingState()
+        }
+    }
+
+    private func prepareSection() async {
+        switch section {
+        case .muscles: break
+        case .progress:
+            guard progressModel == nil, let created = await container.makeProgressModel() else { return }
+            progressModel = created
+            await created.load()
+        case .insights:
+            guard insightsModel == nil, let created = await container.makeInsightsModel() else { return }
+            insightsModel = created
+            await created.load()
         }
     }
 

@@ -56,6 +56,8 @@ final class TodayModel {
     private(set) var unavailable: ScoreUnavailable?
     private(set) var hintExerciseId: String?
     private(set) var hintName: String?
+    /// The single most important insight of the day (P069); nil when nothing passes the thresholds.
+    private(set) var insight: InsightItem?
 
     let context: HistoryContext
     @ObservationIgnored private let center: ScoreCenter
@@ -63,16 +65,18 @@ final class TodayModel {
     @ObservationIgnored private let planStore: RoutinePlanStore
     @ObservationIgnored private let profile: ProfileInput?
     @ObservationIgnored private let calendar: Calendar
+    @ObservationIgnored private let insights: InsightService?
 
     init(
         context: HistoryContext, center: ScoreCenter, stats: TrainingStats, plan: RoutinePlanStore, profile: ProfileInput?,
-        calendar: Calendar = .current
+        insights: InsightService? = nil, calendar: Calendar = .current
     ) {
         self.context = context
         self.center = center
         self.stats = stats
         planStore = plan
         self.profile = profile
+        self.insights = insights
         self.calendar = calendar
     }
 
@@ -113,7 +117,22 @@ final class TodayModel {
             ImprovedLine(exerciseId: $0.exerciseId, name: names[$0.exerciseId] ?? $0.exerciseId, change: Int($0.change.rounded()))
         }
         plan = await resolvePlan()
+        await loadInsight(names: names)
         isLoading = false
+    }
+
+    private func loadInsight(names: [String: String]) async {
+        guard let insights else { return }
+        _ = await insights.refresh(userId: context.userId)
+        insight = await insights.topForToday(userId: context.userId)
+            .map { InsightPresenter.item(for: $0, names: names, locale: context.locale) }
+    }
+
+    func dismissInsight() async {
+        guard let insight, let insights else { return }
+        await insights.dismiss(id: insight.id)
+        self.insight = nil
+        await load()
     }
 
     private func valueText(_ record: RecordHighlight) -> String {

@@ -213,15 +213,28 @@ public actor ScoreService {
 
     // MARK: Snapshots
 
+    private struct SnapshotItem {
+        var scope: SnapshotScope
+        var key: String
+        var score: Double
+        var z: Double
+        var confidence: ScoreConfidence
+    }
+
     private func store(_ overview: ScoreOverview, userId: UUID, date: Date, context: ModelContext, force: Bool) {
         let group = overview.population.rawValue
-        var items: [(SnapshotScope, String, Double, Double, ScoreConfidence)] = overview.exercises.map {
-            (.exercise, $0.key, $0.value.score.score, $0.value.score.z, $0.value.score.confidence)
+        var items: [SnapshotItem] = overview.exercises.map {
+            SnapshotItem(scope: .exercise, key: $0.key, score: $0.value.score.score, z: $0.value.score.z, confidence: $0.value.score.confidence)
         }
-        items += overview.muscles.map { (.muscle, $0.key, $0.value.score, $0.value.z, $0.value.confidence) }
-        if let overall = overview.overall { items.append((.overall, "overall", overall.score, overall.z, overall.confidence)) }
+        items += overview.muscles.map {
+            SnapshotItem(scope: .muscle, key: $0.key, score: $0.value.score, z: $0.value.z, confidence: $0.value.confidence)
+        }
+        if let overall = overview.overall {
+            items.append(SnapshotItem(scope: .overall, key: "overall", score: overall.score, z: overall.z, confidence: overall.confidence))
+        }
         let now = clock()
-        for (scope, key, score, z, confidence) in items.sorted(by: { ($0.0.rawValue, $0.1) < ($1.0.rawValue, $1.1) }) {
+        for item in items.sorted(by: { ($0.scope.rawValue, $0.key) < ($1.scope.rawValue, $1.key) }) {
+            let (scope, key, score, z, confidence) = (item.scope, item.key, item.score, item.z, item.confidence)
             let id = ScoreSnapshot.id(userId: userId, scope: scope.rawValue, key: key, referenceGroup: group, date: date)
             if let existing = try? context.fetch(ScoreSnapshot.syncDescriptor(.id(id))).first {
                 guard existing.score != score || existing.modelVersion != overview.modelVersion || existing.deletedAt != nil else { continue }

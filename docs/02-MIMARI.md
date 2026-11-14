@@ -61,6 +61,7 @@ Tüm modellerde ortak alanlar: `id: UUID`, `createdAt`, `updatedAt`, `deletedAt?
 | `Workout` → `WorkoutExercise` → `SetEntry` | startedAt, endedAt, notlar; set: weightKg, reps, rpe?, rir?, setType (`warmup`/`working`/`drop`/`failure`), isCompleted |
 | `PersonalRecord` | exerciseId, kind (`weight`/`reps`/`e1rm`/`volume`), value, setId, date |
 | `ScoreSnapshot` | scope (`exercise`/`muscle`/`overall`), key, referenceGroup, score, z, confidence, modelVersion, date |
+| `InsightRecord` | kind, subject, severity, priority, action, payload (JSON), isActive, detectedAt, lastShownAt?, dismissedAt? — kimlik (kullanıcı, kind, subject) özetidir; koçun `get_insights` aracı kaynağı |
 | `CoachThread` / `CoachMessage` | sunucudaki konuşmanın yerel önbelleği |
 
 Şema `VersionedSchema` + `SchemaMigrationPlan` ile sürümlenir (ilk günden).
@@ -87,7 +88,7 @@ Bu bölüm bilinçli olarak basit tutuldu: tek kullanıcı kendi verisini düzen
 
 `profiles` · `user_settings` · `consents` (tür, sürüm, verildi/geri alındı, zaman) · `body_measurements` ·
 `custom_exercises` · `routines` · `routine_days` · `routine_exercises` · `workouts` · `workout_exercises` · `sets` ·
-`personal_records` · `score_snapshots` · `coach_threads` · `coach_messages` · `coach_memory` · `coach_usage` ·
+`personal_records` · `score_snapshots` · `insights` · `coach_threads` · `coach_messages` · `coach_memory` · `coach_usage` ·
 `entitlements` (yalnızca servis rolü yazar)
 
 **Herkese açık okuma**

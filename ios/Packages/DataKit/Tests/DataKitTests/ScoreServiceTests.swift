@@ -199,7 +199,10 @@ private enum Failure: Error { case notReady(ScoreOutcome) }
     @Test func snapshotIdIsDeterministicAndSurvivesTheSyncDTO() throws {
         let day = Date(timeIntervalSince1970: 1_800_000_000)
         let first = ScoreSnapshot(userId: testUser, scope: .muscle, key: "chest", referenceGroup: "gym", score: 61.5, z: 0.29, confidence: "medium", modelVersion: "1.0.0", date: day)
-        let second = ScoreSnapshot(userId: testUser, scope: .muscle, key: "chest", referenceGroup: "gym", score: 10, z: -1.2, confidence: "low", modelVersion: "1.0.1", date: day.addingTimeInterval(3_600))
+        let second = ScoreSnapshot(
+            userId: testUser, scope: .muscle, key: "chest", referenceGroup: "gym", score: 10, z: -1.2, confidence: "low",
+            modelVersion: "1.0.1", date: day.addingTimeInterval(3_600)
+        )
         #expect(first.id == second.id)
         #expect(first.id != ScoreSnapshot(userId: testUser, scope: .muscle, key: "chest", referenceGroup: "general", score: 1, z: 0, confidence: "low", modelVersion: "1", date: day).id)
         let copy = ScoreSnapshot(syncDTO: first.makeDTO())

@@ -38,6 +38,11 @@ final class AppContainer {
     let scoreService: ScoreService?
     @ObservationIgnored var scoreCenterState: (userId: UUID, center: ScoreCenter)?
     @ObservationIgnored var scoreRefreshTask: Task<Void, Never>?
+    @ObservationIgnored var insightServiceState: InsightService?
+    /// A tab another screen asks the shell to show (insight actions); the shell clears it once it has switched.
+    var requestedTab: AppTab?
+    /// Message an insight staged for the coach tab ("Ask the coach"); the coach consumes it when it opens.
+    var pendingCoachPrompt: String?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored private var workoutSession: WorkoutSession?
     /// Version counter and pending undo of the workout history (P042).
@@ -256,7 +261,7 @@ final class AppContainer {
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
         return TodayModel(
             context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
-            plan: planStore(for: context.userId), profile: profile?.input
+            plan: planStore(for: context.userId), profile: profile?.input, insights: insightService()
         )
     }
 

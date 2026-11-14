@@ -36,8 +36,10 @@ select throws_ok($$ delete from public.score_snapshots where id = '75000000-0000
 
 select tests.authenticate_as(tests.user_b());
 select is((select count(*)::int from public.score_snapshots), 0, 'another user sees nothing');
-select is((with u as (update public.score_snapshots set score = 1 returning 1) select count(*)::int from u), 0,
-  'another user updates nothing');
+select lives_ok($$ update public.score_snapshots set score = 1 $$, 'another user update matches no rows');
+select tests.authenticate_as(tests.user_a());
+select is((select score from public.score_snapshots where id = '75000000-0000-0000-0000-000000000001'), 80::numeric,
+  'the owner row is untouched');
 
 select * from finish();
 rollback;
