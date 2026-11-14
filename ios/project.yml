@@ -53,6 +53,8 @@ schemes:
         - ATROXUITests
     run:
       config: Debug
+      # Local purchases without App Store Connect (P089).
+      storeKitConfiguration: StoreKit/ATROX.storekit
     profile:
       config: Release
     analyze:
@@ -167,12 +169,18 @@ targets:
     platform: iOS
     sources:
       - path: Tests/UnitTests
+      # StoreKitTest sessions load the same configuration the Debug scheme uses (P089).
+      - path: StoreKit/ATROX.storekit
+        buildPhase: resources
     dependencies:
       - target: ATROX
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX).tests
+        # StoreKitTest's own header uses a deprecated StoreKit type (P089); Swift warnings stay errors.
+        GCC_TREAT_WARNINGS_AS_ERRORS: NO
+        OTHER_SWIFT_FLAGS: $(inherited) -Xcc -Wno-error=deprecated-declarations
 
   ATROXUITests:
     type: bundle.ui-testing

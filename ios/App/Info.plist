@@ -6,6 +6,8 @@
 	<string>$(APP_ENVIRONMENT)</string>
 	<key>AppGroupID</key>
 	<string>$(APP_GROUP_ID)</string>
+	<key>AppLinkHost</key>
+	<string>$(APP_LINK_HOST)</string>
 	<key>AppURLScheme</key>
 	<string>$(APP_URL_SCHEME)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>

@@ -52,6 +52,8 @@ final class AppContainer {
     let coach: CoachDependencies?
     /// Friends and blocks (P085/P086); nil without Supabase, in which case the social screens say they are unavailable.
     let social: (any SocialService)?
+    /// StoreKit 2 subscription flow and the single entitlement source (P089); `purchases.entitlements.isPro` is the gate.
+    let purchases: PurchaseService
     /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
     @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
@@ -82,8 +84,10 @@ final class AppContainer {
         sync: SyncCoordinator? = nil,
         modelUpdater: ModelUpdater? = nil,
         coach: CoachDependencies? = nil,
-        social: (any SocialService)? = nil
+        social: (any SocialService)? = nil,
+        purchases: PurchaseService? = nil
     ) {
+        self.purchases = purchases ?? PurchaseService(store: FakeStoreClient())
         self.coach = coach
         self.social = social
         self.sync = sync
@@ -127,6 +131,7 @@ final class AppContainer {
         await resetScores()
         await coach?.repository.clear()
         coachConsentState = nil
+        purchases.stop()
         await sync?.signOut()
         await root.signOut()
     }
@@ -276,16 +281,17 @@ final class AppContainer {
     func makeTodayModel() async -> TodayModel? {
         guard let modelContainer, let context = await makeHistoryContext(), let center = await scoreCenter() else { return nil }
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
+        let publish: (@Sendable (ScorePublication) async -> Void)? = social.map { service in
+            { @Sendable publication in
+                // Nothing leaves the device unless the user joined and switched score sharing on.
+                guard let profile = try? await service.myProfile(), profile.sharesScore else { return }
+                _ = try? await service.publishScore(publication)
+            }
+        }
         return TodayModel(
             context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
             plan: planStore(for: context.userId), profile: profile?.input, insights: insightService(),
-            publishScore: social.map { service in
-                { publication in
-                    // Nothing leaves the device unless the user joined and switched score sharing on.
-                    guard let profile = try? await service.myProfile(), profile.sharesScore else { return }
-                    _ = try? await service.publishScore(publication)
-                }
-            }
+            publishScore: publish
         )
     }
 
@@ -509,7 +515,8 @@ final class AppContainer {
             return AppContainer(
                 sessionService: AuthSessionService(auth: fake), authService: fake,
                 accountService: FakeAccountService(), modelContainer: store, health: uiTestHealth(),
-                catalog: store.map { CatalogService(modelContainer: $0) }, coach: uiTestCoach(), social: uiTestSocial()
+                catalog: store.map { CatalogService(modelContainer: $0) }, coach: uiTestCoach(), social: uiTestSocial(),
+                purchases: PurchaseService(store: FakeStoreClient())
             )
         }
         #endif
@@ -521,7 +528,8 @@ final class AppContainer {
             Log.app.error("Supabase is not configured; running signed out. See docs/KURULUM.md.")
             return AppContainer(
                 sessionService: PlaceholderSessionService(), modelContainer: store,
-                catalog: store.map { CatalogService(modelContainer: $0) }
+                catalog: store.map { CatalogService(modelContainer: $0) },
+                purchases: makePurchases(config: nil, accessToken: { nil })
             )
         }
         let apple = AppleIDTokenProvider()
@@ -542,7 +550,8 @@ final class AppContainer {
             exerciseImageBaseURL: config.url.appendingPathComponent("storage/v1/object/public/exercise-images"),
             sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) },
             modelUpdater: makeModelUpdater(config: config, info: info), coach: coach,
-            social: SupabaseSocialService(configuration: config, accessToken: accessToken)
+            social: SupabaseSocialService(configuration: config, accessToken: accessToken),
+            purchases: makePurchases(config: config, accessToken: accessToken)
         )
     }
 
