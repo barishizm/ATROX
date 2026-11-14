@@ -51,7 +51,7 @@ struct MainTabView: View {
                             switch route {
                             case .muscle(let name): MuscleDetailView(muscleName: name)
                             case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
-                            case .exerciseDetail: FeaturePlaceholderView(title: "shell.tabbar.analysis", systemImage: "chart.line.uptrend.xyaxis")
+                            case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
                             }
                         }
                 }
@@ -74,6 +74,11 @@ struct MainTabView: View {
             }
         }
         .environment(workoutPresenter)
+        .onChange(of: container.requestedTab) { _, tab in
+            guard let tab else { return }
+            selection = tab
+            container.requestedTab = nil
+        }
         .task { await workoutPresenter.prepare(container: container) }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
             if let summary = workoutPresenter.summary {

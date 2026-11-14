@@ -13032,6 +13032,1702 @@
           }
         }
       }
+    },
+    "analysis.section": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Görünüm"
+          }
+        }
+      }
+    },
+    "analysis.section.muscles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscles"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaslar"
+          }
+        }
+      }
+    },
+    "analysis.section.progress": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişim"
+          }
+        }
+      }
+    },
+    "analysis.section.insights": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insights"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İçgörüler"
+          }
+        }
+      }
+    },
+    "progress.range": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaman aralığı"
+          }
+        }
+      }
+    },
+    "progress.range.month": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1M"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1A"
+          }
+        }
+      }
+    },
+    "progress.range.quarter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3M"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3A"
+          }
+        }
+      }
+    },
+    "progress.range.halfYear": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6M"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6A"
+          }
+        }
+      }
+    },
+    "progress.range.year": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1Y"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1Y"
+          }
+        }
+      }
+    },
+    "progress.range.all": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tümü"
+          }
+        }
+      }
+    },
+    "progress.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log a few workouts and your progress charts will appear here."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birkaç antrenman kaydettiğinde gelişim grafiklerin burada görünür."
+          }
+        }
+      }
+    },
+    "progress.unavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your profile and bodyweight to see progress charts."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişim grafiklerini görmek için profilini ve vücut ağırlığını ekle."
+          }
+        }
+      }
+    },
+    "progress.e1rm.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimated 1RM"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahmini 1TM"
+          }
+        }
+      }
+    },
+    "progress.exercise": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercise"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket"
+          }
+        }
+      }
+    },
+    "progress.e1rm.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least two sessions of this exercise are needed for a chart."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafik için bu hareketin en az iki antrenmanı gerekir."
+          }
+        }
+      }
+    },
+    "progress.record": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New best"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni rekor"
+          }
+        }
+      }
+    },
+    "progress.legend.record": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal best"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kişisel rekor"
+          }
+        }
+      }
+    },
+    "progress.legend.plateau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plateau stretch"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plato dönemi"
+          }
+        }
+      }
+    },
+    "progress.legend.forecast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4, 8 and 12-week outlook"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4, 8 ve 12 haftalık tahmin"
+          }
+        }
+      }
+    },
+    "progress.pace.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress rate"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişim hızı"
+          }
+        }
+      }
+    },
+    "progress.pace.unknown": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough sessions yet to compare your pace. Keep logging this exercise."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hızını karşılaştırmak için henüz yeterli antrenman yok. Bu hareketi kaydetmeye devam et."
+          }
+        }
+      }
+    },
+    "progress.pace.faster": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are progressing faster than expected for your level"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seviyene göre beklenenden hızlı gelişiyorsun"
+          }
+        }
+      }
+    },
+    "progress.pace.slower": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are progressing slower than expected for your level"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seviyene göre beklenenden yavaş gelişiyorsun"
+          }
+        }
+      }
+    },
+    "progress.pace.onTrack": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are progressing about as expected for your level"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seviyene göre beklenen hızda gelişiyorsun"
+          }
+        }
+      }
+    },
+    "progress.pace.detail %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your 1RM changes %@ a month; lifters at your level typically gain about %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1TM'in ayda %@ değişiyor; senin seviyendeki sporcular genelde ayda yaklaşık %@ kazanır."
+          }
+        }
+      }
+    },
+    "progress.pace.explain": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Based on your recent sessions. Progress slows naturally as you get stronger."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son antrenmanlarına dayanır. Güçlendikçe gelişim doğal olarak yavaşlar."
+          }
+        }
+      }
+    },
+    "progress.score.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score over time"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaman içinde skor"
+          }
+        }
+      }
+    },
+    "progress.score.scope": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score of"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor türü"
+          }
+        }
+      }
+    },
+    "progress.score.scope.overall": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overall"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel"
+          }
+        }
+      }
+    },
+    "progress.score.scope.exercise": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercise"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket"
+          }
+        }
+      }
+    },
+    "progress.score.scope.muscle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas"
+          }
+        }
+      }
+    },
+    "progress.score.muscle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muscle group"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas grubu"
+          }
+        }
+      }
+    },
+    "progress.score.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your score history builds up as you train."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skor geçmişin antrenman yaptıkça oluşur."
+          }
+        }
+      }
+    },
+    "progress.volume.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekly volume"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık hacim"
+          }
+        }
+      }
+    },
+    "progress.volume.mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volume view"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hacim görünümü"
+          }
+        }
+      }
+    },
+    "progress.volume.mode.total": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total sets"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toplam set"
+          }
+        }
+      }
+    },
+    "progress.volume.mode.muscle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By muscle group"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kas grubuna göre"
+          }
+        }
+      }
+    },
+    "progress.volume.caption": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sets in the 7 days up to this date"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bu tarihe kadarki 7 günde set"
+          }
+        }
+      }
+    },
+    "progress.volume.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No completed sets in this period."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu dönemde tamamlanmış set yok."
+          }
+        }
+      }
+    },
+    "progress.bucket.chest": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Göğüs"
+          }
+        }
+      }
+    },
+    "progress.bucket.back": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sırt"
+          }
+        }
+      }
+    },
+    "progress.bucket.shoulders": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoulders"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omuz"
+          }
+        }
+      }
+    },
+    "progress.bucket.arms": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arms"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kol"
+          }
+        }
+      }
+    },
+    "progress.bucket.legs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacak"
+          }
+        }
+      }
+    },
+    "progress.bucket.core": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Core"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gövde"
+          }
+        }
+      }
+    },
+    "progress.frequency.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training calendar"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman takvimi"
+          }
+        }
+      }
+    },
+    "progress.frequency.summary %lld %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld workouts on %2$lld days in the last 6 months"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son 6 ayda %2$lld günde %1$lld antrenman"
+          }
+        }
+      }
+    },
+    "progress.frequency.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No workouts in the last 6 months."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son 6 ayda antrenman yok."
+          }
+        }
+      }
+    },
+    "progress.body.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bodyweight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vücut ağırlığı"
+          }
+        }
+      }
+    },
+    "progress.body.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add at least two weigh-ins to see your bodyweight trend."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eğilimi görmek için en az iki tartı kaydı ekle."
+          }
+        }
+      }
+    },
+    "progress.body.relative %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ relative to bodyweight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — vücut ağırlığına oranla"
+          }
+        }
+      }
+    },
+    "progress.body.relative.value %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now %@ × bodyweight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdi vücut ağırlığının %@ katı"
+          }
+        }
+      }
+    },
+    "insight.dismiss": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss insight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İçgörüyü kapat"
+          }
+        }
+      }
+    },
+    "insight.action.suggest_exercises": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show exercise ideas"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket önerilerini göster"
+          }
+        }
+      }
+    },
+    "insight.action.ask_coach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask the coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koça sor"
+          }
+        }
+      }
+    },
+    "insight.action.update_bodyweight": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update weight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiloyu güncelle"
+          }
+        }
+      }
+    },
+    "insight.action.view_exercise": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View exercise"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareketi gör"
+          }
+        }
+      }
+    },
+    "insight.action.start_workout": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a workout"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenmana başla"
+          }
+        }
+      }
+    },
+    "insight.coach.prompt %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I saw this insight in ATROX: \"%@\" What should I do about it?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX'ta şu içgörüyü gördüm: \"%@\" Bu konuda ne yapmalıyım?"
+          }
+        }
+      }
+    },
+    "insight.today.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worth knowing"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilmeye değer"
+          }
+        }
+      }
+    },
+    "insight.loading": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking at your training…"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenmanına bakıyorum…"
+          }
+        }
+      }
+    },
+    "insight.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing stands out right now. Your training looks balanced."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şu an dikkat çeken bir şey yok. Antrenmanın dengeli görünüyor."
+          }
+        }
+      }
+    },
+    "insight.history": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier insights"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önceki içgörüler"
+          }
+        }
+      }
+    },
+    "insight.history.resolved": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No longer applies"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artık geçerli değil"
+          }
+        }
+      }
+    },
+    "insight.history.dismissed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismissed"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapatıldı"
+          }
+        }
+      }
+    },
+    "insight.suggestions.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exercise ideas"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hareket önerileri"
+          }
+        }
+      }
+    },
+    "insight.suggestions.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching exercises found in the catalog."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katalogda uygun hareket bulunamadı."
+          }
+        }
+      }
+    },
+    "insight.plateau.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ has levelled off"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ gelişimi yatay seyrediyor"
+          }
+        }
+      }
+    },
+    "insight.plateau.body %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your estimated 1RM hasn't moved over your last %lld sessions. A lighter week, a different rep range or a bit more rest often gets it moving again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahmini 1TM'in son %lld antrenmandır değişmedi. Daha hafif bir hafta, farklı bir tekrar aralığı ya da biraz daha dinlenme çoğu zaman yeniden ilerletir."
+          }
+        }
+      }
+    },
+    "insight.progress_fast.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is climbing quickly"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hızla yükseliyor"
+          }
+        }
+      }
+    },
+    "insight.progress_fast.body %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your 1RM is changing %@ a month, ahead of the %@ typical for your level. Nice work."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1TM'in ayda %@ değişiyor; senin seviyende tipik olan %@ oranının önünde. Güzel gidiyor."
+          }
+        }
+      }
+    },
+    "insight.progress_slow.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is progressing slowly"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ yavaş ilerliyor"
+          }
+        }
+      }
+    },
+    "insight.progress_slow.body %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your 1RM is changing %@ a month, below the %@ typical for your level. More frequency, volume or recovery can help."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1TM'in ayda %@ değişiyor; senin seviyende tipik olan %@ oranının altında. Daha sık çalışmak, hacmi artırmak ya da daha iyi toparlanmak yardımcı olabilir."
+          }
+        }
+      }
+    },
+    "insight.neglected_muscle.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ missed this week"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bu hafta çalışılmadı"
+          }
+        }
+      }
+    },
+    "insight.neglected_muscle.body %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You had been training it about %@ sets a week, with none in the last 7 days. One exercise is enough to keep it on track."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftada yaklaşık %@ set çalışıyordun, son 7 günde hiç çalışmadın. Düzeni korumak için bir hareket yeter."
+          }
+        }
+      }
+    },
+    "insight.push_pull.title.pull_behind": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulling work trails your pushing"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çekiş çalışman itiş çalışmanın gerisinde"
+          }
+        }
+      }
+    },
+    "insight.push_pull.title.push_behind": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pushing work trails your pulling"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İtiş çalışman çekiş çalışmanın gerisinde"
+          }
+        }
+      }
+    },
+    "insight.push_pull.body %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Over four weeks: %@ pushing sets against %@ pulling sets. Evening them out keeps your shoulders happy."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dört haftada: %@ itiş seti, %@ çekiş seti. Dengelemek omuzlarını sağlıklı tutar."
+          }
+        }
+      }
+    },
+    "insight.comeback.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome back"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekrar hoş geldin"
+          }
+        }
+      }
+    },
+    "insight.comeback.body %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It has been %lld days since your last workout. Start a little lighter and build back up; your strength returns quickly."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son antrenmanından bu yana %lld gün geçti. Biraz daha hafif başla ve yavaşça yüklen; gücün hızla geri gelir."
+          }
+        }
+      }
+    },
+    "insight.bodyweight_stale.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update your weight"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilonu güncelle"
+          }
+        }
+      }
+    },
+    "insight.bodyweight_stale.body %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your last weigh-in was %lld days ago. Scores compare you with people of your weight, so a current number keeps them accurate."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son tartın %lld gün önceydi. Skorlar seni kilondaki kişilerle karşılaştırır; güncel bir değer doğruluğu korur."
+          }
+        }
+      }
+    },
+    "insight.rep_range_stuck.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most sets sit in one rep range"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setlerin çoğu tek bir tekrar aralığında"
+          }
+        }
+      }
+    },
+    "insight.rep_range_stuck.body.strength %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ of your recent sets are 1–5 reps. Adding some sets of 6–12 builds muscle and gives your joints a break."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son setlerinin %@ kadarı 1–5 tekrar. 6–12 tekrarlık setler eklemek kası geliştirir ve eklemlerine nefes aldırır."
+          }
+        }
+      }
+    },
+    "insight.rep_range_stuck.body.hypertrophy %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ of your recent sets are 6–12 reps. A few heavier sets of 1–5 can push your strength further."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son setlerinin %@ kadarı 6–12 tekrar. 1–5 tekrarlık birkaç ağır set gücünü daha da ileri taşıyabilir."
+          }
+        }
+      }
+    },
+    "insight.rep_range_stuck.body.endurance %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ of your recent sets are 13+ reps. Heavier sets of 5–12 tend to build strength faster."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son setlerinin %@ kadarı 13+ tekrar. 5–12 tekrarlık daha ağır setler gücü genelde daha hızlı geliştirir."
+          }
+        }
+      }
+    },
+    "insight.group.push": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pushing"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "itiş"
+          }
+        }
+      }
+    },
+    "insight.group.pull": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pulling"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "çekiş"
+          }
+        }
+      }
+    },
+    "insight.group.upper": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "upper body"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "üst vücut"
+          }
+        }
+      }
+    },
+    "insight.group.lower": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lower body"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "alt vücut"
+          }
+        }
+      }
+    },
+    "insight.group.squat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "squat"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "squat"
+          }
+        }
+      }
+    },
+    "insight.group.hinge": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hip hinge"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kalça menteşesi"
+          }
+        }
+      }
+    },
+    "insight.lift.squat": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "squat"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "squat"
+          }
+        }
+      }
+    },
+    "insight.lift.bench": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bench press"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bench press"
+          }
+        }
+      }
+    },
+    "insight.lift.deadlift": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "deadlift"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "deadlift"
+          }
+        }
+      }
+    },
+    "insight.imbalance.ratio.title %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %@ strength trails your %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ gücün %@ gücünün gerisinde"
+          }
+        }
+      }
+    },
+    "insight.imbalance.ratio.body %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compared with people like you, your %@ is further behind than your %@. A few extra sets there would even things out."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin gibi kişilere göre %@ gücün, %@ gücünden daha geride. Orada birkaç ek set dengeyi kurar."
+          }
+        }
+      }
+    },
+    "insight.imbalance.residual.below.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %@ is lower than your other lifts suggest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hareketin diğer hareketlerine göre düşük"
+          }
+        }
+      }
+    },
+    "insight.imbalance.residual.below.body %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Given your other lifts, your %@ has room to catch up. Giving it extra attention is a good next step."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diğer hareketlerine bakılırsa %@ hareketinin yetişecek payı var. Ona biraz daha önem vermek iyi bir sonraki adım."
+          }
+        }
+      }
+    },
+    "insight.imbalance.residual.above.title %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %@ is ahead of your other lifts"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hareketin diğer hareketlerinin önünde"
+          }
+        }
+      }
+    },
+    "insight.imbalance.residual.above.body %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your %@ is strong for what your other lifts predict. Bringing the others up would balance your strength."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hareketin diğerlerinin öngördüğünden güçlü. Diğerlerini yükseltmek gücünü dengeler."
+          }
+        }
+      }
+    },
+    "insight.imbalance.side.title.left %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your left side is weaker on %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hareketinde sol tarafın daha zayıf"
+          }
+        }
+      }
+    },
+    "insight.imbalance.side.title.right %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your right side is weaker on %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hareketinde sağ tarafın daha zayıf"
+          }
+        }
+      }
+    },
+    "insight.imbalance.side.body %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The two sides differ by %@. Starting sets with the weaker side often helps close the gap."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İki taraf arasında %@ fark var. Setlere zayıf tarafla başlamak farkı kapatmaya yardım eder."
+          }
+        }
+      }
+    },
+    "insight.imbalance.generic.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your strength is uneven"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gücün dengesiz dağılmış"
+          }
+        }
+      }
+    },
+    "insight.imbalance.generic.body": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some of your lifts are further behind than the rest. Your muscle view shows where."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bazı hareketlerin diğerlerinden daha geride. Kas görünümü nerede olduğunu gösterir."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

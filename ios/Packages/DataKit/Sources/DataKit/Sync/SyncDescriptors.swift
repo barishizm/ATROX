@@ -219,3 +219,21 @@ extension ScoreSnapshot {
         }
     }
 }
+
+extension InsightRecord {
+    public static func syncDescriptor(_ filter: SyncFilter) -> FetchDescriptor<InsightRecord> {
+        switch filter {
+        case .state(let state, let userId):
+            let raw = state.rawValue
+            return FetchDescriptor(predicate: #Predicate<InsightRecord> { $0.userId == userId && $0.syncStateRaw == raw })
+        case .id(let id):
+            var descriptor = FetchDescriptor(predicate: #Predicate<InsightRecord> { $0.id == id })
+            descriptor.fetchLimit = 1
+            return descriptor
+        case .user(let userId):
+            return FetchDescriptor(predicate: #Predicate<InsightRecord> { $0.userId == userId })
+        case .all:
+            return FetchDescriptor()
+        }
+    }
+}

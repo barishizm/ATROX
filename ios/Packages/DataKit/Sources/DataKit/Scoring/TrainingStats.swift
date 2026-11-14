@@ -15,6 +15,17 @@ public struct MuscleReport: Sendable, Equatable {
     }
 }
 
+/// Finished workout count and the newest one.
+public struct ActivitySummary: Sendable, Equatable {
+    public var finishedWorkouts: Int
+    public var lastWorkoutAt: Date?
+
+    public init(finishedWorkouts: Int, lastWorkoutAt: Date?) {
+        self.finishedWorkouts = finishedWorkouts
+        self.lastWorkoutAt = lastWorkoutAt
+    }
+}
+
 public struct RecordHighlight: Sendable, Equatable {
     public var exerciseId: String
     public var kind: RecordKind
@@ -108,6 +119,37 @@ public actor TrainingStats {
     public func lastRoutineDayId(userId: UUID, routineId: UUID) -> UUID? {
         let context = ModelContext(modelContainer)
         return finishedWorkouts(context: context, userId: userId).first { $0.routineId == routineId && $0.routineDayId != nil }?.routineDayId
+    }
+
+    // MARK: Progress charts (P068)
+
+    /// `weeks` consecutive 7-day volume windows ending today, oldest first.
+    public func weeklyVolume(userId: UUID, weeks: Int) -> [WeekVolume] {
+        let context = ModelContext(modelContainer)
+        let today = ScoreCalculator.dayNumber(clock(), calendar: calendar)
+        let entries = volumeEntries(context: context, userId: userId, sinceDay: today - 7 * weeks + 1)
+        return VolumeSeries.weekly(entries, roles: muscleRoles(context: context), endDay: today, weeks: weeks, calendar: calendar)
+    }
+
+    /// Finished workouts per day number over the whole history (the calendar view picks its six months).
+    public func workoutCalendar(userId: UUID) -> [Int: Int] {
+        let context = ModelContext(modelContainer)
+        return FrequencyCalendar.perDay(finishedWorkouts(context: context, userId: userId).map(\.startedAt), calendar: calendar)
+    }
+
+    public func bodyweightHistory(userId: UUID) -> [BodyweightPoint] {
+        let context = ModelContext(modelContainer)
+        let rows = (try? context.fetch(FetchDescriptor<BodyMeasurement>(
+            predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil }, sortBy: [SortDescriptor(\.date)]
+        ))) ?? []
+        return rows.map { BodyweightPoint(day: ScoreCalculator.dayNumber($0.date, calendar: calendar), date: $0.date, weightKg: $0.weightKg) }
+    }
+
+    /// How much the user has trained and when last (insight rules).
+    public func activity(userId: UUID) -> ActivitySummary {
+        let context = ModelContext(modelContainer)
+        let workouts = finishedWorkouts(context: context, userId: userId)
+        return ActivitySummary(finishedWorkouts: workouts.count, lastWorkoutAt: workouts.first?.startedAt)
     }
 
     // MARK: Queries

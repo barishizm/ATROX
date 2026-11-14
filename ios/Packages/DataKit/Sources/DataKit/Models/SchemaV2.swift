@@ -14,7 +14,7 @@ public typealias Exercise = SchemaV2.Exercise
 public typealias CatalogInfo = SchemaV2.CatalogInfo
 
 public enum DataMigrationPlan: SchemaMigrationPlan {
-    public static var schemas: [any VersionedSchema.Type] { [SchemaV1.self, SchemaV2.self, SchemaV3.self, SchemaV4.self, SchemaV5.self, SchemaV6.self] }
+    public static var schemas: [any VersionedSchema.Type] { [SchemaV1.self, SchemaV2.self, SchemaV3.self, SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self] }
     public static var stages: [MigrationStage] {
         [
             .lightweight(fromVersion: SchemaV1.self, toVersion: SchemaV2.self),
@@ -22,6 +22,7 @@ public enum DataMigrationPlan: SchemaMigrationPlan {
             .lightweight(fromVersion: SchemaV3.self, toVersion: SchemaV4.self),
             .lightweight(fromVersion: SchemaV4.self, toVersion: SchemaV5.self),
             .lightweight(fromVersion: SchemaV5.self, toVersion: SchemaV6.self),
+            .lightweight(fromVersion: SchemaV6.self, toVersion: SchemaV7.self),
         ]
     }
 }

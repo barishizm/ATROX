@@ -343,3 +343,58 @@ extension ScoreSnapshot: SyncableModel {
         apply(dto)
     }
 }
+
+public struct InsightDTO: SyncDTO {
+    public var id: UUID
+    public var userId: UUID
+    public var createdAt: Date
+    public var updatedAt: Date
+    public var deletedAt: Date?
+    public var kind: String
+    public var subject: String
+    public var severity: String
+    public var priority: Double
+    public var action: String
+    public var payload: String
+    public var isActive: Bool
+    public var detectedAt: Date
+    public var lastShownAt: Date?
+    public var dismissedAt: Date?
+}
+
+extension InsightRecord: SyncableModel {
+    public static var syncTable: SyncTable { .insights }
+
+    public func makeDTO() -> InsightDTO {
+        InsightDTO(
+            id: id, userId: userId, createdAt: createdAt, updatedAt: updatedAt, deletedAt: deletedAt, kind: kindRaw, subject: subject,
+            severity: severityRaw, priority: priority, action: actionRaw, payload: payload, isActive: isActive, detectedAt: detectedAt,
+            lastShownAt: lastShownAt, dismissedAt: dismissedAt
+        )
+    }
+
+    public func apply(_ dto: InsightDTO) {
+        applyCommon(dto)
+        kindRaw = dto.kind
+        subject = dto.subject
+        severityRaw = dto.severity
+        priority = dto.priority
+        actionRaw = dto.action
+        payload = dto.payload
+        isActive = dto.isActive
+        detectedAt = dto.detectedAt
+        lastShownAt = dto.lastShownAt
+        dismissedAt = dto.dismissedAt
+    }
+
+    public convenience init(syncDTO dto: InsightDTO) {
+        self.init(
+            userId: dto.userId, kind: InsightKind(rawValue: dto.kind) ?? .imbalance, subject: dto.subject,
+            severity: InsightSeverity(rawValue: dto.severity) ?? .mild, priority: dto.priority,
+            action: InsightAction(rawValue: dto.action) ?? .askCoach, payload: InsightPayload(json: dto.payload),
+            detectedAt: dto.detectedAt, now: dto.createdAt
+        )
+        id = dto.id
+        apply(dto)
+    }
+}

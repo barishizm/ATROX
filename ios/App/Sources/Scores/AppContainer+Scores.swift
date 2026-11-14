@@ -42,6 +42,7 @@ extension AppContainer {
     func resetScores() async {
         scoreRefreshTask?.cancel()
         scoreCenterState = nil
+        insightServiceState = nil
         await scoreService?.reset()
     }
 
@@ -49,6 +50,12 @@ extension AppContainer {
     func makeMuscleAnalysisModel() async -> MuscleAnalysisModel? {
         guard let modelContainer, let center = await scoreCenter(), let user = await currentUser() else { return nil }
         return MuscleAnalysisModel(userId: user.id, center: center, stats: TrainingStats(modelContainer: modelContainer))
+    }
+
+    /// Progress charts of the Analysis tab (P068); nil without a user or local store.
+    func makeProgressModel() async -> ProgressModel? {
+        guard let modelContainer, let center = await scoreCenter(), let context = await makeHistoryContext() else { return nil }
+        return ProgressModel(context: context, center: center, stats: TrainingStats(modelContainer: modelContainer))
     }
 
     func makeMuscleDetailModel(muscle: Muscle) async -> MuscleDetailModel? {

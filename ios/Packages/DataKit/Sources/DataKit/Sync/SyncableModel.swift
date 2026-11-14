@@ -49,6 +49,7 @@ extension SyncTable {
         case .sets: SetEntry.self
         case .personalRecords: PersonalRecord.self
         case .scoreSnapshots: ScoreSnapshot.self
+        case .insights: InsightRecord.self
         }
     }
 }

@@ -11,6 +11,8 @@ struct TodayRootView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var model: TodayModel?
     @State private var failed = false
+    @State private var actions = InsightActions()
+    @State private var openedExercise: String?
 
     var body: some View {
         Group {
@@ -26,7 +28,29 @@ struct TodayRootView: View {
         .navigationTitle("shell.tabbar.today")
         .task { await prepare() }
         .task(id: container.historyEvents.version) { await model?.load() }
+        .sheet(item: $actions.sheet) { sheet in
+            InsightSuggestionsSheet(sheet: sheet) { id in
+                actions.sheet = nil
+                openedExercise = id
+            }
+        }
+        .navigationDestination(item: $openedExercise) { id in ExerciseDetailView(exerciseID: id) }
         .accessibilityIdentifier("today-root")
+    }
+
+    @ViewBuilder
+    private func insightCard(_ model: TodayModel) -> some View {
+        if let item = model.insight {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                Text("insight.today.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary).accessibilityAddTraits(.isHeader)
+                InsightCardView(
+                    item: item,
+                    onAction: { Task { await actions.perform(item, container: container) { openedExercise = $0 } } },
+                    onDismiss: { Task { await model.dismissInsight() } }
+                )
+            }
+            .accessibilityIdentifier("today-insight")
+        }
     }
 
     @ViewBuilder
@@ -39,7 +63,8 @@ struct TodayRootView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     scoreCard(model)
-                    if model.showsBodyweightReminder { reminderCard }
+                    insightCard(model)
+                    if model.showsBodyweightReminder && model.insight?.insight.kind != .bodyweightStale { reminderCard }
                     if !model.bars.isEmpty { patternSection(model) }
                     planCard(model)
                     weekSection(model)
@@ -245,7 +270,7 @@ struct TodayRootView: View {
                         highlightCard(icon: "trophy", title: "today.highlights.record") {
                             Text(verbatim: record.name).font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.textPrimary)
                             HStack(spacing: Spacing.xs) {
-                                Text(LocalizedStringKey("today.record.kind.\(record.kind.rawValue)"))
+                                Text(LocalizedStringKey.dynamic("today.record.kind.\(record.kind.rawValue)"))
                                 Text(verbatim: "· \(record.valueText)")
                             }
                             .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
@@ -300,7 +325,7 @@ struct PatternBarRow: View {
 
     var body: some View {
         HStack(spacing: Spacing.sm) {
-            Text(LocalizedStringKey("today.pattern.\(bar.pattern)")).font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
+            Text(LocalizedStringKey.dynamic("today.pattern.\(bar.pattern)")).font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading).lineLimit(2)
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
@@ -317,7 +342,7 @@ struct PatternBarRow: View {
                 .frame(width: 32, alignment: .trailing)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(LocalizedStringKey("today.pattern.\(bar.pattern)")))
+        .accessibilityLabel(Text(LocalizedStringKey.dynamic("today.pattern.\(bar.pattern)")))
         .accessibilityValue(bar.score.map { Text(verbatim: "\(Int($0.rounded()))") } ?? Text("today.pattern.open"))
     }
 }
