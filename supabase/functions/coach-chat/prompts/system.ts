@@ -1,5 +1,5 @@
 // The coach's system prompt (docs/04-AI-KOC.md §6). Changing the text needs a new version and a full eval run (P082).
-// STATUS: draft for review (P074). Once approved, bump only together with an eval run.
+// STATUS: approved by the product owner on 2026-11-14 and LOCKED. Any text change = new version + full eval run (P082).
 
 export const SYSTEM_PROMPT_VERSION = "coach-system-v1";
 
