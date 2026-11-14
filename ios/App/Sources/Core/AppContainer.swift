@@ -54,6 +54,8 @@ final class AppContainer {
     let social: (any SocialService)?
     /// StoreKit 2 subscription flow and the single entitlement source (P089); `purchases.entitlements.isPro` is the gate.
     let purchases: PurchaseService
+    /// Anonymous monthly contribution (P093); nil without Supabase or a local store.
+    let contribution: ContributionService?
     /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
     @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
@@ -85,7 +87,8 @@ final class AppContainer {
         modelUpdater: ModelUpdater? = nil,
         coach: CoachDependencies? = nil,
         social: (any SocialService)? = nil,
-        purchases: PurchaseService? = nil
+        purchases: PurchaseService? = nil,
+        contributionTransport: (any ContributionTransport)? = nil
     ) {
         self.purchases = purchases ?? PurchaseService(store: FakeStoreClient())
         self.coach = coach
@@ -96,6 +99,7 @@ final class AppContainer {
             store: modelContainer, updater: modelUpdater,
             appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         )
+        self.contribution = Self.makeContribution(store: modelContainer, scores: scoreService, transport: contributionTransport)
         self.exerciseImageBaseURL = exerciseImageBaseURL
         self.health = health
         self.catalog = catalog
@@ -243,7 +247,7 @@ final class AppContainer {
             settings: SwiftDataSettingsRepository(modelContainer: modelContainer),
             consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
             appearance: appearance,
-            health: health
+            health: health, contribution: contribution
         )
     }
 
@@ -551,7 +555,8 @@ final class AppContainer {
             sync: store.map { makeSync(store: $0, appGroupID: info["AppGroupID"] as? String, remote: remote) },
             modelUpdater: makeModelUpdater(config: config, info: info), coach: coach,
             social: SupabaseSocialService(configuration: config, accessToken: accessToken),
-            purchases: makePurchases(config: config, accessToken: accessToken)
+            purchases: makePurchases(config: config, accessToken: accessToken),
+            contributionTransport: SupabaseContributionTransport(configuration: config, accessToken: accessToken)
         )
     }
 

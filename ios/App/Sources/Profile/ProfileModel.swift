@@ -21,6 +21,9 @@ final class ProfileModel {
     /// Outcome of the last "sync with Apple Health" press; nil until the user presses it.
     private(set) var healthSync: HealthSyncOutcome?
     private(set) var isSyncingHealth = false
+    /// What the anonymous contribution sent (or would send) for last month; nil while loading or when there is nothing.
+    private(set) var contributionPreview: (payload: ContributionPayload, wasSent: Bool)?
+    private(set) var contributionPreviewLoaded = false
 
     let userId: UUID
     let email: String?
@@ -30,13 +33,14 @@ final class ProfileModel {
     private let consents: ConsentService
     private let appearance: AppearanceSettings
     private let health: any HealthService
+    private let contributionService: ContributionService?
     private let now: () -> Date
     private let calendar: Calendar
 
     init(
         userId: UUID, email: String?, profiles: any ProfileRepository, measurements: any MeasurementRepository,
         settings: any SettingsRepository, consents: ConsentService, appearance: AppearanceSettings,
-        health: any HealthService = UnavailableHealthService(),
+        health: any HealthService = UnavailableHealthService(), contribution: ContributionService? = nil,
         now: @escaping () -> Date = { Date() }, calendar: Calendar = .current
     ) {
         self.userId = userId
@@ -47,6 +51,7 @@ final class ProfileModel {
         self.consents = consents
         self.appearance = appearance
         self.health = health
+        self.contributionService = contribution
         self.now = now
         self.calendar = calendar
     }
@@ -181,9 +186,18 @@ final class ProfileModel {
                 try await consents.setContribution(true, userId: userId)
             } else {
                 try await consents.withdrawContribution(userId: userId)
+                // Delete what the server holds under the device key and forget the key. A failed request is retried at
+                // the next launch (`ContributionService.sendIfDue`), so it does not undo the withdrawal.
+                try? await contributionService?.withdraw(userId: userId)
+                contributionPreview = nil
             }
             try await refreshConsent()
         }
+    }
+
+    func loadContributionPreview() async {
+        contributionPreview = await contributionService?.lastMonthPreview(userId: userId)
+        contributionPreviewLoaded = true
     }
 
     @discardableResult

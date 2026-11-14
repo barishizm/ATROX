@@ -15,6 +15,7 @@ struct ProfileRootView: View {
                 stats
                 if let sync = container.sync, sync.isAvailable { SyncStatusCard(sync: sync) }
                 VStack(spacing: Spacing.sm) {
+                    row("profile.row.pro", icon: "bolt.fill", route: .paywall, id: "profile-pro")
                     row("profile.row.edit", icon: "person.text.rectangle", route: .editProfile, id: "profile-edit")
                     row("profile.row.measurements", icon: "scalemass", route: .measurements, id: "profile-measurements")
                     row("profile.row.settings", icon: "gearshape", route: .settings, id: "profile-settings")

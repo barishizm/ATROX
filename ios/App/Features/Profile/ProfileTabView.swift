@@ -39,11 +39,12 @@ struct ProfileTabView: View {
         switch route {
         case .social: SocialRootView()
         case .invite(let username): SocialInviteView(username: username)
-        case .paywall: PaywallPlaceholderView()
+        case .paywall: PaywallView()
         case .editProfile: ProfileEditView(model: model)
         case .measurements: MeasurementsView(model: model)
         case .settings: SettingsView(model: model, account: account)
         case .consentHistory: ConsentHistoryView(model: model)
+        case .contributionPreview: ContributionPreviewView(model: model)
         case .deleteAccount: DeleteAccountView(account: account)
         case .about: AboutView()
         case .licenses: LicensesView()

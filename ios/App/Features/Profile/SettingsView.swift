@@ -81,6 +81,10 @@ struct SettingsView: View {
                 get: { model.isContributing }, set: { value in Task { await model.setContribution(value) } }
             ))
             .accessibilityIdentifier("settings-contribution")
+            if model.isContributing {
+                NavigationLink(value: ProfileRoute.contributionPreview) { Text("settings.contribution.preview") }
+                    .accessibilityIdentifier("settings-contribution-preview")
+            }
             NavigationLink(value: ProfileRoute.consentHistory) { Text("settings.consentHistory") }
                 .accessibilityIdentifier("settings-consent-history")
         } header: {

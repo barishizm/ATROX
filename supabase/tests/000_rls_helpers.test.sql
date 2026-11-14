@@ -36,6 +36,12 @@ language sql immutable set search_path = '' as $$
   select array['public_profiles', 'friendships', 'reports', 'social_score_history']
 $$;
 
+-- Anonymous tables (P093): no user_id, no client grants; only the service role touches them (027_ml_contributions).
+create or replace function tests.anonymous_tables() returns text[]
+language sql immutable set search_path = '' as $$
+  select array['ml_contributions']
+$$;
+
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).
 create or replace function tests.catalog_tables() returns text[]
 language sql immutable set search_path = '' as $$

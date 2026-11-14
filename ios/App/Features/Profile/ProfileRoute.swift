@@ -6,6 +6,7 @@ enum ProfileRoute: Hashable, Sendable {
     case measurements
     case settings
     case consentHistory
+    case contributionPreview
     case deleteAccount
     case about
     case licenses

@@ -20376,6 +20376,934 @@
           }
         }
       }
+    },
+    "settings.contribution.preview": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What was shared last month?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen ay ne paylaşıldı?"
+          }
+        }
+      }
+    },
+    "contribution.preview.intro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once a month, only while the switch is on, ATROX sends one anonymous summary: banded body details and your best estimated lift per core exercise. Nothing links it to your account, name or email."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anahtar açıkken ayda bir, tek bir anonim özet gönderilir: bantlanmış beden bilgileri ve ana hareketlerdeki en iyi tahmini kaldırışın. Hesabınla, adınla veya e-postanla hiçbir bağı yoktur."
+          }
+        }
+      }
+    },
+    "contribution.preview.sent": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent for last month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen ay için gönderildi"
+          }
+        }
+      }
+    },
+    "contribution.preview.next": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Would be sent for last month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçen ay için gönderilecek olan"
+          }
+        }
+      }
+    },
+    "contribution.preview.noIdentity": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The key is random, stays on this device and is replaced every 12 months. Turning the switch off deletes everything shared under it."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anahtar rastgeledir, bu cihazda kalır ve 12 ayda bir yenilenir. Anahtarı kapatmak bu anahtarla paylaşılan her şeyi siler."
+          }
+        }
+      }
+    },
+    "contribution.preview.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to share yet. A month needs at least one core lift with a reliable set."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz paylaşılacak bir şey yok. Bir ay için güvenilir bir setle yapılmış en az bir ana hareket gerekir."
+          }
+        }
+      }
+    },
+    "profile.row.pro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX Pro"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX Pro"
+          }
+        }
+      }
+    },
+    "paywall.headline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Train smarter with Pro"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro ile daha akıllı antrenman yap"
+          }
+        }
+      }
+    },
+    "paywall.subtitle": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logging workouts and your strength scores always stay free."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman kaydı ve güç skorların her zaman ücretsiz kalır."
+          }
+        }
+      }
+    },
+    "paywall.headline.coach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep talking to your coach"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koçunla konuşmaya devam et"
+          }
+        }
+      }
+    },
+    "paywall.headline.proactive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get coach comments after every workout"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her antrenmandan sonra koç yorumu al"
+          }
+        }
+      }
+    },
+    "paywall.headline.forecast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See where your lifts are heading"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaldırışlarının nereye gittiğini gör"
+          }
+        }
+      }
+    },
+    "paywall.headline.history": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock your full insight history"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm içgörü geçmişinin kilidini aç"
+          }
+        }
+      }
+    },
+    "paywall.headline.groups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare against every reference group"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her referans grubuyla karşılaştır"
+          }
+        }
+      }
+    },
+    "paywall.headline.share": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share richer score cards"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha zengin skor kartları paylaş"
+          }
+        }
+      }
+    },
+    "paywall.benefit.coach": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Near-unlimited AI coach, with deeper reasoning for programs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neredeyse sınırsız AI koç; programlarda daha derin düşünme"
+          }
+        }
+      }
+    },
+    "paywall.benefit.forecast": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress forecast, plateau analysis and coach comments after workouts"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişim tahmini, plato analizi ve antrenman sonrası koç yorumları"
+          }
+        }
+      }
+    },
+    "paywall.benefit.groups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every reference group and your full insight history"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm referans grupları ve tam içgörü geçmişin"
+          }
+        }
+      }
+    },
+    "paywall.benefit.share": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced share cards"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişmiş paylaşım kartları"
+          }
+        }
+      }
+    },
+    "paywall.plans.unavailable": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plans could not be loaded. Check your connection and try again later."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planlar yüklenemedi. Bağlantını kontrol edip daha sonra tekrar dene."
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yearly"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıllık"
+          }
+        }
+      }
+    },
+    "paywall.plan.monthly": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monthly"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aylık"
+          }
+        }
+      }
+    },
+    "paywall.plan.save %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save %lld%%"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%%%lld tasarruf"
+          }
+        }
+      }
+    },
+    "paywall.plan.perMonth %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ per month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aylık %@"
+          }
+        }
+      }
+    },
+    "paywall.plan.trial %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld-day free trial"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld gün ücretsiz deneme"
+          }
+        }
+      }
+    },
+    "paywall.cta.trial": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start free trial"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücretsiz denemeyi başlat"
+          }
+        }
+      }
+    },
+    "paywall.cta.subscribe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abone ol"
+          }
+        }
+      }
+    },
+    "paywall.period.year": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "year"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yıl"
+          }
+        }
+      }
+    },
+    "paywall.period.month": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ay"
+          }
+        }
+      }
+    },
+    "paywall.terms.trial %lld %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free for %lld days, then %@ per %@. You are charged only if you do not cancel before the trial ends."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld gün ücretsiz, sonra %@ / %@. Deneme bitmeden iptal etmezsen ücretlendirilirsin."
+          }
+        }
+      }
+    },
+    "paywall.terms.plain %@ %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ per %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / %@."
+          }
+        }
+      }
+    },
+    "paywall.terms.renewal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The subscription renews automatically at the same price unless you cancel at least 24 hours before the current period ends. Payment is charged to your Apple Account."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abonelik, mevcut dönem bitmeden en az 24 saat önce iptal etmezsen aynı fiyatla otomatik yenilenir. Ödeme Apple Hesabından alınır."
+          }
+        }
+      }
+    },
+    "paywall.terms.cancel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage or cancel any time in Settings > your name > Subscriptions."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayarlar > adın > Abonelikler bölümünden istediğin zaman yönetebilir veya iptal edebilirsin."
+          }
+        }
+      }
+    },
+    "paywall.restore": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore purchases"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alımları geri yükle"
+          }
+        }
+      }
+    },
+    "paywall.restore.nothing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No active subscription was found for this Apple Account."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu Apple Hesabı için etkin bir abonelik bulunamadı."
+          }
+        }
+      }
+    },
+    "paywall.error.purchase": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase did not go through. You were not charged. Please try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alma tamamlanamadı. Ücret alınmadı. Lütfen tekrar dene."
+          }
+        }
+      }
+    },
+    "paywall.error.restore": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases could not be restored. Please try again."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alımlar geri yüklenemedi. Lütfen tekrar dene."
+          }
+        }
+      }
+    },
+    "paywall.pending": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your purchase is waiting for approval. Pro unlocks as soon as it is approved."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alman onay bekliyor. Onaylanır onaylanmaz Pro açılır."
+          }
+        }
+      }
+    },
+    "paywall.pro.active": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are Pro"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro'sun"
+          }
+        }
+      }
+    },
+    "paywall.pro.trial": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your free trial is running."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücretsiz denemen sürüyor."
+          }
+        }
+      }
+    },
+    "paywall.pro.renews %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renews on %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yenilenme tarihi: %@"
+          }
+        }
+      }
+    },
+    "paywall.pro.ends %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access ends on %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erişim bitiş tarihi: %@"
+          }
+        }
+      }
+    },
+    "paywall.manage": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage subscription"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aboneliği yönet"
+          }
+        }
+      }
+    },
+    "paywall.seePro": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See Pro"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro'yu gör"
+          }
+        }
+      }
+    },
+    "paywall.seePro.hint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the Pro plans"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro planlarını açar"
+          }
+        }
+      }
+    },
+    "gate.forecast.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forecast and plateau analysis"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahmin ve plato analizi"
+          }
+        }
+      }
+    },
+    "gate.forecast.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See where this lift is heading and where progress stalled."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hareketin nereye gittiğini ve gelişimin nerede durduğunu gör."
+          }
+        }
+      }
+    },
+    "gate.history.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full insight history"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tam içgörü geçmişi"
+          }
+        }
+      }
+    },
+    "gate.history.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free shows the last two weeks of insights."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücretsiz sürüm son iki haftanın içgörülerini gösterir."
+          }
+        }
+      }
+    },
+    "gate.groups.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All reference groups"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm referans grupları"
+          }
+        }
+      }
+    },
+    "gate.groups.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare with the general population and competitive lifters."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel nüfus ve yarışmacı sporcularla karşılaştır."
+          }
+        }
+      }
+    },
+    "gate.share.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced share cards"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelişmiş paylaşım kartları"
+          }
+        }
+      }
+    },
+    "gate.share.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More card styles and details to share."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paylaşmak için daha fazla kart stili ve ayrıntı."
+          }
+        }
+      }
+    },
+    "gate.coach.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More coach messages"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha fazla koç mesajı"
+          }
+        }
+      }
+    },
+    "gate.coach.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free includes a few messages a day."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücretsiz sürümde günde birkaç mesaj var."
+          }
+        }
+      }
+    },
+    "gate.proactive.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach comments"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koç yorumları"
+          }
+        }
+      }
+    },
+    "gate.proactive.detail": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comments after workouts and every week."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenmanlardan sonra ve her hafta yorumlar."
+          }
+        }
+      }
+    },
+    "gate.groups.hint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General and competitor groups are Pro."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genel ve yarışmacı grupları Pro'dur."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -40,6 +40,24 @@ Son güncelleme: 2026-11-11. Bu dosya projenin "anayasası"dır; buradaki bir ka
 | 19 | Sosyal | Paylaşılabilir skor kartı + arkadaş sıralaması |
 | 20 | Ad | Ad `ATROX`; görünen ad tek yerden değişir |
 
+### 2.1 Pro kapsamı (P091) — kullanıcı onayına sunuldu
+
+Antrenman kaydı asla ücretli olmaz. Kapılar tek yerde (`FeatureGate`, `ios/App/Sources/Purchases/FeatureGate.swift`) tutulur.
+
+| Özellik | Ücretsiz | Pro |
+|---|---|---|
+| Antrenman kaydı, rutinler, geçmiş, rekorlar | Tam | Tam |
+| Hareket skoru, kas grubu ve genel skor | Tam (salon referans grubu) | Tam |
+| Temel grafikler (e1RM çizgisi, eğilim, hacim, sıklık, vücut ağırlığı, skor serisi) | Tam | Tam |
+| AI koç | Günde 5 mesaj, düşünme kapalı | ~100 mesaj/gün, programlarda düşünme açık |
+| Proaktif koç yorumları (antrenman sonrası, haftalık) | Yalnızca cihaz üstü antrenman yorumu | Sunucu yorumları |
+| Gelişim tahmini ve plato analizi | Kilitli (çizgi ve eğilim açık) | Açık |
+| İçgörü geçmişi | Son 14 gün | Tamamı |
+| Referans grupları | Salon | Salon + genel nüfus + yarışmacı |
+| Paylaşım kartları | Temel | Gelişmiş |
+
+Fiyat ve deneme süresi bu tabloda değil, App Store Connect'te (P092) ve `StoreKit/ATROX.storekit` içinde tutulur.
+
 ## 3. Benim verdiğim mühendislik kararları (gerekçeli)
 
 | Konu | Karar | Gerekçe |

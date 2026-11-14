@@ -88,7 +88,13 @@ extension AppContainer {
         guard let modelContainer, let user = await currentUser() else { return nil }
         let consents = ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer))
         let userId = user.id
-        return CoachCommentProvider(digest: coach?.digest) { (try? await consents.isAISharingGranted(userId: userId)) ?? false }
+        let purchases = purchases
+        // The server writes proactive comments for Pro only (P091); a free user stays on the on-device comment and the
+        // app makes no request that the server would refuse.
+        return CoachCommentProvider(digest: coach?.digest) {
+            guard await MainActor.run(body: { purchases.isPro }) else { return false }
+            return (try? await consents.isAISharingGranted(userId: userId)) ?? false
+        }
     }
 
     /// "Ask the coach" entry points (insight cards, exercise screens): the tab opens with the text in the input.

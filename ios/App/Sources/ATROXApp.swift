@@ -27,7 +27,10 @@ struct ATROXApp: App {
                     await container.rescheduleWeeklySummary()
                 }
                 .task { await container.checkModelUpdate() }
-                .task(id: container.root.state) { await container.syncPurchases() }
+                .task(id: container.root.state) {
+                    await container.syncPurchases()
+                    await container.sendContributionIfDue()
+                }
         }
         .onChange(of: scenePhase) { _, phase in
             // Sync triggers (P045): coming to the foreground syncs and starts the 15-minute timer; leaving stops it.

@@ -284,6 +284,21 @@ public actor ScoreService {
         try loadSets(userId: userId, exerciseIds: exerciseIds)
     }
 
+    /// The anonymous monthly summary for one finished month (P093); nil when there is nothing worth contributing.
+    public func contributionSummary(
+        userId: UUID, key: UUID, month: (label: String, firstDay: Int, lastDay: Int)
+    ) async -> ContributionPayload? {
+        guard let scoring = await scoringModel(), let sets = try? loadSets(userId: userId, exerciseIds: nil) else { return nil }
+        let context = ModelContext(modelContainer)
+        guard let profile = try? context.fetch(UserProfile.syncDescriptor(.user(userId))).first(where: { $0.deletedAt == nil }),
+              let weight = bodyweightStatus(context: context, userId: userId, now: clock()) else { return nil }
+        let inputs = ContributionInputs(
+            sex: profile.sex, birthDate: profile.birthDate, heightCm: profile.heightCm, bodyweightKg: weight.weightKg,
+            experience: profile.experience, weeklyFrequency: profile.weeklyFrequency
+        )
+        return ContributionSummary.build(key: key, inputs: inputs, sets: sets, model: scoring, month: month, calendar: calendar)
+    }
+
     private struct ProfileFacts {
         var sex: ModelSex?
         var birthDate: Date

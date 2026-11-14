@@ -32,7 +32,7 @@ struct CoachChatView: View {
         .sheet(isPresented: $showsThreads) {
             NavigationStack { CoachThreadsView(model: model) { showsThreads = false } }
         }
-        .sheet(isPresented: $showsPaywall) { NavigationStack { PaywallPlaceholderView() } }
+        .sheet(isPresented: $showsPaywall) { NavigationStack { PaywallView(feature: .coachUnlimited) } }
         .task { await model.watchConnectivity() }
         .onChange(of: container.pendingCoachPrompt, initial: true) { _, prompt in
             guard let prompt else { return }
