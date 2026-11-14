@@ -1,4 +1,6 @@
-import { z } from "zod";
+// Inline specifier: CI runs `deno test` from the repo root, where per-function deno.json files are not applied.
+// deno-lint-ignore no-import-prefix
+import { z } from "npm:zod@3.24.2";
 
 export const MAX_MESSAGE_LENGTH = 2000;
 

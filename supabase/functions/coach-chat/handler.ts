@@ -29,7 +29,7 @@ export function createCoachChatHandler({ verify, llm, newThreadId = () => crypto
     }
     const parsed = coachChatRequest.safeParse(raw);
     if (!parsed.success) {
-      const issues = parsed.error.issues.map((issue) => ({ path: issue.path.join("."), message: issue.message }));
+      const issues = parsed.error.issues.map((issue: { path: PropertyKey[]; message: string }) => ({ path: issue.path.map(String).join("."), message: issue.message }));
       return errorResponse("invalid_request", "Invalid request body.", issues);
     }
 

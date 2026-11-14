@@ -1,6 +1,6 @@
 -- P072 · coach tables: constraints, owner-only access, service-role-only usage writes.
 begin;
-select plan(14);
+select plan(13);
 
 select tests.create_two_users();
 
