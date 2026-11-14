@@ -307,6 +307,13 @@ ile geri alma mümkündür. Skor anlık görüntüleri model sürümünü saklar
 5. **Kalite kapıları:** Yeni paket altın vektör regresyonunu, kalibrasyon kapısını ve "skor kayması" sınırını
    (medyan mutlak değişim ≤ 5 puan) geçmeden yayınlanmaz.
 
+Uygulama (P094): `make retrain` → `gymml.retrain` (`ml/configs/retrain.yaml`). k-anonimlik hücresi cinsiyet × 5 yıllık
+yaş bandı × 10 kg kilo bandı × hareket (≥ 20 katkıcı); katkıcıların %20'si kapılar için ayrılır. δ ve κ medyan/IQR ile
+kestirilir (çapa CDF kırpması ortalamayı yanlılar), önsel payı w = max(0,25, 200/(200+n)). ρ_e normal–normal, τ_e ölçekli
+ters ki-kare büzülmesiyle; sınıf veriyle C → B → A yükselir, makine/kablo C'de kalır, τ sınıf tabanının altına inmez.
+1RM eğrisi güncellenmez: katkı satırı ay başına tek set taşıyor; en küçük şema eki (`rep_profile`) kullanıcı kararında.
+Kapı olarak ayrıca akıl sağlığı (tekdüzelik, κ sınırları, oran değişimi ≤ 2×) var. Yayın P063 betiğiyle, önce %10.
+
 ### v2 araştırma izi: gizil faktör modeli (P095)
 
 ```
@@ -315,8 +322,11 @@ log e1RM_{u,e} = b_e + λ_e · θ_u + ε
 
 Her kullanıcının düşük boyutlu bir güç vektörü (`θ_u`: itiş, çekiş, alt vücut…), her hareketin bir zorluk sabiti
 ve yükleme vektörü vardır. Bu tek model şunları birlikte verir: her hareket için skor, **hiç yapılmamış hareket
-için başlangıç ağırlığı tahmini**, dengesizlik ve genel güç. Etkinleştirme koşulu: en az ~5.000 katkıcı ve hareket
-başına ≥ 300 gözlem. O zamana kadar oran tablosu kullanılır.
+için başlangıç ağırlığı tahmini**, dengesizlik ve genel güç. Etkinleştirme koşulu (P095, `ml/reports/v2-latent-model.md`):
+sentetik deneyde gizil model ~**1.000 katkıcıdan** itibaren her tohumda veriyle güncellenen oran tablosundan ≥ %5 daha
+iyi ve yükleme uzayını geri kazanıyor (önceki tahmin ~5.000); `b_e` önseli oran tablosu ve `λ_e` önseli kalıp ortalaması
+olduğu için hareket başına ≥ 300 gözlem koşulu gerekmiyor. Gerçek etkinleştirme, aynı ölçüt P094'ün dışarıda tutulan
+gerçek katkılarında sağlandığında ve kullanıcı onayıyla yapılır; o zamana kadar oran tablosu kullanılır.
 
 ## 13. Sınırlar ve etik
 

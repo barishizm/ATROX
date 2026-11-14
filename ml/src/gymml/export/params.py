@@ -23,8 +23,8 @@ TAXONOMY_SCHEMA_VERSION = 1
 REP_NORMS = ML_ROOT / "data" / "rep_norms.csv"
 
 
-def _read(name: str) -> dict:
-    return json.loads((PARAMS_DIR / f"{name}.json").read_text(encoding="utf-8"))
+def _read(name: str, directory: Path = PARAMS_DIR) -> dict:
+    return json.loads((directory / f"{name}.json").read_text(encoding="utf-8"))
 
 
 def camel(s: str) -> str:
@@ -46,9 +46,11 @@ def _ladder(d: dict) -> list[float]:
     return [d["mild"], d["moderate"], d["severe"]]
 
 
-def build_params(input_clip: dict) -> dict:
-    e1rm, scoring, progress, imb = _read("e1rm"), _read("scoring"), _read("progress"), _read("imbalance")
-    cal = _read("calibration")["calibration"]
+def build_params(input_clip: dict, directory: Path = PARAMS_DIR) -> dict:
+    """`directory` holds the `params_draft` files (P094 passes a candidate copy)."""
+    e1rm, scoring = _read("e1rm", directory), _read("scoring", directory)
+    progress, imb = _read("progress", directory), _read("imbalance", directory)
+    cal = _read("calibration", directory)["calibration"]
     cs, es, agg = scoring["current_strength"], scoring["exercise_score"], scoring["aggregate"]
     corr = scoring["anchor_correlation"]
     return {
