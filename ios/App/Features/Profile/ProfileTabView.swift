@@ -37,7 +37,7 @@ struct ProfileTabView: View {
     @ViewBuilder
     private func destination(_ route: ProfileRoute, model: ProfileModel, account: AccountModel) -> some View {
         switch route {
-        case .social: SocialPlaceholderView()
+        case .social: SocialRootView()
         case .paywall: PaywallPlaceholderView()
         case .editProfile: ProfileEditView(model: model)
         case .measurements: MeasurementsView(model: model)

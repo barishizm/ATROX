@@ -68,6 +68,7 @@ struct WeeklySummaryView: View {
             .padding(.horizontal, Spacing.md)
             .accessibilityIdentifier("weekly-layout")
         }
+        .overlay(alignment: .topTrailing) { WeeklyShareButton(week: week).padding(.trailing, Spacing.md) }
     }
 
     private func stories(_ week: WeeklySummaryModel.Week) -> some View {

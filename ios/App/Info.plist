@@ -63,6 +63,10 @@
 	<string>$(GOOGLE_IOS_CLIENT_ID)</string>
 	<key>GIDServerClientID</key>
 	<string>$(GOOGLE_WEB_CLIENT_ID)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+	</array>
 	<key>LegalPrivacyURL</key>
 	<string>$(LEGAL_PRIVACY_URL)</string>
 	<key>LegalTermsURL</key>

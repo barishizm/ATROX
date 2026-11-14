@@ -16,6 +16,8 @@ Aşağıdaki metinler hukuk/uyum gözünden okunmalı (TR + EN). Anahtarlar `ios
 | AI veri paylaşımı onay ekranı (P081) | `coach.consent.*` | App Store 5.1.2(i): hangi veri / kime (DeepSeek) / ne amaçla açık mı; "gönderilmeyenler" listesi doğru mu (ad, e-posta, kimlikler, ham Sağlık verisi); önceden işaretli kutu yok; reddetmek uygulamanın geri kalanını etkilemiyor. Sağlayıcı veya veri kapsamı değişirse `ConsentVersions.aiSharing` ve sunucu `COACH_AI_CONSENT_VERSION` birlikte artar. |
 | Koç ayarları (P081) | `settings.coach.*`, `coach.memory.*` | Onayı geri alma ve konuşma/bellek silme metinlerinin "kalıcı silinir" iddiası sunucudaki gerçek davranışla (sert silme) uyumlu mu. |
 | Proaktif yorumlar (P083) | `summary.coach.*`, `weekly.card.coach`, `settings.coach.proactive`, `settings.coach.footer` | Cihaz üstü yorum etiketi ("Cihazında yazıldı") doğru mu; yorumların tıbbi/diyet iddiası içermediği (istem `coach-digest-v1`, cihaz üstü filtre) incelendi mi. |
+| Paylaşım kartı (P084) | `share.*` | "Tahmini skor" notu kartta okunur mu; vücut ağırlığı varsayılan kapalı mı; kart metinleri skor iddiasını abartmıyor mu; Instagram `source_application` Meta App ID ile değiştirildi mi. |
+| Sosyal (P085/P086) | `social.*` | App Store kullanıcı içeriği kuralları: bildir + engelle + engellenenler listesi var; uygunsuz kelime listesi (`social_text_ok` + `SocialTextPolicy`) hukuk/moderasyonca genişletildi mi; "sosyal özelliği kapat" iddiası (profil ve arkadaşlıklar silinir) sunucu davranışıyla uyumlu mu; şikâyetleri kimin, ne sürede inceleyeceği (`reports` tablosu) belirlendi mi. |
 
 ## Koç değerlendirme kapısı (P082)
 

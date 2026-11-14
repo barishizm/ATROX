@@ -125,7 +125,13 @@ struct TodayRootView: View {
     private func scoreHero(_ model: TodayModel, provisional: Bool, missing: [String]) -> some View {
         Card {
             VStack(spacing: Spacing.md) {
-                Text("today.score.title").font(DSFont.overline).foregroundStyle(DSColor.textSecondary).frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    Text("today.score.title").font(DSFont.overline).foregroundStyle(DSColor.textSecondary)
+                    Spacer()
+                    if let overall = model.overall, !provisional {
+                        OverallShareButton(score: overall.score, population: model.population)
+                    }
+                }
                 if let overall = model.overall {
                     ScoreRing(score: overall.score, diameter: 190, lineWidth: 16).frame(maxWidth: .infinity)
                         .accessibilityIdentifier("today-score-ring")
