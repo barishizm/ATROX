@@ -84,6 +84,8 @@ update public.coach_limits set daily_messages = 8 where tier = 'free';
 
 `coach-digest` (P083) aynı sırları kullanır; ayrıca `supabase functions deploy coach-digest` ve `schema_16` göçü gerekir. İsteğe bağlı: `COACH_DIGEST_TIMEOUT_MS` (varsayılan 20000).
 
+`publish-score` (P087) için `supabase functions deploy publish-score` ve `schema_18`/`schema_19` göçleri gerekir (ek sır yok; `SUPABASE_SERVICE_ROLE_KEY` yeterli). Davet bağlantıları (P088): `web/` klasörünü Vercel'e kök dizin olarak yayınla, alan adını `ios/Config/Base.xcconfig` içindeki `APP_LINK_HOST`'a yaz, `web/.well-known/apple-app-site-association` içindeki `TEAMID` değerini Apple Team ID ile değiştir.
+
 Doğrulama: `supabase functions serve coach-chat` ve geçerli bir kullanıcı JWT'siyle
 `curl -N -H "Authorization: Bearer $JWT" -d '{"message":"Merhaba","locale":"tr"}' http://localhost:54321/functions/v1/coach-chat`
 → `text_delta … usage … done` olayları. Anahtar yoksa ya da API iki denemede de hata verirse akış `error` olayıyla biter.

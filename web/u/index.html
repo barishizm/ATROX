@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join me on ATROX</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/site.css">
+</head>
+<body>
+  <main>
+    <h1>ATROX</h1>
+    <p id="invite-en">You have been invited to train together.</p>
+    <p id="invite-tr">Birlikte antrenman yapmaya davet edildin.</p>
+    <p class="name" id="name"></p>
+    <!-- Universal links open the app directly when it is installed; this page only shows for everyone else. -->
+    <a class="button" id="open" href="atrox://">Open in ATROX</a>
+    <a class="button" href="https://apps.apple.com/app/id0000000000">App Store</a>
+  </main>
+  <script>
+    // /u/<username>: show the handle only when it has the exact shape the app accepts; never insert it as HTML.
+    var match = /^\/u\/([a-z0-9_]{3,20})\/?$/i.exec(location.pathname);
+    if (match) {
+      var name = match[1].toLowerCase();
+      document.getElementById("name").textContent = "@" + name;
+      document.getElementById("open").href = "atrox://u/" + name;
+    }
+  </script>
+</body>
+</html>

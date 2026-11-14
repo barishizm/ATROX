@@ -90,3 +90,17 @@ ve ikinci bir cihaz) Debug yapılandırmasında yerel Supabase'e bağlı.
 7. **Arka plan eşitlemesi:** uygulamayı arka plana al, Xcode'da duraklat ve
    `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.barishizm.atrox.sync.refresh"]`
    → devam et; logda `sync` kategorisinde hata olmamalı ve bekleyen satırlar gönderilmeli.
+
+## P088 · Davet bağlantıları (gerçek cihaz / simülatör)
+
+Ön koşul: alan adı hazır ve `web/` yayında; `APP_LINK_HOST` ve `TEAMID` gerçek değerlerde; App ID'de Associated Domains açık.
+
+1. **AASA:** `curl -sI https://<alan-adı>/.well-known/apple-app-site-association` → `200`, `content-type: application/json`, yönlendirme yok.
+   Apple CDN önbelleği için cihazda kurulumdan sonra birkaç dakika bekle.
+2. **Simülatör (şema):** `xcrun simctl openurl booted "atrox://u/<kullanıcı_adı>"` → Profil sekmesi > Arkadaşlar > Davet ekranı açılır.
+   `atrox://today`, `atrox://coach`, `atrox://weekly` ilgili ekranı açar.
+3. **Evrensel bağlantı (gerçek cihaz):** Notlar'a `https://<alan-adı>/u/<kullanıcı_adı>` yaz ve dokun → uygulama açılır (Safari'de adres çubuğundan açılırsa web sayfası görünür; sayfadaki "ATROX'ta aç" düğmesi uygulamayı açar).
+4. **Uygulama yüklü değil:** aynı bağlantı web sayfasını ve App Store düğmesini gösterir.
+5. **Oturum kapalı:** çıkış yap, bağlantıyı aç → giriş ekranı; giriş/onboarding bitince davet ekranı açılır.
+6. **Davet ekranı:** profilin yoksa önce katılma formu; kendi bağlantın → "kendi davet bağlantın"; olmayan kullanıcı → "bulunamadı"; aranabilir olmayan biri de bulunur ve istek gönderilebilir.
+7. **Paylaşım:** Arkadaşlar > Ekle > Davet et → metinde bağlantı bulunur.

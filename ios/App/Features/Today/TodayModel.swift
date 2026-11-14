@@ -68,11 +68,16 @@ final class TodayModel {
     @ObservationIgnored private let profile: ProfileInput?
     @ObservationIgnored private let calendar: Calendar
     @ObservationIgnored private let insights: InsightService?
+    /// Hands the overall score to the social layer (P087); the server drops it while sharing is off.
+    @ObservationIgnored private let publishScore: (@Sendable (ScorePublication) async -> Void)?
+    @ObservationIgnored private var lastPublished: ScorePublication?
 
     init(
         context: HistoryContext, center: ScoreCenter, stats: TrainingStats, plan: RoutinePlanStore, profile: ProfileInput?,
-        insights: InsightService? = nil, calendar: Calendar = .current
+        insights: InsightService? = nil, calendar: Calendar = .current,
+        publishScore: (@Sendable (ScorePublication) async -> Void)? = nil
     ) {
+        self.publishScore = publishScore
         self.context = context
         self.center = center
         self.stats = stats
@@ -122,6 +127,19 @@ final class TodayModel {
         plan = await resolvePlan()
         await loadInsight(names: names)
         isLoading = false
+        await publishOverall(weekly: loaded.workoutsThisWeek)
+    }
+
+    /// Sends the overall score once per change; the server decides whether the user shares it and whether it is plausible.
+    private func publishOverall(weekly: Int) async {
+        guard let publishScore, let overall else { return }
+        let publication = ScorePublication(
+            score: min(max(Int(overall.score.rounded()), 1), 99), isProvisional: overall.provisional,
+            weeklyWorkouts: min(max(weekly, 0), 50)
+        )
+        guard publication != lastPublished else { return }
+        lastPublished = publication
+        await publishScore(publication)
     }
 
     private func loadInsight(names: [String: String]) async {

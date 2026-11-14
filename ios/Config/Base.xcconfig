@@ -23,6 +23,9 @@ APP_ENVIRONMENT = local
 // Deep link scheme. Must match auth.site_url / additional_redirect_urls in supabase/config.toml
 // and the redirect URLs in the Supabase dashboards.
 APP_URL_SCHEME = atrox
+// Universal links (P088): the domain that serves /u/<username> and the apple-app-site-association file (web/).
+// Placeholder until the real domain is decided; the Associated Domains entitlement reads it too.
+APP_LINK_HOST = links.example.com
 // Placeholders so a fresh clone still generates a valid Info.plist; Secrets.xcconfig overrides them.
 GOOGLE_IOS_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com
 GOOGLE_WEB_CLIENT_ID = PLACEHOLDER.apps.googleusercontent.com

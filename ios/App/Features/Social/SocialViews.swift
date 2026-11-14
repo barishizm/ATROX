@@ -124,6 +124,13 @@ struct SocialFriendsView: View {
             }
             if model.isEmpty {
                 Section { emptyState }
+            } else if !model.friends.isEmpty {
+                Section {
+                    NavigationLink { SocialRankingView(service: model.socialService) } label: {
+                        Label("social.ranking.title", systemImage: "trophy")
+                    }
+                    .accessibilityIdentifier("social-ranking-link")
+                }
             }
             if !model.incoming.isEmpty {
                 Section("social.requests.incoming") {
@@ -317,8 +324,7 @@ struct AddFriendView: View {
         List {
             if let me = model.profile {
                 Section {
-                    // The link target becomes a real deep link in P088; until then it is a plain invitation text.
-                    ShareLink(item: String(localized: "social.invite.text \(me.username)")) {
+                    ShareLink(item: Self.invitation(for: me.username)) {
                         Label("social.invite", systemImage: "link")
                     }
                     .accessibilityIdentifier("social-invite")
@@ -352,6 +358,13 @@ struct AddFriendView: View {
             guard !Task.isCancelled else { return }
             await model.search(query)
         }
+    }
+
+    /// The invitation text with the universal link (`/u/<username>`); without a configured link host it is text only.
+    static func invitation(for username: String) -> String {
+        let text = String(localized: "social.invite.text \(username)")
+        guard let link = DeepLink.inviteLink(username: username) else { return text }
+        return "\(text) \(link.absoluteString)"
     }
 
     @ViewBuilder private func action(for person: SocialPerson) -> some View {

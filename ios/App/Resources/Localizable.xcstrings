@@ -19017,6 +19017,182 @@
         }
       }
     },
+    "social.ranking.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranking"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıralama"
+          }
+        }
+      }
+    },
+    "social.ranking.tab.score": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strength Score"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güç Skoru"
+          }
+        }
+      }
+    },
+    "social.ranking.tab.weekly": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This week"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu hafta"
+          }
+        }
+      }
+    },
+    "social.ranking.tab.month": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This month"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu ay"
+          }
+        }
+      }
+    },
+    "social.ranking.provisional": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provisional"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçici"
+          }
+        }
+      }
+    },
+    "social.ranking.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add friends who share their score to see the ranking."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıralamayı görmek için skorunu paylaşan arkadaşlar ekle."
+          }
+        }
+      }
+    },
+    "social.ranking.sharing.hint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on “share my score” in your social settings to appear in this ranking."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu sıralamada görünmek için sosyal ayarlarında “skorumu paylaş” seçeneğini aç."
+          }
+        }
+      }
+    },
+    "social.ranking.fair": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scores are already adjusted for sex, age and body weight, so everyone competes on equal terms. Only scores and workout counts are shown, never weight or lifts."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skorlar cinsiyet, yaş ve kiloya göre zaten normalleştirilmiştir; herkes eşit koşulda yarışır. Yalnızca skor ve antrenman sayısı görünür, kilo ve kaldırışlar asla."
+          }
+        }
+      }
+    },
+    "social.invite.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitation"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Davet"
+          }
+        }
+      }
+    },
+    "social.invite.itsme": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is your own invite link. Share it with a friend."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu senin kendi davet bağlantın. Bir arkadaşınla paylaş."
+          }
+        }
+      }
+    },
+    "social.invite.notfound": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not find this person. The link may be old or the account may be gone."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu kişi bulunamadı. Bağlantı eski olabilir veya hesap silinmiş olabilir."
+          }
+        }
+      }
+    },
     "social.accept": {
       "localizations": {
         "en": {

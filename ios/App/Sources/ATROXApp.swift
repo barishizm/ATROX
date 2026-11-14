@@ -23,7 +23,7 @@ struct ATROXApp: App {
                 .task { BackgroundSync.shared.coordinator = container.sync }
                 .task {
                     WeeklySummaryBackground.shared.container = container
-                    NotificationRouter.shared.onWeeklySummary = { container.requestedWeeklySummary = true }
+                    NotificationRouter.shared.onWeeklySummary = { container.deepLinks.receive(.weeklySummary) }
                     await container.rescheduleWeeklySummary()
                 }
                 .task { await container.checkModelUpdate() }

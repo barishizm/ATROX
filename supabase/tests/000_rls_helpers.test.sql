@@ -33,7 +33,7 @@ $$;
 -- security definer functions. Covered by 023_social.test.sql instead of the generic owner matrix.
 create or replace function tests.social_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['public_profiles', 'friendships', 'reports']
+  select array['public_profiles', 'friendships', 'reports', 'social_score_history']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).
