@@ -18,8 +18,15 @@ language sql immutable set search_path = '' as $$
     'profiles', 'user_settings', 'consents', 'body_measurements',
     'custom_exercises',
     'routines', 'routine_days', 'routine_exercises',
-    'workouts', 'workout_exercises', 'sets', 'personal_records', 'score_snapshots', 'insights'
+    'workouts', 'workout_exercises', 'sets', 'personal_records', 'score_snapshots', 'insights',
+    'coach_threads', 'coach_messages', 'coach_memory'
   ]
+$$;
+
+-- Owner-readable tables only the service role writes (the app cannot insert or update).
+create or replace function tests.owner_readonly_tables() returns text[]
+language sql immutable set search_path = '' as $$
+  select array['coach_usage']
 $$;
 
 -- Public, read-only reference tables (readable by everyone, writable only by service_role / migrations).

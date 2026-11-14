@@ -6,6 +6,7 @@
 begin;
 select plan(
   array_length(tests.owner_tables(), 1) * 5
+  + array_length(tests.owner_readonly_tables(), 1) * 4
   + array_length(tests.catalog_tables(), 1) * 6
 );
 
@@ -39,6 +40,21 @@ select throws_ok(
   format('insert into public.%I (user_id) values (%L)', t, tests.user_a()),
   '42501', null, t || ': B cannot insert a row for A')
 from unnest(tests.owner_tables()) t;
+select tests.clear_authentication();
+
+-- ===== Owner-readable, service-written tables =====
+select tests.authenticate_as_anon();
+select throws_ok(format('select * from public.%I', t), '42501', null, t || ': anon cannot read')
+from unnest(tests.owner_readonly_tables()) t;
+select tests.authenticate_as(tests.user_a());
+select lives_ok(format('select * from public.%I', t), t || ': owner can read')
+from unnest(tests.owner_readonly_tables()) t;
+select throws_ok(format('insert into public.%I (user_id) values (%L)', t, tests.user_a()),
+  '42501', null, t || ': owner cannot insert')
+from unnest(tests.owner_readonly_tables()) t;
+select tests.authenticate_as(tests.user_b());
+select is(tests.count_rows(t), 0::bigint, t || ': other user sees nothing')
+from unnest(tests.owner_readonly_tables()) t;
 select tests.clear_authentication();
 
 -- ===== Catalog tables =====
