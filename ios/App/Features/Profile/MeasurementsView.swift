@@ -100,6 +100,7 @@ struct MeasurementsView: View {
 private struct WeightChart: View {
     let points: [WeightPoint]
     let unit: WeightUnit
+    @Environment(\.locale) private var locale
 
     var body: some View {
         Chart(points) { point in
@@ -114,6 +115,10 @@ private struct WeightChart: View {
         .chartYAxisLabel(unit.symbol)
         .frame(height: 220)
         .accessibilityLabel(Text("measurements.chart.title"))
+        .dsChartDescriptor(ChartAccessibility.descriptor(
+            title: String(localized: "measurements.chart.title", locale: locale),
+            points: points.map { ChartSeriesPoint(date: $0.date, value: unit.value(fromKilograms: $0.kilograms)) },
+            yTitle: String(localized: "measurements.chart.title", locale: locale), unit: unit.symbol, locale: locale))
         .accessibilityIdentifier("weight-chart")
     }
 }

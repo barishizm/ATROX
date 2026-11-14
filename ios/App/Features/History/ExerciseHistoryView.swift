@@ -8,6 +8,7 @@ import SwiftUI
 struct ExerciseHistoryView: View {
     let exerciseID: String
     @Environment(AppContainer.self) private var container
+    @Environment(\.locale) private var locale
     @State private var model: ExerciseHistoryModel?
     @State private var unavailable = false
 
@@ -78,6 +79,11 @@ struct ExerciseHistoryView: View {
                     .chartYAxisLabel(model.context.unit.symbol)
                     .frame(height: 200)
                     .accessibilityLabel("exercisehistory.chart.label")
+                    .dsChartDescriptor(ChartAccessibility.descriptor(
+                        title: String(localized: "exercisehistory.chart.label", locale: locale),
+                        points: model.chartPoints.map { ChartSeriesPoint(date: $0.date, value: $0.value) },
+                        yTitle: String(localized: "exercisehistory.chart", locale: locale),
+                        unit: model.context.unit.symbol, locale: locale))
                     .accessibilityIdentifier("exercise-e1rm-chart")
                 }
             }

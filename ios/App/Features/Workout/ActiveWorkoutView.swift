@@ -17,6 +17,7 @@ struct ActiveWorkoutView: View {
     @AppStorage(WorkoutPreferences.keepAwakeKey) private var keepAwake = true
     @AppStorage(WorkoutPreferences.showRirKey) private var showsRir = true
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(AppContainer.self) private var container
     @State private var finishPrompt: FinishPrompt?
     @State private var confirmsCancel = false
@@ -127,7 +128,7 @@ struct ActiveWorkoutView: View {
             Button("workout.cancel.keep", role: .cancel) { noting = nil }
         }
         .sensoryFeedback(.success, trigger: model.recordCelebrations)
-        .animation(.snappy, value: model.recordCelebrations)
+        .dsAnimation(.snappy, value: model.recordCelebrations)
         .alert("workout.record.confirm.title", isPresented: Binding(get: { model.recordToConfirm != nil }, set: { _ in })) {
             Button("workout.record.confirm.yes") { model.confirmRecord() }
             Button("workout.record.confirm.fix", role: .cancel) { Task { await model.reviseRecordSet() } }
@@ -274,7 +275,7 @@ struct ActiveWorkoutView: View {
                     .font(DSFont.caption).foregroundStyle(DSColor.accent).textCase(nil)
                     .accessibilityIdentifier("workout-suggestion")
             }
-            columnHeads
+            if !typeSize.isAccessibilitySize { columnHeads }
         }
     }
 
@@ -296,7 +297,10 @@ struct ActiveWorkoutView: View {
         let editingWeight = model.editing?.setId == row.id && model.editing?.keypad.field == .weight
         let editingReps = model.editing?.setId == row.id && model.editing?.keypad.field == .reps
         let tint = row.isCompleted ? DSColor.textPrimary : DSColor.textSecondary
-        return HStack(spacing: Spacing.sm) {
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Spacing.sm))
+            : AnyLayout(HStackLayout(spacing: Spacing.sm))
+        return layout {
             typeMenu(row)
             if let record = row.record {
                 recordBadge(record, celebrations: model.recordCelebrations)
@@ -305,7 +309,7 @@ struct ActiveWorkoutView: View {
                     .font(DSFont.callout).foregroundStyle(DSColor.textTertiary).monospacedDigit()
                     .frame(maxWidth: .infinity)
             }
-            field(editingWeight ? liveText(model.editing) : row.weightText, active: editingWeight, tint: tint, width: 72)
+            labeled(model.unit.symbol) { field(editingWeight ? liveText(model.editing) : row.weightText, active: editingWeight, tint: tint, width: 72)
                 .onTapGesture { Task { await model.beginEditing(row.id, field: .weight) } }
                 .onLongPressGesture(minimumDuration: 0.4) {
                     Haptics.play(.medium)
@@ -314,13 +318,13 @@ struct ActiveWorkoutView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("workout.field.weight \(model.unit.symbol)")
                 .accessibilityValue(row.weightText)
-                .accessibilityIdentifier("set-weight-\(card.rows.firstIndex(of: row) ?? 0)")
-            field(editingReps ? liveText(model.editing) : row.repsText, active: editingReps, tint: tint, width: 56)
+                .accessibilityIdentifier("set-weight-\(card.rows.firstIndex(of: row) ?? 0)") }
+            labeled(nil) { field(editingReps ? liveText(model.editing) : row.repsText, active: editingReps, tint: tint, width: 56)
                 .onTapGesture { Task { await model.beginEditing(row.id, field: .reps) } }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("workout.field.reps")
                 .accessibilityValue(row.repsText)
-                .accessibilityIdentifier("set-reps-\(card.rows.firstIndex(of: row) ?? 0)")
+                .accessibilityIdentifier("set-reps-\(card.rows.firstIndex(of: row) ?? 0)") }
             if showsRir { rirMenu(row) }
             Button {
                 Haptics.play(row.isCompleted ? .light : .success)
@@ -337,6 +341,29 @@ struct ActiveWorkoutView: View {
         }
         .frame(minHeight: HitTarget.button)
         .listRowBackground(row.isCompleted ? DSColor.success.opacity(0.12) : nil)
+        // VoiceOver: complete/undo and delete are reachable from the rotor without finding the small controls.
+        .accessibilityElement(children: .contain)
+        .accessibilityAction(named: Text(row.isCompleted ? "workout.set.undo" : "workout.set.complete")) {
+            Task { await model.toggleComplete(row.id) }
+        }
+        .accessibilityAction(named: Text("workout.set.delete")) { Task { await model.removeSet(row.id) } }
+    }
+
+    /// At accessibility text sizes the column heads are hidden, so each field carries its own visible caption.
+    @ViewBuilder
+    private func labeled<Content: View>(_ unitSymbol: String?, @ViewBuilder content: () -> Content) -> some View {
+        if typeSize.isAccessibilitySize {
+            HStack(spacing: Spacing.sm) {
+                if let unitSymbol {
+                    Text(verbatim: unitSymbol.uppercased()).font(DSFont.overline).foregroundStyle(DSColor.textTertiary)
+                } else {
+                    Text("workout.col.reps").font(DSFont.overline).foregroundStyle(DSColor.textTertiary).textCase(nil)
+                }
+                content()
+            }
+        } else {
+            content()
+        }
     }
 
     private func liveText(_ editing: ActiveWorkoutModel.Editing?) -> String {
@@ -347,7 +374,8 @@ struct ActiveWorkoutView: View {
         Text(verbatim: text)
             .font(DSFont.numericMedium)
             .foregroundStyle(active ? DSColor.onAccent : tint)
-            .frame(width: width, height: HitTarget.button - 8)
+            .frame(minWidth: width, minHeight: HitTarget.button - 8)
+            .fixedSize(horizontal: true, vertical: false)
             .background(active ? DSColor.accent : DSColor.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous))
             .contentShape(Rectangle())
     }
@@ -363,7 +391,7 @@ struct ActiveWorkoutView: View {
             Text(verbatim: row.badge)
                 .font(DSFont.headline)
                 .foregroundStyle(row.type == .working ? DSColor.textPrimary : DSColor.accent)
-                .frame(width: 44, height: HitTarget.minimum)
+                .frame(minWidth: 44, minHeight: HitTarget.minimum)
         }
         .accessibilityLabel("workout.set.type")
         .accessibilityIdentifier("set-type-\(row.badge)")
@@ -378,7 +406,7 @@ struct ActiveWorkoutView: View {
         } label: {
             Text(verbatim: row.rir.map(String.init) ?? "–")
                 .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                .frame(width: 44, height: HitTarget.minimum)
+                .frame(minWidth: 44, minHeight: HitTarget.minimum)
         }
         .accessibilityLabel("RIR")
     }
