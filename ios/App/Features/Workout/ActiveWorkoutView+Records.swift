@@ -13,7 +13,7 @@ extension ActiveWorkoutView {
         .font(DSFont.callout.weight(.semibold))
         .foregroundStyle(DSColor.accent)
         .frame(maxWidth: .infinity)
-        .transition(.scale.combined(with: .opacity))
+        .dsTransition(.scale.combined(with: .opacity))
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("set-record-badge")
     }

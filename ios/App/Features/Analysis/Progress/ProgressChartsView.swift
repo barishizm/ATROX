@@ -276,7 +276,10 @@ private struct ScoreSeriesCard: View {
                 .chartXSelection(value: $selection)
                 .frame(height: 180)
                 .accessibilityLabel(Text("progress.score.title"))
-                .accessibilityValue(Text(verbatim: model.scorePoints.last.map { "\(Int($0.score.rounded()))" } ?? ""))
+                .dsChartDescriptor(ChartAccessibility.descriptor(
+                    title: String(localized: "progress.score.title", locale: model.locale),
+                    points: model.scorePoints.map { ChartSeriesPoint(date: $0.date, value: $0.score) },
+                    yTitle: String(localized: "progress.score.title", locale: model.locale), locale: model.locale))
             } else {
                 EmptyChartText(key: "progress.score.empty")
             }
@@ -444,6 +447,11 @@ private struct BodyweightCard: View {
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
                 .frame(height: 120)
+                .accessibilityLabel(Text("progress.body.relative \(model.exerciseName)"))
+                .dsChartDescriptor(ChartAccessibility.descriptor(
+                    title: model.exerciseName,
+                    points: model.relativePoints.map { ChartSeriesPoint(date: $0.date, value: $0.ratio) },
+                    yTitle: model.exerciseName, locale: model.locale))
             }
         }
     }

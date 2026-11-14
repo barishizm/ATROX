@@ -21304,6 +21304,54 @@
           }
         }
       }
+    },
+    "a11y.chart.summary": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld points. First %2$@, latest %3$@, lowest %4$@, highest %5$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld nokta. İlk değer %2$@, son değer %3$@, en düşük %4$@, en yüksek %5$@."
+          }
+        }
+      }
+    },
+    "a11y.chart.empty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No data yet."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz veri yok."
+          }
+        }
+      }
+    },
+    "a11y.chart.date": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarih"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
