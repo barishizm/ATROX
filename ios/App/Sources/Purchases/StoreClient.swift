@@ -36,6 +36,12 @@ protocol StoreClient: Sendable {
     /// Asks the App Store to re-sync purchases (prompts for the Apple ID password).
     func sync() async throws
     @MainActor func showManageSubscriptions() async throws
+    /// App Store signed JWS (`jwsRepresentation`) of the current Pro transactions, for server verification (P090).
+    func signedTransactions() async -> [String]
+}
+
+extension StoreClient {
+    func signedTransactions() async -> [String] { [] }
 }
 
 enum StoreClientError: Error, Equatable {
@@ -104,6 +110,15 @@ struct StoreKitClient: StoreClient {
     }
 
     func sync() async throws { try await AppStore.sync() }
+
+    func signedTransactions() async -> [String] {
+        var result: [String] = []
+        for await entitlement in Transaction.currentEntitlements {
+            guard case .verified(let transaction) = entitlement, ProProduct.all.contains(transaction.productID) else { continue }
+            result.append(entitlement.jwsRepresentation)
+        }
+        return result
+    }
 
     @MainActor
     func showManageSubscriptions() async throws {

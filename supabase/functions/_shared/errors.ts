@@ -17,6 +17,7 @@ export type ErrorCode =
   | "duplicate_message"
   | "coach_unavailable"
   | "pro_required"
+  | "account_mismatch"
   | "internal";
 
 const STATUS: Record<ErrorCode, number> = {
@@ -29,6 +30,7 @@ const STATUS: Record<ErrorCode, number> = {
   duplicate_message: 400,
   coach_unavailable: 503,
   pro_required: 403,
+  account_mismatch: 409,
   internal: 500,
 };
 

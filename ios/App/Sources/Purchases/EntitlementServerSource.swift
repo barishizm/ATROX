@@ -5,6 +5,13 @@ import Foundation
 /// the owner reads it. Unreachable or missing means "no information", never "not Pro".
 protocol EntitlementServerSource: Sendable {
     func fetch() async throws -> ProEntitlement?
+    /// Sends a StoreKit signed transaction to `verify-purchase` (P090) so the server records it without waiting for
+    /// Apple's notification.
+    func verify(signedTransaction: String) async throws
+}
+
+extension EntitlementServerSource {
+    func verify(signedTransaction: String) async throws {}
 }
 
 /// Reads the user's `entitlements` rows over PostgREST (RLS limits them to the owner) and keeps the best one.
@@ -48,6 +55,18 @@ struct SupabaseEntitlementSource: EntitlementServerSource {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Bad date \(text)"))
         }
         return Self.best(of: try decoder.decode([Row].self, from: data))
+    }
+
+    func verify(signedTransaction: String) async throws {
+        guard let token = await accessToken() else { return }
+        var request = URLRequest(url: configuration.url.appendingPathComponent("functions/v1/verify-purchase"))
+        request.httpMethod = "POST"
+        request.setValue(configuration.anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(["signed_transaction": signedTransaction])
+        let (_, response) = try await session.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
     }
 
     /// Maps the table's status strings (P090 writes them) and picks the row that grants the most.
