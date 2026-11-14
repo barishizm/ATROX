@@ -15,6 +15,8 @@ struct PurchaseProduct: Identifiable, Equatable, Sendable {
     var trialDays: Int?
     /// Whether this Apple ID can still get the trial (it is once per subscription group).
     var isTrialEligible: Bool
+    /// ISO code of the storefront currency, to format derived amounts (the monthly equivalent of the yearly plan).
+    var currencyCode: String = "USD"
 }
 
 enum PurchaseResult: Equatable, Sendable {
@@ -61,7 +63,7 @@ struct StoreKitClient: StoreClient {
             result.append(PurchaseProduct(
                 id: product.id, displayName: product.displayName, displayPrice: product.displayPrice, price: product.price,
                 period: info.subscriptionPeriod.unit == .year ? .year : .month,
-                trialDays: trial, isTrialEligible: eligible && trial != nil
+                trialDays: trial, isTrialEligible: eligible && trial != nil, currencyCode: product.priceFormatStyle.currencyCode
             ))
         }
         // Yearly first: it is the plan the paywall highlights.

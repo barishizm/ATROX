@@ -14,6 +14,7 @@ struct ExerciseScoreView: View {
     @State private var center: ScoreCenter?
     @State private var unavailable = false
     @State private var showsReasons = false
+    @State private var lockedFeature: ProFeature?
 
     var body: some View {
         Group {
@@ -30,6 +31,7 @@ struct ExerciseScoreView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { ToolbarItem(placement: .primaryAction) { ShareCardButton(content: model?.shareContent).labelStyle(.iconOnly) } }
         .howItWorksButton()
+        .sheet(item: $lockedFeature) { feature in NavigationStack { PaywallView(feature: feature) } }
         .task { await prepare() }
         .accessibilityIdentifier("exercise-score-root")
     }
@@ -71,7 +73,24 @@ struct ExerciseScoreView: View {
     }
 
     private func groupPicker(_ model: ExerciseScoreModel) -> some View {
-        Picker("scorescreen.group", selection: Binding(get: { model.population }, set: { group in Task { await model.select(group) } })) {
+        let isPro = container.purchases.isPro
+        return VStack(alignment: .leading, spacing: Spacing.xs) {
+            groupPickerControl(model, isPro: isPro)
+            if !isPro {
+                Label("gate.groups.hint", systemImage: "lock.fill").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+            }
+        }
+    }
+
+    private func groupPickerControl(_ model: ExerciseScoreModel, isPro: Bool) -> some View {
+        Picker("scorescreen.group", selection: Binding(get: { model.population }, set: { group in
+            // A Pro-only reference group opens the paywall instead of switching (P091).
+            if FeatureGate.isLocked(population: group, isPro: isPro) {
+                lockedFeature = .allReferenceGroups
+            } else {
+                Task { await model.select(group) }
+            }
+        })) {
             Text("scorescreen.group.gym").tag(ReferencePopulation.gym)
             Text("scorescreen.group.general").tag(ReferencePopulation.general)
             Text("scorescreen.group.competitor").tag(ReferencePopulation.competitor)

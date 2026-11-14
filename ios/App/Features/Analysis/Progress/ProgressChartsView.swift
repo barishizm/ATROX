@@ -82,6 +82,7 @@ private struct EmptyChartText: View {
 
 private struct E1RMCard: View {
     let model: ProgressModel
+    @Environment(AppContainer.self) private var container
     @State private var selection: Date?
 
     private struct Row: Identifiable {
@@ -106,6 +107,7 @@ private struct E1RMCard: View {
             if model.e1rmPoints.count >= 2 {
                 chart
                 legend
+                if isLocked && hasProContent { LockedFeatureCard(feature: .forecast) }
             } else {
                 EmptyChartText(key: "progress.e1rm.empty")
             }
@@ -122,8 +124,13 @@ private struct E1RMCard: View {
         selection.flatMap { ProgressModel.nearest(model.e1rmPoints, to: $0, at: \.date) }
     }
 
+    /// Forecast and plateau analysis are Pro (P091); the e1RM line, trend and records stay free.
+    private var isLocked: Bool { FeatureGate.isLocked(.forecast, isPro: container.purchases.isPro) }
+
+    private var hasProContent: Bool { model.progress?.forecast.isEmpty == false || !model.plateauZones.isEmpty }
+
     private var forecastRows: [Row] {
-        guard let last = model.e1rmPoints.last, let progress = model.progress, !progress.forecast.isEmpty else { return [] }
+        guard !isLocked, let last = model.e1rmPoints.last, let progress = model.progress, !progress.forecast.isEmpty else { return [] }
         let anchor = Row(date: last.date, mid: last.e1rmKg, low: last.e1rmKg, high: last.e1rmKg)
         return [anchor] + progress.forecast.map { Row(date: $0.date, mid: $0.e1rmKg, low: $0.low, high: $0.high) }
     }
@@ -136,7 +143,7 @@ private struct E1RMCard: View {
 
     private var chart: some View {
         Chart {
-            ForEach(Array(model.plateauZones.enumerated()), id: \.offset) { _, zone in
+            ForEach(Array((isLocked ? [] : model.plateauZones).enumerated()), id: \.offset) { _, zone in
                 RectangleMark(
                     xStart: .value("start", ScoreCalculator.date(ofDay: zone.startDay)), xEnd: .value("end", ScoreCalculator.date(ofDay: zone.endDay))
                 )
@@ -174,8 +181,8 @@ private struct E1RMCard: View {
     private var legend: some View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
             Label("progress.legend.record", systemImage: "circle.fill").foregroundStyle(DSColor.success)
-            if !model.plateauZones.isEmpty { Label("progress.legend.plateau", systemImage: "square.fill").foregroundStyle(DSColor.warning) }
-            if model.progress?.forecast.isEmpty == false { Label("progress.legend.forecast", systemImage: "ellipsis").foregroundStyle(DSColor.accent) }
+            if !isLocked, !model.plateauZones.isEmpty { Label("progress.legend.plateau", systemImage: "square.fill").foregroundStyle(DSColor.warning) }
+            if !isLocked, model.progress?.forecast.isEmpty == false { Label("progress.legend.forecast", systemImage: "ellipsis").foregroundStyle(DSColor.accent) }
         }
         .font(DSFont.caption)
         .labelStyle(.titleAndIcon)

@@ -104,3 +104,21 @@ ve ikinci bir cihaz) Debug yapılandırmasında yerel Supabase'e bağlı.
 5. **Oturum kapalı:** çıkış yap, bağlantıyı aç → giriş ekranı; giriş/onboarding bitince davet ekranı açılır.
 6. **Davet ekranı:** profilin yoksa önce katılma formu; kendi bağlantın → "kendi davet bağlantın"; olmayan kullanıcı → "bulunamadı"; aranabilir olmayan biri de bulunur ve istek gönderilebilir.
 7. **Paylaşım:** Arkadaşlar > Ekle > Davet et → metinde bağlantı bulunur.
+
+## P092 · App Store Connect abonelikleri ve sandbox uçtan uca `[MANUEL]`
+
+Ön koşul: Ücretli Uygulamalar Sözleşmesi, banka ve vergi bilgileri tamam; abonelik grubu ve iki ürün (`atrox.pro.monthly`,
+`atrox.pro.yearly`; yıllıkta ücretsiz deneme) App Store Connect'te; staging projesinde `appstore-notifications` ve
+`verify-purchase` yayında, V2 bildirim URL'leri (production ve sandbox) tanımlı; gerçek cihazda sandbox test hesabı.
+
+| # | Adım | Beklenen | Sonuç |
+|---|---|---|---|
+| 1 | Profil > ATROX Pro: planlar yüklenir | Yıllık öne çıkar; yerelleştirilmiş fiyat, aylık eşdeğer, deneme metni | _bekliyor_ |
+| 2 | Yıllık planı satın al | Pro açılır; paywall "Pro'sun" gösterir | _bekliyor_ |
+| 3 | Supabase `entitlements` | Satır oluştu (`environment = sandbox`, `status = trial` veya `active`) | _bekliyor_ |
+| 4 | Koç kotası | `coach-chat` yanıtında katman `pro` | _bekliyor_ |
+| 5 | Aboneliği iptal et (Ayarlar > Abonelikler) | Dönem sonuna kadar Pro, `will_renew = false` | _bekliyor_ |
+| 6 | Sandbox süresi dolunca | `entitlements.status = expired`; uygulama ücretsize döner, kilitler geri gelir | _bekliyor_ |
+| 7 | "Satın alımları geri yükle" (silinip yeniden kurulmuş uygulamada) | Pro geri gelir | _bekliyor_ |
+
+Sonuçlar ve tarih: _(doldurulacak)_
