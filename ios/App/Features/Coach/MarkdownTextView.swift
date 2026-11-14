@@ -73,8 +73,6 @@ struct MarkdownTextView: View {
 
     /// Bold, italic, code and links inside one block.
     private func inline(_ value: String) -> Text {
-        let options = AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
-        if let attributed = try? AttributedString(markdown: value, options: options) { return Text(attributed) }
-        return Text(verbatim: value)
+        Text(MarkdownInline.attributed(value))
     }
 }

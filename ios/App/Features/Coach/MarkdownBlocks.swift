@@ -119,3 +119,18 @@ enum MarkdownBlocks {
         return .table(header: header, rows: Array(body.dropFirst()))
     }
 }
+
+/// Inline Markdown for coach text (P102). Links and images are never active: model output can be steered by prompt
+/// injection, and a tappable `[label](https://evil)` or `atrox://start/...` would turn that into a phishing or
+/// deep-link vector. The label stays as plain text; bold, italic and code keep working.
+enum MarkdownInline {
+    static func attributed(_ value: String) -> AttributedString {
+        let options = AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        guard var attributed = try? AttributedString(markdown: value, options: options) else { return AttributedString(value) }
+        for run in attributed.runs where run.link != nil || run.imageURL != nil {
+            attributed[run.range].link = nil
+            attributed[run.range].imageURL = nil
+        }
+        return attributed
+    }
+}
