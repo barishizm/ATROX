@@ -1395,6 +1395,23 @@
         }
       }
     },
+    "auth.verify.openMail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Mail"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posta uygulamasını aç"
+          }
+        }
+      }
+    },
     "auth.verify.message %@" : {
       "localizations" : {
         "en" : {

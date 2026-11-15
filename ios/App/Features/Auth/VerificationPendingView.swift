@@ -6,6 +6,7 @@ import SwiftUI
 struct VerificationPendingView: View {
     let model: AuthFlowModel
     let email: String
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         AuthScreen(title: "auth.verify.title", subtitle: nil) {
@@ -30,6 +31,10 @@ struct VerificationPendingView: View {
             VStack(spacing: Spacing.md) {
                 PrimaryButton("auth.verify.confirmedSignIn") { model.showSignIn(email: email) }
                     .accessibilityIdentifier("verify-signin")
+                SecondaryButton(title: Text("auth.verify.openMail"), systemImage: "envelope.open", isLoading: false) {
+                    if let url = URL(string: "message://") { openURL(url) }
+                }
+                .accessibilityIdentifier("verify-open-mail")
                 resendButton
                 Button("auth.verify.changeEmail") { model.path.removeLast() }
                     .font(DSFont.callout.weight(.semibold))
