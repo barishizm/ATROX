@@ -183,6 +183,21 @@ struct RoutineDayView: View {
                 }
             }
             Spacer(minLength: 0)
+            if !editMode.isEditing {
+                Menu {
+                    Button { editing = exercise } label: { Label("routine.action.edit", systemImage: "slider.horizontal.3") }
+                    Button(role: .destructive) { Task { await model.deleteExercise(exercise.id) } } label: {
+                        Label("routine.action.delete", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(.body, weight: .semibold)).foregroundStyle(DSColor.textSecondary)
+                        .frame(width: HitTarget.minimum, height: HitTarget.minimum)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("routine.action.more")
+                .accessibilityIdentifier("routine-exercise-menu-\(index)")
+            }
         }
         .padding(.vertical, Spacing.sm)
         .padding(.leading, group == nil ? 0 : Spacing.sm)

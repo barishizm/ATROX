@@ -51,17 +51,35 @@ final class TemplateListModel {
         personalizer.info(for: id)?.name(languageCode: languageCode) ?? id
     }
 
-    /// Creates the routine and returns its id. The first program the user owns becomes the active one.
+    /// Creates the programs of a template and returns the id of the first one. Every training day becomes its own
+    /// program ("Push", "Pull", "Legs"), so nobody has to carry three days in one place. The first program the user
+    /// owns becomes the active one.
     func use(_ template: ProgramTemplate, languageCode: String, useAlternatives: Bool) async -> UUID? {
         guard !isInstalling else { return nil }
         isInstalling = true
         defer { isInstalling = false }
         do {
             let hadPrograms = try await !repository.all(userId: userId).isEmpty
-            let routine = try await repository.install(
+            let installed = try await repository.install(
                 personalized(template), languageCode: languageCode, useAlternatives: useAlternatives, userId: userId)
-            if !hadPrograms { plan.setActive(routine.id) }
-            return routine.id
+            let full = try await repository.routine(id: installed.id) ?? installed
+            var ids = [full.id]
+            if full.days.count > 1 {
+                // Copy first, trim afterwards: trimming the original early would leave the copies without days.
+                ids = [full.id]
+                for day in full.days.dropFirst() {
+                    ids.append(try await repository.duplicate(routineId: full.id, name: day.name).id)
+                }
+                for (index, day) in full.days.enumerated() {
+                    guard let target = try await repository.routine(id: ids[index]) else { continue }
+                    for (position, other) in target.days.enumerated() where position != index {
+                        try await repository.deleteDay(id: other.id)
+                    }
+                    try await repository.update(id: ids[index], name: day.name, notes: full.notes)
+                }
+            }
+            if !hadPrograms { plan.setActive(ids[0]) }
+            return ids[0]
         } catch {
             errorOccurred = true
             return nil

@@ -33,12 +33,13 @@ struct MainTabView: View {
             }
             Tab(AppTab.workout.title, systemImage: AppTab.workout.systemImage, value: AppTab.workout) {
                 NavigationStack(path: $workout.path) {
-                    WorkoutRootView()
+                    WorkoutRootView(router: workout)
                         .navigationDestination(for: WorkoutRoute.self) { route in
                             switch route {
                             case .exerciseLibrary: LibraryView()
                             case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
                             case .routines: RoutineListView()
+                            case .create: WorkoutCreateView()
                             case .templates: TemplateListView()
                             case .routine(let id): RoutineEditorView(routineId: id)
                             case .routineDay(let routineId, let dayId): RoutineDayView(routineId: routineId, dayId: dayId)
