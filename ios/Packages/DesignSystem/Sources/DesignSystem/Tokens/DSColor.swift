@@ -40,9 +40,14 @@ public enum DSColor {
     public static let textPrimary = pair(\.textPrimary)
     public static let textSecondary = pair(\.textSecondary)
     public static let textTertiary = pair(\.textTertiary)
-    // Accent
+    // Brand blue: `accent` for text/icons/strokes, `accentFill` for fills with `onAccent` on top.
     public static let accent = pair(\.accent)
+    public static let accentFill = pair(\.accentFill)
     public static let onAccent = pair(\.onAccent)
+    // Brand orange: `highlight` for text/icons, `highlightFill` for fills with `onHighlight` on top.
+    public static let highlight = pair(\.highlight)
+    public static let highlightFill = pair(\.highlightFill)
+    public static let onHighlight = pair(\.onHighlight)
     // Status
     public static let success = pair(\.success)
     public static let warning = pair(\.warning)

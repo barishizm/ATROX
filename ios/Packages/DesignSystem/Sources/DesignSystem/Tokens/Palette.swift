@@ -89,9 +89,15 @@ public struct Palette: Sendable {
     public let textPrimary: RGB
     public let textSecondary: RGB
     public let textTertiary: RGB
-    // The one vivid accent
+    // Brand blue. `accent` is the foreground-safe tone (text, icons, strokes: AA on every surface);
+    // `accentFill` is the exact brand blue for fills (buttons, bars, selected chips) with `onAccent` on top.
     public let accent: RGB
+    public let accentFill: RGB
     public let onAccent: RGB
+    // Brand orange, same split: `highlight` for foreground, `highlightFill` for fills with `onHighlight` on top.
+    public let highlight: RGB
+    public let highlightFill: RGB
+    public let onHighlight: RGB
     // Status
     public let success: RGB
     public let warning: RGB
@@ -101,21 +107,25 @@ public struct Palette: Sendable {
 
     public func level(_ level: ScoreLevel) -> RGB { levels[level.rawValue] }
 
-    /// Electric lime accent on near-black.
+    /// Brand palette: #21232E base, #105BFF blue, #FE8500 orange. Surfaces are lighter steps of the base.
     public static let dark = Palette(
-        background: RGB(hex: 0x0A0C0F),
-        surface: RGB(hex: 0x13161B),
-        surfaceRaised: RGB(hex: 0x1B1F26),
-        surfaceOverlay: RGB(hex: 0x252A33),
-        separator: RGB(hex: 0x2E343F),
-        textPrimary: RGB(hex: 0xF3F5F8),
-        textSecondary: RGB(hex: 0xA9B1BD),
-        textTertiary: RGB(hex: 0x8B94A2),
-        accent: RGB(hex: 0xC6F135),
-        onAccent: RGB(hex: 0x0A0C0F),
+        background: RGB(hex: 0x21232E),
+        surface: RGB(hex: 0x2A2D3A),
+        surfaceRaised: RGB(hex: 0x343847),
+        surfaceOverlay: RGB(hex: 0x3E4354),
+        separator: RGB(hex: 0x4B5164),
+        textPrimary: RGB(hex: 0xF4F5F9),
+        textSecondary: RGB(hex: 0xB6BBC8),
+        textTertiary: RGB(hex: 0xA0A6B5),
+        accent: RGB(hex: 0x74A0FF), // #105BFF lightened until it holds AA on every dark surface
+        accentFill: RGB(hex: 0x105BFF),
+        onAccent: RGB(hex: 0xFFFFFF),
+        highlight: RGB(hex: 0xFE8500),
+        highlightFill: RGB(hex: 0xFE8500),
+        onHighlight: RGB(hex: 0x21232E),
         success: RGB(hex: 0x3DDC97),
         warning: RGB(hex: 0xFFC53D),
-        error: RGB(hex: 0xFF6B6B),
+        error: RGB(hex: 0xFF7777),
         levels: [
             RGB(hex: 0x9AA3B2), // beginner  – steel
             RGB(hex: 0x4CC2FF), // developing – sky
@@ -133,11 +143,15 @@ public struct Palette: Sendable {
         surfaceRaised: RGB(hex: 0xEDEFF3),
         surfaceOverlay: RGB(hex: 0xE1E5EB),
         separator: RGB(hex: 0xD3D8E0),
-        textPrimary: RGB(hex: 0x0E1116),
+        textPrimary: RGB(hex: 0x21232E),
         textSecondary: RGB(hex: 0x474F5B),
         textTertiary: RGB(hex: 0x515A68),
-        accent: RGB(hex: 0x4A6A00),
+        accent: RGB(hex: 0x0E51E3), // #105BFF nudged darker so tinted chips hold AA
+        accentFill: RGB(hex: 0x105BFF),
         onAccent: RGB(hex: 0xFFFFFF),
+        highlight: RGB(hex: 0x934D00), // #FE8500 darkened for AA text on light surfaces
+        highlightFill: RGB(hex: 0xFE8500),
+        onHighlight: RGB(hex: 0x21232E),
         success: RGB(hex: 0x076B41),
         warning: RGB(hex: 0x7A4F00),
         error: RGB(hex: 0xB32323),

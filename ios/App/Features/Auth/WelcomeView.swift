@@ -30,11 +30,10 @@ struct WelcomeView: View {
 
     private var header: some View {
         VStack(spacing: Spacing.md) {
-            Image(systemName: "figure.strengthtraining.traditional")
-                .font(.system(size: 44, weight: .semibold))
-                .foregroundStyle(DSColor.onAccent)
-                .frame(width: 88, height: 88)
-                .background(DSColor.accent, in: RoundedRectangle(cornerRadius: Radius.xl, style: .continuous))
+            Image("MascotWelcome")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 220)
                 .accessibilityHidden(true)
             Text("auth.welcome.headline")
                 .font(DSFont.title)

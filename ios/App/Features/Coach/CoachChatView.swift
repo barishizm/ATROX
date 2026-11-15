@@ -165,7 +165,7 @@ struct CoachChatView: View {
                 }
                 if isFree {
                     Button { showsPaywall = true } label: { Text("coach.quota.upgrade").frame(maxWidth: .infinity, minHeight: HitTarget.minimum - Spacing.sm) }
-                        .buttonStyle(.borderedProminent).tint(DSColor.accent).accessibilityIdentifier("coach-upgrade")
+                        .buttonStyle(.borderedProminent).tint(DSColor.accentFill).accessibilityIdentifier("coach-upgrade")
                 }
             }
         }

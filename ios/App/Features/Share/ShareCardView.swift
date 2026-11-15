@@ -63,7 +63,7 @@ struct ShareCardView: View {
             if let score = content.score {
                 ring(score)
             } else if let headline = content.headline {
-                Image(systemName: "trophy.fill").font(.system(size: isStory ? 120 : 80)).foregroundStyle(DSColor.accent)
+                Image(systemName: "trophy.fill").font(.system(size: isStory ? 120 : 80)).foregroundStyle(DSColor.highlight)
                 Text(verbatim: headline).font(.system(size: isStory ? 150 : 110, weight: .heavy, design: .rounded))
                     .foregroundStyle(ink).minimumScaleFactor(0.4).lineLimit(1)
             }

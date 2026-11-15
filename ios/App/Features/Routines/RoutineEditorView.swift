@@ -195,7 +195,7 @@ struct RoutineEditorView: View {
                     HStack(spacing: Spacing.sm) {
                         Text(verbatim: muscleName(count.muscle)).font(DSFont.callout).frame(width: 110, alignment: .leading)
                         GeometryReader { proxy in
-                            Capsule().fill(DSColor.accent)
+                            Capsule().fill(DSColor.accentFill)
                                 .frame(width: max(4, proxy.size.width * count.sets / peak), height: 8)
                                 .frame(maxHeight: .infinity, alignment: .center)
                         }

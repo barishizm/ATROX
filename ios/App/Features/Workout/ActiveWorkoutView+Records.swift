@@ -11,7 +11,7 @@ extension ActiveWorkoutView {
             Image(systemName: "trophy.fill").symbolEffect(.bounce, value: celebrations)
         }
         .font(DSFont.callout.weight(.semibold))
-        .foregroundStyle(DSColor.accent)
+        .foregroundStyle(DSColor.highlight)
         .frame(maxWidth: .infinity)
         .dsTransition(.scale.combined(with: .opacity))
         .accessibilityElement(children: .combine)

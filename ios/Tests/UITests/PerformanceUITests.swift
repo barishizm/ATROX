@@ -5,7 +5,7 @@ import XCTest
 final class PerformanceUITests: XCTestCase {
     @MainActor
     func testColdLaunchStaysUnderBudget() throws {
-        var options = XCTMeasureOptions()
+        let options = XCTMeasureOptions()
         options.iterationCount = 3
         let started = Date()
         measure(metrics: [XCTApplicationLaunchMetric()], options: options) {

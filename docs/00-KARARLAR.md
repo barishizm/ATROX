@@ -34,7 +34,7 @@ Son güncelleme: 2026-11-11. Bu dosya projenin "anayasası"dır; buradaki bir ka
 | 13 | Gelir | Freemium abonelik (StoreKit 2) |
 | 14 | Giriş | Apple + Google + e-posta |
 | 15 | Health/Watch | HealthKit + Live Activity v1.0'da; Watch uygulaması v1.x |
-| 16 | Tasarım | Koyu, atletik, veri odaklı |
+| 16 | Tasarım | Koyu, atletik, veri odaklı. Üç marka rengi (2026-11-14, kullanıcı kararı; önceki "tek vurgu rengi" kararının yerine): `#21232E` zemin, `#105BFF` ana vurgu (mavi), `#FE8500` ikincil vurgu (turuncu: seri, rekor). Koyu zeminde mavi metin/ikon için AA'yı geçen açık ton `#74A0FF` kullanılır, dolgularda tam `#105BFF` kalır. Durum ve skor kademesi renkleri değişmedi. |
 | 17 | Skorlanan türler | Ağırlıklı + vücut ağırlığı hareketleri; kardiyo yalnızca kaydedilir |
 | 18 | Veri katkısı | İsteğe bağlı, anonim, güven veren dille (uygulama biçimi için §4'e bak) |
 | 19 | Sosyal | Paylaşılabilir skor kartı + arkadaş sıralaması |

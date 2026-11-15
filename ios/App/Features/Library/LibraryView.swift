@@ -285,7 +285,7 @@ struct FlowChips: View {
                         .font(DSFont.callout)
                         .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
                         .foregroundStyle(on ? DSColor.onAccent : DSColor.textPrimary)
-                        .background(on ? DSColor.accent : DSColor.surfaceRaised, in: Capsule())
+                        .background(on ? DSColor.accentFill : DSColor.surfaceRaised, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(on ? .isSelected : [])
