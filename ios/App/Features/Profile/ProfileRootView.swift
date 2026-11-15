@@ -186,7 +186,8 @@ struct ProfileRootView: View {
                         .foregroundStyle(DSColor.highlight).accessibilityHidden(true)
                     Text("profile.stat.weight").font(DSFont.body).foregroundStyle(DSColor.textSecondary)
                     Spacer()
-                    Text(verbatim: unit.value(fromKilograms: change).formatted(.number.sign(strategy: .always()).precision(.fractionLength(0...1)).locale(locale)) + " " + unit.symbol)
+                    Text(verbatim: unit.value(fromKilograms: change)
+                        .formatted(.number.sign(strategy: .always()).precision(.fractionLength(0...1)).locale(locale)) + " " + unit.symbol)
                         .font(DSFont.numericMedium).foregroundStyle(DSColor.textPrimary)
                 }
             }

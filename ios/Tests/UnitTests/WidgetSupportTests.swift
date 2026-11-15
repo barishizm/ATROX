@@ -20,7 +20,8 @@ private func plannedDay(_ id: UUID, name: String) -> WidgetSnapshot.PlannedDay {
     WidgetSnapshot.PlannedDay(routineId: routineId, dayId: id, routineName: "Upper / Lower", dayName: name, exerciseCount: 6)
 }
 
-private func snapshot(weekEndsAt: Date = t0.addingTimeInterval(3 * 86_400), score: WidgetSnapshot.Score? = .init(value: 72, isProvisional: false, change: 3)) -> WidgetSnapshot {
+private func snapshot(weekEndsAt: Date = t0.addingTimeInterval(3 * 86_400), score: WidgetSnapshot.Score? = .init(value: 72, isProvisional: false,
+    change: 3)) -> WidgetSnapshot {
     WidgetSnapshot(
         generatedAt: t0, score: score, next: plannedDay(dayA, name: "Upper A"),
         days: [plannedDay(dayA, name: "Upper A"), plannedDay(dayB, name: "Lower A")],

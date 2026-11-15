@@ -25,7 +25,9 @@ struct LocalSupabaseIntegrationTests {
         let mailpit = URL(string: env["SUPABASE_LOCAL_MAILPIT_URL"] ?? "http://127.0.0.1:54324")!
         var link: URL?
         for _ in 0..<20 where link == nil {
-            let (listData, _) = try await URLSession.shared.data(from: mailpit.appending(path: "api/v1/search").appending(queryItems: [.init(name: "query", value: "to:\(email)")]))
+            let (listData,
+                _) = try await URLSession.shared.data(from: mailpit.appending(path: "api/v1/search").appending(queryItems: [.init(name: "query",
+                    value: "to:\(email)")]))
             let list = try JSONSerialization.jsonObject(with: listData) as? [String: Any]
             if let id = (list?["messages"] as? [[String: Any]])?.first?["ID"] as? String {
                 let (msgData, _) = try await URLSession.shared.data(from: mailpit.appending(path: "api/v1/message/\(id)"))
@@ -40,7 +42,9 @@ struct LocalSupabaseIntegrationTests {
         }
         let url = try #require(link, "no confirmation e-mail arrived in Mailpit")
         final class NoRedirect: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
-            func urlSession(_ s: URLSession, task: URLSessionTask, willPerformHTTPRedirection r: HTTPURLResponse, newRequest: URLRequest) async -> URLRequest? { nil }
+            func urlSession(
+                _ s: URLSession, task: URLSessionTask, willPerformHTTPRedirection r: HTTPURLResponse, newRequest: URLRequest
+            ) async -> URLRequest? { nil }
         }
         let session = URLSession(configuration: .ephemeral, delegate: NoRedirect(), delegateQueue: nil)
         let (_, response) = try await session.data(from: url)

@@ -128,7 +128,8 @@ public actor ScoreService {
         }
         for asOf in days.reversed() {
             let date = date(ofDay: asOf)
-            let user = ScoringUser(sex: profile.sex, age: Double(max(1, ScoreCalculator.age(birthDate: profile.birthDate, on: date, calendar: calendar))), bodyweightKg: weight.weightKg)
+            let user = ScoringUser(sex: profile.sex, age: Double(max(1, ScoreCalculator.age(birthDate: profile.birthDate, on: date,
+                calendar: calendar))), bodyweightKg: weight.weightKg)
             let visible = sets.mapValues { $0.filter { $0.set.day <= asOf } }.filter { !$0.value.isEmpty }
             let overview = ScoreCalculator.compute(sets: visible, scoring: model, user: user, population: population, asOfDay: asOf)
             store(overview, userId: userId, date: date, context: context, force: true)
@@ -244,7 +245,9 @@ public actor ScoreService {
                 existing.modelVersion = overview.modelVersion
                 existing.deletedAt = nil
                 existing.markPending(at: now)
-            } else if force || isMeaningful(score: score, version: overview.modelVersion, before: date, userId: userId, scope: scope, key: key, group: group, context: context) {
+            } else if force || isMeaningful(
+                score: score, version: overview.modelVersion, before: date, userId: userId, scope: scope, key: key, group: group, context: context
+            ) {
                 context.insert(
                     ScoreSnapshot(
                         userId: userId, scope: scope, key: key, referenceGroup: group, score: score, z: z,

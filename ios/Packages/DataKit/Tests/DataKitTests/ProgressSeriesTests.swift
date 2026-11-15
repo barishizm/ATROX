@@ -80,7 +80,8 @@ private func sessions(rising: Int, flat: Int) -> [ProgressAnalyzer.Session] {
 
     @Test func forecastAndTrendLineExistForAClearTrend() throws {
         let data = sessions(rising: 20, flat: 0)
-        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50, trainingYears: nil, today: 140, calendar: utc)
+        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50,
+            trainingYears: nil, today: 140, calendar: utc)
         #expect(progress.trend.status == .ok)
         #expect(progress.trendLine.count == 2 && progress.trendLine[1].e1rmKg > progress.trendLine[0].e1rmKg)
         #expect(progress.forecast.map(\.weeks) == [4, 8, 12])
@@ -91,7 +92,8 @@ private func sessions(rising: Int, flat: Int) -> [ProgressAnalyzer.Session] {
 
     @Test func tooFewSessionsGiveNoTrendOrForecast() throws {
         let data = [ProgressAnalyzer.Session(day: 0, e1rmKg: 100), ProgressAnalyzer.Session(day: 7, e1rmKg: 102)]
-        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50, trainingYears: nil, today: 10, calendar: utc)
+        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50,
+            trainingYears: nil, today: 10, calendar: utc)
         #expect(progress.trend.status == .insufficientData)
         #expect(progress.trendLine.isEmpty && progress.forecast.isEmpty && progress.plateauZones.isEmpty)
         #expect(progress.points.count == 2)
@@ -100,7 +102,8 @@ private func sessions(rising: Int, flat: Int) -> [ProgressAnalyzer.Session] {
     @Test func twoYearHistoryPreparesQuickly() throws {
         let data = sessions(rising: 60, flat: 45)
         let started = Date()
-        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50, trainingYears: nil, today: 735, calendar: utc)
+        let progress = ScoreService.progress("x", sessions: data, params: try EmbeddedModelBundle.model().params.progress, percentile: 50,
+            trainingYears: nil, today: 735, calendar: utc)
         #expect(progress.points.count == 315)
         #expect(Date().timeIntervalSince(started) < 5)
     }

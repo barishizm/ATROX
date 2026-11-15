@@ -41,7 +41,8 @@ extension ScoreService {
         let sessions = Self.progressSessions(sets, exercise: exercise, model: model, user: user)
         guard !sessions.isEmpty else { return nil }
         let percentile = ScoreCalculator.evaluate(id, sets: sets, model: model, user: user, population: population, asOfDay: today)?.score.score ?? 50
-        return Self.progress(id, sessions: sessions, params: model.params.progress, percentile: percentile, trainingYears: nil, today: today, calendar: currentCalendar)
+        return Self.progress(id, sessions: sessions, params: model.params.progress, percentile: percentile, trainingYears: nil, today: today,
+            calendar: currentCalendar)
     }
 
     static func progress(

@@ -60,7 +60,8 @@ struct ProposalSummary: Equatable {
                 title: text("coach.proposal.memory.title"), subtitle: data["note"]?.string, lines: [], days: [], warnings: []
             )
         case .unknown:
-            return ProposalSummary(title: text("coach.proposal.unknown.title"), subtitle: text("coach.proposal.unknown.subtitle"), lines: [], days: [], warnings: [])
+            return ProposalSummary(title: text("coach.proposal.unknown.title"), subtitle: text("coach.proposal.unknown.subtitle"), lines: [],
+                days: [], warnings: [])
         }
     }
 

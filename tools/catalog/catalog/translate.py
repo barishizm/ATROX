@@ -1,6 +1,6 @@
 """catalog-translate (P026): Turkish names, aliases and instructions for the exercise catalog.
 
-Pipeline: glossary (must be approved) -> batched LLM translation via OpenRouter -> JSON-schema validation
+Pipeline: glossary (must be approved) -> batched LLM translation via the official DeepSeek API -> JSON-schema validation
 -> content-addressed cache -> locked human-approved core rows -> out/exercises.{tr,en}.json.
 """
 from __future__ import annotations
@@ -24,10 +24,9 @@ import jsonschema
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL = "deepseek/deepseek-v4.1-flash"
+MODEL = "deepseek-flash"
 PROVIDERS = {  # name -> (chat-completions URL, API-key env var, default model)
-    "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY", MODEL),
-    "deepseek": ("https://api.deepseek.com/chat/completions", "DEEPSEEK_API_KEY", "deepseek-flash"),
+    "deepseek": ("https://api.deepseek.com/chat/completions", "DEEPSEEK_API_KEY", MODEL),
 }
 PROMPT_VERSION = 2
 APPROVED_VALUES = {"1", "yes", "y", "true", "x", "evet", "e"}
@@ -365,7 +364,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("command", choices=["run", "review", "sample", "check"])
     ap.add_argument("--root", type=Path, default=ROOT)
-    ap.add_argument("--provider", choices=sorted(PROVIDERS), default="openrouter")
+    ap.add_argument("--provider", choices=sorted(PROVIDERS), default="deepseek")
     ap.add_argument("--model", help="default depends on --provider")
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--limit", type=int, help="run: translate only the first N untranslated exercises")

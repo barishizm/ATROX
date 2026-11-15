@@ -102,7 +102,8 @@ import Testing
 
         let published = SupabaseSocialService(baseURL: URL(string: "https://x.test")!, anonKey: "a", accessToken: { "t" }) { request in
             #expect(request.url?.path == "/functions/v1/publish-score")
-            return (Data(#"{"published":false,"reason":"sharing_off"}"#.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+            return (Data(#"{"published":false,"reason":"sharing_off"}"#.utf8), HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil,
+                headerFields: nil)!)
         }
         #expect(try await published.publishScore(ScorePublication(score: 60, isProvisional: false, weeklyWorkouts: 2)) == false)
     }

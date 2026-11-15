@@ -154,7 +154,8 @@ struct CoachChatView: View {
             }
             .padding(.trailing, Spacing.xs)
             .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.xl))
-            .overlay(RoundedRectangle(cornerRadius: Radius.xl).strokeBorder(inputFocused ? DSColor.accent : DSColor.separator, lineWidth: inputFocused ? 1.5 : 1))
+            .overlay(RoundedRectangle(cornerRadius: Radius.xl).strokeBorder(inputFocused ? DSColor.accent : DSColor.separator,
+                lineWidth: inputFocused ? 1.5 : 1))
             .shadow(color: .black.opacity(0.25), radius: 6, y: 2)
             HStack {
                 if let quota = session.quota {

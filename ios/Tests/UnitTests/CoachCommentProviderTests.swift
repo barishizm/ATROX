@@ -84,7 +84,8 @@ import Testing
         let period = WeekPeriod.containing(Date(timeIntervalSince1970: 1_800_000_000), calendar: calendar)
         let summary = WeeklySummary(
             period: period, workouts: 3, goal: 4, totalSets: 40, previousSets: 30, volumeChange: 33.3,
-            records: [RecordHighlight(exerciseId: "bench", kind: .e1rm, value: 100, date: period.start), RecordHighlight(exerciseId: "unknown", kind: .weight, value: 1, date: period.start)],
+            records: [RecordHighlight(exerciseId: "bench", kind: .e1rm, value: 100, date: period.start), RecordHighlight(exerciseId: "unknown",
+                kind: .weight, value: 1, date: period.start)],
             overallScore: 54.4, overallChange: 2.64, exerciseChanges: [], topGroup: .chest, neglectedGroups: [.legs]
         )
         let digest = CoachDigestBuilder.weekly(summary, names: ["bench": "Bench Press"])

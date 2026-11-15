@@ -80,7 +80,8 @@ import Testing
         #expect(target.minScore > Int(try #require(model.score)))
         // Rounded up to a 2.5 kg step: every text shows a multiple of 2.5.
         for (text, load) in zip(target.loads, try #require(model.insight).targetLoads) {
-            let shown = Double(text.split(separator: "×").last?.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " kg", with: "").replacingOccurrences(of: ",", with: ".") ?? "") ?? 0
+            let shown = Double(text.split(separator: "×").last?.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: " kg",
+                with: "").replacingOccurrences(of: ",", with: ".") ?? "") ?? 0
             #expect(shown >= load.weightKg - 1e-6 && shown.truncatingRemainder(dividingBy: 2.5) == 0, "\(text) vs \(load.weightKg)")
         }
     }

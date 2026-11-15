@@ -131,8 +131,10 @@ final class FakeStoreClient: StoreClient, @unchecked Sendable {
     init(catalog: [PurchaseProduct] = FakeStoreClient.defaultCatalog) { self.catalog = catalog }
 
     static let defaultCatalog = [
-        PurchaseProduct(id: ProProduct.yearly, displayName: "Pro Yearly", displayPrice: "$59.99", price: 59.99, period: .year, trialDays: 7, isTrialEligible: true),
-        PurchaseProduct(id: ProProduct.monthly, displayName: "Pro Monthly", displayPrice: "$9.99", price: 9.99, period: .month, trialDays: nil, isTrialEligible: false)
+        PurchaseProduct(id: ProProduct.yearly, displayName: "Pro Yearly", displayPrice: "$59.99", price: 59.99, period: .year, trialDays: 7,
+            isTrialEligible: true),
+        PurchaseProduct(id: ProProduct.monthly, displayName: "Pro Monthly", displayPrice: "$9.99", price: 9.99, period: .month, trialDays: nil,
+            isTrialEligible: false)
     ]
 
     func setRecords(_ records: [SubscriptionRecord]) { lock.withLock { _records = records } }

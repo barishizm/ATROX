@@ -69,7 +69,8 @@ private let roles: [String: MuscleRoles] = [
     }
 
     @Test func changeComparesWithTheLastPointOlderThanTheWindow() {
-        let series = [ScorePoint(date: day(60), score: 40), ScorePoint(date: day(35), score: 44), ScorePoint(date: day(10), score: 50), ScorePoint(date: day(0), score: 52)]
+        let series = [ScorePoint(date: day(60), score: 40), ScorePoint(date: day(35), score: 44), ScorePoint(date: day(10), score: 50),
+            ScorePoint(date: day(0), score: 52)]
         #expect(ScoreTrend.change(series, now: now, days: 30, calendar: gregorian) == 8)
         #expect(ScoreTrend.change(series, current: 60, now: now, days: 30, calendar: gregorian) == 16)
     }

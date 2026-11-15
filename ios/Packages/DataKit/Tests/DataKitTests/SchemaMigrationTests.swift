@@ -65,7 +65,8 @@ struct SchemaMigrationTests {
             let config = ModelConfiguration(schema: schema, url: folder.appendingPathComponent("ATROX.store"))
             let old = try ModelContainer(for: schema, migrationPlan: version.plan, configurations: config)
             let context = ModelContext(old)
-            let row = BodyMeasurement(userId: testUser, input: MeasurementInput(date: Date(timeIntervalSince1970: 1_700_000_000), weightKg: 82.5), now: Date(timeIntervalSince1970: 1_700_000_000))
+            let row = BodyMeasurement(userId: testUser, input: MeasurementInput(date: Date(timeIntervalSince1970: 1_700_000_000), weightKg: 82.5),
+                now: Date(timeIntervalSince1970: 1_700_000_000))
             rowId = row.id
             context.insert(row)
             try context.save()

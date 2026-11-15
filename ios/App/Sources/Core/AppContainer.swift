@@ -5,8 +5,8 @@ import Observation
 import StrengthKit
 import SwiftData
 
-/// Composition root: holds the app's dependencies and is handed down via `Environment`.
-/// Tests build one with fakes through `init`.
+// Composition root: holds the app's dependencies and is handed down via `Environment`.
+// Tests build one with fakes through `init`.
 // The composition root grows with every feature; splitting it is tracked in docs/ILERLEME.md deferrals.
 @MainActor
 @Observable

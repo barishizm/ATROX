@@ -24,7 +24,8 @@ struct CoachThreadsView: View {
                             }
                         } label: { row(thread) }
                             .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) { Task { await model.delete(thread) } } label: { Label("coach.threads.delete", systemImage: "trash") }
+                                Button(role: .destructive) { Task { await model.delete(thread) } } label: { Label("coach.threads.delete",
+                                    systemImage: "trash") }
                                 Button {
                                     newTitle = thread.title ?? ""
                                     renaming = thread
