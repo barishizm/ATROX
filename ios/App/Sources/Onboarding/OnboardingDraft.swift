@@ -58,7 +58,9 @@ struct UserDefaultsOnboardingDraftStore: OnboardingDraftStore, @unchecked Sendab
 
     init(defaults: UserDefaults = .standard) { self.defaults = defaults }
 
-    private func key(_ userId: UUID) -> String { "onboarding.draft.\(userId.uuidString)" }
+    private static let keyPrefix = "onboarding.draft."
+
+    private func key(_ userId: UUID) -> String { Self.keyPrefix + userId.uuidString }
 
     func load(userId: UUID) -> OnboardingDraft? {
         guard let data = defaults.data(forKey: key(userId)) else { return nil }
@@ -71,4 +73,10 @@ struct UserDefaultsOnboardingDraftStore: OnboardingDraftStore, @unchecked Sendab
     }
 
     func clear(userId: UUID) { defaults.removeObject(forKey: key(userId)) }
-}
+
+    /// Removes every user's draft; used on sign-out so a name and birth date never outlive the session on the device.
+    func clearAll() {
+        for name in defaults.dictionaryRepresentation().keys where name.hasPrefix(Self.keyPrefix) {
+            defaults.removeObject(forKey: name)
+        }
+    }

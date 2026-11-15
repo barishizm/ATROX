@@ -140,6 +140,7 @@ final class AppContainer {
         clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
+        UserDefaultsOnboardingDraftStore().clearAll()
         purchases.stop()
         await sync?.signOut()
         await root.signOut()

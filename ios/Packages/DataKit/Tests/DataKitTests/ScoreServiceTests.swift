@@ -287,7 +287,10 @@ private enum Failure: Error { case notReady(ScoreOutcome) }
             $0.insert(ScoreSnapshot(
                 userId: testUser, scope: .overall, key: "overall", referenceGroup: "gym", score: 50, z: 0, confidence: "high",
                 modelVersion: "1", date: now, now: now))
-            $0.insert(Workout(userId: testUser, name: nil, startedAt: now, endedAt: now, routineId: nil, routineDayId: nil, notes: nil, source: .manual, now: now))
+            $0.insert(Workout(
+                userId: testUser, name: nil, startedAt: now, endedAt: now,
+                routineId: nil, routineDayId: nil, notes: nil, source: .manual, now: now
+            ))
         }
         #expect(ScoreTrigger.isRelevant(saveNotification: mixed))
         #expect(ScoreTrigger.isRelevant(saveNotification: Notification(name: ModelContext.didSave)))
