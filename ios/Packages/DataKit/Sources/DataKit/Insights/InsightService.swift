@@ -80,9 +80,8 @@ public actor InsightService {
     }
 
     func gatherInputs(userId: UUID) async -> InsightInputs? {
-        guard case .ready(let overview) = await scores.overview(userId: userId), let scoring = await scores.currentScoringModel(),
-              case .success(let user) = await scores.currentUser(userId: userId),
-              let sets = try? await scores.loadScoredSets(userId: userId, exerciseIds: nil) else { return nil }
+        guard let (overview, sets) = await scores.overviewWithSets(userId: userId), let scoring = await scores.currentScoringModel(),
+              case .success(let user) = await scores.currentUser(userId: userId) else { return nil }
         let model = scoring.model
         let now = clock()
         let today = ScoreCalculator.dayNumber(now, calendar: calendar)
