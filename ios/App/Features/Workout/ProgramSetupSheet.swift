@@ -72,6 +72,14 @@ struct ProgramSetupSheet: View {
         return calendar.shortWeekdaySymbols
     }
 
+    /// "Friday workout": named after the weekday, because the n-th chosen day is not the n-th day of the week.
+    private func defaultName(_ day: Int) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
+        let weekday = calendar.weekdaySymbols[day]
+        return languageCode == "tr" ? "\(weekday) antrenmanı" : "\(weekday) workout"
+    }
+
     private var sortedDays: [Int] { Self.order.filter(selected.contains) }
 
     /// How many days the user has to pick: exactly the template's days, or any number for a program from scratch.
@@ -201,7 +209,7 @@ struct ProgramSetupSheet: View {
                                     .font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.accent)
                                     .frame(width: 44, alignment: .leading)
                                 TextField(
-                                    RoutineEditorModel.defaultDayName(index + 1, languageCode: languageCode),
+                                    defaultName(day),
                                     text: Binding(get: { names[day] ?? "" }, set: { names[day] = $0 })
                                 )
                                 .textInputAutocapitalization(.words)
@@ -233,8 +241,8 @@ struct ProgramSetupSheet: View {
             let model = await container.makeRoutineListModel()
             for (index, day) in sortedDays.enumerated() {
                 let typed = (names[day] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-                let base = typed.isEmpty ? RoutineEditorModel.defaultDayName(index + 1, languageCode: languageCode) : typed
-                let name = "\(base) · \(labels[index])"
+                let base = typed.isEmpty ? (languageCode == "tr" ? "Antrenman" : "Workout") : typed
+                let name = typed.isEmpty ? defaultName(day) : "\(typed) · \(labels[index])"
                 if let id = await model?.create(name: name, firstDayName: base) {
                     made.append(name)
                     if let day = model?.routines.first(where: { $0.id == id })?.days.first {
