@@ -57,6 +57,8 @@ export interface UsageRow {
 /** Service-role operations (never user data). */
 export interface CoachService {
   consumeQuota(userId: string, timeZone: string): Promise<QuotaDecision>;
+  /** Gives one daily message back (the turn produced nothing); the per-minute counter is left alone. */
+  refundQuota(userId: string, timeZone: string): Promise<void>;
   spendTodayUsd(): Promise<number>;
   recordUsage(rows: UsageRow[]): Promise<void>;
 }
@@ -186,7 +188,7 @@ async function* streamTurn(turn: {
   db: CoachDb;
   userId: string;
   threadId: string;
-  input: { message: string; locale: string };
+  input: { message: string; locale: string; time_zone?: string };
   messages: ReturnType<typeof buildMessages>;
   quota: QuotaDecision;
   context: UserContext | null;
@@ -236,6 +238,16 @@ async function* streamTurn(turn: {
       if (last?.role === "assistant") last.status = "partial";
       else outcome.messages.push({ role: "assistant", content: "", status: "partial" });
     }
+    // A turn that produced no answer at all (provider error, timeout before the first token, dropped connection)
+    // does not cost the user a message.
+    if (outcome.status !== "complete" || outcome.stopped === "error") {
+      const produced = outcome.usage.completion_tokens > 0 || outcome.messages.some((m) => m.role === "assistant" && m.content.length > 0);
+      if (!produced) {
+        await deps.service.refundQuota(turn.userId, input.time_zone ?? "UTC").catch((error) =>
+          console.error("coach-chat could not refund the quota", error instanceof Error ? error.message : error)
+        );
+      }
+    }
     await persist(turn, outcome, calls).catch((error) =>
       console.error("coach-chat could not store the turn", error instanceof Error ? error.message : error)
     );
@@ -281,7 +293,7 @@ async function persist(
     { id: input.client_message_id ?? newId(), role: "user", content: input.message, status: "complete" },
     ...outcome.messages.map((message) => ({ id: newId(), ...message, status: message.status ?? "complete" })),
   ];
-  const saved = db.rpc("coach_save_turn", { p_thread_id: threadId, p_title: input.message.slice(0, 60), p_messages: rows })
+  const saved = db.rpc("coach_save_turn", { p_thread_id: threadId, p_title: Array.from(input.message).slice(0, 60).join(""), p_messages: rows })
     .then(({ error }) => {
       if (error) throw new Error(`coach_save_turn: ${error.message}`);
     });

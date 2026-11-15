@@ -112,7 +112,9 @@ final class OnboardingViewModel {
             isBlocked = false
             return
         }
-        guard canGoBack, let previous = OnboardingStep(rawValue: draft.step.rawValue - 1) else { return }
+        guard canGoBack, var previous = OnboardingStep(rawValue: draft.step.rawValue - 1) else { return }
+        // The best-sets step is not part of the flow right now: stepping back from the result must not land on it.
+        if previous == .lifts, !asksBestSets { previous = .contribution }
         draft.step = previous
         persist()
     }

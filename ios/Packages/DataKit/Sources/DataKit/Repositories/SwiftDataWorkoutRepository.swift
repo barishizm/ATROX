@@ -403,7 +403,8 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
             input: SetInput(
                 weightKg: set.weightKg, reps: set.reps, rpe: set.rpe, rir: set.rir, setType: set.setType,
                 isCompleted: set.isCompleted
-            )
+            ),
+            updatedAt: set.updatedAt
         )
     }
 }

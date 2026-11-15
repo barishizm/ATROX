@@ -183,4 +183,43 @@ struct SyncCoordinatorTests {
         #expect(coordinator.userId == nil)
         #expect(!coordinator.isAvailable)
     }
+
+    @Test func endedSessionKeepsUnsyncedRowsAndResumesForTheSameAccount() async throws {
+        let server = InMemoryRemoteStore(userId: testUser, clock: clock.closure)
+        let container = try DataStore.inMemory()
+        let metadata = SyncMetadataStore()
+        let coordinator = make(server: server, container: container, metadata: metadata)
+        await coordinator.activate(userId: testUser)
+        await coordinator.waitUntilIdle()
+        await server.setOffline(true)
+        let measurements = SwiftDataMeasurementRepository(modelContainer: container)
+        _ = try await measurements.add(MeasurementInput(date: clock.now, weightKg: 80), userId: testUser)
+
+        await coordinator.signOut(keepingUnsynced: true)
+
+        #expect(try ModelContext(container).fetch(FetchDescriptor<BodyMeasurement>()).count == 1)
+        #expect(await metadata.snapshot.ownerUserId == testUser)
+        #expect(!coordinator.isAvailable)
+
+        await server.setOffline(false)
+        await coordinator.activate(userId: testUser)
+        await coordinator.waitUntilIdle()
+        #expect(await server.rowCount(.bodyMeasurements) == 1)
+    }
+
+    @Test func endedSessionWithNothingUnsyncedStillWipesTheDevice() async throws {
+        let server = InMemoryRemoteStore(userId: testUser, clock: clock.closure)
+        let container = try DataStore.inMemory()
+        let coordinator = make(server: server, container: container)
+        await coordinator.activate(userId: testUser)
+        await coordinator.waitUntilIdle()
+        let measurements = SwiftDataMeasurementRepository(modelContainer: container)
+        _ = try await measurements.add(MeasurementInput(date: clock.now, weightKg: 80), userId: testUser)
+        coordinator.request(.manual)
+        await coordinator.waitUntilIdle()
+
+        await coordinator.signOut(keepingUnsynced: true)
+
+        #expect(try ModelContext(container).fetch(FetchDescriptor<BodyMeasurement>()).isEmpty)
+    }
 }

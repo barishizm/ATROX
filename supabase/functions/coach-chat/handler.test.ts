@@ -30,6 +30,11 @@ class FakeService implements CoachService {
       limits: this.limits,
     };
   }
+  refunds = 0;
+  async refundQuota(): Promise<void> {
+    this.used = Math.max(0, this.used - 1);
+    this.refunds++;
+  }
   spendTodayUsd() {
     return Promise.resolve(this.spend);
   }
@@ -226,6 +231,28 @@ Deno.test("coach-chat: a failing model ends with an error event, no done, and a 
   assert(!body.includes("event: done"));
   const rows = db.called("coach_save_turn")[0].args.p_messages as { role: string; status: string }[];
   assertEquals(rows.at(-1), { ...rows.at(-1), role: "assistant", status: "partial" });
+});
+
+Deno.test("coach-chat: a turn that produced no answer gives the message back", async () => {
+  const { handler, service } = setup({ script: [new Error("boom")] });
+  await (await handler(chat({ message: "hi", locale: "en" }))).text();
+  assertEquals(service.refunds, 1);
+  assertEquals(service.used, 0);
+});
+
+Deno.test("coach-chat: a turn that answered keeps its message counted", async () => {
+  const { handler, service } = setup();
+  await (await handler(chat({ message: "hi", locale: "en" }))).text();
+  assertEquals(service.refunds, 0);
+  assertEquals(service.used, 1);
+});
+
+Deno.test("coach-chat: a title cut inside an emoji never leaves a lone surrogate", async () => {
+  const { handler, db } = setup();
+  await (await handler(chat({ message: "a".repeat(59) + "😀 tail", locale: "en" }))).text();
+  const title = db.called("coach_save_turn")[0].args.p_title as string;
+  assertEquals(Array.from(title).length, 60);
+  assert(title.isWellFormed(), "title is valid unicode");
 });
 
 Deno.test("coach-chat: free tier keeps thinking off; a new thread gets a fresh id", async () => {

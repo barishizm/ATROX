@@ -5,10 +5,16 @@ import UserNotifications
 
 @main
 struct ATROXApp: App {
-    @State private var container = AppContainer.live()
+    @State private var container: AppContainer
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        // The background tasks must find the container even when the system launches the app only for them,
+        // before any view (and its `.task`) exists.
+        let live = AppContainer.live()
+        _container = State(initialValue: live)
+        BackgroundSync.shared.coordinator = live.sync
+        WeeklySummaryBackground.shared.container = live
         DiagnosticsCollector.shared.start()
         AppAnalytics.shared.appLaunched()
         BackgroundSync.shared.register()
@@ -22,9 +28,7 @@ struct ATROXApp: App {
                 .environment(container)
                 .modifier(LocalStoreModifier(container: container.modelContainer))
                 .task { await container.prepareCatalog() }
-                .task { BackgroundSync.shared.coordinator = container.sync }
                 .task {
-                    WeeklySummaryBackground.shared.container = container
                     NotificationRouter.shared.onWeeklySummary = { container.deepLinks.receive(.weeklySummary) }
                     await container.rescheduleWeeklySummary()
                 }

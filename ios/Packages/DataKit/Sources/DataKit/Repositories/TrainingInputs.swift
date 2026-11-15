@@ -195,6 +195,8 @@ public struct SetSnapshot: Sendable, Equatable, Identifiable {
     public let workoutExerciseId: UUID
     public let position: Int
     public let input: SetInput
+    /// When the set row was last written (a completed set's time); nil for snapshots built by hand.
+    public internal(set) var updatedAt: Date?
 }
 
 /// One past session of an exercise (for the exercise history and "last time" hints).

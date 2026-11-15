@@ -189,6 +189,16 @@ private struct Env {
         #expect(previous?.count == 3)
     }
 
+    @Test func aWorkoutLeftInTheStoreBlocksANewOneAndIsAdopted() async throws {
+        let env = try Env()
+        let first = WorkoutSession(userId: testUser, workouts: env.workouts, clock: env.clock.closure)
+        try await first.startEmpty()
+        // A second session object that never ran `restore()` (as after a failed restore) must not start another.
+        let second = WorkoutSession(userId: testUser, workouts: env.workouts, clock: env.clock.closure)
+        await #expect(throws: WorkoutSessionError.alreadyActive) { try await second.startEmpty() }
+        #expect(second.phase == .active && second.workout?.id == first.workout?.id)
+    }
+
     @Test func repeatingWhileAWorkoutRunsIsRefused() async throws {
         let env = try Env()
         let finished = try await env.train([(bench, [done(100, 5)])])

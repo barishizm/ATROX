@@ -5,6 +5,7 @@ import SwiftUI
 /// Picks the screen for the current session state.
 struct RootView: View {
     @Environment(AppContainer.self) private var container
+    @State private var handledEpoch = 0
 
     var body: some View {
         let root = container.root
@@ -21,12 +22,25 @@ struct RootView: View {
                 }
             }
         }
+        .id(root.epoch)
         .animation(.default, value: root.state)
         .task { await root.start() }
         // Sync follows the session (P045): sign-in starts it (with the first restore).
-        .task(id: root.state) { await container.sessionChanged(root.state) }
+        .task(id: SessionKey(state: root.state, epoch: root.epoch)) {
+            // A session that was swapped for another account in one step never showed `.signedOut`: end it here.
+            if root.epoch != handledEpoch {
+                handledEpoch = root.epoch
+                await container.sessionEndedExternally()
+            }
+            await container.sessionChanged(root.state)
+        }
         .task { await container.passwordRecovery.listen() }
-        .fullScreenCover(isPresented: .constant(container.passwordRecovery.isPresented)) {
+        .fullScreenCover(
+            isPresented: Binding(
+                get: { container.passwordRecovery.isPresented },
+                set: { shown in if !shown, container.passwordRecovery.isPresented { Task { await container.passwordRecovery.cancel() } } }
+            )
+        ) {
             NewPasswordView(model: container.passwordRecovery)
         }
         .onOpenURL { url in
@@ -38,4 +52,9 @@ struct RootView: View {
             Task { _ = await container.authService?.handle(url: url) }
         }
     }
+}
+
+private struct SessionKey: Hashable {
+    let state: SessionState
+    let epoch: Int
 }

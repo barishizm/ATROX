@@ -3,7 +3,7 @@ import Foundation
 import Observation
 
 /// What the root view shows.
-enum SessionState: Sendable, Equatable {
+enum SessionState: Sendable, Hashable {
     case loading
     case signedOut
     case needsOnboarding
@@ -15,6 +15,9 @@ enum SessionState: Sendable, Equatable {
 @Observable
 final class AppRootModel {
     private(set) var state: SessionState = .loading
+    /// Counts sessions that ended from outside (revoked, or swapped to another account by a link). The root view
+    /// rebuilds on it, so a swap that happens within one render pass still tears the old session down.
+    private(set) var epoch = 0
 
     private let service: any SessionService
     private var updatesTask: Task<Void, Never>?
@@ -77,6 +80,7 @@ final class AppRootModel {
     private func applyExternal(_ status: SessionStatus) {
         switch (status, state) {
         case (.signedOut, .needsOnboarding), (.signedOut, .ready):
+            epoch += 1
             state = .signedOut
         case (.signedIn(let complete), .signedOut):
             apply(.signedIn(onboardingComplete: complete))

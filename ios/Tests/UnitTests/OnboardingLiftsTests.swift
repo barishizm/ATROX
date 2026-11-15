@@ -55,6 +55,14 @@ struct OnboardingLiftsTests {
         #expect(try await env.workouts.workouts(userId: env.userId, from: .distantPast, to: .distantFuture).isEmpty)
     }
 
+    @Test func editFromTheResultSkipsTheBestSetsStepWhenItIsNotAsked() async throws {
+        let env = try Base.harness()
+        await Self.atLifts(env)
+        #expect(env.model.step == .result)
+        env.model.back()
+        #expect(env.model.step == .contribution)
+    }
+
     @Test func advancingWithoutTypingAnythingIsTheSameAsSkipping() async throws {
         let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)

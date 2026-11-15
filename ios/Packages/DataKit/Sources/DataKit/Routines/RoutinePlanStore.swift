@@ -39,6 +39,25 @@ public final class RoutinePlanStore {
         persistWeek()
     }
 
+    /// The active program and weekly plan as they are now, for restoring after a delete is undone.
+    public struct Snapshot: Sendable, Equatable {
+        public let activeRoutineId: UUID?
+        public let dayByWeekday: [Int: UUID]
+    }
+
+    public var snapshot: Snapshot { Snapshot(activeRoutineId: activeRoutineId, dayByWeekday: dayByWeekday) }
+
+    /// Puts back what `snapshot` captured, keeping only entries that still point at something in `validDayIds`/`validRoutineIds`.
+    public func restore(_ snapshot: Snapshot, validDayIds: Set<UUID>, validRoutineIds: Set<UUID>) {
+        var week = dayByWeekday
+        for (weekday, id) in snapshot.dayByWeekday where week[weekday] == nil && validDayIds.contains(id) { week[weekday] = id }
+        if week != dayByWeekday {
+            dayByWeekday = week
+            persistWeek()
+        }
+        if activeRoutineId == nil, let id = snapshot.activeRoutineId, validRoutineIds.contains(id) { setActive(id) }
+    }
+
     public func weekdays(of dayId: UUID) -> [Int] {
         dayByWeekday.filter { $0.value == dayId }.keys.sorted()
     }

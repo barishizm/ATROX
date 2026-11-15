@@ -24,7 +24,6 @@ struct MainTabView: View {
                     TodayRootView()
                         .navigationDestination(for: TodayRoute.self) { route in
                             switch route {
-                            case .workoutSummary: FeaturePlaceholderView(title: "shell.tabbar.today", systemImage: "sun.max")
                             case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
                             case .templates: TemplateListView()
                             case .weeklySummary: WeeklySummaryView()
@@ -49,7 +48,6 @@ struct MainTabView: View {
                             case .history: HistoryView()
                             case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
                             case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
-                            case .activeWorkout: FeaturePlaceholderView(title: "shell.tabbar.workout", systemImage: "dumbbell")
                             }
                         }
                 }
@@ -72,9 +70,6 @@ struct MainTabView: View {
             Tab(AppTab.coach.title, systemImage: AppTab.coach.systemImage, value: AppTab.coach) {
                 NavigationStack(path: $coach.path) {
                     CoachRootView()
-                        .navigationDestination(for: CoachRoute.self) { _ in
-                            FeaturePlaceholderView(title: "shell.tabbar.coach", systemImage: "bubble.left.and.text.bubble.right")
-                        }
                 }
                 .id(locale.identifier)
             }
@@ -105,6 +100,18 @@ struct MainTabView: View {
             workout.push(.routine(id: id))
         }
         .task { await workoutPresenter.prepare(container: container) }
+        .alert("workout.stale.title", isPresented: $workoutPresenter.asksAboutStaleWorkout) {
+            Button("workout.stale.finish") { Task { await workoutPresenter.finishStale(container: container) } }
+            Button("workout.stale.discard", role: .destructive) { Task { await workoutPresenter.discardStale() } }
+            Button("workout.stale.keep", role: .cancel) {}
+        } message: {
+            Text("workout.stale.message")
+        }
+        .alert("workout.unavailable.title", isPresented: $workoutPresenter.routineUnavailable) {
+            Button("workout.ok", role: .cancel) {}
+        } message: {
+            Text("workout.unavailable.message")
+        }
         .fullScreenCover(isPresented: $workoutPresenter.isPresented) {
             if let summary = workoutPresenter.summary {
                 WorkoutSummaryView(model: summary) { workoutPresenter.summaryDone() }

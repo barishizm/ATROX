@@ -122,7 +122,7 @@ final class ActiveWorkoutModel {
                     id: entry.id, exerciseId: exercise.id, type: entry.input.setType,
                     badge: Self.badge(entry.input.setType, workingNumber: working),
                     weightText: weightText(kg: entry.input.weightKg), repsText: String(entry.input.reps),
-                    previousText: index < last.count ? previousText(last[index]) : nil,
+                    previousText: Self.lastTimeSet(types: exercise.sets.map(\.input.setType), at: index, in: last).map(previousText),
                     rir: entry.input.rir, isCompleted: entry.input.isCompleted, record: recordBadge(for: entry)
                 )
             }
@@ -254,13 +254,22 @@ final class ActiveWorkoutModel {
         self.editing?.keypad.replace(with: value)
     }
 
+    /// Last time's set that lines up with `sets[index]`: the n-th set of the same type (warm-up with warm-up, working
+    /// with working), so an added warm-up set never shifts the "last time" column.
+    nonisolated static func lastTimeSet(types: [SetType], at index: Int, in last: [SetInput]) -> SetInput? {
+        let type = types[index]
+        let ordinal = types[..<index].filter { $0 == type }.count
+        let sameType = last.filter { $0.setType == type }
+        return ordinal < sameType.count ? sameType[ordinal] : nil
+    }
+
     /// The set whose values "same as before" copies: last time's set at the same index, else the set above.
     func reference(for setId: UUID) -> SetInput? {
         guard let workout = session.workout else { return nil }
         for exercise in workout.exercises {
             guard let index = exercise.sets.firstIndex(where: { $0.id == setId }) else { continue }
             let last = session.previous[exercise.id] ?? []
-            if index < last.count { return last[index] }
+            if let match = Self.lastTimeSet(types: exercise.sets.map(\.input.setType), at: index, in: last) { return match }
             return index > 0 ? exercise.sets[index - 1].input : nil
         }
         return nil

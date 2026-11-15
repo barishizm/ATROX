@@ -40,6 +40,17 @@ struct AuthErrorMappingTests {
         #expect(AuthError.map(api(.unexpectedFailure, status: 500)) == .unknown)
     }
 
+    @Test func onlyDefiniteRejectionsEndTheSession() {
+        #expect(SupabaseAuthService.isDefiniteRejection(Supabase.AuthError.sessionMissing))
+        #expect(SupabaseAuthService.isDefiniteRejection(api(.refreshTokenNotFound)))
+        #expect(SupabaseAuthService.isDefiniteRejection(api(.unknown, status: 403)))
+        // Transient: the user stays signed in.
+        #expect(!SupabaseAuthService.isDefiniteRejection(api(.unexpectedFailure, status: 500)))
+        #expect(!SupabaseAuthService.isDefiniteRejection(api(.unknown, status: 503)))
+        #expect(!SupabaseAuthService.isDefiniteRejection(api(.overRequestRateLimit, status: 429)))
+        #expect(!SupabaseAuthService.isDefiniteRejection(URLError(.notConnectedToInternet)))
+    }
+
     @Test func sdkSpecificCases() {
         #expect(AuthError.map(Supabase.AuthError.sessionMissing) == .sessionExpired)
         #expect(AuthError.map(Supabase.AuthError.weakPassword(message: "x", reasons: ["length"])) == .weakPassword)

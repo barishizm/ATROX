@@ -144,6 +144,7 @@ struct ResultStepView: View {
             VStack(spacing: Spacing.lg) {
                 if model.results.isEmpty {
                     empty
+                    templateSuggestions
                 } else {
                     scores
                 }

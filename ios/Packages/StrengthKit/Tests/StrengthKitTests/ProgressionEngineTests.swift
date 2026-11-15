@@ -46,6 +46,11 @@ import Testing
         #expect(result == ProgressionSuggestion(weightKg: 60, reps: 10, rationale: .addRep))
     }
 
+    @Test func lighterBackOffSetDoesNotBlockAWeightIncrease() {
+        let result = suggest([sets(100, [12, 12]) + sets(80, [12])])
+        #expect(result == ProgressionSuggestion(weightKg: 102.5, reps: 8, rationale: .addWeight(incrementKg: 2.5)))
+    }
+
     @Test func oneSetShortOfCeilingStillOnlyAddsARep() {
         #expect(suggest([sets(60, [12, 12, 11])])?.reps == 12)
     }
@@ -129,6 +134,13 @@ import Testing
     @Test func deloadNeverDropsBelowOnePlateStep() {
         let flat = sets(2.5, [10, 10, 10])
         #expect(suggest([flat, flat, flat, flat])?.weightKg == 2.5)
+    }
+
+    @Test func veryHighRepSessionsStillCompareInKilograms() {
+        // 35 reps has no e1RM; the fallback must stay in kilograms, so a clear gain over 60 kg x 10 is not a "regression".
+        let latest = sets(60, [35, 35, 35])
+        let before = sets(60, [10, 10, 10])
+        #expect(suggest([latest, before, before])?.rationale != .recovery)
     }
 
     // MARK: Classification

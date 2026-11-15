@@ -36,7 +36,10 @@ final class BackgroundSync {
         schedule()
         guard let coordinator, coordinator.isAvailable else { return task.setTaskCompleted(success: false) }
         let work = Task { await coordinator.backgroundSync() }
-        task.expirationHandler = { work.cancel() }
+        task.expirationHandler = {
+            work.cancel()
+            Task { @MainActor in coordinator.cancelRunning() }
+        }
         Task { task.setTaskCompleted(success: await work.value) }
     }
 }

@@ -134,7 +134,18 @@ struct SyncEngineTests {
         #expect(second.pushed == 0)
         #expect(second.pulled == 0)
         #expect(second.keptLocal == 1)
-        #expect(third == SyncReport())
+        // Every pull re-reads a short overlap, so the echo shows up again as "kept local": still nothing applied.
+        #expect(third.pushed == 0 && third.pulled == 0 && third.skippedLocked == 0 && third.keptLocal == 1)
+    }
+
+    @Test func pullStartsAShortOverlapBeforeTheCursor() throws {
+        let stamp = "2026-11-15T10:00:30.000000+00:00"
+        let cursor = SyncCursor(updatedAt: stamp, id: UUID())
+        let rewound = try #require(SyncEngine.rewound(cursor))
+        let before = try #require(SyncTime.parseTimestamp(rewound.updatedAt))
+        let after = try #require(SyncTime.parseTimestamp(stamp))
+        #expect(abs(after.timeIntervalSince(before) - SyncEngine.pullOverlap) < 0.001)
+        #expect(SyncEngine.rewound(nil) == nil)
     }
 }
 

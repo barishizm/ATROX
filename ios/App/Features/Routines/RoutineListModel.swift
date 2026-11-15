@@ -14,6 +14,8 @@ final class RoutineListModel {
     private(set) var routines: [RoutineSnapshot] = []
     /// The program that was just deleted; the list offers to bring it back.
     private(set) var lastDeleted: RoutineSnapshot?
+    /// Active program and weekly plan from before the delete, put back by `undoDelete`.
+    private var planBeforeDelete: RoutinePlanStore.Snapshot?
     var errorOccurred = false
 
     private let repository: any RoutineRepository
@@ -62,8 +64,10 @@ final class RoutineListModel {
     func delete(_ id: UUID) async {
         guard let snapshot = routines.first(where: { $0.id == id }) else { return }
         do {
+            let planBefore = plan.snapshot
             try await repository.delete(id: id)
             lastDeleted = snapshot
+            planBeforeDelete = planBefore
             await load()
         } catch {
             errorOccurred = true
@@ -76,12 +80,20 @@ final class RoutineListModel {
         do {
             try await repository.restore(snapshot)
             await load()
+            if let planBefore = planBeforeDelete {
+                plan.restore(
+                    planBefore, validDayIds: Set(routines.flatMap(\.days).map(\.id)), validRoutineIds: Set(routines.map(\.id))
+                )
+            }
         } catch {
             errorOccurred = true
         }
     }
 
-    func dismissUndo() { lastDeleted = nil }
+    func dismissUndo() {
+        lastDeleted = nil
+        planBeforeDelete = nil
+    }
 
     func setActive(_ id: UUID) { plan.setActive(id) }
 }

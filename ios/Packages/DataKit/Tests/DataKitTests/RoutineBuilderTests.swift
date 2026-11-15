@@ -233,6 +233,18 @@ private let curl = ExerciseRef.catalog("curl")
         #expect(store.dayByWeekday[3] == nil && store.dayByWeekday.isEmpty)
     }
 
+    @Test func restoreBringsBackActiveRoutineAndWeekdaysAfterAnUndoneDelete() {
+        let day = UUID(), routine = UUID()
+        let store = RoutinePlanStore(userId: testUser, defaults: defaults())
+        store.setActive(routine)
+        store.assign(dayId: day, toWeekday: 5)
+        let before = store.snapshot
+        store.prune(validDayIds: [], validRoutineIds: [])
+        #expect(store.activeRoutineId == nil && store.dayByWeekday.isEmpty)
+        store.restore(before, validDayIds: [day], validRoutineIds: [routine])
+        #expect(store.activeRoutineId == routine && store.dayByWeekday == [5: day])
+    }
+
     @Test func pruneDropsGoneDaysAndGoneActiveRoutine() {
         let keepDay = UUID(), goneDay = UUID(), routine = UUID()
         let store = RoutinePlanStore(userId: testUser, defaults: defaults())

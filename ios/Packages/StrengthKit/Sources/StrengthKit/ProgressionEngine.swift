@@ -132,7 +132,8 @@ public enum ProgressionEngine {
         }
 
         let atTop = latest.filter { $0.weightKg == top }
-        let allAtCeiling = latest.allSatisfy { $0.weightKg == top && $0.reps >= input.repMax }
+        // Lighter sets (back-off, drop) never block a weight increase: only the top-weight sets must reach the ceiling.
+        let allAtCeiling = !atTop.isEmpty && atTop.allSatisfy { $0.reps >= input.repMax }
         let weakest = atTop.map(\.reps).min() ?? input.repMin
         let verdict = effort(of: latest, targetRir: input.targetRir ?? defaultTargetRir)
         let increment = increment(for: input.loadClass, step: step)
@@ -187,7 +188,11 @@ public enum ProgressionEngine {
     /// Best estimated 1RM of a session (best reps when it was all bodyweight).
     private static func performance(of sets: [ProgressionSet]) -> Double {
         let best = sets.compactMap { E1RMModel.standard.estimate(weightKg: $0.weightKg, reps: $0.reps)?.valueKg }.max()
-        return best ?? Double(sets.map(\.reps).max() ?? 0)
+        if let best { return best }
+        // Past the model's rep limit (about 30 reps) there is no e1RM; a plain Epley estimate keeps the value in
+        // kilograms, so it still compares against another session's e1RM instead of a bare rep count.
+        let epley = sets.filter { $0.weightKg > 0 && $0.reps > 0 }.map { $0.weightKg * (1 + Double($0.reps) / 30) }.max()
+        return epley ?? Double(sets.map(\.reps).max() ?? 0)
     }
 
     private static func bodyweight(_ latest: [ProgressionSet], input: ProgressionInput) -> ProgressionSuggestion {
