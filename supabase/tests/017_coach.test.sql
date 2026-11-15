@@ -41,7 +41,7 @@ select tests.clear_authentication();
 set local role service_role;
 select lives_ok(format($$
   insert into public.coach_usage (user_id, thread_id, provider, model, prompt_tokens, cached_tokens, completion_tokens, cost_usd, latency_ms, agent_steps)
-  values (%L, '77000000-0000-0000-0000-000000000001', 'openrouter', 'deepseek/deepseek-v4.1-flash', 3000, 2500, 400, 0.000471, 900, 2)
+  values (%L, '77000000-0000-0000-0000-000000000001', 'deepseek', 'deepseek-flash', 3000, 2500, 400, 0.000471, 900, 2)
 $$, tests.user_a()), 'service role writes usage');
 reset role;
 select tests.authenticate_as(tests.user_a());

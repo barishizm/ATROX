@@ -11,10 +11,27 @@ extension AppContainer {
         saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] note in
             // Saves of the scores' own output (snapshots, insights) still sync but cannot change a score.
             let affectsScores = ScoreTrigger.isRelevant(saveNotification: note)
+            let wroteConsent = Self.savedConsents(note)
             MainActor.assumeIsolated {
                 self?.sync?.noteLocalChange()
                 if affectsScores { self?.scoresMayHaveChanged() }
+                if wroteConsent { self?.pushConsents() }
             }
+        }
+    }
+
+    /// Whether a save inserted a consent row (a grant or a withdrawal) that the server has to learn about.
+    nonisolated static func savedConsents(_ note: Notification) -> Bool {
+        let inserted = note.userInfo?[ModelContext.NotificationKey.insertedIdentifiers.rawValue] as? [PersistentIdentifier] ?? []
+        return inserted.contains { $0.entityName == String(describing: ConsentRecord.self) }
+    }
+
+    /// Sends pending consent rows to the server; a failure leaves them pending for the next trigger.
+    func pushConsents() {
+        guard let consentPusher else { return }
+        Task { [weak self] in
+            guard let user = await self?.currentUser() else { return }
+            await consentPusher.push(userId: user.id)
         }
     }
 
@@ -24,6 +41,7 @@ extension AppContainer {
         guard let sync else { return }
         switch state {
         case .ready, .needsOnboarding:
+            pushConsents()
             if let user = await currentUser() { await sync.activate(userId: user.id) }
         case .loading, .signedOut:
             break

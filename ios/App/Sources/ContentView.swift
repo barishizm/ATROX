@@ -9,6 +9,5 @@ struct ContentView: View {
         RootView()
             .environment(\.locale, container.language.effectiveLocale(system: systemLocale))
             .dsRootTheme(container.appearance.preference)
-            .accessibilityIdentifier("root")
     }
 }

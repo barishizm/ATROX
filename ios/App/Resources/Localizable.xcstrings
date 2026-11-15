@@ -712,6 +712,23 @@
         }
       }
     },
+    "auth.apple.continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile devam et"
+          }
+        }
+      }
+    },
     "auth.legal.intro" : {
       "localizations" : {
         "en" : {
@@ -1363,6 +1380,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Doğruladım, giriş yap"
+          }
+        }
+      }
+    },
+    "auth.verify.openMail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Mail"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posta uygulamasını aç"
           }
         }
       }
