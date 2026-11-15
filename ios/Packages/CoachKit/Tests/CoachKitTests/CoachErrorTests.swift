@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 @Suite struct CoachErrorTests {
     private func body(_ code: String, details: String = "null") -> Data {

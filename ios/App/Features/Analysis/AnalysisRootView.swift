@@ -200,8 +200,7 @@ struct MuscleRowView: View {
     @ViewBuilder private var flags: some View {
         switch mode {
         case .score:
-            if row.isWeak { TagChip("muscles.weak", systemImage: "arrow.down.right", style: .warning) }
-            else if row.score == nil { Text("muscles.noScore").font(DSFont.caption).foregroundStyle(DSColor.textTertiary) }
+            if row.isWeak { TagChip("muscles.weak", systemImage: "arrow.down.right", style: .warning) } else if row.score == nil { Text("muscles.noScore").font(DSFont.caption).foregroundStyle(DSColor.textTertiary) }
         case .load:
             if row.sets == 0 { TagChip("muscles.neglected", systemImage: "exclamationmark.triangle", style: .warning) }
         }

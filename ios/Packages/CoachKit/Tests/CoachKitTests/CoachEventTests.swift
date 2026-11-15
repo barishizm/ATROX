@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 @Suite struct CoachEventTests {
     private func events(_ text: String) -> [CoachEvent] {

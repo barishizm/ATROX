@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 actor FakeRemote: CoachRemote {
     var threadRows: [CoachThread] = []

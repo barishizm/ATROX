@@ -4,7 +4,7 @@ import Testing
 
 @testable import ATROX
 
-fileprivate final class NoCache: EntitlementCache, @unchecked Sendable {
+private final class NoCache: EntitlementCache, @unchecked Sendable {
     func load(userId: UUID) -> ProEntitlement? { nil }
     func save(_ entitlement: ProEntitlement, userId: UUID) {}
     func clear(userId: UUID) {}

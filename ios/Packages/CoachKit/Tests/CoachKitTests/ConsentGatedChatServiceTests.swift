@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 @Suite struct ConsentGatedChatServiceTests {
     private let request = CoachChatRequest(threadId: nil, clientMessageId: UUID(), message: "hi", locale: "en", timeZone: "UTC")

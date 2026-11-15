@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 /// Plays one scripted attempt per `stream` call: events, then optionally an error or an endless wait.
 final class ScriptedService: CoachChatService, @unchecked Sendable {

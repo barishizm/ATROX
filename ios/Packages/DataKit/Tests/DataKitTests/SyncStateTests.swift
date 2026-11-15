@@ -1,6 +1,6 @@
+@testable import DataKit
 import Foundation
 import Testing
-@testable import DataKit
 
 @Suite struct SyncStateTests {
     @Test func rawValuesMatchBackendContract() {

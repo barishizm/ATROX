@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 /// Recorded dump of a coach turn (what `coach-chat` writes), reused by several suites.
 enum Dump {
