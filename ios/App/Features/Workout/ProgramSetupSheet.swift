@@ -220,11 +220,14 @@ struct ProgramSetupSheet: View {
         guard isReady, phase == .questions else { return }
         phase = .working
         let labels = sortedDays.map { symbols[$0] }
+        // `Calendar` weekdays run 1 (Sunday) … 7 (Saturday); the picker's numbers run 0 … 6.
+        let weekdays = sortedDays.map { $0 + 1 }
         var created: [String]?
         switch source {
         case .template(let model, let template, let useAlternatives):
             created = await model.use(
-                template, languageCode: languageCode, useAlternatives: useAlternatives, weekdayLabels: labels)
+                template, languageCode: languageCode, useAlternatives: useAlternatives, weekdayLabels: labels,
+                weekdays: weekdays)
         case .scratch:
             var made: [String] = []
             let model = await container.makeRoutineListModel()
@@ -232,7 +235,12 @@ struct ProgramSetupSheet: View {
                 let typed = (names[day] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
                 let base = typed.isEmpty ? RoutineEditorModel.defaultDayName(index + 1, languageCode: languageCode) : typed
                 let name = "\(base) · \(labels[index])"
-                if await model?.create(name: name, firstDayName: base) != nil { made.append(name) }
+                if let id = await model?.create(name: name, firstDayName: base) {
+                    made.append(name)
+                    if let day = model?.routines.first(where: { $0.id == id })?.days.first {
+                        model?.plan.assign(dayId: day.id, toWeekday: weekdays[index])
+                    }
+                }
             }
             created = made.isEmpty ? nil : made
         }

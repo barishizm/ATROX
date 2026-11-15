@@ -55,7 +55,8 @@ final class TemplateListModel {
     /// ("Push", "Pull", "Legs"), so nobody has to carry three days in one place; `weekdayLabels` (one per day, in
     /// order) are appended to the names. The first program the user owns becomes the active one.
     func use(
-        _ template: ProgramTemplate, languageCode: String, useAlternatives: Bool, weekdayLabels: [String] = []
+        _ template: ProgramTemplate, languageCode: String, useAlternatives: Bool, weekdayLabels: [String] = [],
+        weekdays: [Int] = []
     ) async -> [String]? {
         guard !isInstalling else { return nil }
         isInstalling = true
@@ -84,9 +85,15 @@ final class TemplateListModel {
                     let name = label(day.name, index)
                     try await repository.update(id: ids[index], name: name, notes: full.notes)
                     names.append(name)
+                    if index < weekdays.count, let kept = try await repository.routine(id: ids[index])?.days.first {
+                        plan.assign(dayId: kept.id, toWeekday: weekdays[index])
+                    }
                 }
             } else if !weekdayLabels.isEmpty {
                 try await repository.update(id: full.id, name: names[0], notes: full.notes)
+            }
+            if full.days.count == 1, let first = weekdays.first, let day = full.days.first {
+                plan.assign(dayId: day.id, toWeekday: first)
             }
             if !hadPrograms { plan.setActive(ids[0]) }
             return names
