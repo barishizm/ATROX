@@ -37,16 +37,18 @@ struct StoreKitClientTests {
         _ = try makeSession()
         let service = await makeService(userId: UUID())
         #expect(service.products.map(\.id) == [ProProduct.yearly, ProProduct.monthly])
-        #expect(service.products[0].trialDays == 7)
-        #expect(service.products[0].isTrialEligible)
-        #expect(service.products[1].trialDays == nil)
+        let yearly = try #require(service.products.first)
+        #expect(yearly.trialDays == 7)
+        #expect(yearly.isTrialEligible)
+        #expect(service.products.dropFirst().first?.trialDays == nil)
     }
 
     @Test func buyingYearlyStartsATrial() async throws {
         _ = try makeSession()
         let service = await makeService(userId: UUID())
         #expect(!service.isPro)
-        #expect(try await service.purchase(service.products[0]) == .success)
+        let yearly = try #require(service.products.first)
+        #expect(try await service.purchase(yearly) == .success)
         #expect(service.isPro)
         #expect(service.entitlements.isTrial)
     }
