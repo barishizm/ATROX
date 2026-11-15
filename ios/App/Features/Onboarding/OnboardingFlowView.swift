@@ -38,7 +38,7 @@ private struct OnboardingContent: View {
             }
             ZStack {
                 if model.isBlocked {
-                    UnderAgeView { model.back() }
+                    UnderAgeView(changeDate: { model.back() }, signOut: { Task { await container.signOut() } })
                 } else {
                     page
                 }

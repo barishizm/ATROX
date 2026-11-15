@@ -71,6 +71,8 @@ struct BirthDateStepView: View {
 /// Shown for under-16 users. Nothing has been saved.
 struct UnderAgeView: View {
     let changeDate: @MainActor () -> Void
+    /// The way out for someone under 16 who does not want to correct the date (D036).
+    var signOut: (@MainActor () -> Void)?
 
     var body: some View {
         VStack(spacing: Spacing.lg) {
@@ -90,6 +92,12 @@ struct UnderAgeView: View {
             Spacer()
             SecondaryButton("onboarding.blocked.change", action: changeDate)
                 .accessibilityIdentifier("onboarding-blocked-change")
+            if let signOut {
+                Button("account.signOut", action: signOut)
+                    .font(DSFont.callout)
+                    .foregroundStyle(DSColor.textSecondary)
+                    .accessibilityIdentifier("onboarding-blocked-signout")
+            }
         }
         .padding(Spacing.lg)
         .frame(maxWidth: 520)
