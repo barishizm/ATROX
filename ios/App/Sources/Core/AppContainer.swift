@@ -508,8 +508,10 @@ final class AppContainer {
         AccountModel(
             userId: userId,
             service: accountService,
-            confirmationWord: DeleteConfirmation.word(for: language.effectiveLocale())
-        ) { [weak self] in await self?.signOut() }
+            confirmationWord: DeleteConfirmation.word(for: language.effectiveLocale()),
+            beforeDeletion: { [contribution] in try? await contribution?.withdraw(userId: userId) },
+            onDeleted: { [weak self] in await self?.signOut() }
+        )
     }
 
     /// Production wiring.

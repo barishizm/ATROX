@@ -37,11 +37,16 @@ final class AccountModel {
     let confirmationWord: String
     private let service: any AccountService
     private let onDeleted: @MainActor () async -> Void
+    private let beforeDeletion: @MainActor () async -> Void
 
+    /// `beforeDeletion` runs while the session is still valid (best effort, never blocks the deletion): the anonymous
+    /// contribution rows are keyed on the device and cannot be found once the account is gone (P093).
     init(
         userId: UUID, service: any AccountService, confirmationWord: String,
+        beforeDeletion: @escaping @MainActor () async -> Void = {},
         onDeleted: @escaping @MainActor () async -> Void
     ) {
+        self.beforeDeletion = beforeDeletion
         self.userId = userId
         self.service = service
         self.confirmationWord = confirmationWord
@@ -93,6 +98,7 @@ final class AccountModel {
         isDeleting = true
         deleteFailed = false
         defer { isDeleting = false }
+        await beforeDeletion()
         do {
             try await service.deleteAccount(userId: userId)
         } catch {
