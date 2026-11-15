@@ -31,9 +31,10 @@ class FakeService implements CoachService {
     };
   }
   refunds = 0;
-  async refundQuota(): Promise<void> {
+  refundQuota(): Promise<void> {
     this.used = Math.max(0, this.used - 1);
     this.refunds++;
+    return Promise.resolve();
   }
   spendTodayUsd() {
     return Promise.resolve(this.spend);
