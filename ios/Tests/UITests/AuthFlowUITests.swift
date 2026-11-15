@@ -31,7 +31,8 @@ final class AuthFlowUITests: XCTestCase {
             let app = XCUIApplication()
             app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
             app.launch()
-            let hint = app.staticTexts["Tap anywhere to continue"]
+            // The hint is exposed as a button (it has an accessibility action), so look it up by label across types.
+            let hint = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "Tap anywhere to continue")).firstMatch
             XCTAssertTrue(hint.waitForExistence(timeout: 10))
             // Two taps on empty space (greeting → plan → question); no buttons until the question.
             XCTAssertFalse(app.buttons["welcome-continue"].exists)

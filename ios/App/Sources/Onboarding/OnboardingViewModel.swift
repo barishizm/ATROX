@@ -28,6 +28,8 @@ final class OnboardingViewModel {
     private let engine: any ScoreEngine
     private let health: any HealthService
     private let workouts: any WorkoutRepository
+    /// The "best sets" question is not asked for now; the flow goes from the consents straight to the result.
+    private let asksBestSets: Bool
     private let now: () -> Date
     private let calendar: Calendar
     private let localeCode: String
@@ -42,6 +44,7 @@ final class OnboardingViewModel {
         engine: any ScoreEngine = ModelScoreEngine(),
         health: any HealthService = UnavailableHealthService(),
         workouts: any WorkoutRepository,
+        asksBestSets: Bool = false,
         deviceLocale: Locale = .current,
         localeCode: String = "en",
         now: @escaping () -> Date = { Date() },
@@ -56,6 +59,7 @@ final class OnboardingViewModel {
         self.engine = engine
         self.health = health
         self.workouts = workouts
+        self.asksBestSets = asksBestSets
         self.localeCode = localeCode
         self.now = now
         self.calendar = calendar
@@ -146,7 +150,7 @@ final class OnboardingViewModel {
     func decideContribution(_ granted: Bool) async {
         guard draft.step == .contribution, !isSaving else { return }
         await run { [consents, userId] in try await consents.setContribution(granted, userId: userId) }
-        if !saveFailed { go(to: .result) }  // The best-sets question is no longer asked.
+        if !saveFailed { go(to: asksBestSets ? .lifts : .result) }
     }
 
     private func run(_ work: () async throws -> Void) async {

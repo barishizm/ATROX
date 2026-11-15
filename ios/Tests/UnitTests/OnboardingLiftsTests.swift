@@ -38,7 +38,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func consentsLeadToTheLiftsStep() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         #expect(env.model.step == .lifts)
         #expect(env.model.liftEntries.map(\.lift) == [.benchPress, .squat, .deadlift, .overheadPress])
@@ -46,7 +46,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func skippingEverythingStillReachesAnEmptyResult() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         for lift in OnboardingLifts.order { env.model.setLiftSkipped(lift, true) }
         await env.model.advance()
@@ -56,7 +56,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func advancingWithoutTypingAnythingIsTheSameAsSkipping() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         await env.model.advance()
         #expect(env.model.step == .result)
@@ -64,7 +64,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func aSetGivesAScoreAndIsStored() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         env.model.setLiftWeight(.benchPress, value: 80)
         env.model.setLiftReps(.benchPress, reps: 1)
@@ -82,7 +82,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func unfinishedCardsAreIgnored() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         env.model.setLiftWeight(.squat, value: 100)
         env.model.setLiftSkipped(.squat, true)  // typed, then skipped
@@ -92,7 +92,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func poundsAreConvertedToKilograms() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env, unit: .imperial)
         #expect(env.model.weightUnit == .pounds)
         env.model.setLiftWeight(.benchPress, value: 220)
@@ -101,7 +101,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func absurdWeightsAndRepsAreClamped() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         env.model.setLiftWeight(.benchPress, value: 9_999)
         env.model.setLiftReps(.benchPress, reps: 500)
@@ -119,7 +119,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func dumbbellUsersGetDumbbellSets() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env, equipment: .homeDumbbell)
         env.model.setLiftWeight(.benchPress, value: 30)
         #expect(env.model.reportedSets.first?.implement == .dumbbell)
@@ -127,7 +127,7 @@ struct OnboardingLiftsTests {
     }
 
     @Test func goingBackFromTheResultKeepsTheEnteredSets() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         env.model.setLiftWeight(.squat, value: 100)
         await env.model.advance()
@@ -139,16 +139,16 @@ struct OnboardingLiftsTests {
     @Test func enteredSetsSurviveARelaunch() async throws {
         let userId = UUID()
         let defaults = UserDefaults(suiteName: "onboarding-lifts-\(UUID().uuidString)")!
-        let first = try Base.harness(userId: userId, defaults: defaults)
+        let first = try Base.harness(userId: userId, defaults: defaults, asksBestSets: true)
         await Self.atLifts(first)
         first.model.setLiftWeight(.deadlift, value: 140)
-        let second = try Base.harness(userId: userId, defaults: defaults)
+        let second = try Base.harness(userId: userId, defaults: defaults, asksBestSets: true)
         #expect(second.model.step == .lifts)
         #expect(second.model.entry(for: .deadlift).weightKg == 140)
     }
 
     @Test func finishingClearsTheDraft() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         await env.model.advance()
         env.model.finish()
@@ -164,7 +164,7 @@ struct OnboardingLiftsTests {
         var json = try #require(try JSONSerialization.jsonObject(with: JSONEncoder().encode(draft)) as? [String: Any])
         json.removeValue(forKey: "lifts")
         defaults.set(try JSONSerialization.data(withJSONObject: json), forKey: "onboarding.draft.\(userId.uuidString)")
-        let env = try Base.harness(userId: userId, defaults: defaults)
+        let env = try Base.harness(userId: userId, defaults: defaults, asksBestSets: true)
         #expect(env.model.step == .lifts)
         #expect(env.model.liftEntries.count == 4)
     }
@@ -189,7 +189,7 @@ struct OnboardingLiftsTests {
 @MainActor
 extension OnboardingLiftsTests {
     @Test func comingBackAndChangingTheAnswersKeepsOneWorkout() async throws {
-        let env = try Base.harness()
+        let env = try Base.harness(asksBestSets: true)
         await Self.atLifts(env)
         env.model.setLiftWeight(.benchPress, value: 60)
         await env.model.advance()
