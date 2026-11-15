@@ -99,6 +99,35 @@ import Testing
         print("PERF score no-change: \(unchanged)"); #expect(unchanged < .seconds(1), "no-change refresh took \(unchanged)")
     }
 
+    @Test func trainingReadsOverLongHistoryStayUnderBudget() async throws {
+        let container = try DataStore.inMemory()
+        let clock = TestClock()
+        let repo = SwiftDataWorkoutRepository(modelContainer: container, clock: clock.closure)
+        let model = try EmbeddedModelBundle.model()
+        let service = ScoreService(
+            modelContainer: container, scoringModel: { ScoringModel(model: model, version: "1.0.0") }, clock: clock.closure,
+            calendar: Calendar(identifier: .gregorian))
+        try await MainActor.run { try DataFixtures.seed(container, userId: testUser, now: clock.now) }
+        for draft in TrainingFixtures.largeHistory(count: 520, now: clock.now) { try await repo.start(draft, userId: testUser) }
+        _ = await service.refresh(userId: testUser)
+        let stats = TrainingStats(modelContainer: container, clock: clock.closure, calendar: Calendar(identifier: .gregorian))
+        let dashboard = await median { _ = await stats.dashboard(userId: testUser, population: .gym, overallScore: nil) }
+        print("PERF dashboard: \(dashboard)"); #expect(dashboard < .seconds(1), "dashboard took \(dashboard)")
+        let insights = InsightService(
+            modelContainer: container, scores: service, stats: stats, clock: clock.closure, calendar: Calendar(identifier: .gregorian))
+        let refresh = await median { _ = await insights.refresh(userId: testUser) }
+        print("PERF insights.refresh: \(refresh)"); #expect(refresh < .seconds(2), "insights.refresh took \(refresh)")
+        let muscles = await median { _ = await stats.muscleReport(userId: testUser) }
+        print("PERF muscleReport: \(muscles)"); #expect(muscles < .seconds(1), "muscleReport took \(muscles)")
+        let recent = try await median { _ = try await repo.recentExercises(userId: testUser, limit: 12) }
+        print("PERF recentExercises: \(recent)"); #expect(recent < .seconds(1), "recentExercises took \(recent)")
+        let dates = try await median { _ = try await repo.finishedDates(userId: testUser) }
+        print("PERF finishedDates: \(dates)"); #expect(dates < .seconds(1), "finishedDates took \(dates)")
+        let exercise = try #require(try await repo.finishedWorkouts(userId: testUser, before: nil, limit: 1).first?.exercises.first?.ref)
+        let history = try await median { _ = try await repo.history(userId: testUser, ref: exercise, limit: 10) }
+        print("PERF exerciseHistory: \(history)"); #expect(history < .seconds(1), "exerciseHistory took \(history)")
+    }
+
     private func timed(_ body: () async throws -> Void) async throws -> Duration {
         let clock = ContinuousClock()
         let start = clock.now

@@ -160,7 +160,11 @@ public struct TemplateLibrary: Sendable, Equatable, Decodable {
     }
 
     /// The templates that ship inside the DataKit package.
-    public static func bundled() throws -> TemplateLibrary {
+    public static func bundled() throws -> TemplateLibrary { try bundledLibrary.get() }
+
+    /// Decoded once per process: the file is part of the app bundle and never changes (Today, onboarding and the
+    /// recommender all ask for it).
+    private static let bundledLibrary = Result<TemplateLibrary, any Error> {
         guard let url = Bundle.module.url(forResource: "templates.v1", withExtension: "json") else {
             throw LoadError.missingResource
         }

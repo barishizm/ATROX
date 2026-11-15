@@ -103,7 +103,7 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
             sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
         )
         descriptor.fetchLimit = limit
-        return try modelContext.fetch(descriptor).map(snapshot(of:))
+        return try snapshots(of: modelContext.fetch(descriptor))
     }
 
     public func finishedDates(userId: UUID) throws -> [Date] {
@@ -189,7 +189,7 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
             },
             sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
         )
-        return try modelContext.fetch(descriptor).map(snapshot(of:))
+        return try snapshots(of: modelContext.fetch(descriptor))
     }
 
     public func history(userId: UUID, ref: ExerciseRef, limit: Int) throws -> [ExerciseSession] {
@@ -346,6 +346,37 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
         for set in (try? sets(of: rows.map(\.id))) ?? [] { set.markDeleted(at: now) }
         for row in rows { row.markDeleted(at: now) }
         workout.markDeleted(at: now)
+    }
+
+    /// Snapshots of many workouts with two fetches (exercises, then sets) instead of one fetch per workout and per
+    /// exercise. Same content and order as `snapshot(of:)`.
+    private func snapshots(of workouts: [Workout]) throws -> [WorkoutSnapshot] {
+        guard workouts.count > 1 else { return try workouts.map(snapshot(of:)) }
+        let workoutIds = workouts.map(\.id)
+        let rows = try modelContext.fetch(
+            FetchDescriptor<WorkoutExercise>(
+                predicate: #Predicate { workoutIds.contains($0.workoutId) && $0.deletedAt == nil },
+                sortBy: [SortDescriptor(\.position)]
+            )
+        )
+        let setsByRow = Dictionary(grouping: try sets(of: rows.map(\.id)), by: \.workoutExerciseId)
+        let rowsByWorkout = Dictionary(grouping: rows, by: \.workoutId)
+        return workouts.map { workout in
+            WorkoutSnapshot(
+                id: workout.id, userId: workout.userId, name: workout.name, startedAt: workout.startedAt,
+                endedAt: workout.endedAt, routineId: workout.routineId, routineDayId: workout.routineDayId,
+                notes: workout.notes, source: workout.source, rating: workout.rating,
+                healthKitUUID: workout.healthKitUUID, createdAt: workout.createdAt, updatedAt: workout.updatedAt,
+                syncState: workout.syncState,
+                exercises: (rowsByWorkout[workout.id] ?? []).map { row in
+                    WorkoutExerciseSnapshot(
+                        id: row.id, workoutId: row.workoutId, position: row.position,
+                        ref: row.ref ?? .catalog(row.exerciseId ?? ""), supersetGroup: row.supersetGroup, notes: row.notes,
+                        sets: (setsByRow[row.id] ?? []).map(Self.snapshot(of:))
+                    )
+                }
+            )
+        }
     }
 
     private func snapshot(of workout: Workout) throws -> WorkoutSnapshot {

@@ -1,31 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
-    "%@" : {
-
-    },
-    "%@ cm" : {
-
-    },
-    "%@ lb" : {
-
-    },
-    "%@%%" : {
-
-    },
-    "%@′ %@″" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@′ %2$@″"
-          }
-        }
-      }
-    },
     "a11y.chart.date" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -453,9 +428,6 @@
           }
         }
       }
-    },
-    "account.signOut.unsynced %@" : {
-
     },
     "account.signOut.unsynced %lld" : {
       "extractionState" : "stale",
@@ -1426,9 +1398,6 @@
           }
         }
       }
-    },
-    "auth.verify.resendIn %@" : {
-
     },
     "auth.verify.resendIn %lld" : {
       "extractionState" : "stale",
@@ -2927,9 +2896,6 @@
         }
       }
     },
-    "coach.proposal.more %@" : {
-
-    },
     "coach.proposal.more %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3179,16 +3145,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bugünkü mesaj hakkın doldu"
-          }
-        }
-      }
-    },
-    "coach.quota.remaining %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "coach.quota.remaining %1$@ %2$@"
           }
         }
       }
@@ -5063,16 +5019,6 @@
         }
       }
     },
-    "exercise.image.frame %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "exercise.image.frame %1$@ %2$@"
-          }
-        }
-      }
-    },
     "exercise.image.frame %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6326,9 +6272,6 @@
           }
         }
       }
-    },
-    "history.rir %@" : {
-
     },
     "history.rir %lld" : {
       "extractionState" : "stale",
@@ -9300,9 +9243,6 @@
         }
       }
     },
-    "library.select.add %@" : {
-
-    },
     "library.select.add %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11180,9 +11120,6 @@
         }
       }
     },
-    "onboarding.frequency.days %@" : {
-
-    },
     "onboarding.frequency.days %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12944,9 +12881,6 @@
         }
       }
     },
-    "paywall.plan.save %@" : {
-
-    },
     "paywall.plan.save %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12963,9 +12897,6 @@
           }
         }
       }
-    },
-    "paywall.plan.trial %@" : {
-
     },
     "paywall.plan.trial %lld" : {
       "extractionState" : "stale",
@@ -13210,16 +13141,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abonelik, mevcut dönem bitmeden en az 24 saat önce iptal etmezsen aynı fiyatla otomatik yenilenir. Ödeme Apple Hesabından alınır."
-          }
-        }
-      }
-    },
-    "paywall.terms.trial %@ %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "paywall.terms.trial %1$@ %2$@ %3$@"
           }
         }
       }
@@ -14197,9 +14118,6 @@
         }
       }
     },
-    "profile.streak.days %@" : {
-
-    },
     "profile.streak.days %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14497,16 +14415,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Son 6 ayda antrenman yok."
-          }
-        }
-      }
-    },
-    "progress.frequency.summary %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "progress.frequency.summary %1$@ %2$@"
           }
         }
       }
@@ -15843,9 +15751,6 @@
         }
       }
     },
-    "RIR" : {
-
-    },
     "routine.action.cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16118,9 +16023,6 @@
         }
       }
     },
-    "routine.day.exerciseCount %@" : {
-
-    },
     "routine.day.exerciseCount %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16306,9 +16208,6 @@
         }
       }
     },
-    "routine.field.max %@" : {
-
-    },
     "routine.field.max %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16325,9 +16224,6 @@
           }
         }
       }
-    },
-    "routine.field.min %@" : {
-
     },
     "routine.field.min %lld" : {
       "extractionState" : "stale",
@@ -16413,9 +16309,6 @@
           }
         }
       }
-    },
-    "routine.field.sets %@" : {
-
     },
     "routine.field.sets %lld" : {
       "extractionState" : "stale",
@@ -16670,16 +16563,6 @@
         }
       }
     },
-    "routine.summary %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "routine.summary %1$@ %2$@"
-          }
-        }
-      }
-    },
     "routine.summary %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16696,9 +16579,6 @@
           }
         }
       }
-    },
-    "routine.summary.rir %@" : {
-
     },
     "routine.summary.rir %lld" : {
       "extractionState" : "stale",
@@ -16733,9 +16613,6 @@
           }
         }
       }
-    },
-    "routine.superset.group %@" : {
-
     },
     "routine.superset.group %lld" : {
       "extractionState" : "stale",
@@ -17298,16 +17175,6 @@
         }
       }
     },
-    "scorescreen.next.level %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "scorescreen.next.level %1$@ %2$@"
-          }
-        }
-      }
-    },
     "scorescreen.next.level %@ %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -17459,16 +17326,6 @@
         }
       }
     },
-    "scorescreen.sentence.competitor %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "scorescreen.sentence.competitor %1$@ %2$@"
-          }
-        }
-      }
-    },
     "scorescreen.sentence.competitor %lld %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -17486,16 +17343,6 @@
         }
       }
     },
-    "scorescreen.sentence.general %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "scorescreen.sentence.general %1$@ %2$@"
-          }
-        }
-      }
-    },
     "scorescreen.sentence.general %lld %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -17509,16 +17356,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senin yaşında ve kilondaki genel nüfusun %%%1$lld%2$@ güçlüsün."
-          }
-        }
-      }
-    },
-    "scorescreen.sentence.gym %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "scorescreen.sentence.gym %1$@ %2$@"
           }
         }
       }
@@ -20460,9 +20297,6 @@
         }
       }
     },
-    "summary.comparison.sets %@" : {
-
-    },
     "summary.comparison.sets %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -20783,16 +20617,6 @@
         }
       }
     },
-    "sync.restore.detail %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "sync.restore.detail %1$@ %2$@"
-          }
-        }
-      }
-    },
     "sync.restore.detail %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -20841,9 +20665,6 @@
           }
         }
       }
-    },
-    "sync.status.failedRows %@" : {
-
     },
     "sync.status.failedRows %lld" : {
       "extractionState" : "stale",
@@ -20909,9 +20730,6 @@
           }
         }
       }
-    },
-    "sync.status.pending %@" : {
-
     },
     "sync.status.pending %lld" : {
       "extractionState" : "stale",
@@ -21114,16 +20932,6 @@
         }
       }
     },
-    "template.exercise.target %@ %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "template.exercise.target %1$@ %2$@ %3$@"
-          }
-        }
-      }
-    },
     "template.exercise.target %lld %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -21311,16 +21119,6 @@
         }
       }
     },
-    "template.summary %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "template.summary %1$@ %2$@"
-          }
-        }
-      }
-    },
     "template.summary %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -21387,9 +21185,6 @@
           }
         }
       }
-    },
-    "today.highlights.improved.change %@" : {
-
     },
     "today.highlights.improved.change %lld" : {
       "extractionState" : "stale",
@@ -21861,9 +21656,6 @@
         }
       }
     },
-    "today.streak.weeks %@" : {
-
-    },
     "today.streak.weeks %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -21901,16 +21693,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "today.week.count %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "today.week.count %1$@ %2$@"
           }
         }
       }
@@ -21960,16 +21742,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Devam eden bir antrenmanın var."
-          }
-        }
-      }
-    },
-    "today.workout.detail %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "today.workout.detail %1$@ %2$@"
           }
         }
       }
@@ -23170,16 +22942,6 @@
         }
       }
     },
-    "workout.finish.message %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "workout.finish.message %1$@ %2$@"
-          }
-        }
-      }
-    },
     "workout.finish.message %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -23262,9 +23024,6 @@
           }
         }
       }
-    },
-    "workout.finish.short.messageOpen %@" : {
-
     },
     "workout.finish.short.messageOpen %lld" : {
       "extractionState" : "stale",
@@ -23414,16 +23173,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Antrenmanı aç"
-          }
-        }
-      }
-    },
-    "workout.mini.sets %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "workout.mini.sets %1$@ %2$@"
           }
         }
       }

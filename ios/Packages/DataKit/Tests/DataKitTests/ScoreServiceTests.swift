@@ -89,6 +89,17 @@ private enum Failure: Error { case notReady(ScoreOutcome) }
         #expect(afterDelete.exercises[bench]?.basis?.weightKg != 77.5)
     }
 
+    @Test func refreshStillPublishesWhatAnEarlierOverviewComputedWithoutStoring() async throws {
+        let env = try await ScoreEnv()
+        // `overview` fills the cache but writes no snapshots; the next refresh must not mistake that for "already done".
+        let overview = try ready(await env.service.overview(userId: testUser))
+        #expect(try env.snapshots().isEmpty)
+        let published = try ready(try #require(await env.service.refresh(userId: testUser)))
+        #expect(published == overview)
+        #expect(try !env.snapshots().isEmpty)
+        #expect(await env.service.refresh(userId: testUser) == nil)
+    }
+
     @Test func refreshOnlyWorksWhenSomethingScoreRelevantChanged() async throws {
         let env = try await ScoreEnv()
         #expect(await env.service.refresh(userId: testUser) != nil)  // first run computes
@@ -241,5 +252,42 @@ private enum Failure: Error { case notReady(ScoreOutcome) }
         let one = try #require(await env.service.insight(userId: testUser, exerciseId: bench, population: .gym))
         #expect(one.evaluation != nil)
         #expect(one.reasons.contains(.fewSessions))
+    }
+}
+
+@Suite struct ScoreTriggerSaveTests {
+    /// Runs `body`, saves, and returns the `didSave` notification of that save.
+    private func saveNotification(_ container: ModelContainer, _ body: (ModelContext) throws -> Void) throws -> Notification {
+        final class Box: @unchecked Sendable { var notification: Notification? }
+        let box = Box()
+        let context = ModelContext(container)
+        let observer = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: context, queue: nil) { box.notification = $0 }
+        defer { NotificationCenter.default.removeObserver(observer) }
+        try body(context)
+        try context.save()
+        return try #require(box.notification)
+    }
+
+    @Test func derivedOnlySavesAreNotRelevant() throws {
+        let container = try DataStore.inMemory()
+        let snapshot = try saveNotification(container) {
+            $0.insert(ScoreSnapshot(
+                userId: testUser, scope: .overall, key: "overall", referenceGroup: "gym", score: 50, z: 0, confidence: "high",
+                modelVersion: "1", date: Date(timeIntervalSince1970: 1_800_000_000), now: Date(timeIntervalSince1970: 1_800_000_000)))
+        }
+        #expect(!ScoreTrigger.isRelevant(saveNotification: snapshot))
+    }
+
+    @Test func historySavesAreRelevant() throws {
+        let container = try DataStore.inMemory()
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let mixed = try saveNotification(container) {
+            $0.insert(ScoreSnapshot(
+                userId: testUser, scope: .overall, key: "overall", referenceGroup: "gym", score: 50, z: 0, confidence: "high",
+                modelVersion: "1", date: now, now: now))
+            $0.insert(Workout(userId: testUser, name: nil, startedAt: now, endedAt: now, routineId: nil, routineDayId: nil, notes: nil, source: .manual, now: now))
+        }
+        #expect(ScoreTrigger.isRelevant(saveNotification: mixed))
+        #expect(ScoreTrigger.isRelevant(saveNotification: Notification(name: ModelContext.didSave)))
     }
 }
