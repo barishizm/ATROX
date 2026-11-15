@@ -104,21 +104,15 @@ struct SexStepView: View {
 
     var body: some View {
         OnboardingPage(title: "onboarding.sex.title") {
-            VStack(spacing: Spacing.sm) {
-                option(.male, "onboarding.sex.male")
-                option(.female, "onboarding.sex.female")
-                option(.unspecified, "onboarding.sex.unspecified")
-            }
+            SexSquareCards(
+                selection: model.draft.sex == .unspecified ? nil : model.draft.sex,
+                idPrefix: "onboarding-sex"
+            ) { model.setSex($0) }
             Text("onboarding.sex.why")
                 .font(DSFont.footnote)
                 .foregroundStyle(DSColor.textSecondary)
                 .accessibilityIdentifier("onboarding-sex-why")
         }
-    }
-
-    private func option(_ value: Sex, _ title: LocalizedStringKey) -> some View {
-        SelectableCard(title, isSelected: model.draft.sex == value) { model.setSex(value) }
-            .accessibilityIdentifier("onboarding-sex-\(value.rawValue)")
     }
 }
 
