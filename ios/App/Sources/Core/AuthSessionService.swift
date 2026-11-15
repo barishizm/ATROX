@@ -1,4 +1,5 @@
 import DataKit
+import Foundation
 
 /// Adapts the `AuthService` to the root flow's `SessionService`.
 struct AuthSessionService: SessionService {
@@ -13,7 +14,16 @@ struct AuthSessionService: SessionService {
         let upstream = auth.stateUpdates()
         return AsyncStream { continuation in
             let task = Task {
-                for await state in upstream { continuation.yield(await resolve(state)) }
+                // The signed-in account of the previous event. A link (password reset, magic link) can swap the SDK
+                // session to another account without a sign-out in between; that must end the first account's
+                // session before the second one starts, or the app keeps showing and syncing the first one's data.
+                var current: UUID?
+                for await state in upstream {
+                    let user = Self.user(in: state)
+                    if let current, let user, user.id != current { continuation.yield(.signedOut) }
+                    current = user?.id
+                    continuation.yield(await resolve(state))
+                }
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }

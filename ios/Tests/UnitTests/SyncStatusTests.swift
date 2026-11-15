@@ -57,4 +57,34 @@ struct SyncStatusTests {
         #expect(container.root.state == .signedOut)
         #expect(sync.userId == nil)
     }
+
+    /// A session that ends on its own (expired, revoked) must not destroy rows the server never received, and a
+    /// later cold start in the signed-out state must not either.
+    @Test func externalSessionEndKeepsUnsyncedRows() async throws {
+        let store = try DataStore.inMemory()
+        let userId = UUID()
+        let remote = InMemoryRemoteStore(userId: userId)
+        let metadata = SyncMetadataStore()
+        let sync = SyncCoordinator(modelContainer: store, metadata: metadata) { id in
+            SyncEngine(userId: id, modelContainer: store, remote: remote, metadata: metadata)
+        }
+        let user = AuthUser(id: userId, email: "a@example.com", isEmailConfirmed: true, onboardingComplete: true)
+        let auth = FakeAuthService(initial: .signedIn(user))
+        let container = AppContainer(
+            sessionService: AuthSessionService(auth: auth), authService: auth, modelContainer: store, sync: sync
+        )
+        await container.root.start()
+        await container.sessionChanged(.ready)
+        await sync.waitUntilIdle()
+        await remote.setOffline(true)
+        _ = try await SwiftDataMeasurementRepository(modelContainer: store)
+            .add(MeasurementInput(date: Date(), weightKg: 80), userId: userId)
+
+        await container.sessionChanged(.signedOut)
+        #expect(try ModelContext(store).fetch(FetchDescriptor<BodyMeasurement>()).count == 1)
+        #expect(sync.userId == nil)
+
+        await container.sessionChanged(.signedOut)  // e.g. the next cold start
+        #expect(try ModelContext(store).fetch(FetchDescriptor<BodyMeasurement>()).count == 1)
+    }
 }

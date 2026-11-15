@@ -232,6 +232,118 @@
         }
       }
     },
+    "account.delete.manageSubscription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage subscription"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aboneliği yönet"
+          }
+        }
+      }
+    },
+    "account.delete.subscription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting your account does not cancel an App Store subscription. Cancel it in your App Store settings to stop being charged."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabı silmek App Store aboneliğini iptal etmez. Ücretlendirilmemek için aboneliği App Store ayarlarından iptal et."
+          }
+        }
+      }
+    },
+    "workout.stale.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unfinished workout"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitmemiş antrenman"
+          }
+        }
+      }
+    },
+    "workout.stale.message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workout has not been touched for hours. Finish it at your last set, or discard it?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu antrenmana saatlerdir dokunulmadı. Son setinde bitirelim mi, yoksa silelim mi?"
+          }
+        }
+      }
+    },
+    "workout.stale.finish" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish at last set"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son sette bitir"
+          }
+        }
+      }
+    },
+    "workout.stale.discard" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil"
+          }
+        }
+      }
+    },
+    "workout.stale.keep" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep going"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devam et"
+          }
+        }
+      }
+    },
     "account.delete.explain.body" : {
       "localizations" : {
         "en" : {
@@ -392,6 +504,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Çıkış yap"
+          }
+        }
+      }
+    },
+    "account.signOut.activeWorkout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your workout in progress will be discarded. Finish it first to keep it."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devam eden antrenmanın silinir. Saklamak için önce bitir."
           }
         }
       }
@@ -24260,6 +24388,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Normal"
+          }
+        }
+      }
+    },
+    "workout.unavailable.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program not found"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program bulunamadı"
+          }
+        }
+      }
+    },
+    "workout.unavailable.message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This workout day was deleted or changed. Pick a day from your programs."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu antrenman günü silinmiş ya da değişmiş. Programlarından bir gün seç."
           }
         }
       }

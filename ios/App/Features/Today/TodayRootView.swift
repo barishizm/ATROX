@@ -28,8 +28,8 @@ struct TodayRootView: View {
         .background(DSColor.background.ignoresSafeArea())
         .navigationTitle("shell.tabbar.today")
         .howItWorksButton()
-        .task { await prepare() }
-        .task(id: container.historyEvents.version) { await model?.load() }
+        .task(id: container.unitRevision) { await prepare(rebuild: container.unitRevision > 0) }
+        .task(id: TodayReload(data: container.dataRevision, plan: model?.planSignature)) { await model?.load() }
         .sheet(item: $actions.sheet) { sheet in
             InsightSuggestionsSheet(sheet: sheet) { id in
                 actions.sheet = nil
@@ -333,7 +333,8 @@ struct TodayRootView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func prepare() async {
+    private func prepare(rebuild: Bool = false) async {
+        if rebuild { model = nil }
         guard model == nil else { return }
         guard let created = await container.makeTodayModel() else {
             failed = true
@@ -387,4 +388,10 @@ struct GoalRing: View {
         .frame(width: 56, height: 56)
         .accessibilityHidden(true)
     }
+}
+
+/// What makes the Today tab reload: new data, or a changed active program or weekly plan.
+private struct TodayReload: Hashable {
+    let data: AppContainer.DataRevision
+    let plan: String?
 }

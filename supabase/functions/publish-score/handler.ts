@@ -33,7 +33,7 @@ export interface PublishDeps {
 
 export type PublishReason = "sharing_off" | "no_profile" | "score_jump" | "no_data" | "weekly_mismatch";
 
-/** A published score may move at most this far within a day of the previous publish (unless that one was provisional). */
+/** A published score may move at most this far within a day of the previous publish (provisional or not: the flag is client-supplied, so it cannot buy an exemption). */
 export const MAX_JUMP = 15;
 export const JUMP_WINDOW_MS = 24 * 60 * 60 * 1000;
 export const HOURLY_LIMIT = 60;
@@ -62,7 +62,7 @@ export function check(request: PublishRequest, facts: PublishFacts, nowMs: numbe
   if (facts.completed_sets < 3) return "no_data";
   // Weekly count should roughly match the workouts the server has already received (sync may lag by one or two).
   if (request.weekly_workouts > facts.workouts_7d + 2) return "weekly_mismatch";
-  if (facts.last_score !== null && facts.last_at && !facts.last_provisional) {
+  if (facts.last_score !== null && facts.last_at) {
     const age = nowMs - Date.parse(facts.last_at);
     if (age < JUMP_WINDOW_MS && Math.abs(request.overall_score - facts.last_score) > MAX_JUMP) return "score_jump";
   }

@@ -10,6 +10,9 @@ extension AppContainer {
     /// asks for a debounced score refresh; `ScoreService.refresh` does nothing when no score input changed.
     func scoresMayHaveChanged() {
         guard scoreService != nil else { return }
+        // Every set edit of a workout in progress is a save; the score chain (refresh, notification text, widgets,
+        // Today model) runs once when the workout finishes instead.
+        if workoutSession?.phase == .active { return }
         scoreRefreshTask?.cancel()
         scoreRefreshTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(2))

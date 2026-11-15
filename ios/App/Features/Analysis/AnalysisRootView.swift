@@ -31,9 +31,9 @@ struct AnalysisRootView: View {
         }
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.analysis")
-        .task { await prepare() }
+        .task(id: container.unitRevision) { await prepare(rebuild: container.unitRevision > 0) }
         .task(id: section) { await prepareSection() }
-        .task(id: container.historyEvents.version) {
+        .task(id: container.dataRevision) {
             await model?.load()
             await progressModel?.load()
             await insightsModel?.load()
@@ -164,7 +164,12 @@ struct AnalysisRootView: View {
         }
     }
 
-    private func prepare() async {
+    private func prepare(rebuild: Bool = false) async {
+        if rebuild {
+            model = nil
+            progressModel = nil
+            insightsModel = nil
+        }
         guard model == nil else { return }
         guard let created = await container.makeMuscleAnalysisModel() else {
             failed = true
@@ -172,6 +177,7 @@ struct AnalysisRootView: View {
         }
         model = created
         await created.load()
+        if rebuild { await prepareSection() }
     }
 }
 

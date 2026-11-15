@@ -127,6 +127,7 @@ final class CoachModel {
     /// A starter question or "ask the coach" text goes out as it is.
     func ask(_ text: String) {
         guard isOnline, session.canSend, let clean = CoachSession.sendable(text) else { return }
+        AppAnalytics.shared.send(.coachMessageSent)
         deliver(clean)
     }
 

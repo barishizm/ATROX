@@ -94,20 +94,14 @@ public final class WorkoutSession {
         previous = [:]
         suggestions = [:]
         programRest = [:]
-        var targets: [UUID: RoutineExerciseInput] = [:]
-        if let routineId = active.routineId, let dayId = active.routineDayId,
-           let day = try await routines?.routine(id: routineId)?.days.first(where: { $0.id == dayId }) {
-            // Match rows to exercises in order by reference (the user may have added or removed exercises).
-            var rows = day.exercises[...]
-            for exercise in active.exercises {
-                guard let index = rows.firstIndex(where: { $0.ref == exercise.ref }) else { continue }
-                programRest[exercise.id] = rows[index].input.restSeconds
-                targets[exercise.id] = rows[index].input
-                rows = rows[(index + 1)...]
-            }
+        let targets = try await programTargets(
+            for: active.exercises.map(\.ref), routineId: active.routineId, dayId: active.routineDayId
+        )
+        for (exercise, target) in zip(active.exercises, targets) {
+            programRest[exercise.id] = target?.restSeconds
         }
-        for exercise in active.exercises {
-            let found = try await lookup(exercise.ref, target: targets[exercise.id])
+        for (exercise, target) in zip(active.exercises, targets) {
+            let found = try await lookup(exercise.ref, target: target)
             previous[exercise.id] = found.last
             suggestions[exercise.id] = found.suggestion
         }
@@ -116,7 +110,7 @@ public final class WorkoutSession {
 
     /// Starts an empty workout.
     public func startEmpty(name: String? = nil) async throws {
-        try ensureCanStart()
+        try await ensureCanStart()
         let started = try await workouts.start(
             WorkoutDraft(name: name, startedAt: clock(), source: .manual), userId: userId
         )
@@ -130,7 +124,7 @@ public final class WorkoutSession {
     /// Starts a workout from a routine day: one exercise per routine row, sets pre-filled from the row's targets and
     /// last time's values (`WorkoutPrefill`).
     public func start(routineId: UUID, dayId: UUID) async throws {
-        try ensureCanStart()
+        try await ensureCanStart()
         guard let routine = try await routines?.routine(id: routineId),
               let day = routine.days.first(where: { $0.id == dayId })
         else { throw WorkoutSessionError.unknownRoutineDay }
@@ -167,11 +161,16 @@ public final class WorkoutSession {
     /// Starts a new workout that repeats a finished one ("Repeat", P042): the same name, routine day and exercises, with
     /// the old weights, reps and set types but nothing completed. Exercises the user no longer has sets for stay.
     public func startRepeating(_ source: WorkoutSnapshot) async throws {
-        try ensureCanStart()
+        try await ensureCanStart()
         var drafts: [WorkoutExerciseDraft] = []
         var lastTimes: [[SetInput]] = []
-        for exercise in source.exercises {
+        var found: [(last: [SetInput], suggestion: ProgressionSuggestion?)] = []
+        let targets = try await programTargets(
+            for: source.exercises.map(\.ref), routineId: source.routineId, dayId: source.routineDayId
+        )
+        for (exercise, target) in zip(source.exercises, targets) {
             lastTimes.append(try await lastTime(exercise.ref))
+            found.append(try await lookup(exercise.ref, target: target))
             let sets = exercise.sets.map {
                 SetInput(weightKg: $0.input.weightKg, reps: $0.input.reps, rir: $0.input.rir, setType: $0.input.setType)
             }
@@ -193,11 +192,39 @@ public final class WorkoutSession {
         previous = Dictionary(uniqueKeysWithValues: zip(started.exercises.map(\.id), lastTimes))
         suggestions = [:]
         programRest = [:]
+        for ((exercise, entry), target) in zip(zip(started.exercises, found), targets) {
+            suggestions[exercise.id] = entry.suggestion
+            programRest[exercise.id] = target?.restSeconds
+        }
         phase = .active
     }
 
-    private func ensureCanStart() throws {
+    /// Refuses a second active workout. An active workout that is in the store but was never picked up (a failed
+    /// `restore()`) is adopted first, so it is never shadowed by a new one.
+    private func ensureCanStart() async throws {
         if phase == .active { throw WorkoutSessionError.alreadyActive }
+        if try await workouts.activeWorkout(userId: userId) != nil {
+            try await restore()
+            throw WorkoutSessionError.alreadyActive
+        }
+    }
+
+    /// The program rows that belong to `refs`, matched in order by reference (the user may have added or removed
+    /// exercises since the day was planned). Nil entries have no program row.
+    private func programTargets(
+        for refs: [ExerciseRef], routineId: UUID?, dayId: UUID?
+    ) async throws -> [RoutineExerciseInput?] {
+        var result = [RoutineExerciseInput?](repeating: nil, count: refs.count)
+        guard let routineId, let dayId,
+              let day = try await routines?.routine(id: routineId)?.days.first(where: { $0.id == dayId })
+        else { return result }
+        var rows = day.exercises[...]
+        for (position, ref) in refs.enumerated() {
+            guard let index = rows.firstIndex(where: { $0.ref == ref }) else { continue }
+            result[position] = rows[index].input
+            rows = rows[(index + 1)...]
+        }
+        return result
     }
 
     // MARK: Sets
@@ -355,7 +382,7 @@ public final class WorkoutSession {
     /// Ends the workout. With `dropIncomplete` (default) sets that were never completed are removed first, and so are
     /// exercises left without sets. A workout without any completed set is discarded (soft-deleted) instead.
     @discardableResult
-    public func finish(dropIncomplete: Bool = true) async throws -> FinishResult {
+    public func finish(dropIncomplete: Bool = true, endedAt: Date? = nil) async throws -> FinishResult {
         guard let workout, phase == .active else { throw WorkoutSessionError.notActive }
         let completed = workout.exercises.flatMap(\.sets).filter(\.input.isCompleted)
         guard !completed.isEmpty else {
@@ -373,10 +400,31 @@ public final class WorkoutSession {
                 }
             }
         }
-        let finished = try await workouts.finish(id: workout.id, at: max(clock(), workout.startedAt))
+        let finished = try await workouts.finish(id: workout.id, at: max(endedAt ?? clock(), workout.startedAt))
         end(.finished(finished))
         send(.workoutFinished(finished))
         return .finished(finished)
+    }
+
+    /// A workout nobody touched for this long was most likely forgotten.
+    public static let staleAfter: TimeInterval = 4 * 3600
+
+    /// When the workout was last worked on: its newest completed set, else its start.
+    public var lastActivity: Date? {
+        guard let workout, phase == .active else { return nil }
+        let times = workout.exercises.flatMap(\.sets).filter(\.input.isCompleted).compactMap(\.updatedAt)
+        return max(times.max() ?? workout.startedAt, workout.startedAt)
+    }
+
+    /// True for an active workout whose last activity is older than `staleAfter` (offered "finish at last set / discard").
+    public var isStale: Bool {
+        guard let last = lastActivity else { return false }
+        return clock().timeIntervalSince(last) > Self.staleAfter
+    }
+
+    /// Finishes a forgotten workout at the time of its last activity, so duration and Health data stay honest.
+    public func finishAtLastActivity() async throws -> FinishResult {
+        try await finish(endedAt: lastActivity)
     }
 
     /// Throws the workout away (soft delete with its exercises and sets).
@@ -425,7 +473,7 @@ public final class WorkoutSession {
         let sessions = try await workouts.history(userId: userId, ref: ref, limit: Self.progressionSessions)
         let last = sessions.first?.sets.map(\.input) ?? []
         let history = sessions.map { session in
-            session.sets.map(\.input).filter { $0.setType != .warmup && $0.reps >= 1 }
+            session.sets.map(\.input).filter { $0.setType != .warmup && $0.setType != .drop && $0.reps >= 1 }
                 .map { ProgressionSet(weightKg: $0.weightKg, reps: $0.reps, rir: $0.rir) }
         }
         let range = ProgressionEngine.defaultRepRange

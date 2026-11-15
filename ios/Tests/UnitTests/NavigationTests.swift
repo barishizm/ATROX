@@ -8,7 +8,7 @@ struct NavigationTests {
     @Test func routerPushPopAndReset() {
         let router = TabRouter<WorkoutRoute>()
         router.push(.exerciseLibrary)
-        router.push(.activeWorkout(id: UUID()))
+        router.push(.history)
         #expect(router.path.count == 2)
         router.pop()
         #expect(router.path == [.exerciseLibrary])

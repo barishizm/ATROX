@@ -14,6 +14,7 @@ struct OnboardingTrainingTests {
         env.model.firstName = "Ada"
         await env.model.advance()
         env.model.setBirthDate(Base.date(1995, 3, 2))
+        env.model.setSex(.male)  // the sex step is mandatory
         for _ in 0..<4 { await env.model.advance() }
     }
 

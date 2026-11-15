@@ -153,6 +153,7 @@ struct OnboardingViewModelTests {
     @Test func heightAndWeightBoundsAreEnforced() async throws {
         let env = try Self.harness()
         env.model.firstName = "Ada"
+        env.model.setSex(.male)  // the sex step is mandatory
         for _ in 0..<4 { await env.model.advance() }
         #expect(env.model.step == .body)
         env.model.setHeight(cm: 99)
@@ -206,6 +207,7 @@ struct OnboardingViewModelTests {
         env.model.firstName = "Ada"
         await env.model.advance()
         env.model.setBirthDate(Self.date(1995, 3, 2))
+        env.model.setSex(.male)  // the sex step is mandatory
         for _ in 0..<3 { await env.model.advance() }
         await env.model.advance()  // save
         #expect(env.model.step == .experience)

@@ -132,7 +132,13 @@ final class OnboardingUITests: XCTestCase {
         first.tap()
         first.typeText("Ada")
         let next = app.buttons["Continue"]
-        for _ in 0..<4 {
+        for step in 0..<4 {
+            // name, birth date, [sex: a card has to be chosen first], units
+            if step == 2 {
+                let male = app.buttons["onboarding-sex-male"]
+                XCTAssertTrue(male.waitForExistence(timeout: 5))
+                male.tap()
+            }
             XCTAssertTrue(next.waitForExistence(timeout: 5))
             next.tap()
         }
@@ -160,7 +166,13 @@ final class OnboardingUITests: XCTestCase {
         first.tap()
         first.typeText("Ada")
         let next = app.buttons["Continue"]
-        for _ in 0..<4 {
+        for step in 0..<4 {
+            // name, birth date, [sex: a card has to be chosen first], units
+            if step == 2 {
+                let male = app.buttons["onboarding-sex-male"]
+                XCTAssertTrue(male.waitForExistence(timeout: 5))
+                male.tap()
+            }
             XCTAssertTrue(next.waitForExistence(timeout: 5))
             next.tap()
         }

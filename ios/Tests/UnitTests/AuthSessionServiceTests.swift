@@ -31,6 +31,19 @@ struct AuthSessionServiceTests {
         #expect(await iterator.next() == .signedOut)
     }
 
+    @Test func aSessionSwappedToAnotherAccountEndsTheFirstOneFirst() async throws {
+        let fake = FakeAuthService()
+        await fake.setRequiresConfirmation(false)
+        let service = AuthSessionService(auth: fake)
+        var iterator = service.updates().makeAsyncIterator()
+        #expect(await iterator.next() == .signedOut)
+        _ = try await fake.signUp(email: "a@example.com", password: "password-1", locale: nil)
+        #expect(await iterator.next() == .signedIn(onboardingComplete: false))
+        _ = try await fake.signUp(email: "b@example.com", password: "password-2", locale: nil)
+        #expect(await iterator.next() == .signedOut)
+        #expect(await iterator.next() == .signedIn(onboardingComplete: false))
+    }
+
     @MainActor
     @Test func rootFlowWithRealAdapterAndFakeBackend() async throws {
         let fake = FakeAuthService()

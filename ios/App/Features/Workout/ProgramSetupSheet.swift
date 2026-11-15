@@ -203,7 +203,7 @@ struct ProgramSetupSheet: View {
                 Text("workout.setup.names.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
                 Card {
                     VStack(alignment: .leading, spacing: Spacing.md) {
-                        ForEach(Array(sortedDays.enumerated()), id: \.element) { index, day in
+                        ForEach(Array(sortedDays.enumerated()), id: \.element) { _, day in
                             HStack(spacing: Spacing.md) {
                                 Text(verbatim: symbols[day])
                                     .font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.accent)

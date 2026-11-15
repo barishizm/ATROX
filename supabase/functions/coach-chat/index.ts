@@ -36,6 +36,10 @@ Deno.serve(createCoachChatHandler({
       if (error) throw new Error(`coach_consume_quota: ${error.message}`);
       return data as QuotaDecision;
     },
+    async refundQuota(userId, timeZone) {
+      const { error } = await admin.rpc("coach_refund_quota", { p_user: userId, p_time_zone: timeZone });
+      if (error) throw new Error(`coach_refund_quota: ${error.message}`);
+    },
     async spendTodayUsd() {
       const { data, error } = await admin.rpc("coach_spend_today");
       if (error) throw new Error(`coach_spend_today: ${error.message}`);

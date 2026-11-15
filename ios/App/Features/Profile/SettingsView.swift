@@ -8,6 +8,7 @@ struct SettingsView: View {
     let model: ProfileModel
     let account: AccountModel
     @Environment(AppContainer.self) private var container
+    @Environment(ActiveWorkoutPresenter.self) private var workoutPresenter
     @State private var confirmsSignOut = false
     /// Rows that have not reached the server; signing out deletes the device's copy (P045).
     @State private var unsyncedCount = 0
@@ -30,7 +31,13 @@ struct SettingsView: View {
             }
             Section("settings.section.preferences") {
                 Picker("settings.units", selection: Binding(
-                    get: { model.unitSystem }, set: { value in Task { await model.setUnitSystem(value) } }
+                    get: { model.unitSystem }, set: { value in
+                        Task {
+                            await model.setUnitSystem(value)
+                            container.unitRevision += 1
+                            await workoutPresenter.rebuild(container: container)
+                        }
+                    }
                 )) {
                     Text("onboarding.units.metric").tag(UnitSystem.metric)
                     Text("onboarding.units.imperial").tag(UnitSystem.imperial)
@@ -75,7 +82,9 @@ struct SettingsView: View {
         .confirmationDialog("account.signOut.confirm", isPresented: $confirmsSignOut, titleVisibility: .visible) {
             Button("account.signOut", role: .destructive) { Task { await container.signOut() } }
         } message: {
-            if unsyncedCount > 0 {
+            if workoutPresenter.hasActiveWorkout {
+                Text("account.signOut.activeWorkout")
+            } else if unsyncedCount > 0 {
                 Text("account.signOut.unsynced \(unsyncedCount)")
             } else {
                 Text("account.signOut.localData")

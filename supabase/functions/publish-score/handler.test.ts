@@ -47,11 +47,11 @@ Deno.test("check: a big jump within a day is rejected, a small one is not", () =
   assertEquals(check({ ...ok, overall_score: 62 }, facts({ last_score: 55, last_at: recent }), NOW), null);
 });
 
-Deno.test("check: a jump after a day, or from a provisional score, is fine", () => {
+Deno.test("check: a jump after a day is fine, but a provisional flag buys no exemption", () => {
   const old = new Date(NOW - 3 * 86_400_000).toISOString();
   const recent = new Date(NOW - 3_600_000).toISOString();
   assertEquals(check({ ...ok, overall_score: 90 }, facts({ last_score: 50, last_at: old }), NOW), null);
-  assertEquals(check({ ...ok, overall_score: 90 }, facts({ last_score: 50, last_at: recent, last_provisional: true }), NOW), null);
+  assertEquals(check({ ...ok, overall_score: 90 }, facts({ last_score: 50, last_at: recent, last_provisional: true }), NOW), "score_jump");
 });
 
 Deno.test("check: needs synced sets and a weekly count the server can roughly confirm", () => {

@@ -28,6 +28,16 @@ struct AuthFlowModelTests {
         #expect(!model.isBusy)
     }
 
+    @Test func resetReturnsToACleanWelcomeScreen() async {
+        let fake = FakeAuthService()
+        await fake.setNextError(.providerUnavailable)
+        let (model, _) = make(fake)
+        await model.signInWithGoogle()
+        model.path = [.signIn(email: "a@b.co")]
+        model.reset()
+        #expect(model.path.isEmpty && model.error == nil && model.resendCountdown == 0)
+    }
+
     @Test func googleFailureShowsError() async {
         let fake = FakeAuthService()
         await fake.setNextError(.providerUnavailable)

@@ -84,6 +84,16 @@ public actor SyncEngine {
     }
 
     public func pendingCount() async throws -> Int { try await local().count(.pending, userId: userId) }
+    /// Pending rows a push could send right now: rows of the workout in progress are locked and never count.
+    public func pushableCount() async throws -> Int {
+        let lock = try await local().lock(userId: userId)
+        var total = 0
+        for table in SyncTable.allCases {
+            total += try await local().outgoing(table, userId: userId, lock: lock, includeFailed: false).count
+        }
+        return total
+    }
+
     public func failedCount() async throws -> Int { try await local().count(.failed, userId: userId) }
 
     // MARK: Push
@@ -139,9 +149,15 @@ public actor SyncEngine {
         }
         var done = 0
         for table in SyncTable.allCases {
+            var firstPage = true
             while true {
                 let cursor = await metadata.cursor(for: table)
-                let rows = try await remote.changes(table: table, after: cursor, limit: pageSize)
+                // The server stamps `updated_at` when a transaction starts, so a row committed late can land behind a
+                // cursor that already moved on. The first page of every pull therefore starts a little earlier;
+                // merging is idempotent (last write wins), so re-reading a few rows is harmless.
+                let from = firstPage ? Self.rewound(cursor) : cursor
+                firstPage = false
+                let rows = try await remote.changes(table: table, after: from, limit: pageSize)
                 guard let last = rows.last, let lastId = last.rowId, let lastStamp = last.rowUpdatedAt else { break }
                 // Lock is re-read per page: the user may start or finish a workout during a long restore.
                 let store = local()
@@ -158,6 +174,15 @@ public actor SyncEngine {
             }
         }
         return report
+    }
+
+    /// How far back each pull re-reads, covering transactions that commit after a later one has been seen.
+    static let pullOverlap: TimeInterval = 30
+
+    static func rewound(_ cursor: SyncCursor?) -> SyncCursor? {
+        guard let cursor, let date = SyncTime.parseTimestamp(cursor.updatedAt) else { return cursor }
+        let stamp = SyncTime.timestamp(date.addingTimeInterval(-pullOverlap))
+        return SyncCursor(updatedAt: stamp, id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!)
     }
 
     /// Server clock minus device clock, from the midpoint of the round trip.

@@ -53,6 +53,18 @@ final class AuthFlowModel {
 
     deinit { cooldownTask?.cancel() }
 
+    /// Back to a clean welcome screen; called when the session ends so the next visitor never sees the last e-mail form.
+    func reset() {
+        cooldownTask?.cancel()
+        cooldownTask = nil
+        path = []
+        busy = nil
+        error = nil
+        resetSentTo = nil
+        resendCountdown = 0
+        didResend = false
+    }
+
     // MARK: Native providers
 
     func signInWithApple() async {

@@ -36,13 +36,20 @@ extension AppContainer {
     /// Recomputes what the widgets show and reloads their timelines when it changed. Called after the scores
     /// refresh (every local save, so a finished workout included) and when the app comes to the front.
     func refreshWidgets() async {
-        guard !isRefreshingWidgets, let store = WidgetSnapshotStore.appGroup() else { return }
+        guard let store = WidgetSnapshotStore.appGroup() else { return }
+        if isRefreshingWidgets {
+            widgetsDirty = true
+            return
+        }
         isRefreshingWidgets = true
         defer { isRefreshingWidgets = false }
-        guard await currentUser() != nil, let model = await makeTodayModel(forWidgets: true) else { return }
-        await model.load()
-        guard let snapshot = model.widgetSnapshot() else { return }
-        if store.write(snapshot) { WidgetCenter.shared.reloadAllTimelines() }
+        repeat {
+            widgetsDirty = false
+            guard await currentUser() != nil, let model = await makeTodayModel(forWidgets: true) else { return }
+            await model.load()
+            guard let snapshot = model.widgetSnapshot() else { return }
+            if store.write(snapshot) { WidgetCenter.shared.reloadAllTimelines() }
+        } while widgetsDirty
     }
 
     /// Sign-out: widgets fall back to their "sign in" state.

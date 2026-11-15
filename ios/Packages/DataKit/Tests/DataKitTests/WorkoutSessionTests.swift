@@ -304,6 +304,26 @@ private func done(_ kg: Double, _ reps: Int, type: SetType = .working) -> SetInp
         #expect(session.elapsed(at: t0.addingTimeInterval(-10)) == 0)
     }
 
+    @Test func aForgottenWorkoutFinishesAtItsLastCompletedSet() async throws {
+        let env = try makeEnv()
+        let session = env.session()
+        try await session.startEmpty()
+        let exerciseId = try await session.addExercise(bench)
+        let set = try #require(session.exercise(exerciseId)?.sets.first)
+        try await session.setReps(set.id, reps: 5)
+        env.clock.advance(by: 600)
+        try await session.completeSet(set.id)
+        let lastSet = env.clock.closure()
+        #expect(!session.isStale)
+        env.clock.advance(by: WorkoutSession.staleAfter + 60)
+        #expect(session.isStale)
+        guard case .finished(let finished) = try await session.finishAtLastActivity() else {
+            Issue.record("expected finished")
+            return
+        }
+        #expect(finished.endedAt == lastSet)
+    }
+
     // MARK: Events
 
     @Test func eventsForSetExerciseAndFinish() async throws {

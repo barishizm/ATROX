@@ -32,6 +32,14 @@ export function createDeleteHandler({ store, revokeApple }: DeleteDeps) {
       code = value as string | undefined;
     }
 
+    try {
+      for (const table of [...USER_TABLES].reverse()) await store.deleteRows(table, userId);
+      await store.deleteAuthUser(userId);
+    } catch (error) {
+      console.error("delete-account failed", error instanceof Error ? error.message : error);
+      return json({ error: "delete_failed" }, 500);
+    }
+    // Revoke last: a failed deletion must not leave an account whose Apple link is already gone.
     let appleRevoked: boolean | null = null;
     if (code && revokeApple) {
       try {
@@ -43,13 +51,6 @@ export function createDeleteHandler({ store, revokeApple }: DeleteDeps) {
       }
     }
 
-    try {
-      for (const table of [...USER_TABLES].reverse()) await store.deleteRows(table, userId);
-      await store.deleteAuthUser(userId);
-    } catch (error) {
-      console.error("delete-account failed", error instanceof Error ? error.message : error);
-      return json({ error: "delete_failed" }, 500);
-    }
     return json({ deleted: true, apple_revoked: appleRevoked });
   };
 }

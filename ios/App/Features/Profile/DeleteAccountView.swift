@@ -1,4 +1,5 @@
 import DesignSystem
+import StoreKit
 import SwiftUI
 
 /// Two-step account deletion: an explanation, then typing the confirmation word.
@@ -6,6 +7,7 @@ struct DeleteAccountView: View {
     @Bindable var account: AccountModel
     @Environment(\.dismiss) private var dismiss
     @FocusState private var fieldFocused: Bool
+    @State private var showsSubscriptions = false
 
     var body: some View {
         ScrollView {
@@ -26,6 +28,7 @@ struct DeleteAccountView: View {
         .task { if account.deletionStep == nil { account.beginDeletion() } }
         .onDisappear { account.cancelDeletion() }
         .animation(.snappy, value: account.deletionStep)
+        .manageSubscriptionsSheet(isPresented: $showsSubscriptions)
         .accessibilityIdentifier("delete-account-screen")
     }
 
@@ -33,6 +36,13 @@ struct DeleteAccountView: View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("account.delete.explain.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
             Text("account.delete.explain.body").font(DSFont.body).foregroundStyle(DSColor.textSecondary)
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                Text("account.delete.subscription").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                Button("account.delete.manageSubscription") { showsSubscriptions = true }
+                    .font(DSFont.callout)
+                    .frame(minHeight: HitTarget.minimum)
+                    .accessibilityIdentifier("delete-manage-subscription")
+            }
             PrimaryButton("account.delete.continue") { account.continueToConfirmation() }
                 .accessibilityIdentifier("delete-continue")
             SecondaryButton("common.cancel") { dismiss() }

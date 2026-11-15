@@ -37,17 +37,25 @@ public final class SupabaseAuthService: AuthService {
             let session = try await client.auth.session
             return .signedIn(Self.user(from: session.user))
         } catch {
-            let mapped = AuthError.map(error)
-            if mapped == .offline, let stored = client.auth.currentSession {
-                // Offline start: keep the user in; the SDK retries the refresh later.
-                return .signedIn(Self.user(from: stored.user))
+            if Self.isDefiniteRejection(error) {
+                // The server refused the session itself (revoked, rotated away, user gone): don't leave a dead one behind.
+                if AuthError.map(error) != .sessionExpired { try? await client.auth.signOut(scope: .local) }
+                return .signedOut
             }
-            if mapped != .sessionExpired && mapped != .offline {
-                // Refresh was rejected for another reason: don't leave a dead session behind.
-                try? await client.auth.signOut(scope: .local)
-            }
+            // Offline, a 5xx, a rate limit or anything unrecognised says nothing about the session: keep the user in
+            // with the stored one; the SDK retries the refresh later.
+            if let stored = client.auth.currentSession { return .signedIn(Self.user(from: stored.user)) }
             return .signedOut
         }
+    }
+
+    /// Whether a failed session read means the session is really gone. Everything else (network, 5xx, 429) is transient.
+    static func isDefiniteRejection(_ error: any Error) -> Bool {
+        if AuthError.map(error) == .sessionExpired { return true }
+        if case Supabase.AuthError.api(_, _, _, let response) = error {
+            return (400..<500).contains(response.statusCode) && response.statusCode != 429
+        }
+        return false
     }
 
     public func stateUpdates() -> AsyncStream<AuthState> {
@@ -63,9 +71,11 @@ public final class SupabaseAuthService: AuthService {
                     case .initialSession, .signedIn, .tokenRefreshed, .userUpdated, .mfaChallengeVerified:
                         if let session, !session.isExpired || event != .initialSession {
                             continuation.yield(.signedIn(Self.user(from: session.user)))
-                        } else {
+                        } else if event != .initialSession {
                             continuation.yield(.signedOut)
                         }
+                        // An expired stored session at launch says nothing yet (offline, the refresh may still
+                        // work): `restoreSession` decides, so a late `.initialSession` never signs anyone out.
                     }
                 }
                 continuation.finish()

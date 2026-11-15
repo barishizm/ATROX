@@ -66,18 +66,18 @@ final class TodayModel {
     let context: HistoryContext
     @ObservationIgnored private let center: ScoreCenter
     @ObservationIgnored private let stats: TrainingStats
-    @ObservationIgnored private let planStore: RoutinePlanStore
+    private let planStore: RoutinePlanStore
     @ObservationIgnored private let profile: ProfileInput?
     @ObservationIgnored private let calendar: Calendar
     @ObservationIgnored private let insights: InsightService?
     /// Hands the overall score to the social layer (P087); the server drops it while sharing is off.
-    @ObservationIgnored private let publishScore: (@Sendable (ScorePublication) async -> Void)?
+    @ObservationIgnored private let publishScore: (@Sendable (ScorePublication) async -> Bool)?
     @ObservationIgnored private var lastPublished: ScorePublication?
 
     init(
         context: HistoryContext, center: ScoreCenter, stats: TrainingStats, plan: RoutinePlanStore, profile: ProfileInput?,
         insights: InsightService? = nil, calendar: Calendar = .current,
-        publishScore: (@Sendable (ScorePublication) async -> Void)? = nil
+        publishScore: (@Sendable (ScorePublication) async -> Bool)? = nil
     ) {
         self.publishScore = publishScore
         self.context = context
@@ -140,8 +140,8 @@ final class TodayModel {
             weeklyWorkouts: min(max(weekly, 0), 50)
         )
         guard publication != lastPublished else { return }
-        lastPublished = publication
-        await publishScore(publication)
+        // Remembered only once the server took it, so a rejected or failed publish is tried again on the next load.
+        if await publishScore(publication) { lastPublished = publication }
     }
 
     private func loadInsight(names: [String: String]) async {
@@ -162,15 +162,33 @@ final class TodayModel {
         record.kind == .reps ? "\(Int(record.value.rounded()))" : context.weightText(record.value)
     }
 
+    /// Changes with the active program and the weekly plan, so the view can reload when either is edited.
+    var planSignature: String {
+        let week = planStore.dayByWeekday.sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value.uuidString)" }.joined(separator: ",")
+        return (planStore.activeRoutineId?.uuidString ?? "-") + "|" + week
+    }
+
     private func resolvePlan() async -> Plan {
         let routines = (try? await context.routines.all(userId: context.userId)) ?? []
         programDays = []
+        // Templates are split into one program per day, so today's planned weekday may belong to any program,
+        // not just the active one.
+        let weekday = calendar.component(.weekday, from: Date())
+        if let plannedId = planStore.dayByWeekday[weekday],
+           let routine = routines.first(where: { $0.days.contains { $0.id == plannedId } }),
+           let day = routine.days.first(where: { $0.id == plannedId }) {
+            programDays = routine.days.map {
+                PlannedDay(routineId: routine.id, dayId: $0.id, routineName: routine.name, dayName: $0.name, exerciseCount: $0.exercises.count)
+            }
+            return .planned(PlannedDay(
+                routineId: routine.id, dayId: day.id, routineName: routine.name, dayName: day.name, exerciseCount: day.exercises.count
+            ))
+        }
         if let id = planStore.activeRoutineId, let routine = routines.first(where: { $0.id == id }) {
             programDays = routine.days.map {
                 PlannedDay(routineId: routine.id, dayId: $0.id, routineName: routine.name, dayName: $0.name, exerciseCount: $0.exercises.count)
             }
             let last = await stats.lastRoutineDayId(userId: context.userId, routineId: routine.id)
-            let weekday = calendar.component(.weekday, from: Date())
             if let day = NextWorkout.pick(routine: routine, weekdayPlan: planStore.dayByWeekday, weekday: weekday, lastDayId: last) {
                 return .planned(PlannedDay(
                     routineId: routine.id, dayId: day.id, routineName: routine.name, dayName: day.name, exerciseCount: day.exercises.count

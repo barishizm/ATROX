@@ -37,13 +37,16 @@ extension AppContainer {
 
     /// Follows the root session state: a signed-in user gets the sync running (with the first restore).
     func sessionChanged(_ state: SessionState) async {
-        if case .ready = state { Task { [weak self] in await self?.prepareScores() } }
-        guard let sync else { return }
         switch state {
         case .ready, .needsOnboarding:
+            sessionIsOpen = true
+            if case .ready = state { Task { [weak self] in await self?.prepareScores() } }
+            guard let sync else { return }
             pushConsents()
             if let user = await currentUser() { await sync.activate(userId: user.id) }
-        case .loading, .signedOut:
+        case .signedOut:
+            await sessionEndedExternally()
+        case .loading:
             break
         }
     }

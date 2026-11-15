@@ -52,6 +52,13 @@ final class LiveActivityCoordinator {
         track()
     }
 
+    /// The session ended (sign-out): no workout may stay on the lock screen.
+    func endAll() async {
+        shownWorkoutId = nil
+        shownState = nil
+        await service.endAll(except: nil)
+    }
+
     /// The Settings toggle changed.
     func preferenceChanged() async { await requestSync() }
 

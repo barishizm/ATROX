@@ -27,6 +27,10 @@ final class AppContainer {
     let consentPusher: ConsentPusher?
     @ObservationIgnored var saveObserver: (any NSObjectProtocol)?
     @ObservationIgnored private var workoutEventsTask: Task<Void, Never>?
+    /// True from the moment a user's session starts until it ends; `sessionEndedExternally` only acts while it is open.
+    @ObservationIgnored var sessionIsOpen = false
+    /// The signed-in user as of the last session restore; cleared whenever a session ends.
+    @ObservationIgnored private var cachedUser: AuthUser?
     let authFlow: AuthFlowModel
     let passwordRecovery: PasswordRecoveryModel
     /// Local SwiftData store (app group container); nil only in tests that do not need persistence.
@@ -63,10 +67,20 @@ final class AppContainer {
     /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
     @ObservationIgnored var coachConsentState: CoachConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
-    @ObservationIgnored private var workoutSession: WorkoutSession?
+    @ObservationIgnored var workoutSession: WorkoutSession?
     @ObservationIgnored var isRefreshingWidgets = false
+    /// A refresh was requested while one was running: run once more when it ends.
+    @ObservationIgnored var widgetsDirty = false
     /// Version counter and pending undo of the workout history (P042).
     let historyEvents = HistoryEvents()
+    @ObservationIgnored let catalogCache = CatalogCache()
+    /// Moves when the display unit changes; screens that captured the unit when they were built rebuild their models.
+    var unitRevision = 0
+    /// Moves whenever data the Today and Analysis tabs show may have changed: history edits, finished workouts
+    /// and completed sync passes (a restore on a new device, a workout pulled from another device).
+    var dataRevision: DataRevision { DataRevision(history: historyEvents.version, syncedAt: sync?.lastSyncedAt) }
+
+    struct DataRevision: Hashable { let history: Int; let syncedAt: Date? }
     /// One rest timer for the app; it outlives the workout screen (minimizing keeps it running).
     let restTimer: RestTimerController = {
         let timer = RestTimerController(notifications: UserNotificationService())
@@ -134,20 +148,41 @@ final class AppContainer {
 
     /// Sign-out from the UI: the device's copy of the user's data is removed, then the session ends.
     func signOut() async {
+        sessionIsOpen = false
+        await endSession(wipesUnsyncedData: true)
+        await root.signOut()
+    }
+
+    /// The session ended without the user asking (expired, revoked, cancelled password reset): the same cleanup as a
+    /// sign-out, except that rows the server has not received stay on the device. Runs once per open session.
+    func sessionEndedExternally() async {
+        cachedUser = nil
+        guard sessionIsOpen else { return }
+        sessionIsOpen = false
+        await endSession(wipesUnsyncedData: false)
+    }
+
+    /// Everything that belongs to the signed-in user and must not outlive the session.
+    private func endSession(wipesUnsyncedData: Bool) async {
+        cachedUser = nil
         workoutEventsTask?.cancel()
         workoutEventsTask = nil
         workoutSession = nil
         #if DEBUG
         debugUser = nil
         #endif
+        await restTimer.skip()
+        await liveActivity?.endAll()
+        liveActivity = nil
         await resetScores()
         clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
         UserDefaultsOnboardingDraftStore().clearAll()
+        authFlow.reset()
+        await UserNotificationService().cancel(id: WeeklySummaryNotification.identifier)
         purchases.stop()
-        await sync?.signOut()
-        await root.signOut()
+        await sync?.signOut(keepingUnsynced: !wipesUnsyncedData)
     }
 
     /// Lets the Live Activity buttons ("skip", "+15 s") drive the rest timer (P038).
@@ -167,6 +202,7 @@ final class AppContainer {
         do {
             let result = try await catalog.bootstrap()
             Log.app.info("Catalog bootstrap: \(String(describing: result))")
+            catalogCache.invalidate()
         } catch {
             Log.app.error("Catalog bootstrap failed: \(error)")
             return
@@ -174,6 +210,7 @@ final class AppContainer {
         do {
             let result = try await catalog.syncRemote()
             Log.app.info("Catalog sync: \(String(describing: result))")
+            catalogCache.invalidate()
         } catch {
             Log.app.error("Catalog sync failed (keeping the local catalog): \(error)")
         }
@@ -181,9 +218,14 @@ final class AppContainer {
 
     /// The signed-in user, or nil when signed out / auth is not configured.
     func currentUser() async -> AuthUser? {
+        // Dozens of call sites ask; restoring the session each time hit the Keychain (and sometimes the network).
+        // The user is remembered until the session ends.
+        if let cachedUser { return cachedUser }
         if let authService {
             switch await authService.restoreSession() {
-            case .signedIn(let user), .passwordRecovery(let user): return user
+            case .signedIn(let user), .passwordRecovery(let user):
+                cachedUser = user
+                return user
             case .signedOut: break
             }
         }
@@ -297,11 +339,11 @@ final class AppContainer {
     func makeTodayModel(forWidgets: Bool = false) async -> TodayModel? {
         guard let modelContainer, let context = await makeHistoryContext(), let center = await scoreCenter() else { return nil }
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
-        let publish: (@Sendable (ScorePublication) async -> Void)? = forWidgets ? nil : social.map { service in
+        let publish: (@Sendable (ScorePublication) async -> Bool)? = forWidgets ? nil : social.map { service in
             { @Sendable publication in
                 // Nothing leaves the device unless the user joined and switched score sharing on.
-                guard let profile = try? await service.myProfile(), profile.sharesScore else { return }
-                _ = try? await service.publishScore(publication)
+                guard let profile = try? await service.myProfile(), profile.sharesScore else { return false }
+                return (try? await service.publishScore(publication)) ?? false
             }
         }
         return TodayModel(
@@ -315,12 +357,13 @@ final class AppContainer {
     func makeRoutineEditorModel(routineId: UUID) async -> RoutineEditorModel? {
         guard let modelContainer, let user = await currentUser() else { return nil }
         let userId = user.id
+        let catalogCache = self.catalogCache
         return RoutineEditorModel(
             routineId: routineId, repository: SwiftDataRoutineRepository(modelContainer: modelContainer),
             plan: planStore(for: userId)
         ) {
             let context = ModelContext(modelContainer)
-            var items = ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map(ExerciseListItem.init)
+            var items = catalogCache.entries(in: modelContainer).map(\.item)
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
             items += ((try? context.fetch(own)) ?? []).map(ExerciseListItem.init)
             return items
@@ -356,9 +399,17 @@ final class AppContainer {
         workoutSession = session
         workoutEventsTask?.cancel()
         let events = session.events()
-        workoutEventsTask = Task { [sync] in
+        workoutEventsTask = Task { [weak self, sync, historyEvents] in
             for await event in events {
-                if case .workoutFinished = event { sync?.request(.workoutFinished) }
+                if case .workoutFinished = event {
+                    sync?.request(.workoutFinished)
+                    // Today and Analysis reload on this counter.
+                    await MainActor.run {
+                        historyEvents.changed()
+                        // Score work was held back while the workout ran.
+                        self?.scoresMayHaveChanged()
+                    }
+                }
             }
         }
         return session
@@ -368,10 +419,9 @@ final class AppContainer {
     func progressionContext(userId: UUID, modelContainer: ModelContainer) async -> ProgressionContext {
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: userId)
         let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
-        let context = ModelContext(modelContainer)
         let classes = Dictionary(
-            ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
-                ($0.id, LoadClass.classify(movementPattern: $0.movementPattern, mechanic: $0.mechanic))
+            catalogCache.entries(in: modelContainer).map {
+                ($0.item.id, LoadClass.classify(movementPattern: $0.pattern, mechanic: $0.mechanic))
             },
             uniquingKeysWith: { first, _ in first }
         )
@@ -389,6 +439,7 @@ final class AppContainer {
         guard let modelContainer, let user = await currentUser(), let session = await activeWorkoutSession() else { return nil }
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id)
         let unit: WeightUnit = profile?.input.unitSystem == .imperial ? .pounds : .kilograms
+        let catalogCache = self.catalogCache
         let locale = language.effectiveLocale()
         let userId = user.id
         session.progression = await progressionContext(userId: userId, modelContainer: modelContainer)
@@ -400,9 +451,7 @@ final class AppContainer {
             decimalSeparator: locale.decimalSeparator ?? "."
         ) {
             let context = ModelContext(modelContainer)
-            var entries = ((try? context.fetch(FetchDescriptor<Exercise>())) ?? []).map {
-                ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: $0.movementPattern, mechanic: $0.mechanic)
-            }
+            var entries = catalogCache.entries(in: modelContainer)
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
             entries += ((try? context.fetch(own)) ?? []).map {
                 ActiveWorkoutModel.CatalogEntry(item: ExerciseListItem($0), pattern: nil, mechanic: nil)
@@ -467,6 +516,7 @@ final class AppContainer {
     /// and the exercise names; nil without a user or local store.
     func makeHistoryContext() async -> HistoryContext? {
         guard let modelContainer, let user = await currentUser() else { return nil }
+        let catalogCache = self.catalogCache
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: user.id)
         let locale = language.effectiveLocale()
         let languageCode = locale.language.languageCode?.identifier == "tr" ? "tr" : "en"
@@ -484,9 +534,8 @@ final class AppContainer {
         ) {
             let context = ModelContext(modelContainer)
             var names: [String: String] = [:]
-            for row in (try? context.fetch(FetchDescriptor<Exercise>())) ?? [] {
-                let item = ExerciseListItem(row)
-                names[item.id] = item.name(languageCode: languageCode)
+            for entry in catalogCache.entries(in: modelContainer) {
+                names[entry.item.id] = entry.item.name(languageCode: languageCode)
             }
             let own = FetchDescriptor<CustomExercise>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil })
             for row in (try? context.fetch(own)) ?? [] {
@@ -614,10 +663,17 @@ final class AppContainer {
         do {
             if let appGroupID { return try DataStore.production(appGroupID: appGroupID) }
             Log.app.error("AppGroupID missing from Info.plist; using the app sandbox for local data.")
-            return try DataStore.onDisk(directory: URL.homeDirectory)
+            return try DataStore.onDisk(directory: fallbackStoreDirectory)
         } catch {
             Log.app.error("App group store unavailable (\(error)); using the app sandbox for local data.")
-            return try? DataStore.onDisk(directory: URL.homeDirectory)
+            return try? DataStore.onDisk(directory: fallbackStoreDirectory)
         }
+    }
+
+    /// Where the store lives without an app group: Application Support, not the root of the sandbox.
+    private static var fallbackStoreDirectory: URL {
+        let base = URL.applicationSupportDirectory
+        try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        return base
     }
 }

@@ -107,15 +107,22 @@ public final class SyncCoordinator {
     }
 
     /// Sign-out: stops syncing and deletes the user's rows from this device (the server keeps them).
-    public func signOut() async {
+    /// `keepingUnsynced`: for a session that ended without the user's say (expired, revoked). Rows the server has not
+    /// received yet stay on the device, with their owner recorded, so signing in again to the same account resumes
+    /// the upload instead of losing them. Without unsynced rows the device is wiped as usual.
+    public func signOut(keepingUnsynced: Bool = false) async {
         cancelTimers()
         networkTask?.cancel()
         networkTask = nil
         await running?.value
+        var keep = false
+        if keepingUnsynced, engine != nil { keep = await unsyncedCount() > 0 }
         engine = nil
         userId = nil
-        try? await SyncLocalStore(modelContainer: container).wipeAll()
-        await metadata.reset(owner: nil)
+        if !keep {
+            try? await SyncLocalStore(modelContainer: container).wipeAll()
+            await metadata.reset(owner: nil)
+        }
         phase = .idle
         lastSyncedAt = nil
         pendingCount = 0
@@ -171,6 +178,12 @@ public final class SyncCoordinator {
         return false
     }
 
+    /// Stops the pass in flight (the system is about to suspend the app); the rows stay pending for the next trigger.
+    public func cancelRunning() {
+        rerun = nil
+        running?.cancel()
+    }
+
     /// Waits for the running pass (tests, background task).
     public func waitUntilIdle() async {
         while let task = running { await task.value }
@@ -189,7 +202,8 @@ public final class SyncCoordinator {
     }
 
     private func pass(_ engine: SyncEngine, trigger: SyncTrigger, retryFailed: Bool) async {
-        if trigger == .localChange, (try? await engine.pendingCount()) == 0 { return }
+        // Edits to the workout in progress are locked and cannot be pushed: they must not wake the network every few seconds.
+        if trigger == .localChange, (try? await engine.pushableCount()) == 0 { return }
         passCount += 1
         do {
             if await !metadata.snapshot.restoreCompleted {
@@ -209,6 +223,8 @@ public final class SyncCoordinator {
             Log.sync.info("Sync (\(trigger.rawValue, privacy: .public)) failed, will retry: \(reason, privacy: .public)")
             phase = .waitingToRetry
             scheduleRetry()
+        } catch is CancellationError {
+            phase = .idle
         } catch {
             Log.sync.error("Sync (\(trigger.rawValue, privacy: .public)) failed: \(String(describing: error), privacy: .public)")
             phase = .failed(String(describing: error))

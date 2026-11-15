@@ -9,6 +9,10 @@ import Observation
 final class ActiveWorkoutPresenter {
     private(set) var model: ActiveWorkoutModel?
     var isPresented = false
+    /// A restored workout that nobody touched for hours: the shell asks whether to finish or discard it.
+    var asksAboutStaleWorkout = false
+    /// The program day a link or shortcut pointed to no longer exists.
+    var routineUnavailable = false
     /// The summary of the workout that was just finished; shown in place of the workout screen.
     private(set) var summary: WorkoutSummaryModel?
 
@@ -19,6 +23,26 @@ final class ActiveWorkoutPresenter {
         guard model == nil else { return }
         model = await container.makeActiveWorkoutModel()
         await model?.load()
+        if model?.session.isStale == true { asksAboutStaleWorkout = true }
+    }
+
+    /// "Finish" for a forgotten workout: ends it at its last set.
+    func finishStale(container: AppContainer) async {
+        guard let model, let result = try? await model.session.finishAtLastActivity() else { return }
+        await finished(result, model: model, container: container)
+    }
+
+    /// "Discard" for a forgotten workout.
+    func discardStale() async {
+        try? await model?.session.cancel()
+        ended()
+    }
+
+    /// Rebuilds the screen model so it picks up a changed unit; a workout in progress keeps what it has.
+    func rebuild(container: AppContainer) async {
+        guard !hasActiveWorkout else { return }
+        model = nil
+        await prepare(container: container)
     }
 
     func resume() { if hasActiveWorkout { isPresented = true } }
@@ -43,7 +67,12 @@ final class ActiveWorkoutPresenter {
     func start(routineId: UUID, dayId: UUID, container: AppContainer) async {
         await prepare(container: container)
         guard let model else { return }
-        if !model.isActive { try? await model.session.start(routineId: routineId, dayId: dayId) }
+        if !model.isActive {
+            do { try await model.session.start(routineId: routineId, dayId: dayId) } catch WorkoutSessionError.unknownRoutineDay {
+                routineUnavailable = true
+                await container.refreshWidgets()
+            } catch {}
+        }
         isPresented = model.isActive
     }
 

@@ -24,7 +24,9 @@ extension AppContainer {
     func rescheduleWeeklySummary() async {
         let notifications = UserNotificationService()
         let id = WeeklySummaryNotification.identifier
-        guard WeeklySummarySettings.isEnabled, await notifications.authorizationStatus() == .authorized,
+        // Nobody signed in: never leave a notification (with the last user's numbers) pending.
+        guard await currentUser() != nil, WeeklySummarySettings.isEnabled,
+              await notifications.authorizationStatus() == .authorized,
               let fire = WeeklySchedule.nextFire(after: Date(), hour: WeeklySummarySettings.hour, minute: WeeklySummarySettings.minute)
         else {
             await notifications.cancel(id: id)

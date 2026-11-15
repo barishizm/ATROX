@@ -313,3 +313,13 @@ import Testing
         #expect(PlatePreferences.ownedPlates(unit: .kilograms, defaults: prefs) == [20, 5])
     }
 }
+
+@Suite struct LastTimeMatchingTests {
+    @Test func anAddedWarmupDoesNotShiftTheWorkingSets() {
+        let last = [SetInput(weightKg: 60, reps: 8, setType: .working), SetInput(weightKg: 70, reps: 6, setType: .working)]
+        let sets: [SetType] = [.warmup, .working, .working]
+        #expect(ActiveWorkoutModel.lastTimeSet(types: sets, at: 0, in: last) == nil)
+        #expect(ActiveWorkoutModel.lastTimeSet(types: sets, at: 1, in: last)?.weightKg == 60)
+        #expect(ActiveWorkoutModel.lastTimeSet(types: sets, at: 2, in: last)?.weightKg == 70)
+    }
+}
