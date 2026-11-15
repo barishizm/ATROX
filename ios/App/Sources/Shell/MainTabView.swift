@@ -10,6 +10,7 @@ struct MainTabView: View {
     @State private var profile = TabRouter<ProfileRoute>()
     @State private var workoutPresenter = ActiveWorkoutPresenter()
     @Environment(AppContainer.self) private var container
+    @Environment(\.locale) private var locale
 
     private var showsMiniBar: Bool {
         guard let model = workoutPresenter.model else { return false }
@@ -30,6 +31,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .id(locale.identifier)
             }
             Tab(AppTab.workout.title, systemImage: AppTab.workout.systemImage, value: AppTab.workout) {
                 NavigationStack(path: $workout.path) {
@@ -49,6 +51,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .id(locale.identifier)
             }
             Tab(AppTab.analysis.title, systemImage: AppTab.analysis.systemImage, value: AppTab.analysis) {
                 NavigationStack(path: $analysis.path) {
@@ -61,6 +64,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .id(locale.identifier)
             }
             Tab(AppTab.coach.title, systemImage: AppTab.coach.systemImage, value: AppTab.coach) {
                 NavigationStack(path: $coach.path) {
@@ -69,6 +73,7 @@ struct MainTabView: View {
                             FeaturePlaceholderView(title: "shell.tabbar.coach", systemImage: "bubble.left.and.text.bubble.right")
                         }
                 }
+                .id(locale.identifier)
             }
             Tab(AppTab.profile.title, systemImage: AppTab.profile.systemImage, value: AppTab.profile) {
                 ProfileTabView(router: profile)

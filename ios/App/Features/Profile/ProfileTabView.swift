@@ -4,6 +4,7 @@ import SwiftUI
 /// The Profile tab: loads the model for the signed-in user, then hosts the tab's navigation stack.
 struct ProfileTabView: View {
     @Environment(AppContainer.self) private var container
+    @Environment(\.locale) private var locale
     @Bindable var router: TabRouter<ProfileRoute>
     @State private var model: ProfileModel?
     @State private var account: AccountModel?
@@ -17,6 +18,7 @@ struct ProfileTabView: View {
                     if let model, let account { destination(route, model: model, account: account) }
                 }
         }
+        .id(locale.identifier)
         .task { await prepare() }
     }
 
