@@ -80,3 +80,4 @@ struct UserDefaultsOnboardingDraftStore: OnboardingDraftStore, @unchecked Sendab
             defaults.removeObject(forKey: name)
         }
     }
+}

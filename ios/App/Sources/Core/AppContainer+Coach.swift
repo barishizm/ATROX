@@ -9,7 +9,8 @@ extension AppContainer {
     /// conversation cache next to the app's other support files.
     static func makeCoach(
         config: SupabaseConfiguration, accessToken: @escaping @Sendable () async -> String?,
-        refreshedToken: @escaping @Sendable () async -> String?
+        refreshedToken: @escaping @Sendable () async -> String?,
+        consentPusher: ConsentPusher?
     ) -> CoachDependencies {
         let chat = SupabaseCoachChatService(
             baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken
@@ -21,9 +22,9 @@ extension AppContainer {
         let digest = SupabaseCoachDigestService(
             baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken
         )
-        let upload: @Sendable (UUID, String) async -> Bool = { userId, version in
-            await ServerConsentUploader(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken)
-                .uploadAISharing(userId: userId, version: version)
+        // The consent was just recorded locally; pushing sends it (and anything older that is still pending).
+        let upload: @Sendable (UUID, String) async -> Bool = { userId, _ in
+            await consentPusher?.push(userId: userId) ?? false
         }
         let quota: @Sendable (UUID) async -> CoachQuota? = { userId in
             await ServerCoachQuotaLoader(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken).load(userId: userId)
@@ -84,7 +85,7 @@ extension AppContainer {
         let userId = user.id
         let reconsent: @MainActor () async -> Bool = {
             do { try await consents.setAISharing(true, userId: userId) } catch { return false }
-            // Consents do not sync yet, and the coach endpoint reads them on the server: put this one there.
+            // The coach endpoint reads the consent on the server: push it right away.
             if let upload = coach.uploadAISharingConsent {
                 return await upload(userId, ConsentVersions.current.aiSharing)
             }

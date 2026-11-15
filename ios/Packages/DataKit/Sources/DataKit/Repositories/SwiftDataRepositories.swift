@@ -144,6 +144,22 @@ public actor SwiftDataConsentRepository: ConsentRepository {
         )
         return try modelContext.fetch(descriptor).map(\.snapshot)
     }
+
+    public func unsynced(userId: UUID) throws -> [ConsentSnapshot] {
+        let synced = SyncState.synced.rawValue
+        let descriptor = FetchDescriptor<ConsentRecord>(
+            predicate: #Predicate { $0.userId == userId && $0.syncStateRaw != synced },
+            sortBy: [SortDescriptor(\.createdAt)]
+        )
+        return try modelContext.fetch(descriptor).map(\.snapshot)
+    }
+
+    public func markSynced(ids: [UUID]) throws {
+        guard !ids.isEmpty else { return }
+        let descriptor = FetchDescriptor<ConsentRecord>(predicate: #Predicate { ids.contains($0.id) })
+        for record in try modelContext.fetch(descriptor) { record.syncStateRaw = SyncState.synced.rawValue }
+        try modelContext.save()
+    }
 }
 
 @ModelActor
