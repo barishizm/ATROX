@@ -69,7 +69,25 @@ public actor ScoreService {
     /// Current scores of one reference group, computed if not cached. No snapshots are written.
     public func overview(userId: UUID, population: ReferencePopulation? = nil) async -> ScoreOutcome {
         let group = population ?? preferredPopulation(userId: userId)
-        return await compute(userId: userId, population: group, trigger: .everything, persist: false)
+        // Reads the history once; when nothing score-relevant changed since the cached run, the cached overview is the
+        // exact result of a fresh computation (same sets, model, user and day), so the evaluation is skipped.
+        let loaded = try? loadSets(userId: userId, exerciseIds: nil)
+        if let loaded, let scoring = await scoringModel(), case .success(let user) = scoringUser(userId: userId, on: clock()),
+           let cached = cache[CacheKey(userId: userId, population: group)],
+           cached.asOfDay == ScoreCalculator.dayNumber(clock(), calendar: calendar), cached.modelVersion == scoring.version,
+           cached.user == user, cached.sets == loaded {
+            return .ready(cached.overview)
+        }
+        return await compute(userId: userId, population: group, trigger: .everything, persist: false, preloaded: loaded)
+    }
+
+    /// The overview of the preferred reference group together with the finished sets it was computed from, from a
+    /// single read of the history (the insight detectors need both).
+    func overviewWithSets(userId: UUID) async -> (overview: ScoreOverview, sets: [String: [ScoredSet]])? {
+        let group = preferredPopulation(userId: userId)
+        guard case .ready(let overview) = await overview(userId: userId, population: group),
+              let sets = cache[CacheKey(userId: userId, population: group)]?.sets else { return nil }
+        return (overview, sets)
     }
 
     /// Recomputes after a change and stores snapshots. Returns the new overview of the preferred reference group.
@@ -332,6 +350,16 @@ public actor ScoreService {
         return .success(ScoringUser(sex: profile.sex, age: Double(age), bodyweightKg: weight.weightKg))
     }
 
+    /// The 16 bytes of a UUID as two big-endian integers: their order equals the order of `uuidString`.
+    private static func sortKey(_ id: UUID) -> (UInt64, UInt64) {
+        let b = id.uuid
+        let high = UInt64(b.0) << 56 | UInt64(b.1) << 48 | UInt64(b.2) << 40 | UInt64(b.3) << 32
+            | UInt64(b.4) << 24 | UInt64(b.5) << 16 | UInt64(b.6) << 8 | UInt64(b.7)
+        let low = UInt64(b.8) << 56 | UInt64(b.9) << 48 | UInt64(b.10) << 40 | UInt64(b.11) << 32
+            | UInt64(b.12) << 24 | UInt64(b.13) << 16 | UInt64(b.14) << 8 | UInt64(b.15)
+        return (high, low)
+    }
+
     /// Completed, non-deleted working and warm-up sets of finished workouts, grouped by scored exercise id.
     /// `exerciseIds == nil` loads the whole history.
     private func loadSets(userId: UUID, exerciseIds: Set<String>?) throws -> [String: [ScoredSet]] {
@@ -348,19 +376,43 @@ public actor ScoreService {
         let starts = Dictionary(uniqueKeysWithValues: workouts.map { ($0.id, $0.startedAt) })
         let live = exercises.filter { starts[$0.workoutId] != nil }
         let rowIds = Set(live.map(\.id))
-        let entries = try context.fetch(
-            FetchDescriptor<SetEntry>(predicate: #Predicate { rowIds.contains($0.workoutExerciseId) && $0.deletedAt == nil && $0.isCompleted })
-        )
+        // The whole history reads the user's sets directly (one indexed-by-user scan) instead of binding thousands of
+        // row ids; the `parents` lookup below drops sets of rows that are not part of the result either way.
+        let setFetch = exerciseIds == nil
+            ? FetchDescriptor<SetEntry>(predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.isCompleted })
+            : FetchDescriptor<SetEntry>(predicate: #Predicate { rowIds.contains($0.workoutExerciseId) && $0.deletedAt == nil && $0.isCompleted })
+        let entries = try context.fetch(setFetch)
         let parents = Dictionary(uniqueKeysWithValues: live.map { ($0.id, $0) })
+        // Every property of a SwiftData model is read once, into plain values; sorting and building then work on those.
+        // The order is by the row id's canonical (upper-case hex) string, then position: comparing the 16 id bytes
+        // big-endian gives exactly that order without creating strings.
+        struct Row {
+            var high: UInt64, low: UInt64, position: Int
+            var id: UUID, rowId: UUID, reps: Int, weightKg: Double, rir: Int?, isWarmup: Bool
+        }
+        var rows: [Row] = []
+        rows.reserveCapacity(entries.count)
+        for entry in entries {
+            let rowId = entry.workoutExerciseId
+            guard parents[rowId] != nil, entry.reps >= 1, entry.weightKg >= 0 else { continue }
+            let (high, low) = Self.sortKey(rowId)
+            rows.append(Row(
+                high: high, low: low, position: entry.position, id: entry.id, rowId: rowId, reps: entry.reps,
+                weightKg: entry.weightKg, rir: entry.rir, isWarmup: entry.setType == .warmup
+            ))
+        }
+        rows.sort { ($0.high, $0.low, $0.position) < ($1.high, $1.low, $1.position) }
+        var days: [UUID: Int] = [:]
         var out: [String: [ScoredSet]] = [:]
-        for entry in entries.sorted(by: { ($0.workoutExerciseId.uuidString, $0.position) < ($1.workoutExerciseId.uuidString, $1.position) }) {
-            guard entry.reps >= 1, entry.weightKg >= 0, let parent = parents[entry.workoutExerciseId],
-                  let started = starts[parent.workoutId], let rawId = parent.exerciseId else { continue }
-            let set = ScoringSet(
-                day: ScoreCalculator.dayNumber(started, calendar: calendar), weightKg: entry.weightKg, reps: entry.reps,
-                rir: entry.rir.map(Double.init), isWarmup: entry.setType == .warmup
-            )
-            out[ScoreCalculator.scoringId(rawId), default: []].append(ScoredSet(setId: entry.id, set: set))
+        for row in rows {
+            guard let parent = parents[row.rowId], let started = starts[parent.workoutId], let rawId = parent.exerciseId else { continue }
+            let day: Int
+            if let known = days[parent.workoutId] { day = known } else {
+                day = ScoreCalculator.dayNumber(started, calendar: calendar)
+                days[parent.workoutId] = day
+            }
+            let set = ScoringSet(day: day, weightKg: row.weightKg, reps: row.reps, rir: row.rir.map(Double.init), isWarmup: row.isWarmup)
+            out[ScoreCalculator.scoringId(rawId), default: []].append(ScoredSet(setId: row.id, set: set))
         }
         return out
     }

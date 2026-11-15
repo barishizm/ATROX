@@ -8,10 +8,12 @@ extension AppContainer {
     /// coordinator skips it when nothing is pending.
     func observeLocalSaves() {
         guard sync != nil || scoreService != nil else { return }
-        saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] _ in
+        saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] note in
+            // Saves of the scores' own output (snapshots, insights) still sync but cannot change a score.
+            let affectsScores = ScoreTrigger.isRelevant(saveNotification: note)
             MainActor.assumeIsolated {
                 self?.sync?.noteLocalChange()
-                self?.scoresMayHaveChanged()
+                if affectsScores { self?.scoresMayHaveChanged() }
             }
         }
     }
