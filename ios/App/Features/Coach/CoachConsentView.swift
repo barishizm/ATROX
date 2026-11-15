@@ -30,7 +30,7 @@ struct CoachConsentView: View {
                     Button { Task { await model.accept() } } label: {
                         Text("coach.consent.accept").frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent).controlSize(.large)
+                    .buttonStyle(.borderedProminent).tint(DSColor.accentFill).controlSize(.large)
                     .accessibilityIdentifier("coach-consent-accept")
                     Button { Task { await model.decline() } } label: {
                         Text("coach.consent.decline").frame(maxWidth: .infinity)

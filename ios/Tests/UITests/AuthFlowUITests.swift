@@ -26,6 +26,33 @@ final class AuthFlowUITests: XCTestCase {
     }
 
     @MainActor
+    func testMascotIntroLeadsToSignUpOrSignInMethods() throws {
+        for (button, screen) in [("welcome-continue", "plan-quiz"), ("welcome-have-account", "auth-methods-signin")] {
+            let app = XCUIApplication()
+            app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+            app.launch()
+            let hint = app.staticTexts["Tap anywhere to continue"]
+            XCTAssertTrue(hint.waitForExistence(timeout: 10))
+            // Two taps on empty space (greeting → plan → question); no buttons until the question.
+            XCTAssertFalse(app.buttons["welcome-continue"].exists)
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
+            XCTAssertTrue(hint.waitForExistence(timeout: 5))
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
+            let choice = app.buttons[button]
+            XCTAssertTrue(choice.waitForExistence(timeout: 5))
+            choice.tap()
+            // "Create account" starts the plan questions (the name field is first); "Sign in" goes to the methods.
+            if button == "welcome-continue" {
+                XCTAssertTrue(app.textFields["quiz-name-field"].waitForExistence(timeout: 5))
+            } else {
+                XCTAssertTrue(app.buttons["welcome-apple"].waitForExistence(timeout: 5))
+                XCTAssertTrue(app.descendants(matching: .any)[screen].exists)
+            }
+            app.terminate()
+        }
+    }
+
+    @MainActor
     func testEmailSignUpLeadsToVerificationScreen() throws {
         let app = launchApp()
         let email = app.buttons["welcome-email"]

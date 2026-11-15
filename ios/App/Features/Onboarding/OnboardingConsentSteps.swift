@@ -62,8 +62,6 @@ struct TermsStepView: View {
 /// "Modeli birlikte geliştirelim": opt-in, no pre-ticked box. The primary button is the only way to say yes.
 struct ContributionStepView: View {
     @Bindable var model: OnboardingViewModel
-    @State private var showDetails = false
-
     var body: some View {
         VStack(spacing: 0) {
             OnboardingPage(title: "onboarding.contribution.title", subtitle: "onboarding.contribution.subtitle") {
@@ -73,7 +71,7 @@ struct ContributionStepView: View {
                         assurance("chart.bar.xaxis", "onboarding.contribution.assure.data")
                         assurance("switch.2", "onboarding.contribution.assure.anytime")
                     }
-                    details
+                    ContributionDetailsView()
                 }
             }
             ConsentFooter(model: model) {
@@ -104,6 +102,15 @@ struct ContributionStepView: View {
             Text(text).font(DSFont.body).foregroundStyle(DSColor.textPrimary)
         }
     }
+}
+
+// MARK: Contribution details
+
+/// What leaves the device and what never does; shown before and after sign-up.
+struct ContributionDetailsView: View {
+    @State private var showDetails = false
+
+    var body: some View { details }
 
     /// Exactly what leaves the device (docs/02-MIMARI.md §3.3), and what never does.
     private var details: some View {

@@ -753,6 +753,150 @@
         }
       }
     },
+    "auth.intro.greeting": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hey, I'm ATROX! 👋"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selam, ben ATROX! 👋"
+          }
+        }
+      }
+    },
+    "auth.intro.plan": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We're gonna train together! But first, I'd love to get to know you a little."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birlikte antrenman yapacağız! Ama önce seni biraz tanımak istiyorum."
+          }
+        }
+      }
+    },
+    "auth.intro.tapHint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap anywhere to continue"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devam etmek için ekrana dokun"
+          }
+        }
+      }
+    },
+    "auth.intro.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So... do we already know each other?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peki... birbirimizi zaten tanıyor muyuz?"
+          }
+        }
+      }
+    },
+    "auth.intro.continue": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No... Create account"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hayır... Hesap oluştur"
+          }
+        }
+      }
+    },
+    "auth.intro.haveAccount": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes, Sign in"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evet, Giriş yap"
+          }
+        }
+      }
+    },
+    "auth.methods.signUp": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Register so I'll remember you!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydol ki seni hatırlayayım!"
+          }
+        }
+      }
+    },
+    "auth.methods.emailSignIn": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with email"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-posta ile giriş yap"
+          }
+        }
+      }
+    },
+    "auth.methods.signIn": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hey, welcome back! How do you wanna get in?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hey, tekrar hoş geldin! Nasıl giriş yapmak istersin?"
+          }
+        }
+      }
+    },
     "auth.welcome.email": {
       "localizations": {
         "en": {
@@ -21701,6 +21845,614 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geçici Güç Skorun 100 üzerinden %lld."
+          }
+        }
+      }
+    },
+    "quiz.next": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İleri"
+          }
+        }
+      }
+    },
+    "quiz.terms.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almost done! Shall we agree on the rules?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neredeyse bitti! Kurallarda anlaşalım mı?"
+          }
+        }
+      }
+    },
+    "quiz.terms.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a look at the terms and privacy policy. Accepting lets us create your account."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kullanım koşullarına ve gizlilik politikasına göz at. Kabul edince hesabını oluşturabiliriz."
+          }
+        }
+      }
+    },
+    "quiz.unit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Units"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birimler"
+          }
+        }
+      }
+    },
+    "quiz.name.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First things first: what should I call you?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlk iş: sana nasıl hitap edeyim?"
+          }
+        }
+      }
+    },
+    "quiz.name.placeholder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your first name"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adın"
+          }
+        }
+      }
+    },
+    "quiz.name.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll use it to cheer you on."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seni tezahüratla desteklemek için kullanacağım."
+          }
+        }
+      }
+    },
+    "quiz.sex.question %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nice to meet you, %@! Which describes you best?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanıştığımıza memnun oldum, %@! Seni en iyi hangisi anlatıyor?"
+          }
+        }
+      }
+    },
+    "quiz.sex.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will allow ATROX to design the most effective training program for you."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu, ATROX'un senin için en etkili antrenman programını tasarlamasını sağlar."
+          }
+        }
+      }
+    },
+    "quiz.sex.nonbinary": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-binary or prefer not to say"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-binary ya da belirtmek istemiyorum"
+          }
+        }
+      }
+    },
+    "quiz.weight.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is your current weight?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şu anki kilon kaç?"
+          }
+        }
+      }
+    },
+    "quiz.weight.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A rough number is fine. You can update it any time."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yaklaşık bir değer yeter. İstediğin zaman güncelleyebilirsin."
+          }
+        }
+      }
+    },
+    "quiz.height.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is your height?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boyun kaç?"
+          }
+        }
+      }
+    },
+    "quiz.birth.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is your date of birth?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doğum tarihin ne?"
+          }
+        }
+      }
+    },
+    "quiz.birth.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX uses this to design a plan that's more effective for your age."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX bunu, yaşına göre daha etkili bir plan tasarlamak için kullanır."
+          }
+        }
+      }
+    },
+    "quiz.goals.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What are your main goals?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ana hedeflerin neler?"
+          }
+        }
+      }
+    },
+    "quiz.goals.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick up to 3."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En fazla 3 tane seç."
+          }
+        }
+      }
+    },
+    "quiz.muscles.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What muscles do you want to focus on?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hangi kaslarına odaklanmak istiyorsun?"
+          }
+        }
+      }
+    },
+    "quiz.muscles.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose as many as you like."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstediğin kadar seçebilirsin."
+          }
+        }
+      }
+    },
+    "quiz.muscle.chest": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chest"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Göğüs"
+          }
+        }
+      }
+    },
+    "quiz.muscle.arms": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arms"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kollar"
+          }
+        }
+      }
+    },
+    "quiz.muscle.legs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bacaklar"
+          }
+        }
+      }
+    },
+    "quiz.experience.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What is your fitness level?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitness seviyen ne?"
+          }
+        }
+      }
+    },
+    "quiz.contribution.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Want to help me get smarter?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha akıllı olmama yardım eder misin?"
+          }
+        }
+      }
+    },
+    "quiz.contribution.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entirely optional. Only anonymous numbers are shared, and you can turn it off anytime."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamamen isteğe bağlı. Sadece anonim sayılar paylaşılır, istediğin zaman kapatabilirsin."
+          }
+        }
+      }
+    },
+    "quiz.equipment.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where will you train?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nerede antrenman yapacaksın?"
+          }
+        }
+      }
+    },
+    "quiz.limitations.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any areas we should protect?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dikkat etmemiz gereken bölgeler var mı?"
+          }
+        }
+      }
+    },
+    "quiz.limitations.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select all that apply. ATROX will pick exercises that go easy on them."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçerli olanların hepsini seç. ATROX o bölgeleri yormayan hareketler seçecek."
+          }
+        }
+      }
+    },
+    "quiz.frequency.question": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How many days a week can you train?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftada kaç gün antrenman yapabilirsin?"
+          }
+        }
+      }
+    },
+    "quiz.building.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX is designing your plan..."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ATROX planını tasarlıyor..."
+          }
+        }
+      }
+    },
+    "quiz.building.step.profile": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyzing your body profile"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vücut profilin analiz ediliyor"
+          }
+        }
+      }
+    },
+    "quiz.building.step.goals": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matching your goals"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hedeflerin eşleştiriliyor"
+          }
+        }
+      }
+    },
+    "quiz.building.step.split": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Building your weekly split"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haftalık programın kuruluyor"
+          }
+        }
+      }
+    },
+    "quiz.building.step.progression": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planning your progression"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlerleme planın hazırlanıyor"
+          }
+        }
+      }
+    },
+    "quiz.building.ready": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your plan is ready!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planın hazır!"
+          }
+        }
+      }
+    },
+    "quiz.experience.why": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Based on how long you've been training."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne kadar süredir antrenman yaptığına göre."
+          }
+        }
+      }
+    },
+    "quiz.muscle.abs": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abs"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karın"
+          }
+        }
+      }
+    },
+    "auth.methods.haveAccount": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do you already have an account?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaten bir hesabın var mı?"
           }
         }
       }

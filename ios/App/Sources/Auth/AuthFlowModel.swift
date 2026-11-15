@@ -2,8 +2,13 @@ import DataKit
 import Foundation
 import Observation
 
+/// Whether the user is creating an account or signing in to an existing one.
+enum AuthMode: Hashable { case signUp, signIn }
+
 /// Screens pushed on top of the welcome screen.
 enum AuthRoute: Hashable {
+    case quiz
+    case methods(AuthMode)
     case signUp
     case signIn(email: String)
     case verify(email: String)

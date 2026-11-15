@@ -24,7 +24,8 @@ struct TodayRootView: View {
                 LoadingState()
             }
         }
-        .background(DSColor.background)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(DSColor.background.ignoresSafeArea())
         .navigationTitle("shell.tabbar.today")
         .howItWorksButton()
         .task { await prepare() }
@@ -241,7 +242,7 @@ struct TodayRootView: View {
                 Text("today.workout.noProgram").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                 Text("today.workout.suggestion \(name)").font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.textPrimary)
                 NavigationLink(value: TodayRoute.templates) { Text("today.workout.templates") }
-                    .buttonStyle(.borderedProminent).accessibilityIdentifier("today-open-templates")
+                    .buttonStyle(.borderedProminent).tint(DSColor.accentFill).accessibilityIdentifier("today-open-templates")
             case .none:
                 Text("today.workout.noProgram").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                 PrimaryButton("today.new.action") { Task { await presenter.startEmpty(container: container) } }

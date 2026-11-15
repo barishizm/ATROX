@@ -75,8 +75,7 @@ struct ShareCardSheet: View {
                 ) {
                     Label("share.action", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(DSColor.accent)
+                .buttonStyle(.borderedProminent).tint(DSColor.accentFill)
                 .accessibilityIdentifier("share-link")
                 .simultaneousGesture(TapGesture().onEnded { AppAnalytics.shared.send(.shareCompleted(target: .shareSheet)) })
                 if InstagramStories.isAvailable {

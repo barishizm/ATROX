@@ -50,12 +50,12 @@ struct SocialInviteView: View {
             switch person.relation {
             case .none:
                 Button("social.request") { Task { await model.sendInviteRequest(to: person) } }
-                    .buttonStyle(.borderedProminent).disabled(model.isBusy)
+                    .buttonStyle(.borderedProminent).tint(DSColor.accentFill).disabled(model.isBusy)
                     .accessibilityIdentifier("social-invite-send")
             case .outgoing: Text("social.pending").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
             case .incoming:
                 Button("social.accept") { Task { await model.respond(to: person, accept: true); await model.loadInvite(username) } }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.borderedProminent).tint(DSColor.accentFill)
             case .friend: Label("social.friends.badge", systemImage: "checkmark.circle.fill").foregroundStyle(DSColor.success)
             case .blocked: EmptyView()
             }

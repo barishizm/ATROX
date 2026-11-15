@@ -20,6 +20,8 @@ final class OnboardingViewModel {
 
     let userId: UUID
     private let store: any OnboardingDraftStore
+    /// Answers given before sign-up; they start the draft and are cleared once the profile is saved.
+    private let preSignup: any PreSignupStore
     private let profiles: any ProfileRepository
     private let measurements: any MeasurementRepository
     private let consents: ConsentService
@@ -33,6 +35,7 @@ final class OnboardingViewModel {
     init(
         userId: UUID,
         store: any OnboardingDraftStore,
+        preSignup: any PreSignupStore = UserDefaultsPreSignupStore(),
         profiles: any ProfileRepository,
         measurements: any MeasurementRepository,
         consents: ConsentService,
@@ -46,6 +49,7 @@ final class OnboardingViewModel {
     ) {
         self.userId = userId
         self.store = store
+        self.preSignup = preSignup
         self.profiles = profiles
         self.measurements = measurements
         self.consents = consents
@@ -57,6 +61,9 @@ final class OnboardingViewModel {
         self.calendar = calendar
         if let saved = store.load(userId: userId) {
             self.draft = saved
+        } else if let seeded = preSignup.load()?.makeDraft() {
+            // The questions were answered before the account existed: continue with the first one not asked yet.
+            self.draft = seeded
         } else {
             var fresh = OnboardingDraft()
             fresh.unitSystem = OnboardingRules.defaultUnitSystem(for: deviceLocale)
@@ -139,7 +146,7 @@ final class OnboardingViewModel {
     func decideContribution(_ granted: Bool) async {
         guard draft.step == .contribution, !isSaving else { return }
         await run { [consents, userId] in try await consents.setContribution(granted, userId: userId) }
-        if !saveFailed { go(to: .lifts) }
+        if !saveFailed { go(to: .result) }  // The best-sets question is no longer asked.
     }
 
     private func run(_ work: () async throws -> Void) async {
@@ -400,7 +407,22 @@ final class OnboardingViewModel {
                 try await saveWeight()
                 go(to: .experience)
             } else {
-                go(to: .terms)
+                // Answers given before sign-up skip the body step, so the weight is saved here instead.
+                var next = OnboardingStep.terms
+                if let answers = preSignup.load(), answers.isComplete {
+                    try await saveWeight()
+                    // Terms accepted in the quiz are recorded now that there is an account.
+                    if answers.acceptedLegal {
+                        try await consents.acceptLegal(userId: userId)
+                        next = .contribution
+                        if let granted = answers.contribution {
+                            try await consents.setContribution(granted, userId: userId)
+                            next = .result
+                        }
+                    }
+                    preSignup.clear()
+                }
+                go(to: next)
             }
         } catch {
             Log.app.error("Onboarding save failed: \(error)")

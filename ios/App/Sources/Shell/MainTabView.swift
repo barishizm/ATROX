@@ -11,6 +11,11 @@ struct MainTabView: View {
     @State private var workoutPresenter = ActiveWorkoutPresenter()
     @Environment(AppContainer.self) private var container
 
+    private var showsMiniBar: Bool {
+        guard let model = workoutPresenter.model else { return false }
+        return model.isActive && !workoutPresenter.isPresented
+    }
+
     var body: some View {
         TabView(selection: $selection) {
             Tab(AppTab.today.title, systemImage: AppTab.today.systemImage, value: AppTab.today) {
@@ -69,11 +74,11 @@ struct MainTabView: View {
                 ProfileTabView(router: profile)
             }
         }
-        .tabViewBottomAccessory {
+        .modifier(MiniBarAccessory(isEnabled: showsMiniBar) {
             if let model = workoutPresenter.model, model.isActive, !workoutPresenter.isPresented {
                 MiniWorkoutBar(model: model) { workoutPresenter.resume() }
             }
-        }
+        })
         .environment(workoutPresenter)
         .onChange(of: container.requestedTab) { _, tab in
             guard let tab else { return }
@@ -119,6 +124,21 @@ struct MainTabView: View {
             profile.popToRoot()
             profile.push(.social)
             profile.push(.invite(username: username))
+        }
+    }
+}
+
+/// Hides the bottom accessory entirely when there is nothing to show (iOS 26.1+);
+/// on 26.0 the accessory API has no way to be disabled, so it stays as before.
+private struct MiniBarAccessory<Accessory: View>: ViewModifier {
+    let isEnabled: Bool
+    @ViewBuilder let accessory: () -> Accessory
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.1, *) {
+            content.tabViewBottomAccessory(isEnabled: isEnabled, content: accessory)
+        } else {
+            content.tabViewBottomAccessory(content: accessory)
         }
     }
 }
