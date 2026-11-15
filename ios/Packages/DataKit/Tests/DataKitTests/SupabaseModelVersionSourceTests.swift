@@ -26,7 +26,8 @@ import Testing
     @Test func httpErrorsThrow() async throws {
         let base = try #require(URL(string: "https://example.supabase.co"))
         let source = SupabaseModelVersionSource(baseURL: base, anonKey: "anon") { request in
-            (Data(), HTTPURLResponse(url: try #require(request.url), statusCode: 404, httpVersion: nil, headerFields: nil)!)  // swiftlint:disable:this force_unwrapping
+            // swiftlint:disable:next force_unwrapping
+            (Data(), HTTPURLResponse(url: try #require(request.url), statusCode: 404, httpVersion: nil, headerFields: nil)!)
         }
         await #expect(throws: URLError.self) { try await source.download("v9/manifest.json") }
     }

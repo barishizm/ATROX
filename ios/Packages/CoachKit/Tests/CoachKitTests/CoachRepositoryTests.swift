@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 actor FakeRemote: CoachRemote {
     var threadRows: [CoachThread] = []
@@ -144,7 +144,8 @@ actor FakeRemote: CoachRemote {
     @Test func rememberMovesTheConversationToTheTopAndTrimsOldOnes() async {
         let repository = CoachRepository(remote: FakeRemote(), cache: InMemoryCoachCache())
         let id = UUID()
-        await repository.remember(threadId: id, messages: [CoachMessage(role: .user, text: "hi"), CoachMessage(role: .assistant, text: "…", status: .streaming)], title: "hi")
+        await repository.remember(threadId: id, messages: [CoachMessage(role: .user, text: "hi"), CoachMessage(role: .assistant, text: "…",
+            status: .streaming)], title: "hi")
         #expect(await repository.cachedThreads().first?.id == id)
         #expect(await repository.cachedMessages(threadId: id).map(\.text) == ["hi"], "a streaming bubble is not cached")
     }

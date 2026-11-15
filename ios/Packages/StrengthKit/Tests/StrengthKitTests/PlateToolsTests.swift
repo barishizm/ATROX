@@ -1,5 +1,5 @@
-import Testing
 @testable import StrengthKit
+import Testing
 
 @Suite struct PlateCalculatorTests {
     private func stock(_ pairs: [(Double, Int)]) -> [PlateStock] { pairs.map { PlateStock(weight: $0.0, pairs: $0.1) } }

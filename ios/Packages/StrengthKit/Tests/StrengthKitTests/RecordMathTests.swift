@@ -1,7 +1,7 @@
 // swiftlint:disable identifier_name
 import Foundation
-import Testing
 @testable import StrengthKit
+import Testing
 
 @Suite struct RecordMathTests {
     private let day: TimeInterval = 86_400

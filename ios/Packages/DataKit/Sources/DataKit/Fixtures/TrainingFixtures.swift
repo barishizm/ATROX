@@ -51,7 +51,8 @@ public enum TrainingFixtures {
     private static let dayOffsets = [0, 1, 3, 4]
 
     /// The routine the history was "trained from".
-    public static func routine(name: String = "Upper / Lower") -> (name: String, days: [(name: String, exercises: [(ref: ExerciseRef, input: RoutineExerciseInput)])]) {
+    public static func routine(name: String = "Upper / Lower") -> (name: String, days: [(name: String, exercises: [(ref: ExerciseRef,
+        input: RoutineExerciseInput)])]) {
         (
             name,
             days.map { day in

@@ -1,5 +1,5 @@
-import Foundation
 @testable import CoachKit
+import Foundation
 
 /// Replays recorded responses; each `open` pops the next one.
 final class FakeTransport: CoachTransport, @unchecked Sendable {

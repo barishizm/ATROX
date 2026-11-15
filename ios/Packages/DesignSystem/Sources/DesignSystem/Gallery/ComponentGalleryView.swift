@@ -105,7 +105,8 @@ public struct ComponentGalleryView: View {
                 }
 
                 section("Durumlar") {
-                    Card { EmptyState(systemImage: "dumbbell.fill", title: "Henüz antrenman yok", message: "İlk antrenmanını kaydet.", actionTitle: "Başlat") {} }
+                    Card { EmptyState(systemImage: "dumbbell.fill", title: "Henüz antrenman yok", message: "İlk antrenmanını kaydet.",
+                        actionTitle: "Başlat") {} }
                     Card { LoadingState() }
                     Card { ErrorState(message: "Bağlantı kurulamadı.") {} }
                 }

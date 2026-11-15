@@ -27,7 +27,8 @@ struct ProfileModelTests {
         let profiles = SwiftDataProfileRepository(modelContainer: container)
         if profile {
             try await profiles.upsert(
-                ProfileInput(firstName: "Ada", lastName: "Lovelace", birthDate: Calendar(identifier: .gregorian).date(byAdding: .year, value: -30, to: now)!, heightCm: 178),
+                ProfileInput(firstName: "Ada", lastName: "Lovelace", birthDate: Calendar(identifier: .gregorian).date(byAdding: .year, value: -30,
+                    to: now)!, heightCm: 178),
                 userId: userId
             )
         }

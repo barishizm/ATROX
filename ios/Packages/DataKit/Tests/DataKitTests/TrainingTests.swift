@@ -230,7 +230,8 @@ private func done(_ kg: Double, _ reps: Int, type: SetType = .working) -> SetInp
         for (index, refs) in sessions.enumerated() {
             let start = t0.addingTimeInterval(Double(index) * day)
             _ = try await repo.start(
-                WorkoutDraft(startedAt: start, endedAt: start.addingTimeInterval(60), exercises: refs.map { WorkoutExerciseDraft(ref: $0, sets: [done(50, 5)]) }),
+                WorkoutDraft(startedAt: start, endedAt: start.addingTimeInterval(60), exercises: refs.map { WorkoutExerciseDraft(ref: $0,
+                    sets: [done(50, 5)]) }),
                 userId: testUser
             )
         }

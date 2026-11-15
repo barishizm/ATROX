@@ -1,6 +1,6 @@
+@testable import DesignSystem
 import Foundation
 import Testing
-@testable import DesignSystem
 
 @Suite struct AccessibilityTests {
     @Test func rangeWidensDegenerateSeries() {

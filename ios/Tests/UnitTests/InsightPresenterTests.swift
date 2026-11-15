@@ -33,7 +33,8 @@ import Testing
             insight(.imbalance, subject: "ratio_rule.squat_deadlift", payload: InsightPayload(variant: "ratio_rule.squat_deadlift.hinge_behind")),
             insight(.imbalance, subject: "conditional_residual.bench", payload: InsightPayload(variant: "conditional_residual.bench.below_expected")),
             insight(.imbalance, subject: "conditional_residual.squat", payload: InsightPayload(variant: "conditional_residual.squat.above_expected")),
-            insight(.imbalance, subject: "left_right.row", payload: InsightPayload(subjects: ["row"], values: ["magnitude": 0.12], variant: "left_right.left_behind")),
+            insight(.imbalance, subject: "left_right.row", payload: InsightPayload(subjects: ["row"], values: ["magnitude": 0.12],
+                variant: "left_right.left_behind")),
             insight(.imbalance, subject: "other", payload: InsightPayload(variant: "something.new")),
         ]
     }

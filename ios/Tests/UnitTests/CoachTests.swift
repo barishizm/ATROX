@@ -92,7 +92,8 @@ import Testing
             "name": .string("Starter"),
             "days": .array([
                 .object(["name": .string("A"), "exercises": .array([
-                    .object(["exercise_id": .string("goblet-squat"), "name": .string("Goblet Squat"), "sets": .number(3), "reps_min": .number(8), "reps_max": .number(12)])
+                    .object(["exercise_id": .string("goblet-squat"), "name": .string("Goblet Squat"), "sets": .number(3), "reps_min": .number(8),
+                        "reps_max": .number(12)])
                 ])])
             ])
         ]), warnings: [.init(exerciseId: "goblet-squat", area: "knee")])

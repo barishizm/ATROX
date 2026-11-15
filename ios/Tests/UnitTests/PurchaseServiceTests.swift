@@ -4,7 +4,7 @@ import Testing
 @testable import ATROX
 
 /// Server stand-in whose answer the test controls.
-fileprivate final class StubServer: EntitlementServerSource, @unchecked Sendable {
+private final class StubServer: EntitlementServerSource, @unchecked Sendable {
     var result: Result<ProEntitlement?, Error> = .success(nil)
     var verified: [String] = []
     var verifyError: Error?
@@ -15,7 +15,7 @@ fileprivate final class StubServer: EntitlementServerSource, @unchecked Sendable
     }
 }
 
-fileprivate final class MemoryCache: EntitlementCache, @unchecked Sendable {
+private final class MemoryCache: EntitlementCache, @unchecked Sendable {
     var values: [UUID: ProEntitlement] = [:]
     func load(userId: UUID) -> ProEntitlement? { values[userId] }
     func save(_ entitlement: ProEntitlement, userId: UUID) { values[userId] = entitlement }

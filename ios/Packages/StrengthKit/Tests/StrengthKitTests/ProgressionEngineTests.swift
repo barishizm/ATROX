@@ -1,5 +1,5 @@
-import Testing
 @testable import StrengthKit
+import Testing
 
 @Suite struct ProgressionEngineTests {
     private func sets(_ weight: Double, _ reps: [Int], rir: Int? = nil) -> [ProgressionSet] {

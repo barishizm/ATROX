@@ -20230,23 +20230,6 @@
         }
       }
     },
-    "summary.coach.placeholder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coach comment: coming soon"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koç yorumu: yakında"
-          }
-        }
-      }
-    },
     "summary.coach.title" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -21993,23 +21976,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ANTRENMAN"
-          }
-        }
-      }
-    },
-    "weekly.coach.placeholder" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your coach's take on the week will appear here."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Koçunun haftaya dair yorumu burada görünecek."
           }
         }
       }

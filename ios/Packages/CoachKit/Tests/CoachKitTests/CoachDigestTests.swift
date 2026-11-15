@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 @Suite struct CoachDigestTests {
     private let workout = WorkoutDigest(
@@ -119,7 +119,10 @@ import Testing
     }
 
     @Test func plainShortAnswersPass() {
-        #expect(OnDeviceComment.sanitize("**Solid session.** Volume is up from last time. Add one rep to your top set.") == "Solid session. Volume is up from last time. Add one rep to your top set.")
+        #expect(
+            OnDeviceComment.sanitize("**Solid session.** Volume is up from last time. Add one rep to your top set.")
+                == "Solid session. Volume is up from last time. Add one rep to your top set."
+        )
     }
 
     @Test func medicalDietAndRamblingAnswersAreDropped() {

@@ -25,8 +25,6 @@ struct SkipRestIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "liveactivity.intent.skip"
     static let isDiscoverable = false
 
-    init() {}
-
     func perform() async throws -> some IntentResult {
         await RestCommandCenter.shared.send(.skip)
         return .result()
@@ -37,8 +35,6 @@ struct SkipRestIntent: LiveActivityIntent {
 struct ExtendRestIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "liveactivity.intent.extend"
     static let isDiscoverable = false
-
-    init() {}
 
     func perform() async throws -> some IntentResult {
         await RestCommandCenter.shared.send(.adjust(seconds: 15))

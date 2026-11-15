@@ -1,7 +1,7 @@
+@testable import ATROX
 import DesignSystem
 import Foundation
 import Testing
-@testable import ATROX
 
 @Suite struct ChartAccessibilityTests {
     private let en = Locale(identifier: "en_US")

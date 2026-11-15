@@ -7,9 +7,24 @@ import Testing
 @MainActor
 struct AccountModelTests {
     private final class Flag: @unchecked Sendable { var signedOut = 0 }
+    private final class OrderLog: @unchecked Sendable { var items: [String] = [] }
 
     private func make(service: FakeAccountService, flag: Flag, word: String = "DELETE") -> AccountModel {
         AccountModel(userId: UUID(), service: service, confirmationWord: word) { flag.signedOut += 1 }
+    }
+
+    @Test func contributionIsWithdrawnBeforeTheAccountGoes() async {
+        let flag = Flag()
+        let order = OrderLog()
+        let service = FakeAccountService()
+        let model = AccountModel(userId: UUID(), service: service, confirmationWord: "DELETE", beforeDeletion: {
+            order.items.append("withdraw")
+        }, onDeleted: { order.items.append("deleted"); flag.signedOut += 1 })
+        model.beginDeletion()
+        model.continueToConfirmation()
+        model.confirmationText = "delete"
+        await model.confirmDeletion()
+        #expect(order.items == ["withdraw", "deleted"])
     }
 
     @Test func confirmationWordIsLocalizedAndForgiving() {

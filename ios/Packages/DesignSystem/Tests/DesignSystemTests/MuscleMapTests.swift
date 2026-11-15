@@ -1,7 +1,7 @@
+@testable import DesignSystem
 import Foundation
 import SwiftUI
 import Testing
-@testable import DesignSystem
 
 @Suite struct MuscleMapTests {
     @Test func catalogHasSeventeenMusclesMatchingDatabaseVocabulary() {

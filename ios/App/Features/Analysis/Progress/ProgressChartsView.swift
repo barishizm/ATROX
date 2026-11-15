@@ -150,7 +150,8 @@ private struct E1RMCard: View {
                 .foregroundStyle(DSColor.warning.opacity(0.14))
             }
             ForEach(forecastRows) { row in
-                AreaMark(x: .value("date", row.date), yStart: .value("low", model.displayWeight(row.low)), yEnd: .value("high", model.displayWeight(row.high)), series: .value("s", "band"))
+                AreaMark(x: .value("date", row.date), yStart: .value("low", model.displayWeight(row.low)), yEnd: .value("high",
+                    model.displayWeight(row.high)), series: .value("s", "band"))
                     .foregroundStyle(DSColor.accent.opacity(0.18))
                 LineMark(x: .value("date", row.date), y: .value("e1RM", model.displayWeight(row.mid)), series: .value("s", "forecast"))
                     .foregroundStyle(DSColor.accent.opacity(0.7)).lineStyle(StrokeStyle(lineWidth: 2, dash: [2, 4]))
@@ -182,7 +183,8 @@ private struct E1RMCard: View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
             Label("progress.legend.record", systemImage: "circle.fill").foregroundStyle(DSColor.success)
             if !isLocked, !model.plateauZones.isEmpty { Label("progress.legend.plateau", systemImage: "square.fill").foregroundStyle(DSColor.warning) }
-            if !isLocked, model.progress?.forecast.isEmpty == false { Label("progress.legend.forecast", systemImage: "ellipsis").foregroundStyle(DSColor.accent) }
+            if !isLocked, model.progress?.forecast.isEmpty == false { Label("progress.legend.forecast",
+                systemImage: "ellipsis").foregroundStyle(DSColor.accent) }
         }
         .font(DSFont.caption)
         .labelStyle(.titleAndIcon)

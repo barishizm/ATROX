@@ -36,7 +36,8 @@ enum WeeklySummaryPresenter {
         switch state {
         case .hidden: coach = []
         case .loading:
-            coach = [WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [], isLoading: true)]
+            coach = [WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [],
+                isLoading: true)]
         case .text(let comment):
             coach = [WeeklyCard(kind: .coach, icon: "bubble.left.and.text.bubble.right", title: text("weekly.card.coach"), value: "", lines: [comment])]
         }
@@ -47,7 +48,8 @@ enum WeeklySummaryPresenter {
         }
         var cards: [WeeklyCard] = []
         let goalLine = summary.metGoal ? text("weekly.workouts.met") : text("weekly.workouts.left %lld", summary.goal - summary.workouts)
-        cards.append(WeeklyCard(kind: .workouts, icon: "figure.strengthtraining.traditional", title: text("weekly.card.workouts"), value: "\(summary.workouts)/\(summary.goal)", lines: [goalLine]))
+        cards.append(WeeklyCard(kind: .workouts, icon: "figure.strengthtraining.traditional", title: text("weekly.card.workouts"),
+            value: "\(summary.workouts)/\(summary.goal)", lines: [goalLine]))
         var volumeLines = [text("weekly.volume.sets %lld", summary.totalSets)]
         volumeLines.append(summary.volumeChange.map { text("weekly.volume.change %@", signed($0)) } ?? text("weekly.volume.nocompare"))
         cards.append(WeeklyCard(kind: .volume, icon: "chart.bar.fill", title: text("weekly.card.volume"), value: "\(summary.totalSets)", lines: volumeLines))
@@ -58,14 +60,16 @@ enum WeeklySummaryPresenter {
         if let overall = summary.overallScore {
             var lines = [text("weekly.scores.overall %lld", Int(overall.rounded()))]
             lines += summary.exerciseChanges.map { "\(names[$0.key] ?? $0.key): \(signed($0.change))" }
-            cards.append(WeeklyCard(kind: .scores, icon: "gauge.with.dots.needle.67percent", title: text("weekly.card.scores"), value: summary.overallChange.map(signed) ?? "–", lines: lines))
+            cards.append(WeeklyCard(kind: .scores, icon: "gauge.with.dots.needle.67percent", title: text("weekly.card.scores"),
+                value: summary.overallChange.map(signed) ?? "–", lines: lines))
         }
         if let top = summary.topGroup {
             var lines = [text("weekly.muscles.top %@", text("weekly.group.\(top.rawValue)"))]
             if !summary.neglectedGroups.isEmpty {
                 lines.append(text("weekly.muscles.neglected %@", summary.neglectedGroups.map { text("weekly.group.\($0.rawValue)") }.joined(separator: ", ")))
             }
-            cards.append(WeeklyCard(kind: .muscles, icon: "figure.arms.open", title: text("weekly.card.muscles"), value: text("weekly.group.\(top.rawValue)"), lines: lines))
+            cards.append(WeeklyCard(kind: .muscles, icon: "figure.arms.open", title: text("weekly.card.muscles"),
+                value: text("weekly.group.\(top.rawValue)"), lines: lines))
         }
         if let insight {
             cards.append(WeeklyCard(kind: .insight, icon: insight.icon, title: text("weekly.card.insight"), value: "", lines: [insight.title, insight.body]))

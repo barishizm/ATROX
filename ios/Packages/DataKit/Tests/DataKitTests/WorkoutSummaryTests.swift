@@ -286,4 +286,3 @@ private actor FakeHealth: HealthWorkoutWriting {
         #expect(try await repo.finishedWorkouts(userId: otherUser, before: nil, limit: 5).isEmpty)
     }
 }
-

@@ -162,8 +162,6 @@ struct ShowScoreIntent: AppIntent {
     static let description = IntentDescription("intent.score.description")
     static let openAppWhenRun = false
 
-    init() {}
-
     /// What the dialog says for a snapshot.
     static func dialog(for snapshot: WidgetSnapshot?) -> LocalizedStringResource {
         switch WidgetContentState(snapshot) {

@@ -1,6 +1,6 @@
+@testable import CoachKit
 import Foundation
 import Testing
-@testable import CoachKit
 
 @Suite struct SupabaseCoachRemoteTests {
     final class Spy: @unchecked Sendable {
@@ -21,7 +21,9 @@ import Testing
 
     @Test func threadsQueryIsPagedNewestFirstAndSkipsDeleted() async throws {
         let spy = Spy()
-        spy.reply = Data(#"[{"id":"11111111-1111-4111-8111-111111111111","title":"Plan","created_at":"2026-11-14T10:00:00.123456+00:00","updated_at":"2026-11-14T11:00:00+00:00"}]"#.utf8)
+        let json = #"[{"id":"11111111-1111-4111-8111-111111111111","title":"Plan","#
+            + #""created_at":"2026-11-14T10:00:00.123456+00:00","updated_at":"2026-11-14T11:00:00+00:00"}]"#
+        spy.reply = Data(json.utf8)
         let threads = try await remote(spy).threads(limit: 30, before: nil)
         #expect(threads.count == 1 && threads[0].title == "Plan")
         let url = try #require(spy.requests.first?.url?.absoluteString)

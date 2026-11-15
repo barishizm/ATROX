@@ -63,7 +63,7 @@ jobs:
           python3 tools/check_privacy_manifest.py
       - name: Lint
         # Not --strict: 54 pre-existing warnings are deferred (docs/ILERLEME.md). Errors fail the job.
-        run: swiftlint lint --reporter github-actions-logging
+        run: swiftlint lint --strict --reporter github-actions-logging
 
   packages:
     name: Package tests

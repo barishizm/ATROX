@@ -253,7 +253,8 @@ struct TodayRootView: View {
     // MARK: Week
 
     private func weekSection(_ model: TodayModel) -> some View {
-        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: Spacing.md)) : AnyLayout(HStackLayout(spacing: Spacing.md))
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading,
+            spacing: Spacing.md)) : AnyLayout(HStackLayout(spacing: Spacing.md))
         return layout {
             Card {
                 HStack(spacing: Spacing.md) {

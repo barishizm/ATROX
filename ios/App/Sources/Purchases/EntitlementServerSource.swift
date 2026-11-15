@@ -72,7 +72,8 @@ struct SupabaseEntitlementSource: EntitlementServerSource {
     /// Maps the table's status strings (P090 writes them) and picks the row that grants the most.
     static func best(of rows: [Row], now: Date = Date()) -> ProEntitlement? {
         let mapped = rows.map { row in
-            ProEntitlement(status: status(for: row.status), productID: row.productId, expiresAt: row.expiresAt, willRenew: row.status == "active" || row.status == "trial")
+            ProEntitlement(status: status(for: row.status), productID: row.productId, expiresAt: row.expiresAt,
+                willRenew: row.status == "active" || row.status == "trial")
         }
         return mapped.first { $0.isPro(at: now) } ?? mapped.first
     }

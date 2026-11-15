@@ -93,7 +93,6 @@ final class ExerciseScoreModel {
         population = group
         AppAnalytics.shared.send(.referenceGroupChanged(group: Self.analyticsGroup(group)))
         await reload()
-
     }
 
     private static func analyticsGroup(_ group: ReferencePopulation) -> AnalyticsEvent.ReferenceGroup {

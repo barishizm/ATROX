@@ -16,36 +16,50 @@ opt_in_rules:
 
 disabled_rules:
   - trailing_comma   # swiftformat yönetir
+  - blanket_disable_command       # sayısal çekirdek dosyaları dosya başında bilinçli kapatır
+  - superfluous_disable_command
+  - multiple_closures_with_trailing_closure   # `{ … } label: { … }` ve sahte HTTP kapanışları yaygın, okunaklı kalıp
 
 line_length:
-  warning: 140
-  error: 200
+  warning: 160
+  error: 220
   ignores_comments: true
   ignores_urls: true
 
 file_length:
-  warning: 500
+  warning: 700
   error: 1000
 
 function_body_length:
-  warning: 60
-  error: 120
+  warning: 80
+  error: 140
 
 type_body_length:
-  warning: 300
-  error: 500
+  warning: 450
+  error: 600
 
 identifier_name:
   min_length:
-    warning: 2
-  excluded: [id, x, y, i, j, kg, cm, lb]
+    warning: 1   # sayısal kod ve testlerde x/p/d/s gibi kısa adlar bilinçli
+  allowed_symbols: ["_"]   # sunucu JSON anahtarları (expires_at)
 
 type_name:
   min_length: 2
 
 cyclomatic_complexity:
-  warning: 12
+  warning: 20
   error: 25
 
 analyzer_rules:
   - unused_import
+
+large_tuple:
+  warning: 4
+  error: 6
+
+nesting:
+  type_level:
+    warning: 3
+
+function_parameter_count:
+  warning: 8

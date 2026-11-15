@@ -27,6 +27,7 @@ public struct SSEParser: Sendable {
             var line = buffer[buffer.startIndex..<newline]
             buffer = Data(buffer[buffer.index(after: newline)...])
             if line.last == 0x0D { line = line.dropLast() }
+            // swiftlint:disable:next optional_data_string_conversion
             if let frame = consume(String(decoding: line, as: UTF8.self)) { frames.append(frame) }
         }
         return frames

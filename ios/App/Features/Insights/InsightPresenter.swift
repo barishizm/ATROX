@@ -92,7 +92,8 @@ enum InsightPresenter {
             let variant = ["strength", "hypertrophy", "endurance"].contains(payload.variant) ? payload.variant : "hypertrophy"
             return (
                 LocalizedText.string("insight.rep_range_stuck.title", locale: locale),
-                LocalizedText.string("insight.rep_range_stuck.body.\(variant) %@", locale: locale, percent(payload.values["share"].map { $0 * 100 }, locale: locale, signed: false))
+                LocalizedText.string("insight.rep_range_stuck.body.\(variant) %@", locale: locale, percent(payload.values["share"].map { $0 * 100 },
+                    locale: locale, signed: false))
             )
         case .imbalance:
             return imbalance(insight, subject: subject, locale: locale)

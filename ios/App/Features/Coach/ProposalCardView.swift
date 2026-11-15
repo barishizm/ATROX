@@ -83,15 +83,18 @@ struct ProposalCardView: View {
 
     @ViewBuilder
     private var buttons: some View {
-        Button { run { await model.apply(proposal) } } label: { Text("coach.proposal.apply").frame(maxWidth: .infinity, minHeight: HitTarget.minimum - Spacing.sm) }
+        Button { run { await model.apply(proposal) } } label: { Text("coach.proposal.apply").frame(maxWidth: .infinity,
+            minHeight: HitTarget.minimum - Spacing.sm) }
             .buttonStyle(.borderedProminent).tint(DSColor.accentFill).disabled(isWorking)
             .accessibilityIdentifier("proposal-apply")
         if proposal.kind != .goalUpdate {
-            Button { run { await model.apply(proposal, thenEdit: true) } } label: { Text("coach.proposal.edit").frame(maxWidth: .infinity, minHeight: HitTarget.minimum - Spacing.sm) }
+            Button { run { await model.apply(proposal, thenEdit: true) } } label: { Text("coach.proposal.edit").frame(maxWidth: .infinity,
+                minHeight: HitTarget.minimum - Spacing.sm) }
                 .buttonStyle(.bordered).disabled(isWorking)
                 .accessibilityIdentifier("proposal-edit")
         }
-        Button(role: .destructive) { model.reject(proposal) } label: { Text("coach.proposal.reject").frame(maxWidth: .infinity, minHeight: HitTarget.minimum - Spacing.sm) }
+        Button(role: .destructive) { model.reject(proposal) } label: { Text("coach.proposal.reject").frame(maxWidth: .infinity,
+            minHeight: HitTarget.minimum - Spacing.sm) }
             .buttonStyle(.bordered).disabled(isWorking)
             .accessibilityIdentifier("proposal-reject")
     }
