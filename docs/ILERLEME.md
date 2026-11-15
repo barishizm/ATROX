@@ -147,7 +147,7 @@ Toplam: 104 adım.
 
 ## Ertelenenler
 
-Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya yazılır.
+Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya yazılır. Onay kutulu takip listesi: [`ERTELENENLER.md`](ERTELENENLER.md) (tamamlananlar orada işaretlenir).
 
 - Persist weight/height unit preferences (WeightUnit/LengthUnit defaults per locale) in settings — P007 only added the types.
 - Re-localize on-screen navigation titles on in-app language change.
