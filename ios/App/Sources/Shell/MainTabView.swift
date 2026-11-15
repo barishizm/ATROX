@@ -30,6 +30,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .environment(\.finishCreation) { [today] in today.popToRoot() }
             }
             Tab(AppTab.workout.title, systemImage: AppTab.workout.systemImage, value: AppTab.workout) {
                 NavigationStack(path: $workout.path) {
@@ -50,6 +51,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .environment(\.finishCreation) { [workout] in workout.popToRoot() }
             }
             Tab(AppTab.analysis.title, systemImage: AppTab.analysis.systemImage, value: AppTab.analysis) {
                 NavigationStack(path: $analysis.path) {

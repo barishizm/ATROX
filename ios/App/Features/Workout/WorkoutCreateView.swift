@@ -7,12 +7,7 @@ import SwiftUI
 struct WorkoutCreateView: View {
     @Environment(AppContainer.self) private var container
     @Environment(ActiveWorkoutPresenter.self) private var presenter
-    @Environment(\.locale) private var locale
-    @State private var model: RoutineListModel?
-    @State private var naming = false
-    @State private var newName = ""
-    @State private var opened: UUID?
-    @State private var saveFailed = false
+    @State private var settingUp = false
 
     var body: some View {
         ScrollView {
@@ -23,8 +18,7 @@ struct WorkoutCreateView: View {
                 option(
                     "workout.create.scratch.title", "workout.create.scratch.message", icon: "square.and.pencil", id: "create-scratch"
                 ) {
-                    newName = ""
-                    naming = true
+                    settingUp = true
                 }
                 NavigationLink(value: WorkoutRoute.templates) {
                     optionLabel("workout.create.template.title", "workout.create.template.message", icon: "square.grid.2x2")
@@ -42,15 +36,8 @@ struct WorkoutCreateView: View {
         .background(DSColor.background)
         .navigationTitle("workout.create.title")
         .navigationBarTitleDisplayMode(.inline)
-        .task { model = await container.makeRoutineListModel() }
-        .navigationDestination(item: $opened) { RoutineEditorView(routineId: $0) }
-        .alert("routine.new.title", isPresented: $naming) {
-            TextField("routine.new.namePrompt", text: $newName)
-            Button("routine.action.cancel", role: .cancel) {}
-            Button("routine.new.create") { create() }
-        }
-        .alert("routine.error.save", isPresented: $saveFailed) {
-            Button("routine.action.ok", role: .cancel) {}
+        .sheet(isPresented: $settingUp) {
+            ProgramSetupSheet(source: .scratch)
         }
         .accessibilityIdentifier("workout-create-root")
     }
@@ -84,19 +71,6 @@ struct WorkoutCreateView: View {
                 }
                 Spacer(minLength: Spacing.sm)
                 Image(systemName: "chevron.right").font(DSFont.callout).foregroundStyle(DSColor.textTertiary)
-            }
-        }
-    }
-
-    private func create() {
-        let name = newName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !name.isEmpty, let model else { return }
-        let code = locale.language.languageCode?.identifier == "tr" ? "tr" : "en"
-        Task {
-            if let id = await model.create(name: name, firstDayName: RoutineEditorModel.defaultDayName(1, languageCode: code)) {
-                opened = id
-            } else {
-                saveFailed = true
             }
         }
     }
