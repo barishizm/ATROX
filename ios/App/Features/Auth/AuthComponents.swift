@@ -1,4 +1,3 @@
-import AuthenticationServices
 import DataKit
 import DesignSystem
 import SwiftUI
@@ -186,32 +185,29 @@ struct PasswordStrengthView: View {
     }
 }
 
-/// Native Sign in with Apple button (Apple's HIG artwork, localized by the system) that runs our own
-/// `AuthService` flow instead of the SwiftUI button's built-in request.
-struct AppleSignInButton: UIViewRepresentable {
+/// Sign in with Apple button drawn to Apple's HIG (logo + "Continue with Apple", black or white by appearance).
+/// It is drawn in SwiftUI rather than with `ASAuthorizationAppleIDButton` so its label follows the in-app language
+/// instead of the system language, and it runs our own `AuthService` flow.
+struct AppleSignInButton: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.isEnabled) private var isEnabled
     let action: @MainActor () -> Void
 
-    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
-
-    func makeUIView(context: Context) -> ASAuthorizationAppleIDButton {
-        let button = ASAuthorizationAppleIDButton(type: .continue, style: colorScheme == .dark ? .white : .black)
-        button.cornerRadius = Radius.md
-        button.addTarget(context.coordinator, action: #selector(Coordinator.tapped), for: .touchUpInside)
-        return button
-    }
-
-    func updateUIView(_ button: ASAuthorizationAppleIDButton, context: Context) {
-        context.coordinator.action = action
-        button.isEnabled = isEnabled
-        button.alpha = isEnabled ? 1 : 0.4
-    }
-
-    final class Coordinator: NSObject {
-        var action: @MainActor () -> Void
-        init(action: @escaping @MainActor () -> Void) { self.action = action }
-        @MainActor @objc func tapped() { action() }
+    var body: some View {
+        let background: Color = colorScheme == .dark ? .white : .black
+        let foreground: Color = colorScheme == .dark ? .black : .white
+        Button(action: action) {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: "apple.logo").accessibilityHidden(true)
+                Text("auth.apple.continue")
+            }
+            .font(.system(size: 19, weight: .semibold))
+            .foregroundStyle(foreground)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(background, in: RoundedRectangle(cornerRadius: Radius.md, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .opacity(isEnabled ? 1 : 0.4)
     }
 }
 

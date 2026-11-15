@@ -712,6 +712,23 @@
         }
       }
     },
+    "auth.apple.continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue with Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile devam et"
+          }
+        }
+      }
+    },
     "auth.legal.intro" : {
       "localizations" : {
         "en" : {
