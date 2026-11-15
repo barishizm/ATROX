@@ -25,9 +25,12 @@ extension AppContainer {
             await ServerConsentUploader(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken)
                 .uploadAISharing(userId: userId, version: version)
         }
+        let quota: @Sendable (UUID) async -> CoachQuota? = { userId in
+            await ServerCoachQuotaLoader(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken).load(userId: userId)
+        }
         return CoachDependencies(
             chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest,
-            uploadAISharingConsent: upload
+            uploadAISharingConsent: upload, loadQuota: quota
         )
     }
 
@@ -87,7 +90,9 @@ extension AppContainer {
             }
             return true
         }
-        return CoachModel(session: session, repository: coach.repository, applier: applier, locale: locale, reconsent: reconsent) { [weak self] in
+        return CoachModel(session: session, repository: coach.repository, applier: applier, locale: locale, reconsent: reconsent,
+            loadQuota: { await coach.loadQuota?(userId) }
+        ) { [weak self] in
             var facts = CoachSuggestions.Facts()
             if let center = await self?.scoreCenter(), let muscles = center.overview?.muscles {
                 facts.weakestMuscle = muscles.min { $0.value.score < $1.value.score }?.key

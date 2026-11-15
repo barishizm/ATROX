@@ -1,310 +1,329 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "muscle.abdominals": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abdominals"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "muscle.abdominals" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abdominals"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Karın"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karın"
           }
         }
       }
     },
-    "muscle.abductors": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hip abductors"
+    "muscle.abductors" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hip abductors"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kalça abdüktörleri"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalça abdüktörleri"
           }
         }
       }
     },
-    "muscle.adductors": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Adductors"
+    "muscle.adductors" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adductors"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İç bacak"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İç bacak"
           }
         }
       }
     },
-    "muscle.biceps": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Biceps"
+    "muscle.biceps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biceps"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Biseps"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biseps"
           }
         }
       }
     },
-    "muscle.calves": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calves"
+    "muscle.calves" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calves"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Baldır"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baldır"
           }
         }
       }
     },
-    "muscle.chest": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chest"
+    "muscle.chest" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chest"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Göğüs"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göğüs"
           }
         }
       }
     },
-    "muscle.forearms": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Forearms"
+    "muscle.forearms" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forearms"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ön kol"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ön kol"
           }
         }
       }
     },
-    "muscle.glutes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Glutes"
+    "muscle.glutes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glutes"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kalça"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalça"
           }
         }
       }
     },
-    "muscle.hamstrings": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hamstrings"
+    "muscle.hamstrings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hamstrings"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arka bacak"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arka bacak"
           }
         }
       }
     },
-    "muscle.lats": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lats"
+    "muscle.lats" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lats"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kanat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanat"
           }
         }
       }
     },
-    "muscle.lower_back": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lower back"
+    "muscle.lower_back" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower back"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bel"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bel"
           }
         }
       }
     },
-    "muscle.middle_back": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Middle back"
+    "muscle.middle_back" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Middle back"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orta sırt"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orta sırt"
           }
         }
       }
     },
-    "muscle.neck": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Neck"
+    "muscle.neck" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neck"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Boyun"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyun"
           }
         }
       }
     },
-    "muscle.quadriceps": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quadriceps"
+    "muscle.quadriceps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadriceps"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ön bacak"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ön bacak"
           }
         }
       }
     },
-    "muscle.shoulders": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shoulders"
+    "muscle.shoulders" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shoulders"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Omuz"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omuz"
           }
         }
       }
     },
-    "muscle.traps": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Traps"
+    "muscle.traps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traps"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trapez"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trapez"
           }
         }
       }
     },
-    "muscle.triceps": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Triceps"
+    "muscle.triceps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Triceps"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Triseps"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Triseps"
           }
         }
       }
     },
-    "musclemap.back": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Back view"
+    "musclemap.back" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back view"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arka görünüm"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arka görünüm"
           }
         }
       }
     },
-    "musclemap.front": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Front view"
+    "musclemap.front" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Front view"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ön görünüm"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ön görünüm"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

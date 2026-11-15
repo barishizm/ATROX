@@ -11,15 +11,19 @@ struct CoachDependencies: Sendable {
     let digest: (any CoachDigestService)?
     /// Puts the AI-sharing consent on the server (the coach endpoint checks it there); nil without a server.
     let uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)?
+    /// How many messages the account has left today, read from the server; nil without a server.
+    let loadQuota: (@Sendable (_ userId: UUID) async -> CoachQuota?)?
 
     init(
         chat: any CoachChatService, repository: CoachRepository, digest: (any CoachDigestService)? = nil,
-        uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)? = nil
+        uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)? = nil,
+        loadQuota: (@Sendable (_ userId: UUID) async -> CoachQuota?)? = nil
     ) {
         self.chat = chat
         self.repository = repository
         self.digest = digest
         self.uploadAISharingConsent = uploadAISharingConsent
+        self.loadQuota = loadQuota
     }
 }
 
@@ -48,11 +52,13 @@ final class CoachModel {
     @ObservationIgnored private let locale: Locale
     /// Records the AI-sharing consent again and pushes it to the server; false when it could not be stored.
     @ObservationIgnored private let reconsent: (@MainActor () async -> Bool)?
+    @ObservationIgnored private let loadQuota: (@MainActor () async -> CoachQuota?)?
     @ObservationIgnored private var monitor: Task<Void, Never>?
 
     init(
         session: CoachSession, repository: CoachRepository, applier: ProposalApplier?, locale: Locale,
         reconsent: (@MainActor () async -> Bool)? = nil,
+        loadQuota: (@MainActor () async -> CoachQuota?)? = nil,
         facts: @escaping @MainActor () async -> CoachSuggestions.Facts
     ) {
         self.session = session
@@ -60,6 +66,7 @@ final class CoachModel {
         self.applier = applier
         self.locale = locale
         self.reconsent = reconsent
+        self.loadQuota = loadQuota
         self.facts = facts
     }
 
@@ -71,6 +78,13 @@ final class CoachModel {
             session.open(threadId: latest.id, messages: await repository.cachedMessages(threadId: latest.id))
         }
         await refresh()
+        await refreshQuota()
+    }
+
+    /// The allowance belongs to the account: show what the server says even before the first message on this device.
+    func refreshQuota() async {
+        guard let loadQuota, let quota = await loadQuota() else { return }
+        session.preloadQuota(quota)
     }
 
     func refresh() async {

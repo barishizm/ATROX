@@ -28,6 +28,12 @@ public final class CoachSession {
     public private(set) var threadId: UUID?
     public private(set) var quota: CoachQuota?
 
+    /// The account's allowance read from the server before any message went out (a new device, a new launch).
+    /// A figure that came with a reply is newer and is kept.
+    public func preloadQuota(_ value: CoachQuota) {
+        if quota == nil { quota = value }
+    }
+
     @ObservationIgnored private let service: any CoachChatService
     @ObservationIgnored private let locale: @Sendable () -> String
     @ObservationIgnored private let timeZone: @Sendable () -> String
