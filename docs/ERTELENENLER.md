@@ -2,7 +2,7 @@
 
 Adımlar sırasında fark edilen ama kapsam dışı bırakılan işlerin kontrol listesi. `docs/ILERLEME.md` içindeki "Ertelenenler" bölümünden türetildi; bundan sonra tamamlanan maddeler burada işaretlenir.
 
-- `[x]` tamamen çözüldü · `[~]` kısmen çözüldü (alt maddeler metinde) · `[ ]` açık
+- `[-]` bilinçli olarak ertelendi/yapılmayacak · `[x]` tamamen çözüldü · `[~]` kısmen çözüldü (alt maddeler metinde) · `[ ]` açık
 
 Madde numaraları (D001…) kaynak sıradadır; ayrıntılı gerekçe için metne bakın.
 
@@ -15,7 +15,7 @@ Toplam: 243 madde.
 - [x] **D003** · ÇÖZÜLDÜ: SwiftLint `--strict` sıfır uyarı; eşikler/kurallar `.swiftlint.yml`'de gözden geçirildi (satır 160, tek harfli adlar serbest, `blanket/superfluous_disable_command` ve `multiple_closures_with_trailing_closure` kapalı), kalan ihlaller düzeltildi, CI lint adımı `--strict`.
 - [~] **D004** · After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist. _Kısmen: iOS iş akışı main'de yeşil değil (en son 2026-11-12'de başarısız); Core'da pgTAP 027 planı 11 yerine 10 test çalıştırıyordu, plan 10'a düzeltildi (CI'da doğrulanacak). Runner'daki Xcode sürümü sabitleme hâlâ açık._
 - [x] **D005** · P010 enum values (experience, goal, equipment_access, user_settings fields) were chosen from the onboarding prompt (P021); align them with the Swift enums when P012/P021 land, via a new migration. _Kontrol edildi: profiles/user_settings/consents/measurements CHECK değerleri `DataKit/Models/Enums.swift` ile birebir aynı; yeni migration gerekmedi._
-- [ ] **D006** · Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged. _Açık: `supabase db push` uzak veritabanını değiştirir; açık onay ve proje erişimi gerekir, yapılmadı._
+- [-] **D006** · Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged. _Kullanıcı kararıyla şimdilik yapılmıyor; yayın öncesi kontrol listesinde (`YAYIN-KONTROL.md`) tek seferlik `supabase db push` olarak kalır._
 - [ ] **D007** · P011: `movement_pattern` values (squat, hinge, lunge, horizontal/vertical push/pull, carry, core, rotation, isolation, cardio, mobility, other) are our own taxonomy since the docs do not define them; confirm when `scoring_taxonomy.yaml` lands (P025/P056). Equipment/muscle/level/category values follow free-exercise-db verbatim (e.g. `body only`).
 - [ ] **D008** · P011: `search_exercises` searches the shared catalog only; extend it to the caller's `custom_exercises` when the coach tool (P075) needs it.
 - [ ] **D009** · Apply the P011 migration to staging/prod (`supabase db push`) once the PR is merged.
