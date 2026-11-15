@@ -252,7 +252,8 @@ final class AppContainer {
             settings: SwiftDataSettingsRepository(modelContainer: modelContainer),
             consents: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)),
             appearance: appearance,
-            health: health, contribution: contribution
+            health: health, contribution: contribution,
+            workouts: SwiftDataWorkoutRepository(modelContainer: modelContainer)
         )
     }
 

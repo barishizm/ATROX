@@ -182,7 +182,7 @@ struct LibraryView: View {
                     } label: {
                         Text("library.select.add \(model.selectionCount)").frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.borderedProminent).tint(DSColor.accentFill)
                     .disabled(model.selectionCount == 0)
                     .accessibilityIdentifier("library-add-button")
                 }

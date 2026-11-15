@@ -20,6 +20,14 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var language = container.language
         Form {
+            Section("settings.section.profile") {
+                NavigationLink(value: ProfileRoute.editProfile) { Label("profile.row.edit", systemImage: "person.text.rectangle") }
+                    .accessibilityIdentifier("profile-edit")
+                NavigationLink(value: ProfileRoute.measurements) { Label("profile.row.measurements", systemImage: "scalemass") }
+                    .accessibilityIdentifier("profile-measurements")
+                NavigationLink(value: ProfileRoute.about) { Label("profile.row.about", systemImage: "info.circle") }
+                    .accessibilityIdentifier("profile-about")
+            }
             Section("settings.section.preferences") {
                 Picker("settings.units", selection: Binding(
                     get: { model.unitSystem }, set: { value in Task { await model.setUnitSystem(value) } }

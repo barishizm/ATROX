@@ -121,11 +121,14 @@ private struct LiftCard: View {
 
 enum LiftNames {
     static func title(_ lift: BasicLift, implement: LiftImplement) -> LocalizedStringKey {
-        LocalizedStringKey("onboarding.lift.\(lift.rawValue).\(implement.rawValue)")
+        // Built from a plain String: an interpolated literal would look up "%@" placeholders and show the raw key.
+        let key = "onboarding.lift." + lift.rawValue + "." + implement.rawValue
+        return LocalizedStringKey(key)
     }
 
     static func shortName(_ lift: BasicLift) -> LocalizedStringKey {
-        LocalizedStringKey("onboarding.lift.\(lift.rawValue)")
+        let key = "onboarding.lift." + lift.rawValue
+        return LocalizedStringKey(key)
     }
 }
 

@@ -32,7 +32,7 @@ struct CoachRootView: View {
             }
         }
         .background(DSColor.background)
-        .navigationTitle("shell.tabbar.coach")
+        .navigationTitle(Text(verbatim: "ATROX"))
         .navigationBarTitleDisplayMode(.inline)
         .task {
             guard let agreed = await container.coachConsent() else {

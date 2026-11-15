@@ -1,774 +1,828 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "liveactivity.intent.skip": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skip rest"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "control.start.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts your next workout."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dinlenmeyi atla"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradaki antrenmanı başlatır."
           }
         }
       }
     },
-    "liveactivity.intent.extend": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add 15 seconds of rest"
+    "control.start.label" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dinlenmeye 15 sn ekle"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenmanı başlat"
           }
         }
       }
     },
-    "liveactivity.rest": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rest"
+    "control.start.name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dinlenme"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenmanı başlat"
           }
         }
       }
     },
-    "liveactivity.skip": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skip"
+    "intent.day.type" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program day"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Atla"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program günü"
           }
         }
       }
     },
-    "liveactivity.extend": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+15 s"
+    "intent.score.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tells you your overall Strength Score."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "+15 sn"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel Güç Skorunu söyler."
           }
         }
       }
     },
-    "liveactivity.finished": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Workout complete"
+    "intent.score.none" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You do not have a Strength Score yet. Log a few workouts first."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenman tamamlandı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz bir Güç Skorun yok. Önce birkaç antrenman kaydet."
           }
         }
       }
     },
-    "liveactivity.summary %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld sets"
+    "intent.score.provisional %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your provisional Strength Score is %lld out of 100."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld set"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçici Güç Skorun 100 üzerinden %lld."
           }
         }
       }
     },
-    "intent.day.type": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Program day"
+    "intent.score.short" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength Score"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Program günü"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güç skoru"
           }
         }
       }
     },
-    "intent.start.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start workout"
+    "intent.score.title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show my Strength Score"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenmanı başlat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güç skorumu göster"
           }
         }
       }
     },
-    "intent.start.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Starts a day of your program, or the next planned workout."
+    "intent.score.value %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Strength Score is %lld out of 100."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programının bir gününü veya sıradaki antrenmanı başlatır."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güç Skorun 100 üzerinden %lld."
           }
         }
       }
     },
-    "intent.start.day": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Program day"
+    "intent.signedout" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to ATROX first."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Program günü"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce ATROX'ta oturum aç."
           }
         }
       }
     },
-    "intent.start.short": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start workout"
+    "intent.start.day" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program day"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenmanı başlat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program günü"
           }
         }
       }
     },
-    "intent.weight.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log my weight"
+    "intent.start.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts a day of your program, or the next planned workout."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilomu kaydet"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programının bir gününü veya sıradaki antrenmanı başlatır."
           }
         }
       }
     },
-    "intent.weight.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saves a body weight entry."
+    "intent.start.short" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir vücut ağırlığı kaydı ekler."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenmanı başlat"
           }
         }
       }
     },
-    "intent.weight.value": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weight"
+    "intent.start.title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilo"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenmanı başlat"
           }
         }
       }
     },
-    "intent.weight.ask": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What is your weight?"
+    "intent.weight.ask" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is your weight?"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaç kilosun?"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaç kilosun?"
           }
         }
       }
     },
-    "intent.weight.short": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log weight"
+    "intent.weight.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves a body weight entry."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilomu kaydet"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir vücut ağırlığı kaydı ekler."
           }
         }
       }
     },
-    "intent.weight.invalid": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "That does not look like a body weight."
+    "intent.weight.failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save your weight. Open ATROX and try again."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu bir vücut ağırlığına benzemiyor."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilon kaydedilemedi. ATROX'u açıp tekrar dene."
           }
         }
       }
     },
-    "intent.weight.saved %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saved your weight: %@."
+    "intent.weight.invalid" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That does not look like a body weight."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilon kaydedildi: %@."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu bir vücut ağırlığına benzemiyor."
           }
         }
       }
     },
-    "intent.weight.failed": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not save your weight. Open ATROX and try again."
+    "intent.weight.saved %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved your weight: %@."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilon kaydedilemedi. ATROX'u açıp tekrar dene."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilon kaydedildi: %@."
           }
         }
       }
     },
-    "intent.signedout": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sign in to ATROX first."
+    "intent.weight.short" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log weight"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Önce ATROX'ta oturum aç."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilomu kaydet"
           }
         }
       }
     },
-    "intent.score.title": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show my Strength Score"
+    "intent.weight.title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log my weight"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güç skorumu göster"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilomu kaydet"
           }
         }
       }
     },
-    "intent.score.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tells you your overall Strength Score."
+    "intent.weight.value" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weight"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Genel Güç Skorunu söyler."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilo"
           }
         }
       }
     },
-    "intent.score.short": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Strength Score"
+    "liveactivity.extend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+15 s"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güç skoru"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+15 sn"
           }
         }
       }
     },
-    "intent.score.none": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You do not have a Strength Score yet. Log a few workouts first."
+    "liveactivity.finished" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workout complete"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Henüz bir Güç Skorun yok. Önce birkaç antrenman kaydet."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenman tamamlandı"
           }
         }
       }
     },
-    "intent.score.value %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your Strength Score is %lld out of 100."
+    "liveactivity.intent.extend" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add 15 seconds of rest"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güç Skorun 100 üzerinden %lld."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinlenmeye 15 sn ekle"
           }
         }
       }
     },
-    "intent.score.provisional %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your provisional Strength Score is %lld out of 100."
+    "liveactivity.intent.skip" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip rest"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geçici Güç Skorun 100 üzerinden %lld."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinlenmeyi atla"
           }
         }
       }
     },
-    "widget.state.signedout": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open ATROX to sign in"
+    "liveactivity.rest" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rest"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giriş yapmak için ATROX'u aç"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinlenme"
           }
         }
       }
     },
-    "widget.state.noscore": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log a few workouts to get your score"
+    "liveactivity.skip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skorun için birkaç antrenman kaydet"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atla"
           }
         }
       }
     },
-    "widget.score.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Strength Score"
+    "liveactivity.summary %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sets"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Güç Skoru"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld set"
           }
         }
       }
     },
-    "widget.score.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your overall score and how it changed."
+    "widget.score.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your overall score and how it changed."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Genel skorun ve değişimi."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel skorun ve değişimi."
           }
         }
       }
     },
-    "widget.score.short": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Score"
+    "widget.score.name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strength Score"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skor"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güç Skoru"
           }
         }
       }
     },
-    "widget.score.provisional": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "provisional"
+    "widget.score.provisional" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "provisional"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "geçici"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "geçici"
           }
         }
       }
     },
-    "widget.today.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Today's workout"
+    "widget.score.short" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bugünün antrenmanı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skor"
           }
         }
       }
     },
-    "widget.today.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your next program day, one tap to start."
+    "widget.state.noscore" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log a few workouts to get your score"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sıradaki program günün, tek dokunuşla başlat."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skorun için birkaç antrenman kaydet"
           }
         }
       }
     },
-    "widget.today.next": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next workout"
+    "widget.state.signedout" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open ATROX to sign in"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sıradaki antrenman"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yapmak için ATROX'u aç"
           }
         }
       }
     },
-    "widget.today.done": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trained today"
+    "widget.today.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your next program day, one tap to start."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bugün antrenman yapıldı"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradaki program günün, tek dokunuşla başlat."
           }
         }
       }
     },
-    "widget.today.exercises %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld exercises"
+    "widget.today.done" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trained today"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld hareket"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugün antrenman yapıldı"
           }
         }
       }
     },
-    "widget.today.noplan": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No program yet. Open ATROX to pick one."
+    "widget.today.exercises %@" : {
+
+    },
+    "widget.today.exercises %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld exercises"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Henüz program yok. Seçmek için ATROX'u aç."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hareket"
           }
         }
       }
     },
-    "widget.today.start": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start"
+    "widget.today.name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Başlat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünün antrenmanı"
           }
         }
       }
     },
-    "widget.weekly.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weekly goal"
+    "widget.today.next" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next workout"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Haftalık hedef"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradaki antrenman"
           }
         }
       }
     },
-    "widget.weekly.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Workouts this week and your streak."
+    "widget.today.noplan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No program yet. Open ATROX to pick one."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu haftaki antrenmanlar ve serin."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz program yok. Seçmek için ATROX'u aç."
           }
         }
       }
     },
-    "widget.weekly.workouts": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "workouts"
+    "widget.today.start" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "antrenman"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlat"
           }
         }
       }
     },
-    "widget.weekly.streak %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld-week streak"
+    "widget.weekly.description" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workouts this week and your streak."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld haftalık seri"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu haftaki antrenmanlar ve serin."
           }
         }
       }
     },
-    "widget.weekly.progress %lld %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld of %lld workouts"
+    "widget.weekly.name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly goal"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld / %lld antrenman"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haftalık hedef"
           }
         }
       }
     },
-    "control.start.label": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start workout"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenmanı başlat"
+    "widget.weekly.progress %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "widget.weekly.progress %1$@ %2$@"
           }
         }
       }
     },
-    "control.start.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start workout"
+    "widget.weekly.progress %lld %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld workouts"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Antrenmanı başlat"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld antrenman"
           }
         }
       }
     },
-    "control.start.description": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Starts your next workout."
+    "widget.weekly.streak %@" : {
+
+    },
+    "widget.weekly.streak %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld-week streak"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sıradaki antrenmanı başlatır."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld haftalık seri"
+          }
+        }
+      }
+    },
+    "widget.weekly.workouts" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "workouts"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "antrenman"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

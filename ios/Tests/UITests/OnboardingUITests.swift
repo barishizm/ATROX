@@ -107,19 +107,9 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Never shared"].waitForExistence(timeout: 5), app.debugDescription)
         contribute.tap()
 
-        // First strength profile (P021): one set is enough for a score.
-        XCTAssertTrue(app.staticTexts["Your best sets"].waitForExistence(timeout: 10), app.debugDescription)
-        let weight = app.textFields.firstMatch
-        XCTAssertTrue(weight.waitForExistence(timeout: 5), app.debugDescription)
-        weight.tap()
-        weight.typeText("80")
-        let seeScore = app.buttons["See my score"]
-        XCTAssertTrue(seeScore.waitForExistence(timeout: 5), app.debugDescription)
-        seeScore.tap()
-
-        XCTAssertTrue(app.staticTexts["Your first scores"].waitForExistence(timeout: 10), app.debugDescription)
-        XCTAssertTrue(app.staticTexts["This is a first estimate; it gets sharper as you log workouts."].exists)
-        XCTAssertTrue(app.buttons["Let's go"].exists)
+        // The best-sets question is not asked for now: the flow goes straight to the result.
+        XCTAssertTrue(app.buttons["Let's go"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertFalse(app.staticTexts["Your best sets"].exists)
     }
 
     /// P023: the Health shortcut proposes sample values; nothing changes until the user says yes.

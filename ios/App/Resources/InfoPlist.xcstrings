@@ -1,38 +1,64 @@
 {
-  "sourceLanguage": "en",
-  "version": "1.0",
-  "strings": {
-    "NSHealthShareUsageDescription": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ATROX, profilini doldurmak ve tartı ölçümlerini almak için Apple Sağlık'tan boy, kilo, doğum tarihi ve cinsiyet bilgini okur. Bu veriler cihazından çıkmaz."
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ATROX-Dev"
           }
         }
       }
     },
-    "NSHealthUpdateUsageDescription": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ATROX saves your weigh-ins and workouts to Apple Health."
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ATROX"
+          }
+        }
+      }
+    },
+    "NSHealthShareUsageDescription" : {
+      "comment" : "Privacy - Health Share Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device."
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ATROX, tartı ölçümlerini ve antrenmanlarını Apple Sağlık'a kaydeder."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX, profilini doldurmak ve tartı ölçümlerini almak için Apple Sağlık'tan boy, kilo, doğum tarihi ve cinsiyet bilgini okur. Bu veriler cihazından çıkmaz."
+          }
+        }
+      }
+    },
+    "NSHealthUpdateUsageDescription" : {
+      "comment" : "Privacy - Health Update Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX saves your weigh-ins and workouts to Apple Health."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX, tartı ölçümlerini ve antrenmanlarını Apple Sağlık'a kaydeder."
           }
         }
       }
     }
-  }
+  },
+  "version" : "1.0"
 }

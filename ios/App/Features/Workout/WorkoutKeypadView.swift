@@ -30,7 +30,7 @@ struct WorkoutKeypadView: View {
                 } label: {
                     Image(systemName: "arrow.right").font(DSFont.headline).frame(maxWidth: .infinity, minHeight: HitTarget.button)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.borderedProminent).tint(DSColor.accentFill)
                 .accessibilityLabel("workout.keypad.next")
                 .accessibilityIdentifier("keypad-next")
             }

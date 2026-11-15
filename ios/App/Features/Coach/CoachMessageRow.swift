@@ -23,12 +23,26 @@ struct CoachMessageRow: View {
                 .font(DSFont.body).foregroundStyle(DSColor.onAccent)
                 .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
                 .background(DSColor.accentFill, in: RoundedRectangle(cornerRadius: Radius.lg))
+                .shadow(color: .black.opacity(0.3), radius: 5, y: 3)
                 .textSelection(.enabled)
         }
         .accessibilityIdentifier("coach-user-message")
     }
 
+    /// ATROX's picture beside what it says, like a message from a person.
     private var assistant: some View {
+        HStack(alignment: .top, spacing: Spacing.sm) {
+            Image("MascotHappy").resizable().scaledToFit()
+                .frame(width: 34, height: 34)
+                .background(DSColor.surface, in: Circle())
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.25), radius: 3, y: 2)
+                .accessibilityHidden(true)
+            assistantContent
+        }
+    }
+
+    private var assistantContent: some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
             if message.status == .streaming && message.text.isEmpty {
                 activity
@@ -38,6 +52,7 @@ struct CoachMessageRow: View {
                         .foregroundStyle(DSColor.textPrimary)
                         .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
                         .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.lg))
+                        .shadow(color: .black.opacity(0.3), radius: 5, y: 3)
                         .textSelection(.enabled)
                     if message.status == .partial { partialNote }
                     if message.status == .complete { copyButton }
@@ -108,6 +123,7 @@ struct TypingIndicator: View {
         }
         .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
         .background(DSColor.surface, in: Capsule())
+        .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
         .onAppear { phase = true }
         .accessibilityLabel(Text("coach.typing"))
     }

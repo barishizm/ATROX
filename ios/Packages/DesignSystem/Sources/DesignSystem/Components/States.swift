@@ -82,8 +82,10 @@ public struct LoadingState: View {
             .font(DSFont.callout)
             .foregroundStyle(DSColor.textSecondary)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(Spacing.xl)
+        // Fills the whole screen with the app background so the spinner never floats on a differently coloured panel.
+        .background(DSColor.background.ignoresSafeArea())
         .accessibilityElement(children: .combine)
     }
 }

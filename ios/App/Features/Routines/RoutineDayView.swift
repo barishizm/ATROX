@@ -155,7 +155,7 @@ struct RoutineDayView: View {
                 } label: {
                     Text("routine.superset.group \(selection.count)").frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.borderedProminent).tint(DSColor.accentFill)
                 .disabled(selection.count < 2)
                 .accessibilityIdentifier("routine-make-superset")
             }

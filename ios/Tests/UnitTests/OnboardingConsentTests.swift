@@ -58,7 +58,7 @@ struct OnboardingConsentTests {
         await Self.atTerms(env)
         await env.model.acceptLegal()
         await env.model.decideContribution(true)
-        #expect(env.model.step == .lifts)
+        #expect(env.model.step == .result)
         let row = try #require(try await current(env, .mlContribution))
         #expect(row.granted && row.version == ConsentVersions.current.mlContribution)
     }
@@ -68,7 +68,7 @@ struct OnboardingConsentTests {
         await Self.atTerms(env)
         await env.model.acceptLegal()
         await env.model.decideContribution(false)
-        #expect(env.model.step == .lifts)
+        #expect(env.model.step == .result)
         let row = try #require(try await current(env, .mlContribution))
         #expect(!row.granted)
     }

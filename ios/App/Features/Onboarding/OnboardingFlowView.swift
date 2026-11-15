@@ -33,7 +33,7 @@ private struct OnboardingContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if model.step != .result {
+            if model.step != .result, model.step != .lifts {
                 header
             }
             ZStack {
@@ -124,7 +124,7 @@ private struct OnboardingContent: View {
 }
 
 /// Slim determinate bar in the accent color.
-private struct ProgressBar: View {
+struct ProgressBar: View {
     let value: Double
 
     var body: some View {

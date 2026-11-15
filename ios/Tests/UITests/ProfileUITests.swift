@@ -23,18 +23,25 @@ final class ProfileUITests: XCTestCase {
         row.tap()
     }
 
+    /// Edit profile, Body measurements and About live in Settings.
+    @MainActor
+    private func openFromSettings(_ app: XCUIApplication, _ label: String) {
+        open(app, "Settings")
+        open(app, label)
+    }
+
     @MainActor
     func testProfileSummaryShowsSeededData() throws {
         let app = launch()
         XCTAssertTrue(app.staticTexts["Ada Lovelace"].waitForExistence(timeout: 10), app.debugDescription)
-        XCTAssertTrue(app.staticTexts["ada@example.com"].exists)
+        XCTAssertTrue(app.staticTexts["ADA@EXAMPLE.COM"].exists)
         XCTAssertTrue(app.staticTexts["61"].exists, "Latest weight")
     }
 
     @MainActor
     func testEditingTheProfileSavesAndShowsOnTheSummary() throws {
         let app = launch()
-        open(app, "Edit profile")
+        openFromSettings(app, "Edit profile")
         let first = app.textFields["profile-edit-first-name"]
         XCTAssertTrue(first.waitForExistence(timeout: 10), app.debugDescription)
         let save = app.buttons["Save"]
@@ -45,13 +52,15 @@ final class ProfileUITests: XCTestCase {
         first.typeText("Augusta")
         XCTAssertTrue(save.isEnabled)
         save.tap()
+        // Saving returns to Settings; go back to the summary.
+        app.navigationBars.buttons.firstMatch.tap()
         XCTAssertTrue(app.staticTexts["Augusta Lovelace"].waitForExistence(timeout: 10), app.debugDescription)
     }
 
     @MainActor
     func testWeightChartAndAddingAMeasurement() throws {
         let app = launch()
-        open(app, "Body measurements")
+        openFromSettings(app, "Body measurements")
         XCTAssertTrue(app.otherElements["weight-chart"].waitForExistence(timeout: 10), app.debugDescription)
         app.buttons["Add measurement"].tap()
         let field = app.textFields["measurement-weight"]
@@ -91,7 +100,7 @@ final class ProfileUITests: XCTestCase {
     @MainActor
     func testAboutShowsVersionAndLicenses() throws {
         let app = launch()
-        open(app, "About")
+        openFromSettings(app, "About")
         XCTAssertTrue(app.staticTexts["Version"].waitForExistence(timeout: 10), app.debugDescription)
         open(app, "Open-source licenses")
         XCTAssertTrue(app.staticTexts["supabase-swift"].waitForExistence(timeout: 5), app.debugDescription)
@@ -100,7 +109,7 @@ final class ProfileUITests: XCTestCase {
     @MainActor
     func testHealthSyncImportsSampleReadingsOnlyWhenPressed() throws {
         let app = launch(extra: ["-uitest-fake-health"])
-        open(app, "Body measurements")
+        openFromSettings(app, "Body measurements")
         let sync = app.buttons["Sync with Apple Health"]
         XCTAssertTrue(sync.waitForExistence(timeout: 10), app.debugDescription)
         sync.tap()
@@ -112,7 +121,7 @@ final class ProfileUITests: XCTestCase {
     @MainActor
     func testHealthButtonIsHiddenWithoutHealth() throws {
         let app = launch()
-        open(app, "Body measurements")
+        openFromSettings(app, "Body measurements")
         XCTAssertTrue(app.otherElements["weight-chart"].waitForExistence(timeout: 10), app.debugDescription)
         XCTAssertFalse(app.buttons["Sync with Apple Health"].exists)
     }
