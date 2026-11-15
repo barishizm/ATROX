@@ -2,7 +2,7 @@
 
 Adımlar sırasında fark edilen ama kapsam dışı bırakılan işlerin kontrol listesi. `docs/ILERLEME.md` içindeki "Ertelenenler" bölümünden türetildi; bundan sonra tamamlanan maddeler burada işaretlenir.
 
-- `[x]` tamamen çözüldü · `[~]` kısmen çözüldü (alt maddeler metinde) · `[ ]` açık
+- `[-]` bilinçli olarak ertelendi/yapılmayacak · `[x]` tamamen çözüldü · `[~]` kısmen çözüldü (alt maddeler metinde) · `[ ]` açık
 
 Madde numaraları (D001…) kaynak sıradadır; ayrıntılı gerekçe için metne bakın.
 
@@ -10,31 +10,31 @@ Toplam: 243 madde.
 
 ## Maddeler
 
-- [ ] **D001** · Persist weight/height unit preferences (WeightUnit/LengthUnit defaults per locale) in settings — P007 only added the types.
-- [ ] **D002** · Re-localize on-screen navigation titles on in-app language change.
+- [x] **D001** · Persist weight/height unit preferences (WeightUnit/LengthUnit defaults per locale) in settings — P007 only added the types. _Zaten çözülmüştü: birim sistemi profilde saklanıyor (`ProfileModel.setUnitSystem`), onboarding varsayılanı cihaz yerel ayarından geliyor (`OnboardingRules.defaultUnitSystem`), Ayarlar'da seçici var._
+- [x] **D002** · Re-localize on-screen navigation titles on in-app language change. _Çözüm: her sekmenin `NavigationStack`'i `.id(locale.identifier)` ile yeniden kuruluyor; rota yolları router'larda durduğu için ekran konumu korunuyor._
 - [x] **D003** · ÇÖZÜLDÜ: SwiftLint `--strict` sıfır uyarı; eşikler/kurallar `.swiftlint.yml`'de gözden geçirildi (satır 160, tek harfli adlar serbest, `blanket/superfluous_disable_command` ve `multiple_closures_with_trailing_closure` kapalı), kalan ihlaller düzeltildi, CI lint adımı `--strict`.
-- [ ] **D004** · After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist.
-- [ ] **D005** · P010 enum values (experience, goal, equipment_access, user_settings fields) were chosen from the onboarding prompt (P021); align them with the Swift enums when P012/P021 land, via a new migration.
-- [ ] **D006** · Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged.
-- [ ] **D007** · P011: `movement_pattern` values (squat, hinge, lunge, horizontal/vertical push/pull, carry, core, rotation, isolation, cardio, mobility, other) are our own taxonomy since the docs do not define them; confirm when `scoring_taxonomy.yaml` lands (P025/P056). Equipment/muscle/level/category values follow free-exercise-db verbatim (e.g. `body only`).
-- [ ] **D008** · P011: `search_exercises` searches the shared catalog only; extend it to the caller's `custom_exercises` when the coach tool (P075) needs it.
-- [ ] **D009** · Apply the P011 migration to staging/prod (`supabase db push`) once the PR is merged.
-- [ ] **D010** · Apply the P012 migration to staging/prod (`supabase db push`) once the PR is merged.
-- [ ] **D011** · P012: `sets` has no UNIQUE (workout_exercise_id, position) on purpose (offline reorder + soft-deleted rows would cause spurious sync failures); the client must renumber positions.
-- [ ] **D012** · P012: `purge_soft_deleted()` is service-role only and not scheduled yet; schedule it (pg_cron or Edge Function) with the sync work. It does not cover `profiles`/`user_settings`/`consents`.
-- [ ] **D013** · P012: `personal_records.date` is a `date`; confirm vs. a timestamp when the PR-detection logic (client) is written.
-- [ ] **D014** · (P014) Uzak projelerde özel SMTP sağlayıcısı bağlanacak (yerleşik e-posta servisinin saatlik limiti düşük); lansmandan önce.
-- [ ] **D015** · (P014) Şablonları (TR/EN) uzak projelere yükle: önce özel SMTP + alan adı gerekir (docs/KURULUM.md → E-posta ile giriş).
-- [ ] **D016** · (P014) Apple: Developer Program üyeliği, App ID'lerde Sign in with Apple, Supabase Apple sağlayıcısı (Client IDs = 3 bundle ID) ve DEVELOPMENT_TEAM — release öncesi (docs/KURULUM.md → Sign in with Apple).
-- [ ] **D017** · (P015) Google "Skip nonce checks" açık kalıyor: uygulama Google'a hash'li nonce gönderip Supabase'e ham nonce veriyor; gerçek cihazda Google girişi doğrulandıktan sonra staging/prod panelinde kapat.
-- [ ] **D018** · (P015) Apple yalnızca ilk girişte ad/soyad verir; `AppleIDTokenProvider` şimdilik yakalamıyor — profil adı P018+ (UserProfile) ile `signInWithIdToken` sonrası kaydedilmeli.
-- [ ] **D019** · (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla.
-- [ ] **D020** · (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_atrox`.
-- [ ] **D021** · (P016) Kullanım Koşulları / Gizlilik Politikası bağlantıları `example.com` yer tutucusu (`LEGAL_TERMS_URL`, `LEGAL_PRIVACY_URL`, `ios/Config/Base.xcconfig`); gerçek sayfalar P101'de yayınlanınca değiştir.
-- [ ] **D022** · (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür.
-- [ ] **D023** · (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir.
-- [ ] **D024** · (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır.
-- [ ] **D025** · (P017) App Group (`group.com.barishizm.atrox[.debug|.staging]`) Apple Developer portalında App ID'lere eklenip provisioning profile'a girmeli; simülatörde sorunsuz, gerçek cihaz/release öncesi `[MANUEL]`. Widgets hedefi (P0xx) aynı `APP_GROUP_ID`'yi kullanmalı.
+- [~] **D004** · After the first push, confirm both CI workflows are green on GitHub (macos-26 runner, `swift:6.2-noble` container); the Xcode version on the runner may need pinning once Xcode 27 images exist. _Kısmen: iOS iş akışı main'de yeşil değil (en son 2026-11-12'de başarısız); Core'da pgTAP 027 planı 11 yerine 10 test çalıştırıyordu, plan 10'a düzeltildi (CI'da doğrulanacak). Runner'daki Xcode sürümü sabitleme hâlâ açık._
+- [x] **D005** · P010 enum values (experience, goal, equipment_access, user_settings fields) were chosen from the onboarding prompt (P021); align them with the Swift enums when P012/P021 land, via a new migration. _Kontrol edildi: profiles/user_settings/consents/measurements CHECK değerleri `DataKit/Models/Enums.swift` ile birebir aynı; yeni migration gerekmedi._
+- [x] **D006** · Apply the P010 migration to staging/prod (`supabase db push`) once the PR is merged. _Uzak projede schema_1…16 uygulanmış (doğrulandı). Kalan schema_17…24 yayın öncesi tek seferde basılacak._ _Staging'e schema_17…24 de uygulandı (2026-11-15, `supabase db push`, doğrulandı). Prod'a da kullanıcı tarafından uygulandı: schema_1…24 (doğrulandı)._
+- [x] **D007** · P011: `movement_pattern` values (squat, hinge, lunge, horizontal/vertical push/pull, carry, core, rotation, isolation, cardio, mobility, other) are our own taxonomy since the docs do not define them; confirm when `scoring_taxonomy.yaml` lands (P025/P056). Equipment/muscle/level/category values follow free-exercise-db verbatim (e.g. `body only`). _`tools/catalog/scoring_taxonomy.yaml` geldi; kalıp değerleri schema_4 migration'ıyla hizalandı (P056)._
+- [x] **D008** · P011: `search_exercises` searches the shared catalog only; extend it to the caller's `custom_exercises` when the coach tool (P075) needs it. _`schema_25_search_custom_exercises` (security invoker, RLS) + koç aracı kendi özel hareketlerini de döndürüyor; pgTAP 031 ve Deno testi. Staging'e uygulandı (2026-11-15); prod'a kullanıcı `supabase db push` ile uygulayacak._
+- [x] **D009** · Apply the P011 migration to staging/prod (`supabase db push`) once the PR is merged. _Uzak projede uygulanmış (doğrulandı)._
+- [x] **D010** · Apply the P012 migration to staging/prod (`supabase db push`) once the PR is merged. _Uzak projede uygulanmış (doğrulandı)._
+- [x] **D011** · P012: `sets` has no UNIQUE (workout_exercise_id, position) on purpose (offline reorder + soft-deleted rows would cause spurious sync failures); the client must renumber positions. _İstemci sıraları yeniden numaralıyor (`SwiftDataRoutineRepository` reorder); kısıt bilerek yok._
+- [x] **D012** · P012: `purge_soft_deleted()` is service-role only and not scheduled yet; schedule it (pg_cron or Edge Function) with the sync work. It does not cover `profiles`/`user_settings`/`consents`. _`schema_24_purge_schedule` migration'ı: `purge_soft_deleted` artık `score_snapshots` ve `insights`'ı da kapsıyor, pg_cron varsa her gece 03:30'da çalıştırıyor (yoksa sessizce atlanır); pgTAP `030`. `profiles/user_settings/consents` kapsam dışı kaldı. CI'da doğrulanacak, uzak veritabanına uygulanmadı._
+- [x] **D013** · P012: `personal_records.date` is a `date`; confirm vs. a timestamp when the PR-detection logic (client) is written. _`PersonalRecordService` günlük (`date`) kayıt yazıyor; karar uygulandı._
+- [-] **D014** · (P014) Uzak projelerde özel SMTP sağlayıcısı bağlanacak (yerleşik e-posta servisinin saatlik limiti düşük); lansmandan önce. _Manuel/harici (SMTP sağlayıcısı, alan adı): kullanıcı yapar, lansman öncesi._
+- [-] **D015** · (P014) Şablonları (TR/EN) uzak projelere yükle: önce özel SMTP + alan adı gerekir (docs/KURULUM.md → E-posta ile giriş). _D014'e bağlı manuel iş._
+- [x] **D016** · (P014) Apple: Developer Program üyeliği, App ID'lerde Sign in with Apple, Supabase Apple sağlayıcısı (Client IDs = 3 bundle ID) ve DEVELOPMENT_TEAM — release öncesi (docs/KURULUM.md → Sign in with Apple). _Kullanıcı tamamladı._
+- [-] **D017** · (P015) Google "Skip nonce checks" açık kalıyor: uygulama Google'a hash'li nonce gönderip Supabase'e ham nonce veriyor; gerçek cihazda Google girişi doğrulandıktan sonra staging/prod panelinde kapat. _Manuel: gerçek cihazda Google girişi doğrulanınca panelden kapatılır._
+- [x] **D018** · (P015) Apple yalnızca ilk girişte ad/soyad verir; `AppleIDTokenProvider` şimdilik yakalamıyor — profil adı P018+ (UserProfile) ile `signInWithIdToken` sonrası kaydedilmeli. _Gerekmiyor: ad onboarding'de (`onboarding.name.first`) soruluyor ve profile kaydediliyor; Apple adına bağımlılık yok._
+- [x] **D019** · (P015) `onboardingComplete` geçici olarak `user_metadata.onboarding_complete` bayrağından okunuyor; profil tablosu/UserProfile geldiğinde (P018–P021) gerçek kaynağa bağla. _Tasarım gereği çözüldü: `user_metadata.onboarding_complete` sunucudaki çapraz cihaz kaynağıdır, `OnboardingCompletionStore` çevrimdışı yedeği. Profil tablosuna taşımak aynı bilgiyi ikinci kez tutar ve giriş akışına ağ bağımlılığı ekler; kod değişmedi._
+- [-] **D020** · (P015) Yerel auth e-posta limiti saatte 2 (`auth.rate_limit.email_sent`); entegrasyon testi 1 e-posta yollar — tekrarlı çalıştırmada `docker restart supabase_auth_atrox`. _Bilgi notu (yerel geliştirme ipucu); yapılacak iş yok._
+- [-] **D021** · (P016) Kullanım Koşulları / Gizlilik Politikası bağlantıları `example.com` yer tutucusu (`LEGAL_TERMS_URL`, `LEGAL_PRIVACY_URL`, `ios/Config/Base.xcconfig`); gerçek sayfalar P101'de yayınlanınca değiştir. _Gerçek hukuk sayfaları yayınlanınca `Base.xcconfig` URL'leri değiştirilir (P101, manuel)._
+- [x] **D022** · (P016) Apple düğmesinin metni sistem diline uyar (UIKit), uygulama içi dil seçimine değil; uygulama dili sistemden farklıysa düğme farklı dilde görünür. _Apple düğmesi SwiftUI ile HIG'e uygun çizildi (logo + "Apple ile devam et"), metni uygulama içi dile uyuyor (`auth.apple.continue`). Simülatörde görsel olarak doğrulanmadı: düğme giriş ekranında, tanıtım ve test akışının arkasında._
+- [x] **D023** · (P016) Doğrulama ekranında "Posta uygulamasını aç" kısayolu yok (güvenilir bir derin bağlantı yok); istenirse eklenir. _Doğrulama ekranına "Posta uygulamasını aç" düğmesi eklendi (`message://`, `auth.verify.openMail`, TR/EN)._
+- [-] **D024** · (P016) Gerçek cihazda ve gerçek Supabase'e karşı üç yöntemle (Apple/Google/e-posta) elle sınanmadı; UI testleri sahte servisle (`-uitest-fake-auth`) çalışır. _Manuel cihaz testi; kullanıcı yapar._
+- [x] **D025** · (P017) App Group (`group.com.barishizm.atrox[.debug|.staging]`) Apple Developer portalında App ID'lere eklenip provisioning profile'a girmeli; simülatörde sorunsuz, gerçek cihaz/release öncesi `[MANUEL]`. Widgets hedefi (P0xx) aynı `APP_GROUP_ID`'yi kullanmalı. _Kullanıcı tamamladı._
 - [ ] **D026** · (P017) `UserSettings` modeli var ama deposu yok; P022 (Profil ve ayarlar) ile `SettingsRepository` eklenecek.
 - [ ] **D027** · (P017) Depolar kayıtları `pending` bırakır; itme/çekme ve `syncState` geçişleri (synced/failed) senkronizasyon motoruna (Faz 11) ait.
 - [ ] **D028** · (P017) Uygulama grubu konteyneri açılamazsa (imzasız derleme) uygulama kendi sandbox'ına düşer; widget'lar o durumda veriyi göremez. Üretimde grubun varlığı release kontrol listesine eklenmeli.

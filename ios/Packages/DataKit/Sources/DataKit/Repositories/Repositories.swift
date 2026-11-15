@@ -30,6 +30,9 @@ public protocol ConsentRepository: Sendable {
     func current(kind: ConsentKind, userId: UUID) async throws -> ConsentSnapshot?
     /// Oldest first.
     func history(userId: UUID) async throws -> [ConsentSnapshot]
+    /// Rows the server has not received yet, oldest first (D129: consents are append-only, so only inserts are pushed).
+    func unsynced(userId: UUID) async throws -> [ConsentSnapshot]
+    func markSynced(ids: [UUID]) async throws
 }
 
 public protocol SettingsRepository: Sendable {

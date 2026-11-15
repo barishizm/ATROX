@@ -23,6 +23,8 @@ final class AppContainer {
     let accountService: any AccountService
     /// Sync with the server (P044/P045); nil without a local store. Inert (`isAvailable == false`) without Supabase.
     let sync: SyncCoordinator?
+    /// Sends the device's consent rows to the server (D129); nil without a server or a local store.
+    let consentPusher: ConsentPusher?
     @ObservationIgnored var saveObserver: (any NSObjectProtocol)?
     @ObservationIgnored private var workoutEventsTask: Task<Void, Never>?
     let authFlow: AuthFlowModel
@@ -91,8 +93,10 @@ final class AppContainer {
         coach: CoachDependencies? = nil,
         social: (any SocialService)? = nil,
         purchases: PurchaseService? = nil,
-        contributionTransport: (any ContributionTransport)? = nil
+        contributionTransport: (any ContributionTransport)? = nil,
+        consentPusher: ConsentPusher? = nil
     ) {
+        self.consentPusher = consentPusher
         self.purchases = purchases ?? PurchaseService(store: FakeStoreClient())
         self.coach = coach
         self.social = social
@@ -140,6 +144,7 @@ final class AppContainer {
         clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
+        UserDefaultsOnboardingDraftStore().clearAll()
         purchases.stop()
         await sync?.signOut()
         await root.signOut()
@@ -555,7 +560,11 @@ final class AppContainer {
         }
         let account = SupabaseAccountService(configuration: config, accessToken: accessToken, appleAuthorizationCode: appleCode)
         let remote = SupabaseRemoteStore(configuration: config, accessToken: accessToken)
-        let coach = makeCoach(config: config, accessToken: accessToken, refreshedToken: { await auth.refreshedAccessToken() })
+        let consentRemote = SupabaseConsentRemote(configuration: config, accessToken: accessToken)
+        let consentPusher = store.map { ConsentPusher(repository: SwiftDataConsentRepository(modelContainer: $0), remote: consentRemote) }
+        let coach = makeCoach(
+            config: config, accessToken: accessToken, refreshedToken: { await auth.refreshedAccessToken() }, consentPusher: consentPusher
+        )
         return AppContainer(
             sessionService: AuthSessionService(auth: auth), authService: auth, accountService: account, modelContainer: store,
             health: HealthKitService(),
@@ -565,7 +574,8 @@ final class AppContainer {
             modelUpdater: makeModelUpdater(config: config, info: info), coach: coach,
             social: SupabaseSocialService(configuration: config, accessToken: accessToken),
             purchases: makePurchases(config: config, accessToken: accessToken),
-            contributionTransport: SupabaseContributionTransport(configuration: config, accessToken: accessToken)
+            contributionTransport: SupabaseContributionTransport(configuration: config, accessToken: accessToken),
+            consentPusher: consentPusher
         )
     }
 

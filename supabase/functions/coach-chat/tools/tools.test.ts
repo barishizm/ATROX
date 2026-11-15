@@ -52,20 +52,31 @@ Deno.test("get_scores marks stale data", async () => {
   assert(result.ok && typeof (result.data as { note?: string }).note === "string");
 });
 
+Deno.test("search_exercises also returns the user's custom exercises first", async () => {
+  const db = new FakeDb({
+    search_exercises: () => [{ exercise_id: "goblet-squat", name: "Goblet Squat", equipment: "dumbbell", primary_muscles: ["quadriceps"] }],
+    search_custom_exercises: () => [{ exercise_id: "7c1f0000-0000-4000-8000-000000000001", name: "My Squat", equipment: null, primary_muscles: ["quadriceps"] }],
+  });
+  const result = await searchExercises.run({ query: "squat" }, context(db));
+  assert(result.ok);
+  const ids = (result.data as { exercises: { id: string }[] }).exercises.map((exercise) => exercise.id);
+  assertEquals(ids, ["7c1f0000-0000-4000-8000-000000000001", "goblet-squat"]);
+});
+
 Deno.test("search_exercises limits equipment to what the user has", async () => {
   const db = new FakeDb({ search_exercises: () => [{ exercise_id: "goblet-squat", name: "Goblet Squat", equipment: "dumbbell", primary_muscles: ["quadriceps"], is_core: true, score: 1 }] });
   const result = await searchExercises.run({ query: "squat" }, context(db));
-  assertEquals(db.calls[0].args.p_equipment, ["body_only", "dumbbell", "bands"]);
+  assertEquals(db.called("search_exercises")[0].args.p_equipment, ["body_only", "dumbbell", "bands"]);
   assert(result.ok);
   assertEquals((result.data as { exercises: unknown[] }).exercises, [{ id: "goblet-squat", name: "Goblet Squat", equipment: "dumbbell", muscles: ["quadriceps"] }]);
 
   await searchExercises.run({ query: "", equipment: ["barbell", "dumbbell"] }, context(db));
-  assertEquals(db.calls[1].args.p_equipment, ["dumbbell"], "requested ∩ owned");
+  assertEquals(db.called("search_exercises")[1].args.p_equipment, ["dumbbell"], "requested ∩ owned");
   const none = await searchExercises.run({ query: "", equipment: ["machine"] }, context(db));
   assert(none.ok && (none.data as { exercises: unknown[] }).exercises.length === 0);
-  assertEquals(db.calls.length, 2, "no query when nothing is available");
+  assertEquals(db.called("search_exercises").length, 2, "no query when nothing is available");
   await searchExercises.run({ query: "", equipment: ["machine"], available_only: false }, context(db));
-  assertEquals(db.calls[2].args.p_equipment, ["machine"]);
+  assertEquals(db.called("search_exercises")[2].args.p_equipment, ["machine"]);
 });
 
 const day = (exercises: unknown[]) => ({ name: "A", exercises });

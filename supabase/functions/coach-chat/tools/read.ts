@@ -92,7 +92,7 @@ export const getRoutine = defineTool({
 export const searchExercises = defineTool({
   name: "search_exercises",
   description:
-    "Find catalog exercises by name, optionally by muscle and equipment. By default only equipment the user has.",
+    "Find catalog exercises and the user's own custom exercises by name, optionally by muscle and equipment. By default only equipment the user has.",
   parameters: {
     type: "object",
     properties: {
@@ -122,7 +122,13 @@ export const searchExercises = defineTool({
       p_equipment: equipment,
       p_limit: 10,
     }) as { exercise_id: string; name: string; equipment: string | null; primary_muscles: string[] }[] | null;
-    const exercises = (rows ?? []).map((row) => ({
+    const custom = await call(context, "search_custom_exercises", {
+      p_query: args.query,
+      p_muscle: args.muscle ?? null,
+      p_equipment: equipment,
+      p_limit: 5,
+    }) as { exercise_id: string; name: string; equipment: string | null; primary_muscles: string[] }[] | null;
+    const exercises = [...(custom ?? []), ...(rows ?? [])].map((row) => ({
       id: row.exercise_id,
       name: row.name,
       equipment: row.equipment,
