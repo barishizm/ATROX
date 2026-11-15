@@ -1,48 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@" : {
-
-    },
-    "0 → 73 animasyonunu oynat" : {
-
-    },
-    "Antrenman Başlat" : {
-
-    },
-    "Antrenmanı Başlat" : {
-
-    },
-    "Bağlantı kurulamadı." : {
-
-    },
-    "Bağlantı kurulamadı. İnternetini kontrol et." : {
-
-    },
-    "Başlat" : {
-
-    },
-    "Bench Press" : {
-
-    },
-    "Bileşen Galerisi" : {
-
-    },
-    "Bu Hafta" : {
-
-    },
-    "Daha ağır kaldır" : {
-
-    },
-    "Devre dışı" : {
-
-    },
-    "Dikkat" : {
-
-    },
-    "Diz" : {
-
-    },
     "ds.errorState.retry" : {
       "localizations" : {
         "en" : {
@@ -202,78 +160,6 @@
           }
         }
       }
-    },
-    "Göğüs" : {
-
-    },
-    "Hacim" : {
-
-    },
-    "Hata" : {
-
-    },
-    "Henüz antrenman yok" : {
-
-    },
-    "İlk antrenmanını kaydet, Güç Skorun hesaplansın." : {
-
-    },
-    "İlk antrenmanını kaydet." : {
-
-    },
-    "Kas kazanımı" : {
-
-    },
-    "Kaydediliyor" : {
-
-    },
-    "Kaydet" : {
-
-    },
-    "Kuvvet" : {
-
-    },
-    "OK" : {
-
-    },
-    "Omuz" : {
-
-    },
-    "PR" : {
-
-    },
-    "Şablon Seç" : {
-
-    },
-    "Seri" : {
-
-    },
-    "Son 30 gün" : {
-
-    },
-    "Son Antrenmanlar" : {
-
-    },
-    "Son set: 80 kg × 8" : {
-
-    },
-    "Süre" : {
-
-    },
-    "Tahmini 1TM" : {
-
-    },
-    "Tamamlandı" : {
-
-    },
-    "Tema" : {
-
-    },
-    "Tümü" : {
-
-    },
-    "Uyarı" : {
-
     }
   },
   "version" : "1.0"

@@ -640,9 +640,6 @@
         }
       }
     },
-    "widget.today.exercises %@" : {
-
-    },
     "widget.today.exercises %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -760,16 +757,6 @@
         }
       }
     },
-    "widget.weekly.progress %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "widget.weekly.progress %1$@ %2$@"
-          }
-        }
-      }
-    },
     "widget.weekly.progress %lld %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -786,9 +773,6 @@
           }
         }
       }
-    },
-    "widget.weekly.streak %@" : {
-
     },
     "widget.weekly.streak %lld" : {
       "extractionState" : "stale",
