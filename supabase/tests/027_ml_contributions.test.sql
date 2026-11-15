@@ -1,6 +1,6 @@
 -- P093 · ml_contributions: anonymous (no user column), invisible and unwritable for client roles.
 begin;
-select plan(11);
+select plan(10);
 
 select tests.create_two_users();
 
