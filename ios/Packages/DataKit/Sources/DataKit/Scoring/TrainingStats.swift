@@ -186,8 +186,8 @@ public actor TrainingStats {
         let days = Dictionary(uniqueKeysWithValues: workouts.map { ($0.id, ScoreCalculator.dayNumber($0.startedAt, calendar: calendar)) })
         let workoutIds = Set(days.keys)
         let exercises = ((try? context.fetch(FetchDescriptor<WorkoutExercise>(
-            predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.exerciseId != nil }
-        ))) ?? []).filter { workoutIds.contains($0.workoutId) }
+            predicate: #Predicate { workoutIds.contains($0.workoutId) && $0.deletedAt == nil && $0.exerciseId != nil }
+        ))) ?? [])
         guard !exercises.isEmpty else { return [] }
         let rowIds = Set(exercises.map(\.id))
         let sets = (try? context.fetch(FetchDescriptor<SetEntry>(

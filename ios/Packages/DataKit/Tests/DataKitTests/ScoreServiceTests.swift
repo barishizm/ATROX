@@ -89,6 +89,17 @@ private enum Failure: Error { case notReady(ScoreOutcome) }
         #expect(afterDelete.exercises[bench]?.basis?.weightKg != 77.5)
     }
 
+    @Test func refreshStillPublishesWhatAnEarlierOverviewComputedWithoutStoring() async throws {
+        let env = try await ScoreEnv()
+        // `overview` fills the cache but writes no snapshots; the next refresh must not mistake that for "already done".
+        let overview = try ready(await env.service.overview(userId: testUser))
+        #expect(try env.snapshots().isEmpty)
+        let published = try ready(try #require(await env.service.refresh(userId: testUser)))
+        #expect(published == overview)
+        #expect(try !env.snapshots().isEmpty)
+        #expect(await env.service.refresh(userId: testUser) == nil)
+    }
+
     @Test func refreshOnlyWorksWhenSomethingScoreRelevantChanged() async throws {
         let env = try await ScoreEnv()
         #expect(await env.service.refresh(userId: testUser) != nil)  // first run computes

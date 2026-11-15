@@ -45,6 +45,8 @@ public actor ScoreService {
         var user: ScoringUser
         var overview: ScoreOverview
         var sets: [String: [ScoredSet]]
+        /// False when the entry came from `overview` (no snapshots written): the next `refresh` must still publish it.
+        var persisted: Bool
     }
 
     public init(
@@ -172,7 +174,15 @@ public actor ScoreService {
            cached.asOfDay == ScoreCalculator.dayNumber(clock(), calendar: calendar), cached.modelVersion == scoring.version,
            cached.user == user {
             let changed = Set(loaded.keys).union(cached.sets.keys).filter { loaded[$0] != cached.sets[$0] }
-            if changed.isEmpty { return nil }
+            if changed.isEmpty {
+                // `overview(persist: false)` may have refreshed the cache first; its result still has to be stored and published.
+                guard !cached.persisted else { return nil }
+                let context = ModelContext(modelContainer)
+                store(cached.overview, userId: userId, date: date(ofDay: cached.asOfDay), context: context, force: false)
+                try? context.save()
+                cache[CacheKey(userId: userId, population: population)]?.persisted = true
+                return .ready(cached.overview)
+            }
             return await compute(userId: userId, population: population, trigger: .exercises(changed), persist: true, preloaded: loaded)
         }
         return await compute(userId: userId, population: population, trigger: .everything, persist: true, preloaded: loaded)
@@ -220,7 +230,7 @@ public actor ScoreService {
         let overview = ScoreCalculator.overview(
             evaluations: evaluations, model: scoring.model, version: scoring.version, population: population, asOfDay: today
         )
-        cache[key] = Cached(asOfDay: today, modelVersion: scoring.version, user: user, overview: overview, sets: allSets)
+        cache[key] = Cached(asOfDay: today, modelVersion: scoring.version, user: user, overview: overview, sets: allSets, persisted: persist)
         if persist {
             let context = ModelContext(modelContainer)
             store(overview, userId: userId, date: date(ofDay: today), context: context, force: false)
@@ -251,10 +261,17 @@ public actor ScoreService {
             items.append(SnapshotItem(scope: .overall, key: "overall", score: overall.score, z: overall.z, confidence: overall.confidence))
         }
         let now = clock()
+        // One fetch for the day's rows instead of one per item.
+        let dayStart = calendar.startOfDay(for: date)
+        let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart.addingTimeInterval(86_400)
+        let day = (try? context.fetch(FetchDescriptor<ScoreSnapshot>(
+            predicate: #Predicate { $0.userId == userId && $0.date >= dayStart && $0.date < dayEnd }
+        ))) ?? []
+        let existingById = Dictionary(day.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         for item in items.sorted(by: { ($0.scope.rawValue, $0.key) < ($1.scope.rawValue, $1.key) }) {
             let (scope, key, score, z, confidence) = (item.scope, item.key, item.score, item.z, item.confidence)
             let id = ScoreSnapshot.id(userId: userId, scope: scope.rawValue, key: key, referenceGroup: group, date: date)
-            if let existing = try? context.fetch(ScoreSnapshot.syncDescriptor(.id(id))).first {
+            if let existing = existingById[id] {
                 guard existing.score != score || existing.modelVersion != overview.modelVersion || existing.deletedAt != nil else { continue }
                 existing.score = score
                 existing.z = z
