@@ -9,11 +9,17 @@ struct CoachDependencies: Sendable {
     let repository: CoachRepository
     /// Proactive comments (P083); nil when the server is not configured.
     let digest: (any CoachDigestService)?
+    /// Puts the AI-sharing consent on the server (the coach endpoint checks it there); nil without a server.
+    let uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)?
 
-    init(chat: any CoachChatService, repository: CoachRepository, digest: (any CoachDigestService)? = nil) {
+    init(
+        chat: any CoachChatService, repository: CoachRepository, digest: (any CoachDigestService)? = nil,
+        uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)? = nil
+    ) {
         self.chat = chat
         self.repository = repository
         self.digest = digest
+        self.uploadAISharingConsent = uploadAISharingConsent
     }
 }
 
@@ -40,16 +46,20 @@ final class CoachModel {
     @ObservationIgnored private let applier: ProposalApplier?
     @ObservationIgnored private let facts: @MainActor () async -> CoachSuggestions.Facts
     @ObservationIgnored private let locale: Locale
+    /// Records the AI-sharing consent again and pushes it to the server; false when it could not be stored.
+    @ObservationIgnored private let reconsent: (@MainActor () async -> Bool)?
     @ObservationIgnored private var monitor: Task<Void, Never>?
 
     init(
         session: CoachSession, repository: CoachRepository, applier: ProposalApplier?, locale: Locale,
+        reconsent: (@MainActor () async -> Bool)? = nil,
         facts: @escaping @MainActor () async -> CoachSuggestions.Facts
     ) {
         self.session = session
         self.repository = repository
         self.applier = applier
         self.locale = locale
+        self.reconsent = reconsent
         self.facts = facts
     }
 
@@ -116,6 +126,20 @@ final class CoachModel {
         Task { [weak self] in
             await self?.session.settle()
             self?.remember()
+        }
+    }
+
+    /// The server said the consent is missing although the app has it: store the answer again, then send the same
+    /// message once more so the user does not have to type it twice.
+    var canReconsent: Bool { reconsent != nil }
+
+    func reconsentAndResend() {
+        guard let reconsent else { return }
+        Task { [weak self] in
+            guard await reconsent(), let self else { return }
+            session.retry()
+            await session.settle()
+            remember()
         }
     }
 

@@ -19,6 +19,8 @@ struct CoachChatView: View {
             messages
             bottomArea
         }
+        // The keyboard is not part of the safe area for this fill, so nothing black shows behind it.
+        .background(DSColor.background.ignoresSafeArea())
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button { showsThreads = true } label: { Image(systemName: "clock.arrow.circlepath") }
@@ -74,9 +76,19 @@ struct CoachChatView: View {
         return key
     }
 
+    /// ATROX introduces itself: its picture and a speech bubble, then the starter questions.
     private var emptyConversation: some View {
         VStack(spacing: Spacing.lg) {
-            EmptyState(systemImage: "bubble.left.and.text.bubble.right", title: "coach.empty.title", message: "coach.empty.message")
+            VStack(spacing: Spacing.sm) {
+                Image("MascotHappy").resizable().scaledToFit().frame(height: 150).accessibilityHidden(true)
+                Text("coach.empty.message")
+                    .font(DSFont.body).foregroundStyle(DSColor.textPrimary).multilineTextAlignment(.center)
+                    .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.md)
+                    .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.lg))
+                    .overlay(RoundedRectangle(cornerRadius: Radius.lg).strokeBorder(DSColor.separator))
+                    .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
+            }
+            .accessibilityElement(children: .combine)
             VStack(spacing: Spacing.sm) {
                 ForEach(model.suggestions, id: \.self) { suggestion in
                     Button { model.ask(suggestion) } label: {
@@ -88,6 +100,7 @@ struct CoachChatView: View {
                         .padding(Spacing.md)
                         .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
                         .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.md))
+                        .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
                     }
                     .buttonStyle(.plain)
                     .disabled(!model.isOnline)
@@ -106,7 +119,7 @@ struct CoachChatView: View {
             if model.quotaExhausted { quotaExhausted } else { composer }
         }
         .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
-        .background(DSColor.background)
+        .background(DSColor.background.shadow(.drop(color: .black.opacity(0.3), radius: 8, y: -2)), ignoresSafeAreaEdges: .bottom)
     }
 
     private var offlineBanner: some View {
@@ -123,21 +136,26 @@ struct CoachChatView: View {
                 TextField("coach.input.placeholder", text: $model.draft, axis: .vertical)
                     .lineLimit(1...5)
                     .focused($inputFocused)
-                    .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
-                    .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.lg))
+                    .padding(.leading, Spacing.md).padding(.vertical, Spacing.sm + 2)
                     .accessibilityIdentifier("coach-input")
                 if session.isBusy {
-                    Button { model.stop() } label: { Image(systemName: "stop.circle.fill").font(.system(size: 34)) }
-                        .foregroundStyle(DSColor.accent).frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
+                    Button { model.stop() } label: { Image(systemName: "stop.fill").font(.system(size: 16, weight: .bold)).frame(width: 36, height: 36) }
+                        .foregroundStyle(DSColor.onAccent).background(DSColor.accentFill, in: Circle())
+                        .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
                         .accessibilityLabel(Text("coach.stop")).accessibilityIdentifier("coach-stop")
                 } else {
-                    Button { model.send() } label: { Image(systemName: "arrow.up.circle.fill").font(.system(size: 34)) }
-                        .foregroundStyle(model.canSend ? DSColor.accent : DSColor.textTertiary)
+                    Button { model.send() } label: { Image(systemName: "arrow.up").font(.system(size: 16, weight: .bold)).frame(width: 36, height: 36) }
+                        .foregroundStyle(model.canSend ? DSColor.onAccent : DSColor.textTertiary)
+                        .background(model.canSend ? DSColor.accentFill : DSColor.surfaceRaised, in: Circle())
                         .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
                         .disabled(!model.canSend)
                         .accessibilityLabel(Text("coach.send")).accessibilityIdentifier("coach-send")
                 }
             }
+            .padding(.trailing, Spacing.xs)
+            .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.xl))
+            .overlay(RoundedRectangle(cornerRadius: Radius.xl).strokeBorder(inputFocused ? DSColor.accent : DSColor.separator, lineWidth: inputFocused ? 1.5 : 1))
+            .shadow(color: .black.opacity(0.25), radius: 6, y: 2)
             HStack {
                 if let quota = session.quota {
                     Text("coach.quota.remaining \(quota.remaining) \(quota.dailyMessages)")
@@ -219,12 +237,21 @@ struct CoachChatView: View {
         if case .quotaExceeded = error {
             EmptyView()
         } else {
-            HStack(alignment: .top, spacing: Spacing.sm) {
-                Image(systemName: "exclamationmark.circle.fill").foregroundStyle(DSColor.error).accessibilityHidden(true)
-                Text(Self.message(for: error)).font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
-                Spacer(minLength: 0)
-                if error.isRetryable {
-                    Button("coach.retry") { model.retry() }.buttonStyle(.bordered).accessibilityIdentifier("coach-retry")
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                HStack(alignment: .top, spacing: Spacing.sm) {
+                    Image(systemName: "exclamationmark.circle.fill").foregroundStyle(DSColor.error).accessibilityHidden(true)
+                    Text(Self.message(for: error)).font(DSFont.callout).foregroundStyle(DSColor.textPrimary)
+                    Spacer(minLength: 0)
+                    if error.isRetryable {
+                        Button("coach.retry") { model.retry() }.buttonStyle(.bordered).accessibilityIdentifier("coach-retry")
+                    }
+                }
+                if case .consentRequired = error, model.canReconsent {
+                    // The app has the consent but the server does not (for example it never synced): agree again and
+                    // the message that failed goes out again.
+                    Button("coach.consent.again") { model.reconsentAndResend() }
+                        .buttonStyle(.borderedProminent)
+                        .accessibilityIdentifier("coach-consent-again")
                 }
             }
             .padding(Spacing.sm)

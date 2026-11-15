@@ -16494,13 +16494,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It reads your training data to suggest programs and answer questions."
+            "value": "I can read your training data, suggest programs and answer your questions."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Antrenman verine bakarak program önerir, soruları yanıtlar."
+            "value": "Antrenman verini okuyabilir, program önerebilir ve sorularını yanıtlayabilirim."
           }
         }
       }
@@ -16782,13 +16782,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ask your coach…"
+            "value": "Ask ATROX…"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Koçuna bir şey sor…"
+            "value": "ATROX'a bir şey sor…"
           }
         }
       }
@@ -22453,6 +22453,342 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zaten bir hesabın var mı?"
+          }
+        }
+      }
+    },
+    "profile.joined %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JOINED %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KATILIM %@"
+          }
+        }
+      }
+    },
+    "profile.overview": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OVERVIEW"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GENEL BAKIŞ"
+          }
+        }
+      }
+    },
+    "profile.streak.days %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld-day streak"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld günlük seri"
+          }
+        }
+      }
+    },
+    "profile.streak.hint": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the days you train. Rest days never break your streak."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antrenman günlerini seç. Dinlenme günleri serini bozmaz."
+          }
+        }
+      }
+    },
+    "profile.customize.title": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Customize"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Özelleştir"
+          }
+        }
+      }
+    },
+    "profile.customize.color": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BACKGROUND"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ARKA PLAN"
+          }
+        }
+      }
+    },
+    "profile.customize.mascot": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MASCOT"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MASKOT"
+          }
+        }
+      }
+    },
+    "profile.customize.done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bitti"
+          }
+        }
+      }
+    },
+    "profile.color.red": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı"
+          }
+        }
+      }
+    },
+    "profile.color.orange": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orange"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turuncu"
+          }
+        }
+      }
+    },
+    "profile.color.yellow": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yellow"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sarı"
+          }
+        }
+      }
+    },
+    "profile.color.green": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Green"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeşil"
+          }
+        }
+      }
+    },
+    "profile.color.blue": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blue"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mavi"
+          }
+        }
+      }
+    },
+    "profile.color.indigo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indigo"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çivit"
+          }
+        }
+      }
+    },
+    "profile.color.violet": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Violet"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mor"
+          }
+        }
+      }
+    },
+    "profile.mascot.cool": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cool"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Havalı"
+          }
+        }
+      }
+    },
+    "profile.mascot.happy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Happy"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mutlu"
+          }
+        }
+      }
+    },
+    "profile.mascot.excited": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excited"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heyecanlı"
+          }
+        }
+      }
+    },
+    "profile.mascot.welcome": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waving"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El sallıyor"
+          }
+        }
+      }
+    },
+    "settings.section.profile": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil"
+          }
+        }
+      }
+    },
+    "coach.consent.again": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agree again and resend"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tekrar onayla ve gönder"
           }
         }
       }

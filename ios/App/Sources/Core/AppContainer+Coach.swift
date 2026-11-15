@@ -21,7 +21,14 @@ extension AppContainer {
         let digest = SupabaseCoachDigestService(
             baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken
         )
-        return CoachDependencies(chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest)
+        let upload: @Sendable (UUID, String) async -> Bool = { userId, version in
+            await ServerConsentUploader(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken)
+                .uploadAISharing(userId: userId, version: version)
+        }
+        return CoachDependencies(
+            chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest,
+            uploadAISharingConsent: upload
+        )
     }
 
     #if DEBUG
@@ -41,7 +48,8 @@ extension AppContainer {
         guard let modelContainer, let user = await currentUser() else { return nil }
         if let existing = coachConsentState, existing.userId == user.id { return existing }
         let model = CoachConsentModel(
-            service: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)), userId: user.id
+            service: ConsentService(repository: SwiftDataConsentRepository(modelContainer: modelContainer)), userId: user.id,
+            upload: coach?.uploadAISharingConsent
         )
         coachConsentState = model
         await model.load()
@@ -71,7 +79,15 @@ extension AppContainer {
         )
         let workouts = SwiftDataWorkoutRepository(modelContainer: modelContainer)
         let userId = user.id
-        return CoachModel(session: session, repository: coach.repository, applier: applier, locale: locale) { [weak self] in
+        let reconsent: @MainActor () async -> Bool = {
+            do { try await consents.setAISharing(true, userId: userId) } catch { return false }
+            // Consents do not sync yet, and the coach endpoint reads them on the server: put this one there.
+            if let upload = coach.uploadAISharingConsent {
+                return await upload(userId, ConsentVersions.current.aiSharing)
+            }
+            return true
+        }
+        return CoachModel(session: session, repository: coach.repository, applier: applier, locale: locale, reconsent: reconsent) { [weak self] in
             var facts = CoachSuggestions.Facts()
             if let center = await self?.scoreCenter(), let muscles = center.overview?.muscles {
                 facts.weakestMuscle = muscles.min { $0.value.score < $1.value.score }?.key

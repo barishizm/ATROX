@@ -20,10 +20,16 @@ final class CoachConsentModel {
     private(set) var state: State = .loading
     private(set) var failed = false
     @ObservationIgnored private let service: ConsentService
+    /// Puts a granted consent on the server too (the coach endpoint decides there); nil without a server.
+    @ObservationIgnored private let upload: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)?
 
-    init(service: ConsentService, userId: UUID) {
+    init(
+        service: ConsentService, userId: UUID,
+        upload: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)? = nil
+    ) {
         self.service = service
         self.userId = userId
+        self.upload = upload
     }
 
     var isGranted: Bool { state == .granted }
@@ -45,6 +51,8 @@ final class CoachConsentModel {
     private func record(_ granted: Bool) async {
         do {
             try await service.setAISharing(granted, userId: userId)
+            // A failed upload does not undo the answer; the coach's "agree again" button covers that case.
+            if granted, let upload { _ = await upload(userId, ConsentVersions.current.aiSharing) }
             failed = false
             state = granted ? .granted : .declined
         } catch {
