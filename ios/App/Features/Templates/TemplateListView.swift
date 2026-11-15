@@ -78,7 +78,7 @@ struct TemplateDetailView: View {
     let template: ProgramTemplate
     @Environment(\.locale) private var locale
     @State private var useAlternatives = false
-    @State private var openedRoutine: UUID?
+    @State private var settingUp = false
 
     private var languageCode: String { locale.language.languageCode?.identifier == "tr" ? "tr" : "en" }
 
@@ -101,7 +101,9 @@ struct TemplateDetailView: View {
         .alert("template.error.use", isPresented: Bindable(model).errorOccurred) {
             Button("routine.action.ok", role: .cancel) {}
         }
-        .navigationDestination(item: $openedRoutine) { RoutineEditorView(routineId: $0) }
+        .sheet(isPresented: $settingUp) {
+            ProgramSetupSheet(source: .template(model, template, useAlternatives: useAlternatives))
+        }
         .accessibilityIdentifier("template-detail-root")
     }
 
@@ -184,11 +186,7 @@ struct TemplateDetailView: View {
     }
 
     private var footer: some View {
-        PrimaryButton("template.action.use", isLoading: model.isInstalling) {
-            Task {
-                openedRoutine = await model.use(template, languageCode: languageCode, useAlternatives: useAlternatives)
-            }
-        }
+        PrimaryButton("template.action.use") { settingUp = true }
         .accessibilityIdentifier("template-use")
         .padding(Spacing.lg)
         .frame(maxWidth: 560)

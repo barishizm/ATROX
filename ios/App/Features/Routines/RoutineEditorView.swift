@@ -119,7 +119,9 @@ struct RoutineEditorView: View {
     private func daysSection(_ routine: RoutineSnapshot, model: RoutineEditorModel) -> some View {
         Section("routine.section.days") {
             ForEach(routine.days) { day in
-                NavigationLink(value: WorkoutRoute.routineDay(routineId: routine.id, dayId: day.id)) {
+                NavigationLink {
+                    RoutineDayView(routineId: routine.id, dayId: day.id)
+                } label: {
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Text(verbatim: day.name).font(DSFont.body.weight(.semibold)).foregroundStyle(DSColor.textPrimary)
                         if day.exercises.isEmpty {

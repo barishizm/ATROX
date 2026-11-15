@@ -97,6 +97,8 @@ struct OnboardingViewModelTests {
         env.model.setBirthDate(Self.date(1995, 3, 2))
         await env.model.advance()
         #expect(env.model.step == .sex)
+        #expect(!env.model.canAdvance)
+        env.model.setSex(.male)
         await env.model.advance()
         #expect(env.model.step == .units)
         await env.model.advance()

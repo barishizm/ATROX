@@ -191,12 +191,8 @@ struct PlanQuizView: View {
     // MARK: Sex
 
     private var sexCards: some View {
-        VStack(spacing: Spacing.sm) {
-            card("onboarding.sex.male", selected: model.answers.sex == .male, id: "quiz-sex-male") { model.setSex(.male) }
-            card("onboarding.sex.female", selected: model.answers.sex == .female, id: "quiz-sex-female") { model.setSex(.female) }
-            card("quiz.sex.nonbinary", selected: model.answers.sex == .unspecified, id: "quiz-sex-nonbinary") {
-                model.setSex(.unspecified)
-            }
+        SexSquareCards(selection: model.answers.sex == .unspecified ? nil : model.answers.sex, idPrefix: "quiz-sex") {
+            model.setSex($0)
         }
     }
 

@@ -93,7 +93,8 @@ final class OnboardingViewModel {
         guard !isSaving else { return false }
         switch draft.step {
         case .name: return OnboardingRules.isValidFirstName(draft.firstName) && OnboardingRules.isValidLastName(draft.lastName)
-        case .birthDate, .sex, .units: return true
+        case .birthDate, .units: return true
+        case .sex: return draft.sex != .unspecified
         case .body: return OnboardingRules.isValidHeight(cm: draft.heightCm) && OnboardingRules.isValidWeight(kg: draft.weightKg)
         case .experience: return draft.experience != nil
         case .goal: return draft.goal != nil

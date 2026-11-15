@@ -31,16 +31,18 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .environment(\.finishCreation) { [today] in today.popToRoot() }
                 .id(locale.identifier)
             }
             Tab(AppTab.workout.title, systemImage: AppTab.workout.systemImage, value: AppTab.workout) {
                 NavigationStack(path: $workout.path) {
-                    WorkoutRootView()
+                    WorkoutRootView(router: workout)
                         .navigationDestination(for: WorkoutRoute.self) { route in
                             switch route {
                             case .exerciseLibrary: LibraryView()
                             case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
                             case .routines: RoutineListView()
+                            case .create: WorkoutCreateView()
                             case .templates: TemplateListView()
                             case .routine(let id): RoutineEditorView(routineId: id)
                             case .routineDay(let routineId, let dayId): RoutineDayView(routineId: routineId, dayId: dayId)
@@ -51,6 +53,7 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .environment(\.finishCreation) { [workout] in workout.popToRoot() }
                 .id(locale.identifier)
             }
             Tab(AppTab.analysis.title, systemImage: AppTab.analysis.systemImage, value: AppTab.analysis) {

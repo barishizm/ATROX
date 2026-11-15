@@ -57,8 +57,18 @@ final class OnboardingUITests: XCTestCase {
         first.tap()
         first.typeText("Ada")
         let next = app.buttons["Continue"]
-        // name, birth date, sex, units, body
-        for _ in 0..<5 {
+        // name, birth date
+        for _ in 0..<2 {
+            XCTAssertTrue(next.waitForExistence(timeout: 5))
+            next.tap()
+        }
+        // sex: Continue stays off until a card is chosen
+        let male = app.buttons["onboarding-sex-male"]
+        XCTAssertTrue(male.waitForExistence(timeout: 5))
+        XCTAssertFalse(next.isEnabled)
+        male.tap()
+        // sex, units, body
+        for _ in 0..<3 {
             XCTAssertTrue(next.waitForExistence(timeout: 5))
             next.tap()
         }

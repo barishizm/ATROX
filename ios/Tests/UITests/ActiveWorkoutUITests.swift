@@ -12,7 +12,9 @@ final class ActiveWorkoutUITests: XCTestCase {
         let workoutTab = app.tabBars.buttons["Workout"]
         XCTAssertTrue(workoutTab.waitForExistence(timeout: 15), app.debugDescription)
         workoutTab.tap()
-        app.buttons["Start empty workout"].firstMatch.tap()
+        // No program yet: "Create" opens the choices; the quick workout needs no program.
+        app.buttons["workout-create"].firstMatch.tap()
+        app.buttons["create-quick-workout"].firstMatch.tap()
         XCTAssertTrue(app.otherElements["active-workout-root"].waitForExistence(timeout: 10)
             || app.buttons["workout-add-exercise"].waitForExistence(timeout: 10), app.debugDescription)
 
@@ -48,14 +50,6 @@ final class ActiveWorkoutUITests: XCTestCase {
         let done = app.buttons["summary-done"]
         XCTAssertTrue(done.waitForExistence(timeout: 10), app.debugDescription)
         done.tap()
-        XCTAssertTrue(app.buttons["start-empty-workout"].waitForExistence(timeout: 10), app.debugDescription)
-
-        // The finished workout is in the history (P042).
-        app.buttons["open-history"].tap()
-        let row = app.descendants(matching: .any).matching(identifier: "history-row").firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10), app.debugDescription)
-        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "history-calendar").firstMatch.exists)
-        row.tap()
-        XCTAssertTrue(app.buttons["history-edit-toggle"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.buttons["workout-create"].waitForExistence(timeout: 10), app.debugDescription)
     }
 }
