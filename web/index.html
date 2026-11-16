@@ -1,18 +1,143 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-l="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ATROX — know how strong you really are</title>
-  <meta name="description" content="Track your training and see your Strength Score against lifters like you.">
+  <title>ATROX — Strength Score for lifters</title>
+  <meta name="description" content="Log your training and see how strong you really are: a 0 to 100 Strength Score against lifters of your sex, age and body weight.">
+  <meta name="theme-color" content="#21232e">
+  <meta property="og:title" content="ATROX — Strength Score for lifters">
+  <meta property="og:description" content="See how strong you really are, ranked against lifters like you.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://atrox.online/">
+  <link rel="canonical" href="https://atrox.online/">
+  <link rel="preload" href="/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/site.css">
 </head>
-<body>
+<body class="home">
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="/" aria-label="ATROX">ATROX</a>
+    <div class="switch" role="group" aria-label="Language / Dil">
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+      <button type="button" data-set="tr" aria-pressed="false">TR</button>
+    </div>
+  </header>
+
   <main>
-    <h1>ATROX</h1>
-    <p lang="en">Track your training and see your Strength Score against lifters like you.</p>
-    <p lang="tr">Antrenmanını kaydet, Güç Skorunu senin gibi sporcularla karşılaştır.</p>
-    <a class="button" href="https://apps.apple.com/app/id0000000000">App Store</a>
+    <section class="sheet" aria-labelledby="t">
+      <div class="sheet-head">
+        <div class="field"><small><span lang="en">Lifter</span><span lang="tr">Sporcu</span></small><b><span lang="en">Sample lifter</span><span lang="tr">Örnek sporcu</span></b></div>
+        <div class="field"><small><span lang="en">Class</span><span lang="tr">Sınıf</span></small><b><span lang="en">Male · 25–29</span><span lang="tr">Erkek · 25–29</span></b></div>
+        <div class="field"><small><span lang="en">Body weight</span><span lang="tr">Vücut ağırlığı</span></small><b>80 kg</b></div>
+        <div class="field sample"><small><span lang="en">Data</span><span lang="tr">Veri</span></small><b><span lang="en">Sample</span><span lang="tr">Örnek</span></b></div>
+      </div>
+
+      <div class="sheet-title">
+        <h1 id="t"><span lang="en">Strength Score</span><span lang="tr">Güç Skoru</span></h1>
+        <p><span lang="en">Every lift ends in a percentile: how you rank against lifters of your sex, age and body weight.</span><span lang="tr">Her kaldırış bir yüzdelik dilimle biter: cinsiyetin, yaşın ve vücut ağırlığındaki sporcular arasındaki yerin.</span></p>
+      </div>
+
+      <table class="lifts">
+        <thead>
+          <tr>
+            <th scope="col"><span lang="en">Lift</span><span lang="tr">Hareket</span></th>
+            <th scope="col"><span lang="en">Best set</span><span lang="tr">En iyi set</span></th>
+            <th scope="col"><span lang="en">Percentile</span><span lang="tr">Dilim</span></th>
+            <th scope="col"><span lang="en">Counted</span><span lang="tr">Sayıldı</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">SQUAT</th>
+            <td class="kg">140 kg × 3</td>
+            <td class="pct">78<i class="bar" style="--p:78"></i></td>
+            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:0"></span><span class="lamp" style="--i:1"></span><span class="lamp" style="--i:2"></span></td>
+          </tr>
+          <tr>
+            <th scope="row">BENCH</th>
+            <td class="kg">100 kg × 5</td>
+            <td class="pct">64<i class="bar" style="--p:64"></i></td>
+            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:3"></span><span class="lamp" style="--i:4"></span><span class="lamp" style="--i:5"></span></td>
+          </tr>
+          <tr>
+            <th scope="row">DEADLIFT</th>
+            <td class="kg">180 kg × 2</td>
+            <td class="pct">71<i class="bar" style="--p:71"></i></td>
+            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:6"></span><span class="lamp" style="--i:7"></span><span class="lamp" style="--i:8"></span></td>
+          </tr>
+          <tr class="total">
+            <th scope="row"><span lang="en">Score</span><span lang="tr">Skor</span></th>
+            <td class="kg"><span lang="en">of 100</span><span lang="tr">100 üzerinden</span></td>
+            <td class="pct">71<i class="bar" style="--p:71"></i></td>
+            <td class="lamps" aria-hidden="true"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sheet-foot">
+        <p><strong><span lang="en">Sample numbers, not a real lifter.</span><span lang="tr">Örnek sayılar, gerçek bir sporcu değil.</span></strong>
+          <span lang="en">Your sheet is filled from your own training. iOS 26 or later. App Store link coming soon.</span><span lang="tr">Senin kâğıdın kendi antrenmanından dolar. iOS 26 ve üzeri. App Store bağlantısı yakında.</span></p>
+        <a class="button" href="mailto:hello@atrox.online?subject=ATROX%20waiting%20list"><span lang="en">Join the waiting list</span><span lang="tr">Bekleme listesine katıl</span></a>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="how">
+      <h2 id="how"><span lang="en">How the score is made</span><span lang="tr">Skor nasıl çıkar</span></h2>
+      <ul class="rows">
+        <li><span class="k"><span lang="en">Your class</span><span lang="tr">Sınıfın</span></span><span class="v"><span lang="en">Sex, age and body weight put you in a class. You are ranked only against lifters in yours.</span><span lang="tr">Cinsiyet, yaş ve vücut ağırlığın seni bir sınıfa koyar. Yalnızca kendi sınıfındaki sporcularla kıyaslanırsın.</span></span></li>
+        <li><span class="k"><span lang="en">Our model</span><span lang="tr">Modelimiz</span></span><span class="v"><span lang="en">A model we trained turns each lift into a percentile from 0 to 100. 78 means you out-lift 78 in 100 comparable lifters.</span><span lang="tr">Kendi eğittiğimiz model her kaldırışı 0 ile 100 arasında bir yüzdelik dilime çevirir. 78, benzer 100 sporcunun 78'inden fazla kaldırdığın anlamına gelir.</span></span></li>
+        <li><span class="k"><span lang="en">Your phone</span><span lang="tr">Telefonun</span></span><span class="v"><span lang="en">The score is computed on your device. Model updates arrive signed, so what runs is what we published.</span><span lang="tr">Skor cihazında hesaplanır. Model güncellemeleri imzalı gelir; çalışan, yayınladığımız modeldir.</span></span></li>
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="coach">
+      <h2 id="coach"><span lang="en">An AI Coach that asks first</span><span lang="tr">Önce izin isteyen AI Koç</span></h2>
+      <ul class="rows">
+        <li><span class="k"><span lang="en">What it does</span><span lang="tr">Ne yapar</span></span><span class="v"><span lang="en">Reads your training history and suggests a program. It never changes your program without your approval.</span><span lang="tr">Antrenman geçmişini okur ve program önerir. Onayın olmadan programını asla değiştirmez.</span></span></li>
+        <li><span class="k"><span lang="en">Off until you agree</span><span lang="tr">İzne kadar kapalı</span></span><span class="v"><span lang="en">Nothing is sent before you consent. The rest of the app works without it, and you can withdraw in Settings.</span><span lang="tr">Sen onaylamadan hiçbir şey gönderilmez. Uygulamanın geri kalanı onsuz çalışır; Ayarlar'dan geri alabilirsin.</span></span></li>
+        <li><span class="k"><span lang="en">What it receives</span><span lang="tr">Ne alır</span></span><span class="v"><span lang="en">Age, sex, body weight, goal, experience, your scores, workouts and records, your messages, and the short notes the coach keeps.</span><span lang="tr">Yaş, cinsiyet, vücut ağırlığı, hedef, deneyim, skorların, antrenman ve rekorların, yazdığın mesajlar ve koçun tuttuğu kısa notlar.</span></span></li>
+        <li><span class="k"><span lang="en">What it never gets</span><span lang="tr">Ne almaz</span></span><span class="v"><span lang="en"><strong>Your name, email, account identifiers and raw Apple Health data.</strong> Requests go through our server to DeepSeek's model.</span><span lang="tr"><strong>Adın, e-postan, hesap kimliklerin ve ham Apple Sağlık verin.</strong> İstekler sunucumuz üzerinden DeepSeek modeline gider.</span></span></li>
+      </ul>
+    </section>
+
+    <section class="block" aria-labelledby="join">
+      <div class="close">
+        <h2 id="join"><span lang="en">Get on the list</span><span lang="tr">Listeye gir</span></h2>
+        <p><span lang="en">One email from us when ATROX reaches the App Store. Nothing else.</span><span lang="tr">ATROX App Store'a çıktığında bizden tek bir e-posta. Başka bir şey yok.</span></p>
+        <div class="row">
+          <a class="button" href="mailto:hello@atrox.online?subject=ATROX%20waiting%20list"><span lang="en">Join the waiting list</span><span lang="tr">Bekleme listesine katıl</span></a>
+          <a href="mailto:hello@atrox.online">hello@atrox.online</a>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="site">
+    <span>ATROX · Vilnius</span>
+    <nav aria-label="Legal">
+      <a href="/privacy"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a>
+      <a href="/terms"><span lang="en">Terms</span><span lang="tr">Koşullar</span></a>
+      <a href="/support"><span lang="en">Support</span><span lang="tr">Destek</span></a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement, buttons = document.querySelectorAll('.switch button');
+  function set(l, save) {
+    root.setAttribute('data-l', l); root.setAttribute('lang', l);
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-set') === l)); });
+    document.title = l === 'tr' ? 'ATROX — Sporcular için Güç Skoru' : 'ATROX — Strength Score for lifters';
+    if (save) { try { localStorage.setItem('atrox-l', l); } catch (e) {} }
+  }
+  var saved = null; try { saved = localStorage.getItem('atrox-l'); } catch (e) {}
+  var guess = (navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
+  var asked = new URLSearchParams(location.search).get('lang');
+  set(asked === 'tr' || asked === 'en' ? asked : (saved === 'tr' || saved === 'en' ? saved : guess), false);
+  buttons.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-set'), true); }); });
+})();
+</script>
 </body>
 </html>

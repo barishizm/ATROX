@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-16T00:00:00Z",
+  "title": "Design System: ATROX",
+  "extensions": {
+    "colorMeta": {
+      "ground": { "role": "neutral", "displayName": "Night Gym", "canonical": "#21232e", "tonalRamp": ["#0e0f14", "#14151c", "#1a1c25", "#21232e", "#2c2f3d", "#3b3f52", "#5a5f78", "#aeb2c4"] },
+      "ground-deep": { "role": "neutral", "displayName": "Deep Ground", "canonical": "#1a1c25", "tonalRamp": ["#0b0c10", "#101117", "#15161e", "#1a1c25", "#21232e", "#2a2c3a", "#3b3f52", "#5a5f78"] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#3b3f52", "tonalRamp": ["#1a1c25", "#21232e", "#2b2e3d", "#3b3f52", "#4a4f66", "#5a5f78", "#7b8098", "#aeb2c4"] },
+      "rule-strong": { "role": "neutral", "displayName": "Rule Strong", "canonical": "#5a5f78", "tonalRamp": ["#21232e", "#3b3f52", "#4a4f66", "#5a5f78", "#6f748d", "#868ba2", "#aeb2c4", "#eef0f5"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#eef0f5", "tonalRamp": ["#5a5f78", "#7b8098", "#aeb2c4", "#c9ccd9", "#dde0ea", "#eef0f5", "#f4f5f8", "#ffffff"] },
+      "ink-2": { "role": "neutral", "displayName": "Ink Soft", "canonical": "#aeb2c4", "tonalRamp": ["#3b3f52", "#5a5f78", "#7b8098", "#9094a8", "#aeb2c4", "#c9ccd9", "#dde0ea", "#eef0f5"] },
+      "blue": { "role": "primary", "displayName": "Meter Blue", "canonical": "#105bff", "tonalRamp": ["#041a4d", "#08297a", "#0b3ea8", "#105bff", "#4a82ff", "#7aa2ff", "#a8c2ff", "#d6e1ff"] },
+      "blue-ink": { "role": "secondary", "displayName": "Link Blue", "canonical": "#7aa2ff", "tonalRamp": ["#0b3ea8", "#105bff", "#4a82ff", "#7aa2ff", "#93b3ff", "#a8c2ff", "#c4d6ff", "#d6e1ff"] },
+      "orange": { "role": "primary", "displayName": "Signal Orange", "canonical": "#fe8500", "tonalRamp": ["#4d2800", "#7a3f00", "#b35c00", "#fe8500", "#ffa033", "#ffb866", "#ffd199", "#ffe8cc"] },
+      "orange-hover": { "role": "primary", "displayName": "Orange Lift", "canonical": "#ffa033", "tonalRamp": ["#7a3f00", "#b35c00", "#fe8500", "#ffa033", "#ffb04d", "#ffb866", "#ffd199", "#ffe8cc"] },
+      "lamp-on": { "role": "neutral", "displayName": "Lamp White", "canonical": "#f4f5f8", "tonalRamp": ["#3b3f52", "#5a5f78", "#aeb2c4", "#dde0ea", "#eef0f5", "#f4f5f8", "#f9fafc", "#ffffff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Sheet title only, wdth 62 uppercase." },
+      "headline": { "displayName": "Headline", "purpose": "Section h2s and the close box heading." },
+      "figure": { "displayName": "Figure", "purpose": "Percentile numerals in the lifts table, wdth 75." },
+      "title": { "displayName": "Title", "purpose": "Lift names in row headers and the button label register." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs at wdth 100; secondary copy in Ink Soft." },
+      "label": { "displayName": "Label", "purpose": "Field captions and table headers, wdth 70 uppercase." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(.16, 1, .3, 1)", "purpose": "All transitions and the lamp animation." },
+      { "name": "lamp-sequence", "value": "lamp .35s var(--ease) both; delay calc(var(--i) * 140ms + .35s)", "purpose": "Nine lamps go from Rule grey to Lamp White once on load; disabled under prefers-reduced-motion." },
+      { "name": "state-transition", "value": ".2s var(--ease)", "purpose": "Button background and 1px press translate; switch background, color, border." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "760px" },
+      { "name": "phone", "value": "460px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single orange action; square, caps, condensed.",
+      "html": "<a class=\"ds-button\" href=\"#\">Join the waiting list</a>",
+      "css": ".ds-button { display: inline-flex; align-items: center; justify-content: center; min-height: 3.25rem; padding: .5rem 1.6rem; background: #fe8500; color: #21232e; font-family: Archivo, system-ui, sans-serif; font-stretch: 75%; font-weight: 800; font-size: 1.15rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border-radius: 0; transition: background .2s cubic-bezier(.16,1,.3,1), transform .2s cubic-bezier(.16,1,.3,1); } .ds-button:hover { background: #ffa033; } .ds-button:active { transform: translateY(1px); } .ds-button:focus-visible { outline: 3px solid #7aa2ff; outline-offset: 3px; }"
+    },
+    {
+      "name": "Language Switch",
+      "kind": "chip",
+      "refersTo": "switch-button",
+      "description": "Two square toggle buttons; pressed state fills Ink.",
+      "html": "<div class=\"ds-switch\"><button type=\"button\" aria-pressed=\"true\">EN</button><button type=\"button\" aria-pressed=\"false\">TR</button></div>",
+      "css": ".ds-switch { display: flex; gap: .25rem; } .ds-switch button { font-family: Archivo, system-ui, sans-serif; font-stretch: 70%; font-weight: 700; letter-spacing: .08em; font-size: .9rem; min-width: 2.75rem; min-height: 2.75rem; border: 1px solid #3b3f52; background: transparent; color: #aeb2c4; cursor: pointer; border-radius: 0; transition: background .2s cubic-bezier(.16,1,.3,1), color .2s, border-color .2s; } .ds-switch button[aria-pressed=\"true\"] { background: #eef0f5; color: #21232e; border-color: #eef0f5; } .ds-switch button:hover:not([aria-pressed=\"true\"]) { color: #eef0f5; border-color: #5a5f78; } .ds-switch button:focus-visible { outline: 3px solid #7aa2ff; outline-offset: 3px; }"
+    },
+    {
+      "name": "Sheet Head Fields",
+      "kind": "custom",
+      "refersTo": "sheet",
+      "description": "Four boxed fields: caption over value; the sample flag value is orange.",
+      "html": "<div class=\"ds-head\"><div class=\"ds-field\"><small>Lifter</small><b>Sample lifter</b></div><div class=\"ds-field\"><small>Class</small><b>Male · 25–29</b></div><div class=\"ds-field\"><small>Body weight</small><b>80 kg</b></div><div class=\"ds-field ds-sample\"><small>Data</small><b>Sample</b></div></div>",
+      "css": ".ds-head { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; border: 1px solid #5a5f78; color: #eef0f5; font-family: Archivo, system-ui, sans-serif; } .ds-field { padding: .6rem .9rem .7rem; border-right: 1px solid #3b3f52; min-width: 0; } .ds-field:last-child { border-right: 0; } .ds-field small { display: block; color: #aeb2c4; font-size: .7rem; font-stretch: 70%; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; } .ds-field b { font-weight: 600; font-size: 1.05rem; } .ds-sample b { color: #fe8500; }"
+    },
+    {
+      "name": "Lift Row With Lamps",
+      "kind": "custom",
+      "refersTo": "lamp",
+      "description": "Lift name, best set, percentile numeral with blue bar on a track, and three counted lamps.",
+      "html": "<table class=\"ds-lifts\"><tbody><tr><th scope=\"row\">SQUAT</th><td class=\"ds-kg\">140 kg × 3</td><td class=\"ds-pct\">78<i class=\"ds-bar\" style=\"--p:78\"></i></td><td><span class=\"ds-lamp\"></span><span class=\"ds-lamp\"></span><span class=\"ds-lamp\"></span></td></tr></tbody></table>",
+      "css": ".ds-lifts { width: 100%; border-collapse: collapse; table-layout: fixed; border: 1px solid #5a5f78; color: #eef0f5; font-family: Archivo, system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-lifts th, .ds-lifts td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid #3b3f52; vertical-align: middle; } .ds-lifts th { width: 28%; font-stretch: 62%; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 2rem; line-height: 1; } .ds-kg { width: 28%; font-size: 1.3rem; font-weight: 500; white-space: nowrap; } .ds-pct { width: 28%; position: relative; font-stretch: 75%; font-weight: 800; font-size: 3rem; line-height: 1; } .ds-pct::before { content: ''; position: absolute; left: .9rem; right: .9rem; bottom: .5rem; height: 4px; background: #3b3f52; } .ds-bar { position: absolute; left: .9rem; bottom: .5rem; height: 4px; width: calc((100% - 1.8rem) * var(--p) / 100); background: #105bff; } .ds-lamp { display: inline-block; width: 1.25rem; height: 1.25rem; border-radius: 50%; margin-left: .35rem; background: #f4f5f8; } .ds-lamp:first-child { margin-left: 0; }"
+    },
+    {
+      "name": "Explainer Rows",
+      "kind": "custom",
+      "refersTo": "sheet",
+      "description": "Ruled key/value list used instead of cards.",
+      "html": "<ul class=\"ds-rows\"><li><span class=\"ds-k\">Your class</span><span class=\"ds-v\">Sex, age and body weight put you in a class.</span></li><li><span class=\"ds-k\">Our model</span><span class=\"ds-v\">A model we trained turns each lift into a percentile.</span></li></ul>",
+      "css": ".ds-rows { border: 1px solid #5a5f78; margin: 0; padding: 0; list-style: none; font-family: Archivo, system-ui, sans-serif; } .ds-rows li { display: grid; grid-template-columns: calc(28% + .504rem) 1fr; gap: .5rem 0; padding: 1rem .9rem; border-bottom: 1px solid #3b3f52; } .ds-rows li:last-child { border-bottom: 0; } .ds-k { font-stretch: 70%; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-size: 1.15rem; color: #eef0f5; } .ds-v { color: #aeb2c4; max-width: 62ch; padding-right: 1rem; }"
+    },
+    {
+      "name": "Close Box",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "The last box on the sheet: headline, one line, the action and a mailto link.",
+      "html": "<div class=\"ds-close\"><h2>Get on the list</h2><p>One email from us when ATROX reaches the App Store. Nothing else.</p><div class=\"ds-row\"><a class=\"ds-button\" href=\"#\">Join the waiting list</a><a href=\"#\">hello@atrox.online</a></div></div>",
+      "css": ".ds-close { border: 1px solid #5a5f78; padding: 2.5rem 1.5rem; display: grid; gap: 1.25rem; color: #eef0f5; font-family: Archivo, system-ui, sans-serif; } .ds-close h2 { margin: 0; font-stretch: 62%; font-weight: 800; text-transform: uppercase; line-height: .95; font-size: clamp(2.25rem, 6vw, 3.75rem); } .ds-close p { margin: 0; color: #aeb2c4; max-width: 52ch; } .ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; } .ds-row a:not(.ds-button) { color: #7aa2ff; text-underline-offset: .2em; text-decoration-thickness: 1px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Meet Scoresheet",
+    "overview": "The home site is one powerlifting scoresheet seen once, not a landing page that quotes one. A night-gym ground (#21232e) carries a ruled grid of boxed fields, one condensed grotesque used across a wide width range, and three round referee lamps. Recognisable with every word removed: hairline boxes and three white circles. The offer is a filled-in attempt card whose last column is the percentile; the signup is the sheet's signature box.",
+    "keyCharacteristics": [
+      "Hairline-ruled boxes in two tints; the grid is the ornament.",
+      "One family, Archivo variable, with the width axis (wdth 62 to 100) doing the work of a type pairing.",
+      "Numerals are tabular everywhere, so kg and percentile columns align.",
+      "Three inks only beyond neutrals: white lamps, blue for the score bar, orange for the action and the total.",
+      "Zero radius on every box; only the lamps are round.",
+      "Bilingual by markup: every string exists twice, the root data-l attribute hides one."
+    ],
+    "rules": [
+      { "name": "The Three-Ink Rule", "body": "Beyond neutrals, only white lamps, blue and orange appear, and each owns one job: lamps count a lift, blue measures the percentile, orange acts.", "section": "colors" },
+      { "name": "The Blue Is Graphic Rule", "body": "#105bff is never used for text; reading blue is #7aa2ff.", "section": "colors" },
+      { "name": "The Width Axis Rule", "body": "Hierarchy comes from font-stretch and weight on one family, never from adding a second typeface.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Numbers align in columns; tabular-nums is set once on body and not overridden.", "section": "typography" },
+      { "name": "The Hairline Depth Rule", "body": "Containment is expressed by border tint: inner dividers in Rule, container edges in Rule Strong. Never by shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do build every new surface from boxed, hairline-ruled fields: Rule inside, Rule Strong on the outer edge.",
+      "Do use one family with font-stretch for hierarchy: wdth 62 for titles, 70 for labels, 75 for figures and buttons, 100 for reading text.",
+      "Do keep orange for the single action and the total; blue only for measuring bars.",
+      "Do keep numerals tabular and aligned to the same .9rem inset as the field text.",
+      "Do light lamps once, in sequence, and disable the animation under prefers-reduced-motion.",
+      "Do ship both languages in the markup and let data-l select.",
+      "Do label demonstration data as SAMPLE in the sheet head."
+    ],
+    "donts": [
+      "Don't introduce cards, icons, gradients, shadows, glows or rounded boxes; the first viewport must stay a scoresheet.",
+      "Don't add kicker or eyebrow lines above headings; field captions belong to a field box, not to a heading.",
+      "Don't set text in Meter Blue (#105bff); use Link Blue (#7aa2ff).",
+      "Don't add a second typeface or a light theme.",
+      "Don't add a second primary button style or more than one orange action per band.",
+      "Don't use more than one lamp sequence or loop it."
+    ]
+  }
+}
