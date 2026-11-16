@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 /// The coach's server data (RLS-scoped tables and the delete functions).
 public protocol CoachRemote: Sendable {
@@ -64,12 +65,11 @@ public struct InMemoryCoachCache: CoachCache {
     public func load() -> CoachCacheSnapshot { box.value }
     public func save(_ snapshot: CoachCacheSnapshot) { box.value = snapshot }
 
-    private final class Box: @unchecked Sendable {
-        private let lock = NSLock()
-        private var stored = CoachCacheSnapshot()
+    private final class Box: Sendable {
+        private let stored = Mutex(CoachCacheSnapshot())
         var value: CoachCacheSnapshot {
-            get { lock.withLock { stored } }
-            set { lock.withLock { stored = newValue } }
+            get { stored.withLock { $0 } }
+            set { stored.withLock { $0 = newValue } }
         }
     }
 }

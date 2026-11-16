@@ -103,6 +103,8 @@ targets:
         # Direct share to Instagram Stories (P084); falls back to the share sheet without Instagram.
         LSApplicationQueriesSchemes: [instagram-stories]
         BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh, com.barishizm.atrox.weekly.refresh]
+        # Only HTTPS (URLSession) and Apple CryptoKit: exempt encryption, so App Store Connect skips the export-compliance question.
+        ITSAppUsesNonExemptEncryption: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         AppEnvironment: $(APP_ENVIRONMENT)
@@ -118,7 +120,7 @@ targets:
         LegalTermsURL: $(LEGAL_TERMS_URL)
         LegalPrivacyURL: $(LEGAL_PRIVACY_URL)
         # HealthKit (P023). English defaults; TR/EN translations live in App/Resources/InfoPlist.xcstrings.
-        NSHealthShareUsageDescription: ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.
+        NSHealthShareUsageDescription: ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold.
         NSHealthUpdateUsageDescription: ATROX saves your weigh-ins and workouts to Apple Health.
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
         GIDClientID: $(GOOGLE_IOS_CLIENT_ID)

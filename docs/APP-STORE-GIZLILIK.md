@@ -46,7 +46,7 @@ Notlar:
 | Sağlık/Fitness verisi | Evet (HealthKit) | |
 | Yaş kısıtı | **16+** (kendi koşulumuz; Apple derecelendirmesinden bağımsız) | `onboarding.terms.age` |
 
-Beklenen sonuç: düşük (4+/9+/12+ aralığı; sosyal + AI ile 12+ olası). **Çıkan derecelendirme uygulamanın kendi 16+ koşuluyla
+Beklenen sonuç: düşük (4+/9+/12+ aralığı; güncel formda 13+/16+/18+ kademeleri de varsa AI sohbet ve sosyal yanıtlarına göre 13+ veya 16+ çıkabilir, formu doldururken kontrol et; sosyal + AI ile 12+ olası). **Çıkan derecelendirme uygulamanın kendi 16+ koşuluyla
 çelişmez** (derecelendirme yalnızca mağaza içeriği içindir); gerekirse "Yaş aralığı" için App Store'un özel yaş kısıtı seçeneği
 değerlendirilir `[MANUEL]`. Nihai değer anket doldurulunca belli olur.
 

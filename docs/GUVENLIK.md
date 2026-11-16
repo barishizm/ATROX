@@ -33,6 +33,20 @@ Yöntem: kod incelemesi + otomatik kapılar (pgTAP RLS denetimi, Supabase güven
 - **LLM:** kullanıcı metinleri (not, hareket/rutin adı, bellek, özet) `asData` ile `<user_data>` içine alınır ve `<>` etkisizleştirilir; sistem istemi araç sonuçlarını da veri sayar; araçlar `CoachDb.rpc` ile kullanıcının JWT'sini kullanır (başkasının verisi RLS'ten geçmez); öneri araçları onay kartı üretir, bellek kaydı geri alınabilir; LLM'e kimlik/e-posta gitmez; koç güvenlik seti (P082) yayın kapısı.
 - **İstemci:** Supabase oturumu Keychain'de, PKCE akışı; katkı anahtarı Keychain'de; derin bağlantılar yalnızca doğrulanmış kalıplara çözülür (UUID, kullanıcı adı politikası, bilinen sekmeler), yabancı ana makineler reddedilir; model paketi Ed25519 ile doğrulanır; ATS varsayılan (istisna yok); Swift paketleri `exact` sürümlü; GitHub Actions tam SHA'ya sabit; Python `uv sync --frozen`.
 
+## Modernizasyon, gizlilik ve App Store denetimi (2026-11-16)
+
+Kapsam: Swift/iOS API güncelliği, güvenlik, gizlilik, App Store kuralları. Sonuç: kod tabanı güncel (Swift 6 strict concurrency, iOS 26, SwiftData, `@Observable`, async/await; `ObservableObject`, Combine, `NavigationView`, `DispatchQueue` yok; gizlilik manifestleri geçerli; hesap silme, Sign in with Apple, abonelik koşulları, geri yükleme, UGC bildir/engelle, AI onayı mevcut). Düzeltilenler:
+
+| Önem | Bulgu | Düzeltme |
+|---|---|---|
+| Orta | `ITSAppUsesNonExemptEncryption` yoktu: her TestFlight/App Store yüklemesinde ihracat uyumluluğu sorusu çıkıyordu. Uygulama yalnızca HTTPS ve CryptoKit kullanır (muaf). | `project.yml` + `Info.plist`: `false`. |
+| Orta | Web sitesinde yalnızca `nosniff` ve `Referrer-Policy` vardı: tıklama hırsızlığı (iframe), HSTS ve CSP yoktu. | `web/vercel.json`: HSTS, `X-Frame-Options: DENY`, sıkı CSP (`/u` satır içi betiği hash ile; HSTS `preload` alan adı kesinleşince kullanıcı kararı), COOP, Permissions-Policy; `tools/test_web_csp.py` hash kaymasını yakalar. |
+| Yüksek | HealthKit okuma izni metni "veriler cihazından çıkmaz" diyordu; oysa içe aktarılan boy/kilo/doğum tarihi/cinsiyet profile yazılıp hesapla senkronize ediliyor (yanıltıcı beyan, 5.1.1/5.1.3). | `NSHealthShareUsageDescription` (EN/TR; `project.yml`, `Info.plist`, `InfoPlist.xcstrings`) gerçek davranışı söylüyor: hesaba yalnızca skor için kaydedilir, reklam için kullanılmaz, satılmaz. |
+| Düşük | Saf kilit kutuları `@unchecked Sendable` + `NSLock` idi (Swift 6'da derleyici denetimsiz). | `InMemoryCoachCache.Box` ve `InMemoryContributionKeyStore` `Synchronization.Mutex` ile denetimli `Sendable` oldu. |
+| Düşük | Supabase `secure_password_change = false`: eski oturumla parola değiştirilebiliyordu. | `config.toml`: `true` (uzak projede de Auth ayarında açılmalı `[MANUEL]`). |
+
+Bilinen kalan boşluk: `UserDefaults` bu SDK'da `Sendable` değil; `UserDefaults` saran 6 yapı (`WidgetSnapshotStore`, `PendingLinkInbox`, `UserDefaults*Store`) ve `HKHealthStore`/`MXMetricManager`/`CatalogCache` sarmalayıcıları `@unchecked Sendable` kalıyor (UserDefaults belgelenmiş olarak iş parçacığı güvenli). Parola değişikliği yalnızca kurtarma akışında (taze oturum) olduğundan `secure_password_change` uygulama içi akışı bozmaz.
+
 ## App Attest kararı (ertelendi)
 
 Değerlendirme: App Attest, koç proxy'sini yalnızca gerçek ATROX uygulaması çağırsın diye faydalıdır. Ancak (a) sunucuda Apple attestation doğrulaması, anahtar/sayaç saklama ve Apple geliştirici hesabında capability gerektirir, (b) simülatör/CI/Debug derlemelerinde çalışmaz, (c) saldırgan zaten geçerli, onay vermiş, kota sahibi bir hesap gerektirir: sahte istemci bile `coach_consume_quota` (dakika + gün), kullanıcı başına kota ve **küresel günlük harcama tavanı** (`coach_unavailable`) sınırlarına tabidir.
