@@ -12,6 +12,8 @@ on:
       - "supabase/config.toml"
       - ".github/workflows/core.yml"
       - "tools/scan-secrets.sh"
+      - "tools/test_web_csp.py"
+      - "web/**"
   pull_request:
     paths:
       - "ios/Packages/StrengthKit/**"
@@ -21,6 +23,8 @@ on:
       - "supabase/tests/**"
       - "supabase/config.toml"
       - ".github/workflows/core.yml"
+      - "tools/test_web_csp.py"
+      - "web/**"
   workflow_dispatch:
 
 concurrency:
@@ -39,6 +43,15 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Scan tracked files for credentials
         run: tools/scan-secrets.sh
+
+  web-headers:
+    name: Web security headers
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: CSP hash matches the inline script
+        run: python3 tools/test_web_csp.py
 
   strengthkit:
     name: StrengthKit (Linux)

@@ -33,14 +33,14 @@ final class IntentCommandCenter {
 }
 
 /// A link that an intent could not hand to a running app; the app drains it when it becomes active.
-struct PendingLinkInbox: @unchecked Sendable {
+struct PendingLinkInbox: Sendable {
     static let key = "widget.pendingLink.v1"
     /// An old tap is not replayed: a link that waited longer than this is dropped.
     static let maxAge: TimeInterval = 120
 
-    private let defaults: UserDefaults
+    private let defaults: SendableDefaults
 
-    init(defaults: UserDefaults) { self.defaults = defaults }
+    init(defaults: UserDefaults) { self.defaults = SendableDefaults(defaults) }
 
     static func appGroup(id: String? = Bundle.main.infoDictionary?["AppGroupID"] as? String) -> PendingLinkInbox? {
         guard let id, !id.isEmpty, !id.hasPrefix("$("), let defaults = UserDefaults(suiteName: id) else { return nil }

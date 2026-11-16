@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import Synchronization
 
 /// Where the random `contribution_key` lives. One key per signed-in user on this device, never sent with the account.
 public protocol ContributionKeyStore: Sendable {
@@ -110,21 +111,20 @@ public struct ContributionService: Sendable {
 
 // MARK: - Stores
 
-public final class InMemoryContributionKeyStore: ContributionKeyStore, @unchecked Sendable {
-    private let lock = NSLock()
-    private var items: [UUID: (key: UUID, createdAt: Date)] = [:]
+public final class InMemoryContributionKeyStore: ContributionKeyStore, Sendable {
+    private let items = Mutex<[UUID: (key: UUID, createdAt: Date)]>([:])
 
     public init() {}
 
-    public func current(userId: UUID) -> (key: UUID, createdAt: Date)? { lock.withLock { items[userId] } }
+    public func current(userId: UUID) -> (key: UUID, createdAt: Date)? { items.withLock { $0[userId] } }
 
     public func create(userId: UUID, now: Date) -> UUID {
         let key = UUID()
-        lock.withLock { items[userId] = (key, now) }
+        items.withLock { $0[userId] = (key, now) }
         return key
     }
 
-    public func destroy(userId: UUID) { lock.withLock { items[userId] = nil } }
+    public func destroy(userId: UUID) { items.withLock { $0[userId] = nil } }
 }
 
 /// The key in the Keychain (this device only, available after first unlock, not in backups).
@@ -166,7 +166,7 @@ public struct KeychainContributionKeyStore: ContributionKeyStore {
 }
 
 public final class UserDefaultsContributionStateStore: ContributionStateStore, @unchecked Sendable {
-    // UserDefaults is thread-safe.
+    // `UserDefaults` is documented as thread-safe but not yet marked `Sendable` in the SDK; this is its only use in DataKit.
     private let defaults: UserDefaults
 
     public init(defaults: UserDefaults = .standard) { self.defaults = defaults }

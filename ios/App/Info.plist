@@ -65,6 +65,8 @@
 	<string>$(GOOGLE_IOS_CLIENT_ID)</string>
 	<key>GIDServerClientID</key>
 	<string>$(GOOGLE_WEB_CLIENT_ID)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>instagram-stories</string>
@@ -74,7 +76,7 @@
 	<key>LegalTermsURL</key>
 	<string>$(LEGAL_TERMS_URL)</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. This data stays on your device.</string>
+	<string>ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>ATROX saves your weigh-ins and workouts to Apple Health.</string>
 	<key>NSSupportsLiveActivities</key>

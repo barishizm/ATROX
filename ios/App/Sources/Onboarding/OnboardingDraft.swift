@@ -53,10 +53,10 @@ protocol OnboardingDraftStore: Sendable {
 }
 
 /// `UserDefaults` is documented as thread-safe, hence `@unchecked`.
-struct UserDefaultsOnboardingDraftStore: OnboardingDraftStore, @unchecked Sendable {
-    let defaults: UserDefaults
+struct UserDefaultsOnboardingDraftStore: OnboardingDraftStore {
+    private let defaults: SendableDefaults
 
-    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+    init(defaults: UserDefaults = .standard) { self.defaults = SendableDefaults(defaults) }
 
     private static let keyPrefix = "onboarding.draft."
 

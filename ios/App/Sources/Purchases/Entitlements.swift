@@ -9,11 +9,11 @@ protocol EntitlementCache: Sendable {
     func clear(userId: UUID)
 }
 
-struct UserDefaultsEntitlementCache: EntitlementCache, @unchecked Sendable {
+struct UserDefaultsEntitlementCache: EntitlementCache {
     // UserDefaults is thread-safe; the class is not annotated Sendable.
-    private let defaults: UserDefaults
+    private let defaults: SendableDefaults
 
-    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+    init(defaults: UserDefaults = .standard) { self.defaults = SendableDefaults(defaults) }
 
     private func key(_ userId: UUID) -> String { "entitlement.\(userId.uuidString.lowercased())" }
 
