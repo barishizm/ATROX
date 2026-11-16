@@ -1,7 +1,7 @@
-// Structured errors and CORS for the coach functions (P072). Error bodies: { error: { code, message } }.
+// Structured errors and CORS preflight for the coach functions (P072). No Access-Control-Allow-Origin on purpose: the only client is
+// the native app (CORS does not apply), so browsers on other origins are refused. Error bodies: { error: { code, message } }.
 
 export const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, content-type, x-client-info, apikey",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Max-Age": "86400",

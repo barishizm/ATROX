@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import Security
+import Synchronization
 
 /// Where the random `contribution_key` lives. One key per signed-in user on this device, never sent with the account.
 public protocol ContributionKeyStore: Sendable {

@@ -21,7 +21,7 @@ Yöntem: kod incelemesi + otomatik kapılar (pgTAP RLS denetimi, Supabase güven
 | 1 | Orta | `social_are_friends` / `social_is_blocked` herhangi bir oturum açmış kullanıcıya rastgele iki uuid için çalışıyordu: üçüncü kişilerin arkadaşlık/engel ilişkisini sorgulama (oracle). | **Düzeltildi** — göç `schema_23`: yardımcılar yalnızca ilk argüman çağıran ise gerçek cevap verir; pgTAP `029_security_hardening`. |
 | 2 | Orta | Koç yanıtındaki Markdown bağlantıları/görselleri dokunulabilirdi: istem enjeksiyonu ile `[etiket](https://kötü)` veya `atrox://start/...` derin bağlantısı üretilebilir. | **Düzeltildi** — `MarkdownInline`: bağlantı ve görsel öznitelikleri silinir, etiket düz metin kalır; birim testi. |
 | 3 | Orta | CI'da gizli anahtar taraması yoktu. | **Düzeltildi** — `tools/scan-secrets.sh` + `core.yml` `secrets` işi (özel anahtar, `sk-`, JWT, AWS/GitHub/Google/Slack biçimleri, servis rolü atamaları). Depo şu an temiz. |
-| 4 | Düşük | `Access-Control-Allow-Origin: *`. | **Kabul edildi** — uygulama yerel istemci; çerez yok, her uç `Authorization: Bearer` ister; tarayıcıdan kimlik bilgisi taşınmaz. |
+| 4 | Düşük | `Access-Control-Allow-Origin: *`. | **Düzeltildi** — başlık kaldırıldı; tek istemci yerel uygulama (CORS uygulanmaz), tarayıcıdaki başka kökenler reddedilir. |
 | 5 | Düşük | Sahte istemciyle koç proxy'sini tüketme (App Attest yok). | **Ertelendi** (aşağıda). |
 | 6 | Düşük | `contribute` hız sınırı kullanıcı kimliğiyle tutulur; katkı satırlarıyla bağ yok ama zaman bağıntısı teorik olarak mümkün. | **Kabul edildi** — sayaç tablosu istemciye kapalı, katkı tablosunda zaman damgası yok (yalnızca ay), k-anonimlik süzgeci var. |
 | 7 | Düşük | `startWorkout` derin bağlantısı (`atrox://start/<id>/<id>`) başka uygulamadan/web'den tetiklenebilir. | **Kabul edildi** — yalnızca antrenman ekranını açar (UUID'ler doğrulanır, veri değiştirmez, tek dokunuşla geri alınır); bağlantı artık koç metninden de üretilemez (#2). |
@@ -55,7 +55,7 @@ Karar: lansman için ertelendi; kalan risk "bir hesapla kota kadar tüketim + uc
 
 ## Kabul edilen riskler
 
-Bulgu #4, #6, #7 ve App Attest ertelemesi. Yüksek önemli açık bulgu yok.
+Bulgu #6, #7 ve App Attest ertelemesi. Yüksek önemli açık bulgu yok.
 
 ## Elle yapılacaklar (`[MANUEL]`)
 
