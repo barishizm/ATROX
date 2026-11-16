@@ -77,11 +77,11 @@ protocol PreSignupStore: Sendable {
 }
 
 /// `UserDefaults` is documented as thread-safe, hence `@unchecked`.
-struct UserDefaultsPreSignupStore: PreSignupStore, @unchecked Sendable {
-    let defaults: UserDefaults
+struct UserDefaultsPreSignupStore: PreSignupStore {
+    private let defaults: SendableDefaults
     private let key = "preSignup.answers"
 
-    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+    init(defaults: UserDefaults = .standard) { self.defaults = SendableDefaults(defaults) }
 
     func load() -> PreSignupAnswers? {
         guard let data = defaults.data(forKey: key) else { return nil }

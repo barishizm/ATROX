@@ -4,8 +4,11 @@ import OSLog
 import TelemetryDeck
 
 /// `UserDefaults` backing for the analytics opt-out switch and milestone ledger.
-struct UserDefaultsAnalyticsStorage: AnalyticsStorage, @unchecked Sendable {
-    let defaults: UserDefaults
+struct UserDefaultsAnalyticsStorage: AnalyticsStorage {
+    private let defaults: SendableDefaults
+
+    init(defaults: UserDefaults) { self.defaults = SendableDefaults(defaults) }
+
     func bool(forKey key: String) -> Bool? { defaults.object(forKey: key) as? Bool }
     func set(_ value: Bool, forKey key: String) { defaults.set(value, forKey: key) }
     func date(forKey key: String) -> Date? { defaults.object(forKey: key) as? Date }

@@ -166,7 +166,7 @@ public struct KeychainContributionKeyStore: ContributionKeyStore {
 }
 
 public final class UserDefaultsContributionStateStore: ContributionStateStore, @unchecked Sendable {
-    // UserDefaults is thread-safe.
+    // `UserDefaults` is documented as thread-safe but not yet marked `Sendable` in the SDK; this is its only use in DataKit.
     private let defaults: UserDefaults
 
     public init(defaults: UserDefaults = .standard) { self.defaults = defaults }

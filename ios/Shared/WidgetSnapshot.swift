@@ -57,12 +57,12 @@ struct WidgetSnapshot: Codable, Equatable, Sendable {
 }
 
 /// Reads and writes the snapshot in the app group's `UserDefaults`.
-struct WidgetSnapshotStore: @unchecked Sendable {
+struct WidgetSnapshotStore: Sendable {
     static let key = "widget.snapshot.v1"
 
-    private let defaults: UserDefaults
+    private let defaults: SendableDefaults
 
-    init(defaults: UserDefaults) { self.defaults = defaults }
+    init(defaults: UserDefaults) { self.defaults = SendableDefaults(defaults) }
 
     /// The store in the shared app group (`AppGroupID` in Info.plist); nil when the group is not available.
     static func appGroup(id: String? = Bundle.main.infoDictionary?["AppGroupID"] as? String) -> WidgetSnapshotStore? {

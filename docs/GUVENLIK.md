@@ -45,7 +45,7 @@ Kapsam: Swift/iOS API güncelliği, güvenlik, gizlilik, App Store kuralları. S
 | Düşük | Saf kilit kutuları `@unchecked Sendable` + `NSLock` idi (Swift 6'da derleyici denetimsiz). | `InMemoryCoachCache.Box` ve `InMemoryContributionKeyStore` `Synchronization.Mutex` ile denetimli `Sendable` oldu. |
 | Düşük | Supabase `secure_password_change = false`: eski oturumla parola değiştirilebiliyordu. | `config.toml`: `true` (uzak projede de Auth ayarında açılmalı `[MANUEL]`). |
 
-Bilinen kalan boşluk: `UserDefaults` bu SDK'da `Sendable` değil; `UserDefaults` saran 6 yapı (`WidgetSnapshotStore`, `PendingLinkInbox`, `UserDefaults*Store`) ve `HKHealthStore`/`MXMetricManager`/`CatalogCache` sarmalayıcıları `@unchecked Sendable` kalıyor (UserDefaults belgelenmiş olarak iş parçacığı güvenli). Parola değişikliği yalnızca kurtarma akışında (taze oturum) olduğundan `secure_password_change` uygulama içi akışı bozmaz.
+Bilinen kalan boşluk: `UserDefaults` bu SDK'da `Sendable` değil (Apple belgelerinde iş parçacığı güvenli). Dağınık 6 `@unchecked` yerine tek, gerekçesi yazılı `SendableDefaults` sarmalayıcısı kullanılıyor; `Mutex(UserDefaults)` derleyici tarafından reddedildi, suite-adı yolu ~30 test çağrısını değiştireceği için ertelendi. Kalan `@unchecked Sendable`: `SendableDefaults`, `UserDefaultsContributionStateStore`, `HKHealthStore`/`MXMetricManager`/`CatalogCache` sarmalayıcıları. Parola değişikliği yalnızca kurtarma akışında (taze oturum) olduğundan `secure_password_change` uygulama içi akışı bozmaz.
 
 ## App Attest kararı (ertelendi)
 
