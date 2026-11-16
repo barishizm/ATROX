@@ -257,7 +257,7 @@ Panel kontrolü: her projede Apple, Google ve Email sağlayıcıları **Enabled*
 ## Alan adı: atrox.online (GoDaddy → Vercel)
 
 1. Vercel: projeye `atrox.online` ve `www.atrox.online` alan adlarını ekle (Settings → Domains); `www` apex'e yönlendirilsin.
-2. GoDaddy → My Products → atrox.online → DNS: `A` kaydı `@` → `76.76.21.21`; `CNAME` kaydı `www` → `cname.vercel-dns.com`. Eski "parked" `A`/`CNAME` kayıtlarını sil. (Vercel panelinin gösterdiği değerler farklıysa onları kullan.)
+2. GoDaddy → My Products → atrox.online → DNS: `A` kaydı `@` → `216.198.79.1` (Vercel'in önerdiği; `76.76.21.21` de çalışır); `CNAME` kaydı `www` → `653df9b9e6b8e5e7.vercel-dns-017.com` (`cname.vercel-dns.com` de çalışır). Vercel projesi: `atrox-web`, `www` apex'e 308 ile yönlenir. Eski "parked" `A`/`CNAME` kayıtlarını sil. (Vercel panelinin gösterdiği değerler farklıysa onları kullan.)
 3. Vercel'de sertifika "Valid" olunca doğrula: `curl -sI https://atrox.online/.well-known/apple-app-site-association` → `200`, `content-type: application/json`.
 4. HSTS yalnızca `max-age=31536000` (`web/vercel.json`). `includeSubDomains; preload` ve hstspreload.org başvurusu geri alınması zor olduğundan, tüm alt alan adları HTTPS'e hazır olduktan sonra ayrı karar.
 5. `TEAMID` ve App Store kimliği (`web/.well-known/apple-app-site-association`, `web/index.html`, `web/u/index.html`) Apple Developer'dan alınınca doldurulur.
