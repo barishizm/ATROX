@@ -2,7 +2,7 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["TEAMID.com.barishizm.atrox"],
+        "appIDs": ["5222NFFPX7.com.barishizm.atrox"],
         "components": [
           { "/": "/u/*", "comment": "Friend invite links" }
         ]
