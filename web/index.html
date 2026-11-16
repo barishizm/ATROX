@@ -12,132 +12,293 @@
   <meta property="og:url" content="https://atrox.online/">
   <link rel="canonical" href="https://atrox.online/">
   <link rel="preload" href="/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/site.css">
+  <link rel="stylesheet" href="/home.css">
 </head>
 <body class="home">
-<div class="wrap">
-  <header class="top">
-    <a class="mark" href="/" aria-label="ATROX">ATROX</a>
-    <div class="switch" role="group" aria-label="Language / Dil">
-      <button type="button" data-set="en" aria-pressed="true">EN</button>
-      <button type="button" data-set="tr" aria-pressed="false">TR</button>
+<div class="root" id="root" data-intro="play">
+
+  <!-- nav -->
+  <header class="nav" id="nav">
+    <div class="wrap">
+      <div class="navin">
+        <a href="#top" class="brand" aria-label="ATROX">
+          <svg class="mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+          <span>ATROX</span>
+        </a>
+        <nav class="links" aria-label="Primary">
+          <a class="link" href="#product"><span lang="en">Product</span><span lang="tr">Ürün</span></a>
+          <a class="link" href="#how"><span lang="en">How it works</span><span lang="tr">Nasıl çalışır</span></a>
+          <a class="link" href="#calculator"><span lang="en">Try the score</span><span lang="tr">Skoru dene</span></a>
+          <a class="link" href="#faq"><span lang="en">FAQ</span><span lang="tr">SSS</span></a>
+        </nav>
+        <div class="navend">
+          <div class="switch" role="group" aria-label="Language / Dil">
+            <button type="button" data-set="en" aria-pressed="true">EN</button>
+            <button type="button" data-set="tr" aria-pressed="false">TR</button>
+          </div>
+          <a href="#join" class="btn" data-focus="email"><span lang="en">Join the waiting list</span><span lang="tr">Bekleme listesi</span></a>
+          <button type="button" class="menu" id="menu" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><span></span><span></span></button>
+        </div>
+      </div>
+      <nav class="drawer" id="drawer" data-open="false" aria-label="Mobile" aria-hidden="true">
+        <a href="#product" tabindex="-1"><span lang="en">Product</span><span lang="tr">Ürün</span></a>
+        <a href="#how" tabindex="-1"><span lang="en">How it works</span><span lang="tr">Nasıl çalışır</span></a>
+        <a href="#calculator" tabindex="-1"><span lang="en">Try the score</span><span lang="tr">Skoru dene</span></a>
+        <a href="#faq" tabindex="-1"><span lang="en">FAQ</span><span lang="tr">SSS</span></a>
+      </nav>
     </div>
   </header>
 
-  <main>
-    <section class="sheet" aria-labelledby="t">
-      <div class="sheet-head">
-        <div class="field"><small><span lang="en">Lifter</span><span lang="tr">Sporcu</span></small><b><span lang="en">Sample lifter</span><span lang="tr">Örnek sporcu</span></b></div>
-        <div class="field"><small><span lang="en">Class</span><span lang="tr">Sınıf</span></small><b><span lang="en">Male · 25–29</span><span lang="tr">Erkek · 25–29</span></b></div>
-        <div class="field"><small><span lang="en">Body weight</span><span lang="tr">Vücut ağırlığı</span></small><b>80 kg</b></div>
-        <div class="field sample"><small><span lang="en">Data</span><span lang="tr">Veri</span></small><b><span lang="en">Sample</span><span lang="tr">Örnek</span></b></div>
-      </div>
-
-      <div class="sheet-title">
-        <h1 id="t"><span lang="en">Strength Score</span><span lang="tr">Güç Skoru</span></h1>
-        <p><span lang="en">Every lift ends in a percentile: how you rank against lifters of your sex, age and body weight.</span><span lang="tr">Her kaldırış bir yüzdelik dilimle biter: cinsiyetin, yaşın ve vücut ağırlığındaki sporcular arasındaki yerin.</span></p>
-      </div>
-
-      <table class="lifts">
-        <thead>
-          <tr>
-            <th scope="col"><span lang="en">Lift</span><span lang="tr">Hareket</span></th>
-            <th scope="col"><span lang="en">Best set</span><span lang="tr">En iyi set</span></th>
-            <th scope="col"><span lang="en">Percentile</span><span lang="tr">Dilim</span></th>
-            <th scope="col"><span lang="en">Counted</span><span lang="tr">Sayıldı</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">SQUAT</th>
-            <td class="kg">140 kg × 3</td>
-            <td class="pct">78<i class="bar" style="--p:78"></i></td>
-            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:0"></span><span class="lamp" style="--i:1"></span><span class="lamp" style="--i:2"></span></td>
-          </tr>
-          <tr>
-            <th scope="row">BENCH</th>
-            <td class="kg">100 kg × 5</td>
-            <td class="pct">64<i class="bar" style="--p:64"></i></td>
-            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:3"></span><span class="lamp" style="--i:4"></span><span class="lamp" style="--i:5"></span></td>
-          </tr>
-          <tr>
-            <th scope="row">DEADLIFT</th>
-            <td class="kg">180 kg × 2</td>
-            <td class="pct">71<i class="bar" style="--p:71"></i></td>
-            <td class="lamps" aria-hidden="true"><span class="lamp" style="--i:6"></span><span class="lamp" style="--i:7"></span><span class="lamp" style="--i:8"></span></td>
-          </tr>
-          <tr class="total">
-            <th scope="row"><span lang="en">Score</span><span lang="tr">Skor</span></th>
-            <td class="kg"><span lang="en">of 100</span><span lang="tr">100 üzerinden</span></td>
-            <td class="pct">71<i class="bar" style="--p:71"></i></td>
-            <td class="lamps" aria-hidden="true"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="sheet-foot">
-        <p><strong><span lang="en">Sample numbers, not a real lifter.</span><span lang="tr">Örnek sayılar, gerçek bir sporcu değil.</span></strong>
-          <span lang="en">Your sheet is filled from your own training. iOS 26 or later. App Store link coming soon.</span><span lang="tr">Senin kâğıdın kendi antrenmanından dolar. iOS 26 ve üzeri. App Store bağlantısı yakında.</span></p>
-        <a class="button" href="mailto:hello@atrox.online?subject=ATROX%20waiting%20list"><span lang="en">Join the waiting list</span><span lang="tr">Bekleme listesine katıl</span></a>
+  <main id="top">
+    <!-- hero -->
+    <section class="hero sec" aria-label="Introduction">
+      <div class="wrap">
+        <div class="stage" id="stage">
+          <canvas class="canvas layer l0" data-field="hero0" aria-hidden="true"></canvas>
+          <canvas class="canvas layer l1" data-field="hero1" aria-hidden="true"></canvas>
+          <div class="plates" id="plates">
+            <button type="button" class="plate plate--a" data-pop="squat" aria-label="Sample: squat 140 kg">
+              <span class="platebody"><svg viewBox="0 0 128 128" aria-hidden="true"><use href="#plate-blue"/></svg></span>
+            </button>
+            <button type="button" class="plate plate--b" data-pop="deadlift" aria-label="Sample: deadlift 180 kg">
+              <span class="platebody"><svg viewBox="0 0 128 128" aria-hidden="true"><use href="#plate-orange"/></svg></span>
+            </button>
+          </div>
+          <canvas class="canvas layer l2" data-field="hero2" aria-hidden="true"></canvas>
+          <div class="herocopy">
+            <h1 class="h1"><span lang="en">How strong<br>are you, really?</span><span lang="tr">Gerçekte<br>ne kadar güçlüsün?</span></h1>
+            <p class="herosub"><span lang="en">ATROX turns every lift into a 0 to 100 Strength Score: your percentile among lifters of your sex, age and body weight.</span><span lang="tr">ATROX her kaldırışı 0 ile 100 arası bir Güç Skoruna çevirir: cinsiyetin, yaşın ve vücut ağırlığındaki sporcular arasındaki yüzdelik dilimin.</span></p>
+            <a href="#calculator" class="btn"><span lang="en">Try the score</span><span lang="tr">Skoru dene</span></a>
+          </div>
+        </div>
+        <p class="stagenote"><span lang="en">Dots are an illustration of lifters in one class. Plates show sample numbers.</span><span lang="tr">Noktalar tek bir sınıftaki sporcuların çizimidir. Plakalar örnek sayıları gösterir.</span></p>
       </div>
     </section>
 
-    <section class="block" aria-labelledby="how">
-      <h2 id="how"><span lang="en">How the score is made</span><span lang="tr">Skor nasıl çıkar</span></h2>
-      <ul class="rows">
-        <li><span class="k"><span lang="en">Your class</span><span lang="tr">Sınıfın</span></span><span class="v"><span lang="en">Sex, age and body weight put you in a class. You are ranked only against lifters in yours.</span><span lang="tr">Cinsiyet, yaş ve vücut ağırlığın seni bir sınıfa koyar. Yalnızca kendi sınıfındaki sporcularla kıyaslanırsın.</span></span></li>
-        <li><span class="k"><span lang="en">Our model</span><span lang="tr">Modelimiz</span></span><span class="v"><span lang="en">A model we trained turns each lift into a percentile from 0 to 100. 78 means you out-lift 78 in 100 comparable lifters.</span><span lang="tr">Kendi eğittiğimiz model her kaldırışı 0 ile 100 arasında bir yüzdelik dilime çevirir. 78, benzer 100 sporcunun 78'inden fazla kaldırdığın anlamına gelir.</span></span></li>
-        <li><span class="k"><span lang="en">Your phone</span><span lang="tr">Telefonun</span></span><span class="v"><span lang="en">The score is computed on your device. Model updates arrive signed, so what runs is what we published.</span><span lang="tr">Skor cihazında hesaplanır. Model güncellemeleri imzalı gelir; çalışan, yayınladığımız modeldir.</span></span></li>
-      </ul>
+    <!-- what is -->
+    <section class="sec what" id="product" aria-labelledby="what-h">
+      <div class="wrap whatgrid" data-rv>
+        <div>
+          <h2 id="what-h" class="h2"><span lang="en">What is ATROX?</span><span lang="tr">ATROX nedir?</span></h2>
+          <a href="#how" class="btn"><span lang="en">How the score works</span><span lang="tr">Skor nasıl çalışır</span></a>
+        </div>
+        <p class="statement"><span lang="en">A training log that tells you where each lift ranks. A model we trained turns every set into a percentile, computed on your phone. An optional AI Coach reads your history and suggests a program, <em>only if you say yes.</em></span><span lang="tr">Her kaldırışın nerede durduğunu söyleyen bir antrenman günlüğü. Kendi eğittiğimiz model her seti bir yüzdelik dilime çevirir, telefonunda hesaplanır. İsteğe bağlı AI Koç geçmişini okuyup program önerir, <em>yalnızca sen evet dersen.</em></span></p>
+      </div>
     </section>
 
-    <section class="block" aria-labelledby="coach">
-      <h2 id="coach"><span lang="en">An AI Coach that asks first</span><span lang="tr">Önce izin isteyen AI Koç</span></h2>
-      <ul class="rows">
-        <li><span class="k"><span lang="en">What it does</span><span lang="tr">Ne yapar</span></span><span class="v"><span lang="en">Reads your training history and suggests a program. It never changes your program without your approval.</span><span lang="tr">Antrenman geçmişini okur ve program önerir. Onayın olmadan programını asla değiştirmez.</span></span></li>
-        <li><span class="k"><span lang="en">Off until you agree</span><span lang="tr">İzne kadar kapalı</span></span><span class="v"><span lang="en">Nothing is sent before you consent. The rest of the app works without it, and you can withdraw in Settings.</span><span lang="tr">Sen onaylamadan hiçbir şey gönderilmez. Uygulamanın geri kalanı onsuz çalışır; Ayarlar'dan geri alabilirsin.</span></span></li>
-        <li><span class="k"><span lang="en">What it receives</span><span lang="tr">Ne alır</span></span><span class="v"><span lang="en">Age, sex, body weight, goal, experience, your scores, workouts and records, your messages, and the short notes the coach keeps.</span><span lang="tr">Yaş, cinsiyet, vücut ağırlığı, hedef, deneyim, skorların, antrenman ve rekorların, yazdığın mesajlar ve koçun tuttuğu kısa notlar.</span></span></li>
-        <li><span class="k"><span lang="en">What it never gets</span><span lang="tr">Ne almaz</span></span><span class="v"><span lang="en"><strong>Your name, email, account identifiers and raw Apple Health data.</strong> Requests go through our server to DeepSeek's model.</span><span lang="tr"><strong>Adın, e-postan, hesap kimliklerin ve ham Apple Sağlık verin.</strong> İstekler sunucumuz üzerinden DeepSeek modeline gider.</span></span></li>
-      </ul>
+    <!-- features -->
+    <section class="sec" aria-label="Features">
+      <div class="wrap feats">
+        <article class="feat feat--field" data-rv>
+          <h3><span lang="en">Ranked against<br>lifters like you</span><span lang="tr">Senin gibi<br>sporcularla kıyaslanırsın</span></h3>
+          <canvas class="canvas cardfield" data-field="card" aria-hidden="true"></canvas>
+          <p><span lang="en">Your class is your sex, age and body weight. Your Strength Score is where you stand inside it, from 0 to 100.</span><span lang="tr">Sınıfın cinsiyetin, yaşın ve vücut ağırlığın. Güç Skorun, bu sınıfın içinde nerede durduğun: 0 ile 100 arası.</span></p>
+        </article>
+        <article class="feat feat--deep" data-rv>
+          <h3><span lang="en">Scored on<br>your phone</span><span lang="tr">Skor<br>telefonunda hesaplanır</span></h3>
+          <div class="viz" aria-hidden="true">
+            <svg class="chip" viewBox="0 0 64 64" width="64" height="64"><rect x="10" y="10" width="44" height="44" rx="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M22 33l7 7 14-15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="tick"/><path d="M24 4v6M40 4v6M24 54v6M40 54v6M4 24h6M4 40h6M54 24h6M54 40h6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".55"/></svg>
+          </div>
+          <p><span lang="en">The model runs on your device. Model updates arrive signed, so what runs is what we published.</span><span lang="tr">Model cihazında çalışır. Güncellemeler imzalı gelir; çalışan, yayınladığımız modeldir.</span></p>
+        </article>
+        <article class="feat feat--deep" data-rv>
+          <h3><span lang="en">A coach that<br>asks first</span><span lang="tr">Önce izin<br>isteyen koç</span></h3>
+          <div class="viz viz--switch">
+            <button type="button" class="switchtoggle" id="coachSwitch" role="switch" aria-checked="false" aria-label="AI Coach (demo switch)"></button>
+            <span class="switchlabel" id="coachLabel" aria-live="polite"><span lang="en">Off until you agree</span><span lang="tr">İzne kadar kapalı</span></span>
+          </div>
+          <p><span lang="en">Nothing is sent to the AI Coach before you consent, and you can withdraw in Settings.</span><span lang="tr">Sen onaylamadan AI Koç'a hiçbir şey gönderilmez; Ayarlar'dan geri alabilirsin.</span></p>
+        </article>
+      </div>
     </section>
 
-    <section class="block" aria-labelledby="join">
-      <div class="close">
-        <h2 id="join"><span lang="en">Get on the list</span><span lang="tr">Listeye gir</span></h2>
-        <p><span lang="en">One email from us when ATROX reaches the App Store. Nothing else.</span><span lang="tr">ATROX App Store'a çıktığında bizden tek bir e-posta. Başka bir şey yok.</span></p>
-        <div class="row">
-          <a class="button" href="mailto:hello@atrox.online?subject=ATROX%20waiting%20list"><span lang="en">Join the waiting list</span><span lang="tr">Bekleme listesine katıl</span></a>
-          <a href="mailto:hello@atrox.online">hello@atrox.online</a>
+    <!-- how it works (tabs) -->
+    <section class="sec" id="how" aria-labelledby="uc-h">
+      <div class="wrap uc" id="uc">
+        <div class="uchead" data-rv>
+          <h2 id="uc-h" class="h2"><span lang="en">From set to score</span><span lang="tr">Setten skora</span></h2>
+          <p class="lede"><span lang="en">Three steps. No spreadsheets.</span><span lang="tr">Üç adım. Tablo yok.</span></p>
+          <div class="tabs" role="tablist" aria-label="How it works">
+            <button type="button" role="tab" class="tab" id="tab-log" data-tab="0" aria-selected="true" aria-controls="panel-log"><span class="tabn">01</span><span class="tabt"><span lang="en">Log</span><span lang="tr">Kaydet</span></span><svg class="arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tabbar"></span></button>
+            <button type="button" role="tab" class="tab" id="tab-score" data-tab="1" aria-selected="false" tabindex="-1" aria-controls="panel-score"><span class="tabn">02</span><span class="tabt"><span lang="en">Score</span><span lang="tr">Skorla</span></span><svg class="arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tabbar"></span></button>
+            <button type="button" role="tab" class="tab" id="tab-coach" data-tab="2" aria-selected="false" tabindex="-1" aria-controls="panel-coach"><span class="tabn">03</span><span class="tabt"><span lang="en">Coach</span><span lang="tr">Koç</span></span><svg class="arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tabbar"></span></button>
+          </div>
+        </div>
+        <div class="cards" data-rv>
+          <article class="card" id="panel-log" role="tabpanel" aria-labelledby="tab-log" data-on="true">
+            <div class="cardtext">
+              <h3><span lang="en">Log your sets</span><span lang="tr">Setlerini kaydet</span></h3>
+              <p><span lang="en">Record workouts, programs and body weight. Weights are stored in kilograms and shown in your units.</span><span lang="tr">Antrenmanlarını, programlarını ve vücut ağırlığını kaydet. Ağırlıklar kilogram olarak saklanır, senin birimlerinde gösterilir.</span></p>
+            </div>
+            <div class="artbox">
+              <svg class="art" viewBox="0 0 320 190" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="1.6" opacity=".9">
+                  <rect x="20" y="14" width="280" height="38" rx="12"/><rect x="20" y="62" width="280" height="38" rx="12"/><rect x="20" y="110" width="280" height="38" rx="12"/>
+                </g>
+                <g fill="currentColor">
+                  <circle cx="44" cy="33" r="6"/><circle cx="44" cy="81" r="6"/><circle cx="44" cy="129" r="6" opacity=".35"/>
+                  <rect x="62" y="28" width="92" height="10" rx="5"/><rect x="62" y="76" width="76" height="10" rx="5"/><rect x="62" y="124" width="60" height="10" rx="5" opacity=".35"/>
+                  <rect x="226" y="28" width="56" height="10" rx="5" fill="var(--orange)"/><rect x="226" y="76" width="56" height="10" rx="5" fill="var(--orange)"/><rect x="226" y="124" width="56" height="10" rx="5" fill="var(--orange)" opacity=".35"/>
+                </g>
+              </svg>
+            </div>
+          </article>
+          <article class="card" id="panel-score" role="tabpanel" aria-labelledby="tab-score" aria-hidden="true" data-on="false">
+            <div class="cardtext">
+              <h3><span lang="en">See your percentile</span><span lang="tr">Yüzdelik dilimini gör</span></h3>
+              <p><span lang="en">Each lift gets a 0 to 100 Strength Score against lifters in your class, and your score history shows how it moves.</span><span lang="tr">Her kaldırış, sınıfındaki sporcularla kıyaslanan 0 ile 100 arası bir Güç Skoru alır; skor geçmişin nasıl değiştiğini gösterir.</span></p>
+            </div>
+            <div class="artbox">
+              <svg class="art" viewBox="0 0 320 190" aria-hidden="true">
+                <path d="M10 170C70 170 90 40 160 40S250 170 310 170Z" fill="currentColor" opacity=".14"/>
+                <path d="M10 170C70 170 90 40 160 40S250 170 310 170" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M10 170C70 170 90 40 160 40S228 130 232 160L232 170Z" fill="currentColor" opacity=".28"/>
+                <line x1="232" y1="46" x2="232" y2="170" stroke="var(--orange)" stroke-width="2.4"/>
+                <circle cx="232" cy="46" r="7" fill="var(--orange)"/>
+              </svg>
+            </div>
+          </article>
+          <article class="card" id="panel-coach" role="tabpanel" aria-labelledby="tab-coach" aria-hidden="true" data-on="false">
+            <div class="cardtext">
+              <h3><span lang="en">Ask the AI Coach</span><span lang="tr">AI Koç'a sor</span></h3>
+              <p><span lang="en">Optional. It reads your training history and suggests a program. It never changes your program without your approval.</span><span lang="tr">İsteğe bağlı. Antrenman geçmişini okur ve program önerir. Onayın olmadan programını asla değiştirmez.</span></p>
+              <a href="/privacy" class="more" tabindex="-1"><span><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><em lang="en">What the Coach receives</em><em lang="tr">Koç neyi alır</em></a>
+            </div>
+            <div class="artbox">
+              <svg class="art" viewBox="0 0 320 190" aria-hidden="true">
+                <rect x="20" y="16" width="190" height="52" rx="16" fill="currentColor" opacity=".2"/>
+                <rect x="36" y="32" width="120" height="8" rx="4" fill="currentColor"/><rect x="36" y="48" width="84" height="8" rx="4" fill="currentColor" opacity=".5"/>
+                <rect x="110" y="84" width="190" height="52" rx="16" fill="var(--orange)"/>
+                <rect x="126" y="100" width="130" height="8" rx="4" fill="#21232e"/><rect x="126" y="116" width="90" height="8" rx="4" fill="#21232e" opacity=".5"/>
+                <rect x="20" y="150" width="50" height="26" rx="13" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="57" cy="163" r="8" fill="currentColor"/>
+              </svg>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- calculator -->
+    <section class="sec calc" id="calculator" aria-labelledby="calc-h">
+      <div class="wrap">
+        <div class="calcbox" data-rv>
+          <div>
+            <h2 id="calc-h" class="h2"><span lang="en">Try a Strength Score</span><span lang="tr">Bir Güç Skoru dene</span></h2>
+            <p class="lede"><span lang="en">Pick a lift and see where it lands in a simple illustration. The real score uses your sex, age and body weight, and our trained model.</span><span lang="tr">Bir hareket seç ve basit bir çizimde nereye düştüğünü gör. Gerçek skor cinsiyetini, yaşını, vücut ağırlığını ve eğittiğimiz modeli kullanır.</span></p>
+
+            <div class="field">
+              <span class="fieldlabel"><span lang="en">Lift</span><span lang="tr">Hareket</span></span>
+              <div class="seg" role="group" aria-label="Lift" id="liftSeg">
+                <button type="button" data-lift="squat" aria-pressed="true">Squat</button>
+                <button type="button" data-lift="bench" aria-pressed="false">Bench</button>
+                <button type="button" data-lift="deadlift" aria-pressed="false">Deadlift</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fieldhead"><label for="bw"><span lang="en">Body weight</span><span lang="tr">Vücut ağırlığı</span></label><output class="amount" id="bwOut" for="bw">80 kg</output></div>
+              <input id="bw" type="range" class="range" min="45" max="140" step="1" value="80">
+            </div>
+            <div class="field">
+              <div class="fieldhead"><label for="lw"><span lang="en">Weight lifted</span><span lang="tr">Kaldırılan ağırlık</span></label><output class="amount" id="lwOut" for="lw">140 kg</output></div>
+              <input id="lw" type="range" class="range" min="20" max="320" step="2.5" value="140">
+            </div>
+
+            <dl class="results">
+              <div class="result result--hi"><dt><span lang="en">Percentile</span><span lang="tr">Yüzdelik dilim</span></dt><dd id="pctOut">78</dd></div>
+              <div class="result"><dt><span lang="en">Relative strength</span><span lang="tr">Göreli güç</span></dt><dd id="ratioOut">1.75×</dd></div>
+            </dl>
+            <p class="compare" id="compare" aria-live="polite"></p>
+          </div>
+
+          <div class="chartbox">
+            <div class="legend"><span><i></i><span lang="en">Lifters in this illustration</span><span lang="tr">Bu çizimdeki sporcular</span></span><span><i class="you"></i><span lang="en">You</span><span lang="tr">Sen</span></span></div>
+            <div class="chart" id="chart">
+              <svg class="svg" id="chartSvg" viewBox="0 0 600 280" preserveAspectRatio="none" role="img" aria-label="Distribution of lifters with your position marked"></svg>
+              <span class="chartpct" id="chartPct">78</span>
+            </div>
+            <div class="xaxis" aria-hidden="true"><span id="xLo"></span><span id="xMid"></span><span id="xHi"></span></div>
+          </div>
+        </div>
+        <p class="disc"><span lang="en">Illustration only: a simple curve, not the ATROX model. It ignores sex and age and does not rank real people.</span><span lang="tr">Yalnızca çizim: basit bir eğri, ATROX modeli değil. Cinsiyeti ve yaşı yok sayar, gerçek kişileri sıralamaz.</span></p>
+      </div>
+    </section>
+
+    <!-- faq -->
+    <section class="sec" id="faq" aria-labelledby="faq-h">
+      <div class="wrap faq">
+        <div class="faqhead" data-rv>
+          <h2 id="faq-h" class="h2"><span lang="en">Questions</span><span lang="tr">Sorular</span></h2>
+          <p class="lede"><span lang="en">Anything else, write to <a href="mailto:hello@atrox.online">hello@atrox.online</a>.</span><span lang="tr">Başka bir şey için <a href="mailto:hello@atrox.online">hello@atrox.online</a> adresine yaz.</span></p>
+        </div>
+        <div data-rv id="faqList">
+          <div class="qa"><h3><button type="button" class="q" aria-expanded="false" aria-controls="a0"><span><span lang="en">What is the Strength Score?</span><span lang="tr">Güç Skoru nedir?</span></span><span class="plus" aria-hidden="true"></span></button></h3><div class="a" id="a0" data-open="false" role="region" aria-hidden="true"><div><p><span lang="en">A number from 0 to 100 for each lift: your percentile among lifters of your sex, age and body weight. 78 means you out-lift 78 in 100 comparable lifters.</span><span lang="tr">Her hareket için 0 ile 100 arası bir sayı: cinsiyetin, yaşın ve vücut ağırlığındaki sporcular arasındaki yüzdelik dilimin. 78, benzer 100 sporcunun 78'inden fazla kaldırdığın anlamına gelir.</span></p></div></div></div>
+          <div class="qa"><h3><button type="button" class="q" aria-expanded="false" aria-controls="a1"><span><span lang="en">Where is the score computed?</span><span lang="tr">Skor nerede hesaplanır?</span></span><span class="plus" aria-hidden="true"></span></button></h3><div class="a" id="a1" data-open="false" role="region" aria-hidden="true"><div><p><span lang="en">On your device. A model we trained ships with the app, and updates arrive signed.</span><span lang="tr">Cihazında. Kendi eğittiğimiz model uygulamayla gelir, güncellemeler imzalı iner.</span></p></div></div></div>
+          <div class="qa"><h3><button type="button" class="q" aria-expanded="false" aria-controls="a2"><span><span lang="en">What does the AI Coach receive?</span><span lang="tr">AI Koç neyi alır?</span></span><span class="plus" aria-hidden="true"></span></button></h3><div class="a" id="a2" data-open="false" role="region" aria-hidden="true"><div><p><span lang="en">Only after you agree: age, sex, body weight, goal, experience, your scores, workouts and records, your messages, and the short notes the coach keeps. Never your name, email, account identifiers or raw Apple Health data. Requests go through our server to DeepSeek's model. Details are in the <a href="/privacy">privacy policy</a>.</span><span lang="tr">Yalnızca sen onayladıktan sonra: yaş, cinsiyet, vücut ağırlığı, hedef, deneyim, skorların, antrenman ve rekorların, yazdığın mesajlar ve koçun tuttuğu kısa notlar. Adın, e-postan, hesap kimliklerin ve ham Apple Sağlık verin asla. İstekler sunucumuz üzerinden DeepSeek modeline gider. Ayrıntılar <a href="/privacy">gizlilik politikasında</a>.</span></p></div></div></div>
+          <div class="qa"><h3><button type="button" class="q" aria-expanded="false" aria-controls="a3"><span><span lang="en">Does the app work without the Coach?</span><span lang="tr">Uygulama koçsuz çalışır mı?</span></span><span class="plus" aria-hidden="true"></span></button></h3><div class="a" id="a3" data-open="false" role="region" aria-hidden="true"><div><p><span lang="en">Yes. Logging and scoring work on their own. The Coach is off until you agree, and you can withdraw in Settings.</span><span lang="tr">Evet. Kayıt ve skorlama tek başına çalışır. Koç sen onaylayana kadar kapalıdır, Ayarlar'dan geri alabilirsin.</span></p></div></div></div>
+          <div class="qa"><h3><button type="button" class="q" aria-expanded="false" aria-controls="a4"><span><span lang="en">Which devices, languages and prices?</span><span lang="tr">Hangi cihaz, dil ve fiyat?</span></span><span class="plus" aria-hidden="true"></span></button></h3><div class="a" id="a4" data-open="false" role="region" aria-hidden="true"><div><p><span lang="en">iPhone, iOS 26 or later, in English and Turkish. ATROX will have a free tier and a subscription; prices are not announced yet. It is not on the App Store yet. Join the waiting list and we will email you once.</span><span lang="tr">iPhone, iOS 26 ve üzeri; İngilizce ve Türkçe. ATROX'un ücretsiz bir katmanı ve bir aboneliği olacak; fiyatlar henüz açıklanmadı. Henüz App Store'da değil. Bekleme listesine katıl, sana bir kez e-posta atarız.</span></p></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- join -->
+    <section class="sec join" id="join" aria-labelledby="join-h">
+      <div class="wrap">
+        <div class="joinbox" data-rv>
+          <canvas class="canvas layer" data-field="join0" aria-hidden="true"></canvas>
+          <canvas class="canvas layer" data-field="join1" aria-hidden="true"></canvas>
+          <div class="joincopy">
+            <h2 id="join-h" class="h2"><span lang="en">Get on the list</span><span lang="tr">Listeye gir</span></h2>
+            <p><span lang="en">One email from us when ATROX reaches the App Store. Nothing else.</span><span lang="tr">ATROX App Store'a çıktığında bizden tek bir e-posta. Başka bir şey yok.</span></p>
+            <form class="form" id="joinForm" novalidate>
+              <label for="email" class="sr"><span lang="en">Email address</span><span lang="tr">E-posta adresi</span></label>
+              <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-describedby="joinNote">
+              <button type="submit" class="btn btn--lg"><span lang="en">Join</span><span lang="tr">Katıl</span></button>
+            </form>
+            <p class="formnote" id="joinNote" aria-live="polite"></p>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site">
-    <span>ATROX · Vilnius</span>
-    <nav aria-label="Legal">
-      <a href="/privacy"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a>
-      <a href="/terms"><span lang="en">Terms</span><span lang="tr">Koşullar</span></a>
-      <a href="/support"><span lang="en">Support</span><span lang="tr">Destek</span></a>
-    </nav>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="footgrid">
+        <div>
+          <span class="brand"><svg class="mark" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg><span>ATROX</span></span>
+          <p class="tagline"><span lang="en">Training log and Strength Score for lifters. Built in Vilnius.</span><span lang="tr">Sporcular için antrenman günlüğü ve Güç Skoru. Vilnius'ta yapıldı.</span></p>
+        </div>
+        <div class="col"><h4><span lang="en">Product</span><span lang="tr">Ürün</span></h4><ul>
+          <li><a href="#product"><span lang="en">What is ATROX</span><span lang="tr">ATROX nedir</span></a></li>
+          <li><a href="#how"><span lang="en">How it works</span><span lang="tr">Nasıl çalışır</span></a></li>
+          <li><a href="#calculator"><span lang="en">Try the score</span><span lang="tr">Skoru dene</span></a></li></ul></div>
+        <div class="col"><h4><span lang="en">Help</span><span lang="tr">Yardım</span></h4><ul>
+          <li><a href="/support"><span lang="en">Support</span><span lang="tr">Destek</span></a></li>
+          <li><a href="mailto:hello@atrox.online"><span lang="en">Contact</span><span lang="tr">İletişim</span></a></li>
+          <li><a href="#faq"><span lang="en">FAQ</span><span lang="tr">SSS</span></a></li></ul></div>
+        <div class="col"><h4><span lang="en">Legal</span><span lang="tr">Yasal</span></h4><ul>
+          <li><a href="/privacy"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a></li>
+          <li><a href="/terms"><span lang="en">Terms</span><span lang="tr">Koşullar</span></a></li></ul></div>
+      </div>
+      <div class="word" aria-hidden="true">ATROX</div>
+      <div class="bar">
+        <span>© 2026 ATROX · Vilnius, Lithuania</span>
+        <nav aria-label="Legal"><a href="/privacy"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a><a href="/terms"><span lang="en">Terms</span><span lang="tr">Koşullar</span></a><a href="/support"><span lang="en">Support</span><span lang="tr">Destek</span></a></nav>
+      </div>
+    </div>
   </footer>
 </div>
 
-<script>
-(function () {
-  var root = document.documentElement, buttons = document.querySelectorAll('.switch button');
-  function set(l, save) {
-    root.setAttribute('data-l', l); root.setAttribute('lang', l);
-    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-set') === l)); });
-    document.title = l === 'tr' ? 'ATROX — Sporcular için Güç Skoru' : 'ATROX — Strength Score for lifters';
-    if (save) { try { localStorage.setItem('atrox-l', l); } catch (e) {} }
-  }
-  var saved = null; try { saved = localStorage.getItem('atrox-l'); } catch (e) {}
-  var guess = (navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en';
-  var asked = new URLSearchParams(location.search).get('lang');
-  set(asked === 'tr' || asked === 'en' ? asked : (saved === 'tr' || saved === 'en' ? saved : guess), false);
-  buttons.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-set'), true); }); });
-})();
-</script>
+<!-- weight plates (authored SVG) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="pb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5d8dff"/><stop offset=".55" stop-color="#105bff"/><stop offset="1" stop-color="#0a3bb0"/></linearGradient>
+    <linearGradient id="po" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb255"/><stop offset=".55" stop-color="#fe8500"/><stop offset="1" stop-color="#b85a00"/></linearGradient>
+    <g id="plate-blue"><circle cx="64" cy="64" r="60" fill="url(#pb)"/><circle cx="64" cy="64" r="52" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/><circle cx="64" cy="64" r="34" fill="none" stroke="#0a2a80" stroke-opacity=".55" stroke-width="3"/><circle cx="64" cy="64" r="12" fill="#0b1c52"/><circle cx="64" cy="64" r="7" fill="#21232e"/><text x="64" y="104" text-anchor="middle" font-family="Archivo,sans-serif" font-size="13" font-weight="800" fill="#fff" fill-opacity=".85">20</text></g>
+    <g id="plate-orange"><circle cx="64" cy="64" r="60" fill="url(#po)"/><circle cx="64" cy="64" r="52" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2"/><circle cx="64" cy="64" r="34" fill="none" stroke="#7a3a00" stroke-opacity=".5" stroke-width="3"/><circle cx="64" cy="64" r="12" fill="#4d2400"/><circle cx="64" cy="64" r="7" fill="#21232e"/><text x="64" y="104" text-anchor="middle" font-family="Archivo,sans-serif" font-size="13" font-weight="800" fill="#21232e" fill-opacity=".8">15</text></g>
+  </defs>
+</svg>
+
+<script src="/home.js" defer></script>
 </body>
 </html>

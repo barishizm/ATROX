@@ -1,244 +1,281 @@
 ---
 name: ATROX
-description: One powerlifting meet scoresheet, ruled and lit in the dark, where every lift ends in a percentile.
+description: A night-gym dark page where one rounded blue stage paints a lifter population as dots, and a single orange dot is you.
 colors:
   ground: "#21232e"
-  ground-deep: "#1a1c25"
-  rule: "#3b3f52"
-  rule-strong: "#5a5f78"
+  ground-deep: "#191b24"
+  card: "#2a2d3c"
+  card-2: "#323649"
+  line: "rgba(238, 240, 245, 0.11)"
   ink: "#eef0f5"
-  ink-2: "#aeb2c4"
+  ink-soft: "#b4b8c9"
+  ink-faint: "#8f94a9"
   blue: "#105bff"
   blue-ink: "#7aa2ff"
+  blue-deep: "#0d2160"
+  on-deep: "#eef2ff"
+  sky-top: "#0a1a52"
+  sky-mid: "#0f3cc2"
+  sky-low: "#2a52c9"
   orange: "#fe8500"
   orange-hover: "#ffa033"
-  lamp-on: "#f4f5f8"
+  orange-light: "#ffb255"
+  wordmark-ghost: "#2b2e3d"
 typography:
   display:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(3.25rem, 11.5vw, 6rem)"
-    fontWeight: 800
-    lineHeight: 0.9
-    letterSpacing: "-0.01em"
-    fontVariation: "wdth 62"
+    fontSize: "clamp(2.5rem, 5.8vw, 4.5rem)"
+    fontWeight: 700
+    lineHeight: 0.98
+    letterSpacing: "-0.035em"
+    fontVariation: "font-stretch 78%"
   headline:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(2.25rem, 6vw, 3.75rem)"
-    fontWeight: 800
-    lineHeight: 0.95
-    letterSpacing: "-0.005em"
-    fontVariation: "wdth 62"
-  figure:
-    fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(2rem, 6vw, 3.5rem)"
-    fontWeight: 800
-    lineHeight: 1
-    fontVariation: "wdth 75"
+    fontSize: "clamp(2.1rem, 4.6vw, 3.5rem)"
+    fontWeight: 650
+    lineHeight: 1.02
+    letterSpacing: "-0.03em"
+    fontVariation: "font-stretch 80%"
   title:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(1.4rem, 4.2vw, 2.25rem)"
-    fontWeight: 800
-    lineHeight: 1
-    letterSpacing: "0.04em"
-    fontVariation: "wdth 62"
+    fontSize: "clamp(1.25rem, 1.8vw, 1.5rem)"
+    fontWeight: 600
+    lineHeight: 1.18
+    letterSpacing: "-0.02em"
+    fontVariation: "font-stretch 85%"
   body:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "1.0625rem"
+    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.55
-    fontVariation: "wdth 100"
+    fontFeature: "tabular-nums"
   label:
     fontFamily: "Archivo, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "0.72rem"
+    fontSize: "0.78rem"
     fontWeight: 700
-    lineHeight: 1.55
-    letterSpacing: "0.1em"
-    fontVariation: "wdth 70"
+    letterSpacing: "0.08em"
+    fontVariation: "font-stretch 75%"
+  wordmark:
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(5rem, 22vw, 17rem)"
+    fontWeight: 800
+    lineHeight: 0.82
+    letterSpacing: "-0.02em"
+    fontVariation: "font-stretch 62%"
 rounded:
-  none: "0px"
-  lamp: "50%"
+  pill: "999px"
+  stage: "26px"
+  panel: "22px"
+  feature: "20px"
+  result: "16px"
 spacing:
-  hairline: "1px"
-  cell-x: "0.9rem"
-  cell-y: "0.7rem"
-  block-gap: "clamp(4rem, 9vw, 7rem)"
-  gutter: "1.25rem"
+  gutter: "clamp(16px, 3.4vw, 40px)"
+  section: "clamp(72px, 9vw, 120px)"
+  grid-gap: "12px"
 components:
   button-primary:
     backgroundColor: "{colors.orange}"
     textColor: "{colors.ground}"
-    typography: "{typography.title}"
-    rounded: "{rounded.none}"
-    padding: "0.5rem 1.6rem"
-    height: "3.25rem"
+    typography: "{typography.label}"
+    rounded: "{rounded.pill}"
+    padding: "0 20px"
+    height: "40px"
   button-primary-hover:
     backgroundColor: "{colors.orange-hover}"
-    textColor: "{colors.ground}"
-  switch-button:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-2}"
-    rounded: "{rounded.none}"
-    size: "2.75rem"
-  switch-button-pressed:
+  button-on-stage:
+    backgroundColor: "#ffffff"
+    textColor: "{colors.sky-top}"
+    rounded: "{rounded.pill}"
+    height: "46px"
+  lang-switch-active:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.ground}"
-  sheet:
-    backgroundColor: "{colors.ground}"
+    rounded: "{rounded.pill}"
+    height: "32px"
+  stage:
+    backgroundColor: "{colors.sky-mid}"
+    textColor: "#ffffff"
+    rounded: "{rounded.stage}"
+  feature-field:
+    backgroundColor: "{colors.blue-deep}"
+    textColor: "{colors.on-deep}"
+    rounded: "{rounded.feature}"
+    padding: "22px"
+  feature-deep:
+    backgroundColor: "{colors.card}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-  sheet-total-row:
-    backgroundColor: "{colors.ground-deep}"
-    textColor: "{colors.orange}"
-  lamp:
-    backgroundColor: "{colors.lamp-on}"
-    rounded: "{rounded.lamp}"
-    size: "1.25rem"
-  percentile-bar:
-    backgroundColor: "{colors.blue}"
-    height: "4px"
+    rounded: "{rounded.feature}"
+    padding: "22px"
+  step-card:
+    backgroundColor: "{colors.card}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.panel}"
+  calc-box:
+    backgroundColor: "{colors.blue-deep}"
+    textColor: "{colors.on-deep}"
+    rounded: "{rounded.stage}"
+  join-form:
+    backgroundColor: "#ffffff"
+    textColor: "{colors.ground}"
+    rounded: "{rounded.pill}"
+    padding: "6px"
 ---
 
 # Design System: ATROX
 
+Home page (web/index.html with web/home.css and web/home.js, EN and TR). The legal pages and the /u/ invite page still use the older web/site.css; see the last section.
+
 ## Overview
 
-**Creative North Star: "The Meet Scoresheet"**
+**Creative North Star: "The Population in Dots"**
 
-The home site is one powerlifting scoresheet seen once, not a landing page that quotes one. A night-gym ground (#21232e) carries a ruled grid of boxed fields, one condensed grotesque used across a wide width range, and three round referee lamps. Recognisable with every word removed: hairline boxes and three white circles. The offer is a filled-in attempt card whose last column is the percentile; the signup is the sheet's signature box.
+ATROX tells a lifter how strong they are against people like them, so the page draws that answer instead of describing it. One rounded blue stage holds a lifter population painted as a field of dots, a histogram, with a single orange dot standing for you and two authored weight plates floating in front. Everything after the stage is quieter: a night-gym ground (#21232e), deep-blue and slate panels, and orange kept for the one thing that is yours (the action, the you-dot, the active progress bar).
 
-The build confirms the contract. Everything is ruled, nothing floats. Sections below the sheet reuse the same boxed grid (rows, close box) instead of switching to a second vocabulary. Density is high in the sheet (fixed table, tabular numerals) and loosens only in the vertical gaps between blocks. The surface is dark only; there is no light theme (`color-scheme: dark`).
+The density is calm and rounded. Panels are large soft rectangles on a dark ground, type is Archivo pulled narrow for headings and left at normal width for reading, and sections are separated by generous vertical air (72 to 120px) rather than rules. Motion is slow and decelerated; nothing bounces. The page walks a fixed sequence: stage, what it is, three asymmetric feature panels, tabbed steps with a timed bar, an illustrative score calculator, FAQ, a join band that repeats the stage, and a giant ghost wordmark.
 
-The legal pages and the invite page inherit the same tokens and the same type roles with a quieter layout (single column, no sheet).
+It refuses the default SaaS look: no grid of equal icon cards, no kickers or eyebrows, no glow halos, no gradient text, no stock-photo hero.
 
 **Key Characteristics:**
-- Hairline-ruled boxes in two tints; the grid is the ornament.
-- One family, Archivo variable, with the width axis (`wdth` 62 to 100) doing the work of a type pairing.
-- Numerals are tabular everywhere (set on `body`), so kg and percentile columns align.
-- Three inks only beyond neutrals: white lamps, blue for the score bar, orange for the action and the total.
-- Zero radius on every box; only the lamps are round.
-- Bilingual by markup: every string exists twice (`lang="en"` / `lang="tr"`), the root `data-l` attribute hides one.
+- One saturated blue stage with painted dot fields and parallax; the rest of the page is dark neutral plus deep-blue panels.
+- Orange (#fe8500) is the single action and "you" ink; it never decorates.
+- Archivo variable width axis does the hierarchy: narrow caps-feeling headings, normal-width body.
+- Pill controls, 20 to 26px panels, no hard edges.
+- Dark only (`color-scheme: dark`); no light theme.
+- EN and TR render the same structure; only one language is visible at a time (`html[data-l]`).
 
 ## Colors
 
-A night-gym neutral ground, a cool grey-violet rule system, and two brand inks used sparingly.
+A deep slate ground, one electric-blue sky, one deep-blue panel, and a single orange.
 
 ### Primary
-- **Meter Blue** (#105bff): the percentile bar fill only. Never text, never a button. Too dark for text on the ground, so it stays a graphic.
-- **Signal Orange** (#fe8500): the one action color. Primary button fill, the SAMPLE flag value, the total row's percentile and its bar, text selection background, the draft-note border on legal pages. Its rarity is how the eye finds the button.
+- **Meter Blue** (#105bff): the brand blue. Appears in the stage sky ramp, art washes (rgba of it) and the app's identity; on the dark ground the readable version is Blue Ink.
+- **Blue Ink** (#7aa2ff): link text, focus ring, line-art and the chart viz tint on dark surfaces.
+- **Deep Field Blue** (#0d2160): the field feature panel and the calculator box. Text on it is Cold White (#eef2ff) and a 74% variant for secondary copy.
+- **Sky Ramp** (#0a1a52 top, #0f3cc2 middle, #2a52c9 low): the stage and join-band gradient, top to bottom. Used only inside those two rounded boxes.
 
 ### Secondary
-- **Link Blue** (#7aa2ff): the readable blue. Links and the focus ring (3px outline, 3px offset). Hover on a link goes to Ink.
+- **Lift Orange** (#fe8500): primary pill buttons, the "you" dot, the selected-tab progress bar, slider fill, toggle on-state, open-FAQ plus, text selection, the one emphasized phrase in the statement. Hover lightens to #ffa033; large result numbers on deep blue use #ffb255.
 
 ### Neutral
-- **Night Gym** (#21232e): page ground, button text, text on selected switch.
-- **Deep Ground** (#1a1c25): the total row's fill, the only tonal step in the system.
-- **Rule** (#3b3f52): inner dividers between fields and rows; empty bar track; unlit lamp start state; footer top border.
-- **Rule Strong** (#5a5f78): outer sheet borders, the head and header-row dividers, scrollbar thumb.
-- **Ink** (#eef0f5): primary text, pressed switch fill, hover text.
-- **Ink Soft** (#aeb2c4): secondary text, field captions, column headers, footer.
-- **Lamp White** (#f4f5f8): lit referee lamp.
-- **Orange Lift** (#ffa033): button hover only.
+- **Night Gym** (#21232e): page ground and button text on orange.
+- **Under Ground** (#191b24): defined as `--bg-deep`; reserved, not yet used in rules.
+- **Slate Card** (#2a2d3c) and **Slate Card Lift** (#323649): step cards and the dark feature panel. `--card-2` is defined but unused.
+- **Ink** (#eef0f5): primary text on the ground. **Soft Ink** (#b4b8c9): body and secondary text. **Faint Ink** (#8f94a9): footnotes, inactive tabs, footer headings.
+- **Hairline** (rgba(238,240,245,0.11)): section and list dividers, the scrolled-nav underline.
+- **Ghost Wordmark** (#2b2e3d): the footer wordmark only. See Do's and Don'ts.
 
 ### Named Rules
-**The Three-Ink Rule.** Beyond neutrals, only white lamps, blue and orange appear, and each owns one job: lamps count a lift, blue measures the percentile, orange acts. A fourth hue is a new system, not an extension.
+**The One Orange Rule.** Orange marks what is yours or what to press: the action pill, the you-dot, the active timer bar. If it is decorative, it is not orange.
 
-**The Blue Is Graphic Rule.** `#105bff` is never used for text; reading blue is `#7aa2ff`.
+**The Stage Blue Rule.** Saturated blue (the sky ramp) lives only in the two rounded stage boxes. Everywhere else blue is the deep #0d2160 panel or Blue Ink line-work.
 
 ## Typography
 
-**Display Font:** Archivo variable (self-hosted woff2, latin and latin-ext, weight 100 to 900, `font-stretch` 62% to 125%), with system-ui fallbacks
-**Body Font:** the same Archivo at `wdth` 100
-**Label/Mono Font:** none; tabular numerals on the same family
+**Display Font:** Archivo (variable, self-hosted woff2, weight 100-900, width 62-125%), fallback system-ui, -apple-system, Segoe UI, sans-serif.
+**Body Font:** the same Archivo at `font-stretch: 100%`.
+**Label/Mono Font:** none; numbers use `font-variant-numeric: tabular-nums` globally.
 
-**Character:** One grotesque speaking in two registers. Condensed caps (wdth 62 to 75, weight 700 to 800) are the scoresheet's printed form; normal width at 400 is the lifter's plain sentence. The width axis replaces a second font.
+**Character:** One family, two voices. Headings are squeezed with the width axis (70 to 85%) into a tall athletic condensed; body is the family's normal width. The width axis replaces a second typeface.
 
 ### Hierarchy
-- **Display** (800, clamp 3.25rem to 6rem, 0.9, wdth 62, uppercase, -0.01em): the sheet title only ("Strength Score"). Balanced wrap.
-- **Headline** (800, clamp 2.25rem to 3.75rem, 0.95, wdth 62, uppercase): section h2s, including inside the close box.
-- **Figure** (800, clamp 2rem to 3.5rem, 1, wdth 75): the percentile numeral in each lift row. The largest numbers after the title.
-- **Title** (800, clamp 1.4rem to 2.25rem, 1, wdth 62, uppercase, 0.04em): lift names in row headers (SQUAT, BENCH, DEADLIFT, Score). The button label uses the same register at wdth 75, 1.15rem, 0.06em.
-- **Body** (400, 1.0625rem, 1.55, wdth 100): paragraphs; secondary copy in Ink Soft; measure 62ch for row text, 46 to 52ch for sheet and close copy; `text-wrap: pretty`.
-- **Label** (700, 0.72rem, 0.1em, wdth 70, uppercase): field captions and table headers in Ink Soft. Row keys in the explainer lists are the same register enlarged (800, 1.15rem, 0.06em).
-- **Mark** (800, 1.5rem, 0.12em, wdth 62): the ATROX wordmark, text only. Back-link on legal pages is the same at 1.25rem.
+- **Display** (700, clamp 2.5-4.5rem, 0.98, -0.035em, stretch 78%): the stage headline (`.h1`).
+- **Headline** (650, clamp 2.1-3.5rem, 1.02, -0.03em, stretch 80%): section titles (`.h2`); calculator title steps down to 1.9-2.8rem.
+- **Title** (600, 1.1-1.5rem, ~1.18, -0.02em, stretch 85%): feature panel and step card headings, tab titles.
+- **Statement** (400, clamp 1.1-1.45rem, 1.32, -0.015em): the what-is paragraph, with one orange phrase.
+- **Body** (400, 0.82-1rem, 1.45-1.6): lede 0.95rem capped at 30em; FAQ answers 0.92rem at max 60ch; card copy 0.88rem at 27em.
+- **Label** (700, 0.78rem, 0.08em, stretch 75%): the EN/TR switch. Brand wordmark in the nav is stretch 70%, weight 800, tracking 0.12em, 1.1rem. Result numbers and amounts are stretch 80%, weight 650.
+- **Footer wordmark** (800, clamp 5-17rem, 0.82, stretch 62%): decorative, aria-hidden.
 
 ### Named Rules
-**The Width Axis Rule.** Hierarchy comes from `font-stretch` and weight on one family, never from adding a second typeface.
-
-**The Tabular Rule.** Numbers align in columns; `font-variant-numeric: tabular-nums` is set once on `body` and not overridden.
+**The Width-Axis Rule.** Hierarchy comes from `font-stretch` and weight within Archivo, not from adding a second family. Headings 70-85%, reading text 100%.
 
 ## Layout
 
-A single centered column, `min(72rem, 100% - 2.5rem)`, with a 1.25rem minimum gutter. The sheet is a stack of boxed bands: a four-field head (1.4fr 1fr 1fr auto), a title band, a fixed-layout table (three columns at 28% each, the lamps column takes the rest), and a foot band with copy left and the button right. Cell padding is .7rem by .9rem; the same .9rem inset is used for the bar and the field text so everything hangs on one vertical.
+A single centered column (`.wrap`, max 1240px, side padding clamp 16-40px). Sections are separated by padding only: 72 to 120px between major blocks, 40 to 64px before the join band and footer. Nav is sticky with a three-column grid (brand, centered links, switch plus orange pill) and gains an 88% ground blur and a hairline after scroll.
 
-Blocks below the sheet are separated by `clamp(4rem, 9vw, 7rem)`. The explainer lists (`.rows`) split into a key column and a value column whose first column is `calc(28% + .504rem)`, deliberately lining up with the table's first column. The close box is one bordered panel with generous padding (2.5rem by 1.5rem) and a wrapping row of the button and the mailto link.
+Section grids are deliberately asymmetric: what-is 1.25fr / 1fr, features 2.15fr / 1fr / 1fr with 12px gaps, steps 1fr / 1fr (tabs left, card stack right), calculator .92fr / 1.08fr inside the deep-blue box, FAQ 1fr / 1.35fr, footer 1.4fr plus three equal columns.
 
-Responsive steps, both observed in the stylesheet:
-- **760px:** sheet head becomes a 2-by-2 grid with re-ruled borders; table cell padding tightens to .6rem; lamps shrink to .95rem; foot stacks and the button goes full width; explainer rows stack key above value.
-- **460px:** table column widths retune to 27/25/26%, header labels drop to .6rem, lift names to 1.2rem, kg to .95rem, percentile to 1.9rem, lamps to .7rem, and the bar inset shrinks from .9rem to .4rem to match the tighter cell padding.
+Responsive steps: at 980px features become two columns with the field panel spanning; at 900px the nav collapses to a menu button and drawer and the calculator stacks; at 860px steps, FAQ and footer collapse (footer to two columns); at 640px the stage grows to 600px tall and the plates move; at 560px features and the what-is grid go single column.
 
-Touch targets: switch buttons are 2.75rem square, the primary button 3.25rem high.
-
-Legal pages: one column at 46rem, 62ch text measure, h2 at 1.4rem, ruled tables with bottom hairlines only. Invite page: a centered 30rem column.
+Below-the-fold sections fade up (`.pre` to `.rv`, translateY 22px, 0.9s) once JS runs.
 
 ## Elevation & Depth
 
-Flat, with no shadows, no gradients, no blur and no layering effect. Depth is conveyed by two hairline weights (Rule inside, Rule Strong at the outer edge) and one tonal step (Deep Ground on the total row). The only motion that implies depth is a 1px press translate on the button.
+Depth is tonal and by layering, not by shadow. Slate cards sit one step above the ground; deep-blue panels read as a different material; the stage is a gradient with parallax dot layers behind and in front of the plates. The nav gets a backdrop blur only when scrolled.
+
+### Shadow Vocabulary
+- **Plate lift** (`filter: drop-shadow(0 16px 14px rgba(5,12,50,.45))`): under the floating weight plates, the one soft ground-contact shadow.
+- **Hairline inset** (`inset 0 0 0 1px rgba(255,255,255,.1)`): the chart box edge.
+- **Slider thumb ring** (`0 0 0 6px rgba(254,133,0,.3)` plus a small drop): the range thumb. This is a halo; see Do's and Don'ts.
+- **Form focus ring** (`0 0 0 3px #fe8500`): the join form when focused.
 
 ### Named Rules
-**The Hairline Depth Rule.** Hierarchy of containment is expressed by border tint: inner dividers in Rule, container edges in Rule Strong. Never by shadow.
+**The Tonal Depth Rule.** A panel is raised by a lighter slate or a different blue, never by a card shadow. Only the plates, the slider thumb and the chart dot carry a shadow, and each is an object, not a surface.
 
 ## Shapes
 
-Everything is a rectangle with square corners (radius 0), including the button and the switch. The one curve is the referee lamp, a perfect circle (1.25rem, 50%). The percentile bar is a flat 4px stroke on a 4px track of the same width. The focus ring has a 2px radius, the only incidental softening.
+Soft and round. Controls are full pills (999px): buttons, the language switch, nav links, the form, segmented control, toggles. Panels step by size: the stage, join band and calculator 26px (stage scales clamp 18-26px), step cards 22px, feature panels 20px, result tiles 16px, chart box 20px. Small circular affordances (plus, arrow chip, slider thumb) are 50%. Plates are circular SVG objects. Hairlines are 1px at 11% ink; the only underline accents are the 2px orange tab bar and 4px slider track.
 
 ## Components
 
-### Sheet
-A bordered container (1px Rule Strong) with banded children separated by hairlines. Head holds four boxed fields: a Label caption over a 1.05rem 600 value; the SAMPLE field's value is Signal Orange. The sheet is the only container on the page.
-
-### Lifts table
-Fixed layout, tabular. Row headers in Title register, kg cells in 500 weight, percentile cells in Figure register. The total row sits on Deep Ground with an orange percentile and orange bar and an empty lamp cell; it carries the same bottom rule as the header.
-
-### Percentile bar
-A 4px track (Rule) drawn as a `::before` on the percentile cell, with a Meter Blue fill (`<i class="bar" style="--p:NN">`) at `(100% - 1.8rem) * p / 100`, inset .9rem both sides, .5rem from the cell bottom. Orange on the total row.
-
-### Lamps
-Three white circles per lift, 1.25rem with .35rem gaps. On load each lamp animates from Rule grey to Lamp White over .35s with a Signal ease (`cubic-bezier(.16, 1, .3, 1)`), delayed by `index * 140ms + .35s`, so nine lamps light in one left-to-right, top-to-bottom sequence, once. They are decorative (`aria-hidden`); the lit end state is the default style, so without animation they read as counted.
-
-### Button
-One primary only. Signal Orange fill, Night Gym text, Title-register caps, square, 3.25rem high, padding .5rem 1.6rem. Hover lifts to Orange Lift; active translates 1px down; both transition .2s. Full width at 760px and below. A secondary variant appears only on the invite page, as a transparent button with an inset 1px Rule Strong outline that fills with Ink on hover.
-
-### Language switch
-Two square 2.75rem buttons (EN, TR) in Label-adjacent register with a 1px Rule border; the pressed one fills Ink with Night Gym text. State is carried by `aria-pressed`.
-
-### Explainer rows
-A bordered list; each row is a two-column grid with a caps key and an Ink Soft value, `strong` in Ink 600. No bullets, no cards, hairline between rows, none after the last.
-
-### Close box
-A single bordered panel holding a Headline, one line of copy and the button beside a plain mailto link. It is the sheet's last box, not a banner.
+### Buttons
+- **Shape:** pill (999px), 40px tall (46px large), padding 0 20px (0 26px large).
+- **Primary:** Lift Orange fill, Night Gym text, 0.85rem, weight 700.
+- **Hover / Focus:** lightens to #ffa033 and lifts 1px; active drops back and scales .98. Focus-visible is a 2px Blue Ink outline, offset 3px.
+- **On stage:** inside the hero the button inverts to white with Sky Top text; in the join band it stays orange.
 
 ### Navigation
-There is none beyond the wordmark (text link to `/`) and the footer's three text links (Privacy, Terms, Support) in Ink Soft, hover Ink, separated by a top hairline.
+Sticky, brand left (narrow caps wordmark plus a mark that rotates 90 degrees on hover), four centered pill links (Soft Ink, Ink on hover or current), right side holds the **EN/TR switch** (translucent pill track, active segment solid Ink with ground text) and the orange waiting-list pill. At 900px links and pill hide behind a 40px round menu button that morphs to an X and opens a max-height drawer.
+
+### Stage (signature)
+A rounded blue box, height clamp 520-700px, holding three stacked canvas dot fields (two behind, one in front) and a plates layer, all moving by `--px`/`--py` pointer parallax at different depths. Centered copy sits on top: display headline, one sentence, white pill. Two authored plates (blue, orange) bob on a 7s loop; click or tap flips one (rotateY 720deg, 1.1s) and shows a white pill with a sample number. The join band repeats the sky and dot fields with a smaller headline and the form.
+
+### Feature panels
+Three asymmetric panels, min-height 240-280px, 20px radius, 12px gap. One wide Deep Field Blue panel carries a painted dot field; two Slate Card panels carry a small line-art viz (a check that redraws on hover, a toggle that switches). Titles in Title style, copy 0.82rem. Hover lifts 4px. Not icon cards: each panel has a different internal drawing.
+
+### Tabs with progress bar
+Left column is a ruled list of numbered rows (title, arrow, number); the selected row indents and shows an orange 2px bar that fills over 8s linearly and advances the tab; hover or focus pauses it. Right column stacks cards (Slate Card, 22px) that cross-fade and rise 14px, each with copy on top and a Blue Ink line-art figure over a faint blue wash at the bottom.
+
+### Calculator
+A Deep Field Blue box. Left: title, lede, labelled **sliders** (4px track, orange fill, white 22px thumb with a soft orange ring), a **segmented control** (translucent pill track, selected segment white with deep-blue text), two result tiles (white at 7%, 16px radius; the highlighted number in #ffb255) and a comparison sentence. Right: a chart box with a legend, an SVG distribution curve, a white percentile tag that tracks the position and an orange you-dot with a white ring. It is labelled as an illustration, not a prediction (`.disc`).
+
+### FAQ accordion
+Ruled rows (hairline top, last row bottom). Question 0.95-1.08rem with a 30px circular plus; open state rotates 180 degrees, fills orange with ground ink and flattens to a minus. Answers open by animating grid rows 0fr to 1fr (.45s), capped at 60ch.
+
+### Join form
+A white pill (max 440px, 6px padding) holding the email field and the orange button. Focus-within draws a 3px orange ring. The error state shakes the pill and turns the note #ffd2dd.
+
+### Footer
+Brand and tagline, three link columns (Faint Ink headings, Soft Ink links that underline on hover), a ghost wordmark at up to 17rem (62% width, 800 weight, #2b2e3d on the ground, aria-hidden, cropped by `overflow: hidden`), and a hairline-topped bar with legal links.
+
+## Motion
+
+Easing is `cubic-bezier(.2,.7,.2,1)` (decelerate, no overshoot); the intro and flip use close variants. Intro (`data-intro="play"`): dot layers and plates grow in from 60px below (1.6 to 1.9s, staggered .12-.3s) while hero copy rises in 1.1s steps. Plates bob 7s ease-in-out and flip on click. Tab bar fills 8s linear. Canvases fade in over 1.1s once drawn. A `prefers-reduced-motion: reduce` block kills every animation and transition (`!important`), sets smooth-scroll off and un-hides `.pre` content.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** build every new surface from boxed, hairline-ruled fields: Rule inside, Rule Strong on the outer edge.
-- **Do** use one family with `font-stretch` for hierarchy: wdth 62 for titles, 70 for labels, 75 for figures and buttons, 100 for reading text.
-- **Do** keep orange for the single action and the total; blue only for measuring bars.
-- **Do** keep numerals tabular and aligned to the same .9rem inset as the field text.
-- **Do** light lamps once, in sequence, and disable the animation under `prefers-reduced-motion` (which also removes button and switch transitions and smooth scroll).
-- **Do** ship both languages in the markup and let `data-l` select.
-- **Do** label demonstration data as SAMPLE in the sheet head.
+- **Do** keep the ground #21232e and put text in Ink (#eef0f5), Soft Ink (#b4b8c9) or Faint Ink (#8f94a9); Faint Ink is for footnotes and inactive states only.
+- **Do** use orange only for the action pill, the you-dot, the active tab bar, slider fill, toggle on-state and the single emphasized phrase.
+- **Do** set hierarchy with Archivo `font-stretch` (70-85% for headings, 100% for body) and tabular numerals everywhere.
+- **Do** use pill radius (999px) for every control and 20, 22 or 26px for panels.
+- **Do** show every claim that is a number as an illustration or sample, labelled as such, and keep EN and TR copy structurally identical.
+- **Do** keep every new animation under the reduced-motion kill switch and use the decelerating `--ease`.
+- **Do** mark decorative layers (canvases, plates art, ghost wordmark) `aria-hidden`.
 
 ### Don't:
-- **Don't** introduce cards, icons, gradients, shadows, glows or rounded boxes; the first viewport must stay a scoresheet.
-- **Don't** add kicker or eyebrow lines above headings; field captions belong to a field box, not to a heading.
-- **Don't** set text in Meter Blue (#105bff); use Link Blue (#7aa2ff).
-- **Don't** add a second typeface or a light theme.
-- **Don't** add a second primary button style or more than one orange action per band.
-- **Don't** use more than one lamp sequence or loop it.
+- **Don't** build rows of equal icon-on-top cards; the features are asymmetric and each carries its own drawing.
+- **Don't** add kickers, eyebrows or small-caps label lines above headings.
+- **Don't** add glow halos, neon blurs, gradient text or bounce or elastic easing.
+- **Don't** use saturated sky blue outside the stage and join band, or a light theme.
+- **Don't** reuse the footer's #2b2e3d for any text; it is below contrast on purpose because that wordmark is decorative.
+- **Don't** add backer logos, prices, ratings, counts or user claims the product does not have yet, or app screenshots until they exist.
 
-## Not Canonized
+### Known leftovers (not rules)
+- The range thumb ring (orange at 30%, 6px, 9px on hover) is a soft halo that the no-halo rule would otherwise forbid; it is a slider affordance, left as built, not a pattern to copy.
+- `--bg-deep` and `--card-2` are declared and not used; `.chartdot` sits outside the file's section order at the end of home.css.
+- The footer wordmark (#2b2e3d on #21232e) is about 1.2:1 contrast by design.
 
-Defects and one-offs the build carries that future surfaces should not inherit: the legal pages' `.draft` banner and `.fill` highlight (#3a2a10 / #ffd9a0) are leftovers of draft-stage placeholders and are not part of the palette; the invite page's secondary button uses an inset `box-shadow` as a border, which is a border trick and not an elevation token; legal h2s use 1.4rem with `letter-spacing: .02em` in the condensed caps register and are not a step in the display scale.
+## Second, older surface: web/site.css
+
+The legal pages (/privacy, /terms, /support) and the /u/ invite page still use `web/site.css`, a ruled-scoresheet system from the previous direction. It shares the ground (#21232e), Ink, Blue (#105bff), Blue Ink (#7aa2ff), Orange (#fe8500) and the same self-hosted Archivo, but uses hairline rules (#3b3f52), condensed caps, three referee lamps and a 62ch measure instead of pills and rounded panels. It is not the home page system and should not be extended with home components; when those pages are redesigned they should adopt the home tokens above.
