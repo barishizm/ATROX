@@ -8,7 +8,13 @@ import Testing
 /// Runs the real `StoreKitClient` against StoreKitTest's simulated App Store (`StoreKit/ATROX.storekit`): purchase,
 /// renewal, expiry, refund and restore. Serialized because there is one StoreKit test session per process.
 @MainActor
-@Suite(.serialized)
+@Suite(
+    .serialized,
+    .enabled(
+        if: ProcessInfo.processInfo.environment["STOREKIT_TEST_UNAVAILABLE"] == nil,
+        "StoreKitTest sessions cannot run on the hosted CI simulator (SKInternalErrorDomain 3); run locally."
+    )
+)
 struct StoreKitClientTests {
     final class BundleToken {}
 

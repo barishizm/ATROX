@@ -244,6 +244,9 @@ jobs:
       - name: Run tests
         env:
           TEST_ARGS: ${{ matrix.args }}
+          # Forwarded to the test process: StoreKitTest cannot save its configuration on the hosted
+          # runner's simulator (SKInternalErrorDomain 3), so StoreKitClientTests skips itself there.
+          TEST_RUNNER_STOREKIT_TEST_UNAVAILABLE: "1"
         run: |
           set -euo pipefail
           read -ra extra <<< "$TEST_ARGS"
