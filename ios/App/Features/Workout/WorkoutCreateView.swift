@@ -7,6 +7,7 @@ import SwiftUI
 struct WorkoutCreateView: View {
     @Environment(AppContainer.self) private var container
     @Environment(ActiveWorkoutPresenter.self) private var presenter
+    @Environment(\.dismiss) private var dismiss
     @State private var settingUp = false
 
     var body: some View {
@@ -28,7 +29,11 @@ struct WorkoutCreateView: View {
                 option(
                     "workout.start.empty", "workout.create.quick.message", icon: "bolt.fill", id: "create-quick-workout"
                 ) {
-                    Task { await presenter.startEmpty(container: container) }
+                    Task {
+                        await presenter.startEmpty(container: container)
+                        // Leave Create behind so finishing the workout returns to the Workout home.
+                        dismiss()
+                    }
                 }
             }
             .padding(Spacing.md)

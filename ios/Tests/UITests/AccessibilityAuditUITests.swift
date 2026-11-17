@@ -60,7 +60,9 @@ final class AccessibilityAuditUITests: XCTestCase {
     @MainActor
     private func startWorkoutWithExercise(_ app: XCUIApplication) {
         select("Workout", in: app)
-        app.buttons["Start empty workout"].firstMatch.tap()
+        // No program yet: "Create" opens the choices; the quick workout needs no program.
+        app.buttons["workout-create"].firstMatch.tap()
+        app.buttons["create-quick-workout"].firstMatch.tap()
         XCTAssertTrue(app.buttons["workout-add-exercise"].waitForExistence(timeout: 10), app.debugDescription)
         app.buttons["Add exercise"].firstMatch.tap()
         let firstRow = app.descendants(matching: .any)
