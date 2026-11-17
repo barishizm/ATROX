@@ -81,19 +81,19 @@ struct ExerciseDetailView: View {
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
+                    .confirmationDialog("exercise.detail.delete.title", isPresented: $confirmDelete, titleVisibility: .visible) {
+                        Button("exercise.detail.delete", role: .destructive) {
+                            Task {
+                                if await model.delete() { dismiss() } else { deleteFailed = true }
+                            }
+                        }
+                    } message: {
+                        Text("exercise.detail.delete.message")
+                    }
                     .accessibilityLabel("exercise.detail.menu")
                     .accessibilityIdentifier("exercise-detail-menu")
                 }
             }
-        }
-        .confirmationDialog("exercise.detail.delete.title", isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button("exercise.detail.delete", role: .destructive) {
-                Task {
-                    if await model.delete() { dismiss() } else { deleteFailed = true }
-                }
-            }
-        } message: {
-            Text("exercise.detail.delete.message")
         }
         .alert("exercise.detail.delete.failed", isPresented: $deleteFailed) {
             Button("library.filter.done", role: .cancel) {}

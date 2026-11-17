@@ -79,17 +79,6 @@ struct SettingsView: View {
         .background(DSColor.background)
         .navigationTitle("settings.title")
         .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog("account.signOut.confirm", isPresented: $confirmsSignOut, titleVisibility: .visible) {
-            Button("account.signOut", role: .destructive) { Task { await container.signOut() } }
-        } message: {
-            if workoutPresenter.hasActiveWorkout {
-                Text("account.signOut.activeWorkout")
-            } else if unsyncedCount > 0 {
-                Text("account.signOut.unsynced \(unsyncedCount)")
-            } else {
-                Text("account.signOut.localData")
-            }
-        }
         .accessibilityIdentifier("settings-screen")
     }
 
@@ -124,6 +113,17 @@ struct SettingsView: View {
                 Task {
                     unsyncedCount = await container.sync?.unsyncedCount() ?? 0
                     confirmsSignOut = true
+                }
+            }
+            .confirmationDialog("account.signOut.confirm", isPresented: $confirmsSignOut, titleVisibility: .visible) {
+                Button("account.signOut", role: .destructive) { Task { await container.signOut() } }
+            } message: {
+                if workoutPresenter.hasActiveWorkout {
+                    Text("account.signOut.activeWorkout")
+                } else if unsyncedCount > 0 {
+                    Text("account.signOut.unsynced \(unsyncedCount)")
+                } else {
+                    Text("account.signOut.localData")
                 }
             }
                 .accessibilityIdentifier("settings-sign-out")
