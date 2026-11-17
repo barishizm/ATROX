@@ -84,7 +84,7 @@ update public.coach_limits set daily_messages = 8 where tier = 'free';
 
 `coach-digest` (P083) aynı sırları kullanır; ayrıca `supabase functions deploy coach-digest` ve `schema_16` göçü gerekir. İsteğe bağlı: `COACH_DIGEST_TIMEOUT_MS` (varsayılan 20000).
 
-`publish-score` (P087) için `supabase functions deploy publish-score` ve `schema_18`/`schema_19` göçleri gerekir (ek sır yok; `SUPABASE_SERVICE_ROLE_KEY` yeterli). Davet bağlantıları (P088): `web/` klasörünü Vercel'e kök dizin olarak yayınla, alan adını `ios/Config/Base.xcconfig` içindeki `APP_LINK_HOST`'a yaz, `web/.well-known/apple-app-site-association` içindeki `TEAMID` değerini Apple Team ID ile değiştir.
+`publish-score` (P087) için `supabase functions deploy publish-score` ve `schema_18`/`schema_19` göçleri gerekir (ek sır yok; `SUPABASE_SERVICE_ROLE_KEY` yeterli). Davet bağlantıları (P088): `web/` klasörünü Vercel'e kök dizin olarak yayınla, alan adı `atrox.online` (`ios/Config/Base.xcconfig` → `APP_LINK_HOST`, ayarlı), `web/.well-known/apple-app-site-association` içindeki `TEAMID` değerini Apple Team ID ile değiştir.
 
 Doğrulama: `supabase functions serve coach-chat` ve geçerli bir kullanıcı JWT'siyle
 `curl -N -H "Authorization: Bearer $JWT" -d '{"message":"Merhaba","locale":"tr"}' http://localhost:54321/functions/v1/coach-chat`
@@ -238,7 +238,7 @@ Debug ve Staging aynı şemayı paylaşır; aynı cihazda ikisi birden kuruluysa
 
 Karşılama ekranındaki Kullanım Koşulları ve Gizlilik Politikası bağlantıları yapılandırmadan okunur:
 `LEGAL_TERMS_URL` ve `LEGAL_PRIVACY_URL` (`ios/Config/Base.xcconfig` → `Info.plist` anahtarları `LegalTermsURL`,
-`LegalPrivacyURL`). Şimdilik `example.com` yer tutucusu; P101'de gerçek sayfalarla değiştirilir. Boş veya geçersiz
+`LegalPrivacyURL`). Şimdi `https://atrox.online/terms` ve `/privacy` (`web/`); metindeki `[hukukçu: ...]` alanları yayından önce doldurulur. Boş veya geçersiz
 değer bağlantıyı gizler. xcconfig'te `//` yorum başlattığı için URL `https:/$(SLASH)host/yol` biçiminde yazılır.
 
 UI testleri gerçek backend yerine bellek içi sahte servisle çalışır: uygulama `-uitest-fake-auth` başlatma
@@ -253,3 +253,11 @@ xcodebuild build -project ios/ATROX.xcodeproj -scheme ATROX \
 ```
 
 Panel kontrolü: her projede Apple, Google ve Email sağlayıcıları **Enabled** görünür; URL Configuration yukarıdaki değerleri içerir.
+
+## Alan adı: atrox.online (GoDaddy → Vercel)
+
+1. Vercel: projeye `atrox.online` ve `www.atrox.online` alan adlarını ekle (Settings → Domains); `www` apex'e yönlendirilsin.
+2. GoDaddy → My Products → atrox.online → DNS: `A` kaydı `@` → `216.198.79.1` (Vercel'in önerdiği; `76.76.21.21` de çalışır); `CNAME` kaydı `www` → `653df9b9e6b8e5e7.vercel-dns-017.com` (`cname.vercel-dns.com` de çalışır). Vercel projesi: `atrox-web`, `www` apex'e 308 ile yönlenir. Eski "parked" `A`/`CNAME` kayıtlarını sil. (Vercel panelinin gösterdiği değerler farklıysa onları kullan.)
+3. Vercel'de sertifika "Valid" olunca doğrula: `curl -sI https://atrox.online/.well-known/apple-app-site-association` → `200`, `content-type: application/json`.
+4. HSTS yalnızca `max-age=31536000` (`web/vercel.json`). `includeSubDomains; preload` ve hstspreload.org başvurusu geri alınması zor olduğundan, tüm alt alan adları HTTPS'e hazır olduktan sonra ayrı karar.
+5. `TEAMID` ve App Store kimliği (`web/.well-known/apple-app-site-association`, `web/index.html`, `web/u/index.html`) Apple Developer'dan alınınca doldurulur.

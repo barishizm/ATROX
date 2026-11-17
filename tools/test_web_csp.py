@@ -1,4 +1,4 @@
-"""The CSP in web/vercel.json allows the inline script of /u by hash; this fails when the script and the hash drift apart."""
+"""The CSP in web/vercel.json allows the inline script of /u by hash and same-origin scripts; this fails when the inline script and the hash drift apart or another inline script appears."""
 import base64
 import hashlib
 import json
@@ -26,7 +26,7 @@ class WebCspTests(unittest.TestCase):
 
     def test_no_other_inline_scripts_or_unsafe_directives(self) -> None:
         for page in WEB.rglob("*.html"):
-            scripts = re.findall(r"<script\b", page.read_text())
+            scripts = re.findall(r"<script\b(?![^>]*\bsrc=)", page.read_text())
             self.assertEqual(len(scripts), 1 if page.parent.name == "u" else 0, page)
         for page in WEB.rglob("*.html"):
             text = page.read_text()
