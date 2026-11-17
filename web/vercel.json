@@ -18,7 +18,7 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'none'; style-src 'self'; script-src 'sha256-kOWb/Hgw7BsBA7TvbvpKHrloZUEQ11tJG3Av17kXRcY='; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'none'; style-src 'self'; script-src 'self' 'sha256-kOWb/Hgw7BsBA7TvbvpKHrloZUEQ11tJG3Av17kXRcY='; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" }
       ]
     }
   ]
