@@ -50,6 +50,5 @@ struct CoachRootView: View {
             model = made
             await made.start()
         }
-        .accessibilityIdentifier("coach-root")
     }
 }
