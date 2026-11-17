@@ -44,6 +44,16 @@ struct CoachThreadsView: View {
             if !model.threads.isEmpty {
                 ToolbarItem(placement: .primaryAction) {
                     Button(role: .destructive) { confirmsDeleteAll = true } label: { Text("coach.threads.deleteAll") }
+                        .confirmationDialog("coach.threads.deleteAll.confirm", isPresented: $confirmsDeleteAll, titleVisibility: .visible) {
+                            Button("coach.threads.deleteAll", role: .destructive) {
+                                Task {
+                                    await model.deleteAll()
+                                    close()
+                                }
+                            }
+                        } message: {
+                            Text("coach.threads.deleteAll.message")
+                        }
                         .accessibilityIdentifier("coach-delete-all")
                 }
             }
@@ -55,16 +65,6 @@ struct CoachThreadsView: View {
                 renaming = nil
             }
             Button("coach.threads.cancel", role: .cancel) { renaming = nil }
-        }
-        .confirmationDialog("coach.threads.deleteAll.confirm", isPresented: $confirmsDeleteAll, titleVisibility: .visible) {
-            Button("coach.threads.deleteAll", role: .destructive) {
-                Task {
-                    await model.deleteAll()
-                    close()
-                }
-            }
-        } message: {
-            Text("coach.threads.deleteAll.message")
         }
     }
 

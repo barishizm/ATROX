@@ -85,22 +85,6 @@ struct ActiveWorkoutView: View {
         .onAppear { applyKeepAwake() }
         .onChange(of: keepAwake) { applyKeepAwake() }
         .onDisappear { WorkoutPreferences.setIdleTimerDisabled(false) }
-        .confirmationDialog(
-            Self.finishTitle(finishPrompt), isPresented: Binding(get: { finishPrompt != nil }, set: { if !$0 { finishPrompt = nil } }),
-            titleVisibility: .visible, presenting: finishPrompt
-        ) { prompt in
-            finishButtons(prompt)
-        } message: { prompt in
-            Self.finishMessage(prompt, completed: model.completedSetCount, total: model.totalSetCount)
-        }
-        .confirmationDialog("workout.cancel.confirm", isPresented: $confirmsCancel, titleVisibility: .visible) {
-            Button("workout.cancel.action", role: .destructive) {
-                Task {
-                    await model.cancel()
-                    presenter.ended()
-                }
-            }
-        }
         .sheet(isPresented: $adding) {
             NavigationStack {
                 LibraryView(onAdd: { ids in
@@ -223,12 +207,28 @@ struct ActiveWorkoutView: View {
                 Toggle("settings.workout.keepAwake", isOn: $keepAwake)
                 Button("workout.cancel.action", role: .destructive) { confirmsCancel = true }
             } label: { Image(systemName: "ellipsis.circle") }
+                .confirmationDialog("workout.cancel.confirm", isPresented: $confirmsCancel, titleVisibility: .visible) {
+                    Button("workout.cancel.action", role: .destructive) {
+                        Task {
+                            await model.cancel()
+                            presenter.ended()
+                        }
+                    }
+                }
                 .accessibilityLabel("workout.more")
                 .accessibilityIdentifier("workout-more")
         }
         ToolbarItem(placement: .topBarTrailing) {
             Button("workout.finish.action") { finishPrompt = model.finishPrompt() }
                 .fontWeight(.semibold)
+                .confirmationDialog(
+                    Self.finishTitle(finishPrompt), isPresented: Binding(get: { finishPrompt != nil }, set: { if !$0 { finishPrompt = nil } }),
+                    titleVisibility: .visible, presenting: finishPrompt
+                ) { prompt in
+                    finishButtons(prompt)
+                } message: { prompt in
+                    Self.finishMessage(prompt, completed: model.completedSetCount, total: model.totalSetCount)
+                }
                 .accessibilityIdentifier("workout-finish")
         }
     }

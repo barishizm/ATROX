@@ -25,6 +25,9 @@ struct CoachSettingsSection: View {
                     if consent.isGranted {
                         Button("settings.coach.withdraw", role: .destructive) { confirmsWithdraw = true }
                             .accessibilityIdentifier("settings-coach-withdraw")
+                .confirmationDialog("settings.coach.withdraw.confirm", isPresented: $confirmsWithdraw, titleVisibility: .visible) {
+                    Button("settings.coach.withdraw", role: .destructive) { Task { await consent.decline() } }
+                } message: { Text("settings.coach.withdraw.message") }
                     } else {
                         Button("settings.coach.grant") { Task { await consent.accept() } }
                             .accessibilityIdentifier("settings-coach-grant")
@@ -35,6 +38,20 @@ struct CoachSettingsSection: View {
                     .accessibilityIdentifier("settings-coach-memory")
                 Button("settings.coach.deleteChats", role: .destructive) { confirmsDelete = true }
                     .accessibilityIdentifier("settings-coach-delete-chats")
+                .confirmationDialog("settings.coach.deleteChats.confirm", isPresented: $confirmsDelete, titleVisibility: .visible) {
+                    Button("settings.coach.deleteChats", role: .destructive) {
+                        Task {
+                            do {
+                                try await container.coach?.repository.deleteAll()
+                                deleted = true
+                                deleteFailed = false
+                            } catch {
+                                deleteFailed = true
+                                deleted = false
+                            }
+                        }
+                    }
+                } message: { Text("settings.coach.deleteChats.message") }
                 if deleted { Text("settings.coach.deleted").font(DSFont.footnote).foregroundStyle(DSColor.textSecondary) }
                 if deleteFailed { Text("settings.coach.deleteFailed").font(DSFont.footnote).foregroundStyle(DSColor.error) }
             } header: {
@@ -43,23 +60,6 @@ struct CoachSettingsSection: View {
                 Text("settings.coach.footer")
             }
             .task { consent = await container.coachConsent() }
-            .confirmationDialog("settings.coach.withdraw.confirm", isPresented: $confirmsWithdraw, titleVisibility: .visible) {
-                Button("settings.coach.withdraw", role: .destructive) { Task { await consent?.decline() } }
-            } message: { Text("settings.coach.withdraw.message") }
-            .confirmationDialog("settings.coach.deleteChats.confirm", isPresented: $confirmsDelete, titleVisibility: .visible) {
-                Button("settings.coach.deleteChats", role: .destructive) {
-                    Task {
-                        do {
-                            try await container.coach?.repository.deleteAll()
-                            deleted = true
-                            deleteFailed = false
-                        } catch {
-                            deleteFailed = true
-                            deleted = false
-                        }
-                    }
-                }
-            } message: { Text("settings.coach.deleteChats.message") }
         }
     }
 }

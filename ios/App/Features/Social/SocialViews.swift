@@ -430,12 +430,12 @@ struct FriendProfileView: View {
                     Button("social.report") { showsReport = true }
                     Button("social.block", role: .destructive) { confirmsBlock = true }
                 } label: { Label("social.more", systemImage: "ellipsis.circle") }
+                    .confirmationDialog("social.block.confirm", isPresented: $confirmsBlock, titleVisibility: .visible) {
+                        Button("social.block", role: .destructive) { Task { await model.block(person); dismiss() } }
+                    } message: { Text("social.block.body") }
                     .accessibilityIdentifier("friend-menu")
             }
         }
-        .confirmationDialog("social.block.confirm", isPresented: $confirmsBlock, titleVisibility: .visible) {
-            Button("social.block", role: .destructive) { Task { await model.block(person); dismiss() } }
-        } message: { Text("social.block.body") }
         .sheet(isPresented: $showsReport) { NavigationStack { ReportView(model: model, person: person) } }
     }
 }
@@ -512,14 +512,15 @@ struct SocialSettingsView: View {
                 }
             }
             Section {
-                Button("social.turnoff", role: .destructive) { confirmsOff = true }.accessibilityIdentifier("social-turnoff")
+                Button("social.turnoff", role: .destructive) { confirmsOff = true }
+                    .confirmationDialog("social.turnoff.confirm", isPresented: $confirmsOff, titleVisibility: .visible) {
+                        Button("social.turnoff", role: .destructive) { Task { await model.turnOff() } }
+                    } message: { Text("social.turnoff.body") }
+                    .accessibilityIdentifier("social-turnoff")
             } footer: { Text("social.turnoff.footer") }
         }
         .navigationTitle("social.settings")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $editing) { NavigationStack { SocialProfileForm(model: model, isNew: false) } }
-        .confirmationDialog("social.turnoff.confirm", isPresented: $confirmsOff, titleVisibility: .visible) {
-            Button("social.turnoff", role: .destructive) { Task { await model.turnOff() } }
-        } message: { Text("social.turnoff.body") }
     }
 }

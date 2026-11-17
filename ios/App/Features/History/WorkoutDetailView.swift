@@ -109,13 +109,6 @@ struct WorkoutDetailView: View {
                 })
             }
         }
-        .confirmationDialog("history.delete.confirm", isPresented: $confirmsDelete, titleVisibility: .visible) {
-            Button("history.delete", role: .destructive) {
-                Task { await model.delete(title: workout.name ?? String(localized: "workout.title.default")) }
-            }
-        } message: {
-            Text("history.delete.message")
-        }
         .alert("history.convert.title", isPresented: $naming) {
             TextField("history.convert.placeholder", text: $programName)
             Button("history.convert.create") {
@@ -254,6 +247,13 @@ struct WorkoutDetailView: View {
             }
             .accessibilityIdentifier("history-convert")
             Button("history.delete", systemImage: "trash", role: .destructive) { confirmsDelete = true }
+                .confirmationDialog("history.delete.confirm", isPresented: $confirmsDelete, titleVisibility: .visible) {
+                    Button("history.delete", role: .destructive) {
+                        Task { await model.delete(title: workout.name ?? String(localized: "workout.title.default")) }
+                    }
+                } message: {
+                    Text("history.delete.message")
+                }
                 .accessibilityIdentifier("history-delete")
         }
     }
