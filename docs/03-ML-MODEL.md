@@ -312,6 +312,11 @@ yaş bandı × 10 kg kilo bandı × hareket (≥ 20 katkıcı); katkıcıların 
 kestirilir (çapa CDF kırpması ortalamayı yanlılar), önsel payı w = max(0,25, 200/(200+n)). ρ_e normal–normal, τ_e ölçekli
 ters ki-kare büzülmesiyle; sınıf veriyle C → B → A yükselir, makine/kablo C'de kalır, τ sınıf tabanının altına inmez.
 1RM eğrisi güncellenmez: katkı satırı ay başına tek set taşıyor; en küçük şema eki (`rep_profile`) kullanıcı kararında.
+Zehirlenme savunması: `contribution_key` kullanıcıya bağlı olmadığından sunucu kullanıcı başına toplam katkıyı sınırlayamaz;
+bu yüzden `gymml.retrain.integrity` ham dışa aktarımı k-anonimlikten ÖNCE süzer (özdeş profil tekilleştirme, çapa z ve
+sağlam MAD aykırı değer kuralı, hücre başına e1RM kutusu yoğunluk tavanı). Kapılar ayrıca `integrity` (satırların > %10'u
+atıldıysa dur) ve `shift` (işaretli ortalama kayma, p90, hücre başına δ ve κ hareketi sınırı) içerir. Kapı değerleri
+`configs/retrain.yaml` `integrity:` ve `gates:` bölümlerindedir.
 Kapı olarak ayrıca akıl sağlığı (tekdüzelik, κ sınırları, oran değişimi ≤ 2×) var. Yayın P063 betiğiyle, önce %10.
 
 ### v2 araştırma izi: gizil faktör modeli (P095)

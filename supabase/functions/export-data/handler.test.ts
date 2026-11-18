@@ -46,3 +46,11 @@ Deno.test("export-data reports a store failure as 500 without details", async ()
   assertEquals(response.status, 500);
   assertEquals(await response.json(), { error: "export_failed" });
 });
+
+Deno.test("export-data is rate limited per user", async () => {
+  const fake = new FakeStore({ "token-a": "00000000-0000-0000-0000-0000000000a1" });
+  fake.limit = 1;
+  const handler = createExportHandler({ store: fake });
+  assertEquals((await handler(post("export-data", "token-a"))).status, 200);
+  assertEquals((await handler(post("export-data", "token-a"))).status, 429);
+});

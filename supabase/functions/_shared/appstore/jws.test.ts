@@ -74,3 +74,15 @@ Deno.test("only ES256 with a three-certificate x5c is accepted", async () => {
   await rejects(verify(`${enc({ alg: "none" })}.${p}.${s}`), "unsupported_alg");
   await rejects(verify(`${enc({ alg: "ES256", x5c: ["AA"] })}.${p}.${s}`), "bad_chain");
 });
+
+Deno.test("a remembered chain still checks the payload signature and validity dates on every request", async () => {
+  const chain = await fakeAppleChain({ notBefore: Date.UTC(2020, 0, 1), notAfter: Date.UTC(2021, 0, 1) });
+  const verify = createJwsVerifier({ roots: [chain.root], now: () => Date.UTC(2020, 5, 1) });
+  const good = await chain.sign({ status: "free" });
+  assertEquals(await verify(good), { status: "free" });
+  assertEquals(await verify(good), { status: "free" }); // second call takes the remembered-chain path
+  const [h, , s] = good.split(".");
+  const [, p2] = (await chain.sign({ status: "pro" })).split(".");
+  await rejects(verify(`${h}.${p2}.${s}`), "bad_signature");
+  await rejects(verify(await chain.sign({ signedDate: Date.UTC(2025, 0, 1) })), "expired_chain");
+});

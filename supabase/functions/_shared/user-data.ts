@@ -38,6 +38,33 @@ export interface UserDataStore {
   rows(table: UserTable, userId: string): Promise<Row[]>;
   deleteRows(table: UserTable, userId: string): Promise<void>;
   deleteAuthUser(userId: string): Promise<void>;
+  /** Counts one more call for this user in the window; false once over the limit. */
+  hit?(userId: string, action: string, limit: number, windowSeconds: number): Promise<boolean>;
+  /** Epoch seconds of the user's last interactive sign-in (the newest `amr` timestamp), or null when unknown. */
+  signedInAt?(jwt: string): number | null;
+}
+
+export interface GuardOptions {
+  action: string;
+  limit: number;
+  windowSeconds: number;
+  /** Reject (401 reauth_required) tokens whose last sign-in is older than this; undefined = no requirement. */
+  maxSignInAgeSeconds?: number;
+  now?: () => number;
+}
+
+/** Newest `amr[].timestamp` of an already verified Supabase access token. A refresh keeps `amr`, unlike `iat`. */
+export function signInTimeFromJwt(jwt: string): number | null {
+  try {
+    const part = jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const claims = JSON.parse(atob(part.padEnd(Math.ceil(part.length / 4) * 4, "=")));
+    const stamps = (Array.isArray(claims.amr) ? claims.amr : [])
+      .map((entry: { timestamp?: unknown }) => entry?.timestamp)
+      .filter((t: unknown): t is number => typeof t === "number" && Number.isFinite(t));
+    return stamps.length ? Math.max(...stamps) : null;
+  } catch {
+    return null;
+  }
 }
 
 export function json(body: unknown, status = 200): Response {
@@ -55,11 +82,24 @@ export function bearer(request: Request): string | null {
 }
 
 /** Common gate: POST only, a valid user token. Returns the user id or the error response. */
-export async function authenticate(request: Request, store: UserDataStore): Promise<string | Response> {
+export async function authenticate(
+  request: Request,
+  store: UserDataStore,
+  guard?: GuardOptions,
+): Promise<string | Response> {
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   const token = bearer(request);
   if (!token) return json({ error: "unauthorized" }, 401);
   const userId = await store.userIdFromToken(token);
   if (!userId) return json({ error: "unauthorized" }, 401);
+  if (guard?.maxSignInAgeSeconds !== undefined) {
+    const at = store.signedInAt?.(token) ?? null;
+    const nowSeconds = (guard.now ?? Date.now)() / 1000;
+    // Unknown sign-in time counts as stale: the app must sign in again rather than skip the check.
+    if (at === null || nowSeconds - at > guard.maxSignInAgeSeconds) return json({ error: "reauth_required" }, 401);
+  }
+  if (guard && store.hit && !(await store.hit(userId, guard.action, guard.limit, guard.windowSeconds))) {
+    return json({ error: "rate_limited" }, 429);
+  }
   return userId;
 }

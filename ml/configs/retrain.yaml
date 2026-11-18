@@ -7,6 +7,18 @@ export:
   holdout_fraction: 0.2        # contributors (by key) held out for the gates, never used for fitting
   seed: 20261114
 
+integrity:                     # poisoned-contribution defences, run on the raw export before k-anonymity
+  max_identical_profiles: 1    # keys with a byte-identical payload (demographics + every lift): keep this many
+  max_abs_z: 5.0               # anchor lift z under the base anchor model beyond this is dropped
+  outlier_mads: 5.0            # any lift further than this many robust SDs from its sex × exercise × weight-band median
+  mad_floor: 0.10              # floor of the robust SD (log scale), so a tight honest cell is not over-trimmed
+  min_outlier_cell: 30         # rows a robust cell needs before the outlier rule applies
+  density_bin_log: 0.02        # width of an e1RM bin (log scale, ≈ 2 %) for the density rule
+  max_bin_share: 0.15          # one bin may hold at most this share of a cell's contributors ...
+  min_bin_keys: 5              # ... but never fewer than this many
+  min_density_cell: 30         # contributors a cell needs before the density rule applies
+  max_dropped_fraction: 0.10   # integrity gate: dropping more than this share of rows is itself a poisoning signal
+
 calibration:
   population: gym              # app users are gym-goers; the general population keeps its P055 prior
   prior_pseudo_n: 200          # prior weight in contributors: w_prior = n0 / (n0 + n) ...
@@ -37,6 +49,10 @@ gates:
   calibration_ks_max: 0.15     # held-out anchor-lift PIT (gym population) vs uniform
   calibration_ks_margin: 0.01  # candidate KS may not exceed base KS by more than this
   drift_median_max: 5.0        # median |score change| on held-out contributions, points
+  shift_mean_max: 5.0          # |mean signed score change| on held-out rows, points (a systematic shift, not noise)
+  shift_p90_max: 15.0          # p90 |score change| on held-out rows, points
+  delta_shift_max: 0.25        # |posterior δ − prior δ| per cell, log-scale units
+  kappa_change_max: 1.25       # κ may move by at most this factor either way
   max_rows: 4000               # held-out rows scored per gate (sampled, seeded)
   monotonic_grid: 25           # loads per anchor lift for the monotonicity check
 

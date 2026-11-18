@@ -74,3 +74,27 @@ Deno.test("a database failure stops before the auth user is removed", async () =
   assertEquals(response.status, 500);
   assertEquals(fake.authUsers.has(A), true);
 });
+
+Deno.test("delete-account can require a recent sign-in (amr timestamp), unknown counts as stale", async () => {
+  const NOW = Date.UTC(2026, 10, 18, 12);
+  const fake = store();
+  fake.signIns["token-a"] = NOW / 1000 - 120;
+  const handler = createDeleteHandler({ store: fake, maxSignInAgeSeconds: 600, now: () => NOW });
+  fake.signIns["token-b"] = NOW / 1000 - 3600;
+  const stale = await handler(post("delete-account", "token-b"));
+  assertEquals(stale.status, 401);
+  assertEquals(await stale.json(), { error: "reauth_required" });
+  assertEquals([...fake.authUsers], [A, B]);
+  delete fake.signIns["token-b"];
+  assertEquals((await handler(post("delete-account", "token-b"))).status, 401);
+  assertEquals((await handler(post("delete-account", "token-a"))).status, 200);
+  assertEquals([...fake.authUsers], [B]);
+});
+
+Deno.test("delete-account is rate limited per user", async () => {
+  const fake = store();
+  fake.limit = 0;
+  const response = await createDeleteHandler({ store: fake })(post("delete-account", "token-a"));
+  assertEquals(response.status, 429);
+  assertEquals([...fake.authUsers], [A, B]);
+});

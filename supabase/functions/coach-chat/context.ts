@@ -56,7 +56,7 @@ export function buildUserSummary(context: UserContext, today: string, locale: st
     );
     const areas = p.limitations.filter((item) => !item.startsWith("note:"));
     const note = p.limitations.find((item) => item.startsWith("note:"))?.slice(5);
-    lines.push(`limitations ${areas.length ? areas.join(", ") : "none"}${note ? ` · note ${asData(note, 200)}` : ""}`);
+    lines.push(`limitations ${areas.length ? areas.map((area) => asData(area, 40)).join(", ") : "none"}${note ? ` · note ${asData(note, 200)}` : ""}`);
   } else {
     lines.push("profile not set up");
   }

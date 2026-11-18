@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { type Row, type UserDataStore, type UserTable } from "./user-data.ts";
+import { type Row, signInTimeFromJwt, type UserDataStore, type UserTable } from "./user-data.ts";
 
 const PAGE = 1000;
 
@@ -14,6 +14,15 @@ export function supabaseStore(): UserDataStore {
     async userIdFromToken(jwt) {
       const { data, error } = await admin.auth.getUser(jwt);
       return error || !data.user ? null : data.user.id;
+    },
+    signedInAt: signInTimeFromJwt, // only called after `userIdFromToken` accepted the token
+    async hit(userId, action, limit, windowSeconds) {
+      const { error } = await admin.rpc("social_hit", {
+        p_user: userId, p_bucket: action, p_limit: limit, p_window: `${windowSeconds} seconds`,
+      });
+      if (!error) return true;
+      if (error.message.includes("rate_limited")) return false;
+      throw new Error(`rate limit: ${error.message}`);
     },
     async rows(table: UserTable, userId: string) {
       const all: Row[] = [];

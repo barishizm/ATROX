@@ -147,3 +147,42 @@ def sanity_gate(new_scores: np.ndarray, cand: Candidate, kappa_bounds, ratio_pro
             if np.any(np.diff(np.asarray(s)) < -1e-9):
                 problems.append(f"{ex.id}/{sex}: score not monotone in load")
     return Gate("sanity", not problems, {"problems": problems})
+
+
+def integrity_gate(report: Mapping, cfg: Mapping) -> Gate:
+    """Dropping a large share of the export as duplicate / outlier / piled-up is itself the poisoning signal: stop
+    and have a human look instead of publishing a model fitted to whatever survived."""
+    frac = float(report["dropped_row_fraction"])
+    return Gate("integrity", frac <= cfg["max_dropped_fraction"],
+                {"dropped_row_fraction": frac, "duplicate_keys": report["duplicate_keys"],
+                 "outlier_rows": report["outlier_rows"], "density_keys": report["density_keys"],
+                 "max": cfg["max_dropped_fraction"]})
+
+
+def shift_gate(old: np.ndarray, new: np.ndarray, base_cal: Mapping, new_cal: Mapping, pop: str,
+               cfg: Mapping) -> Gate:
+    """Distribution-shift check before publishing. `drift` bounds the median |change|; poisoning moves the
+    population one way, so also bound the signed mean, the tail of the change, every δ cell and κ."""
+    m = np.isfinite(old) & np.isfinite(new)
+    diff = new[m] - old[m]
+    mean = float(np.mean(diff)) if diff.size else float("nan")
+    p90 = float(np.quantile(np.abs(diff), 0.9)) if diff.size else float("nan")
+    problems: list[str] = []
+    if not diff.size or not (math.isfinite(mean) and abs(mean) <= cfg["shift_mean_max"]):
+        problems.append(f"mean signed score change {mean:.2f} (max ±{cfg['shift_mean_max']})")
+    if not diff.size or not (math.isfinite(p90) and p90 <= cfg["shift_p90_max"]):
+        problems.append(f"p90 |score change| {p90:.2f} (max {cfg['shift_p90_max']})")
+    worst = 0.0
+    for sex, lifts in base_cal["delta"][pop].items():
+        for lift, bands in lifts.items():
+            for band, prior in bands.items():
+                d = abs(new_cal["delta"][pop][sex][lift][band] - prior)
+                worst = max(worst, d)
+                if d > cfg["delta_shift_max"]:
+                    problems.append(f"delta {sex}/{lift}/{band} moved {d:.3f} (max {cfg['delta_shift_max']})")
+    for sex, prior_k in base_cal["kappa"][pop].items():
+        ratio = new_cal["kappa"][pop][sex] / prior_k
+        if not 1 / cfg["kappa_change_max"] <= ratio <= cfg["kappa_change_max"]:
+            problems.append(f"kappa {sex} changed ×{ratio:.2f} (max ×{cfg['kappa_change_max']})")
+    return Gate("shift", not problems, {"rows": int(diff.size), "mean_signed_change": mean, "p90_abs_change": p90,
+                                        "max_delta_move": worst, "problems": problems})
