@@ -115,7 +115,7 @@ struct OnboardingTrainingTests {
         await env.model.advance()
         env.model.setEquipment(.bodyweightOnly)
         await env.model.advance()
-        env.model.toggleNoLimitations()
+        #expect(env.model.draft.noLimitations)  // the starting answer
         await env.model.advance()
         #expect(try await env.profiles.profile(userId: env.userId)?.input.limitations == [])
         #expect(try await env.profiles.profile(userId: env.userId)?.input.weeklyFrequency == 3)

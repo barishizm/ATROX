@@ -8,6 +8,7 @@ enum AuthMode: Hashable { case signUp, signIn }
 /// Screens pushed on top of the welcome screen.
 enum AuthRoute: Hashable {
     case quiz
+    case account(AuthMode)
     case methods(AuthMode)
     case signUp
     case signIn(email: String)

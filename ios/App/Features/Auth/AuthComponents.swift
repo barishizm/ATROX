@@ -112,6 +112,8 @@ struct AuthErrorBanner: View {
 /// Strength bar plus the policy checklist, shown under a new-password field.
 struct PasswordStrengthView: View {
     let password: String
+    /// Two columns instead of one, for screens that must fit without scrolling.
+    var compact = false
 
     var body: some View {
         let strength = PasswordStrength(password)
@@ -132,11 +134,24 @@ struct PasswordStrengthView: View {
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Self.accessibilityLabel(for: strength))
-            VStack(alignment: .leading, spacing: Spacing.xs) {
-                RuleRow(title: "auth.password.rule.length", isMet: rules.hasMinimumLength)
-                RuleRow(title: "auth.password.rule.lower", isMet: rules.hasLowercase)
-                RuleRow(title: "auth.password.rule.upper", isMet: rules.hasUppercase)
-                RuleRow(title: "auth.password.rule.digit", isMet: rules.hasDigit)
+            if compact {
+                Grid(alignment: .leading, horizontalSpacing: Spacing.md, verticalSpacing: Spacing.sm) {
+                    GridRow {
+                        RuleRow(title: "auth.password.rule.length", isMet: rules.hasMinimumLength)
+                        RuleRow(title: "auth.password.rule.digit", isMet: rules.hasDigit)
+                    }
+                    GridRow {
+                        RuleRow(title: "auth.password.rule.lower", isMet: rules.hasLowercase)
+                        RuleRow(title: "auth.password.rule.upper", isMet: rules.hasUppercase)
+                    }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    RuleRow(title: "auth.password.rule.length", isMet: rules.hasMinimumLength)
+                    RuleRow(title: "auth.password.rule.lower", isMet: rules.hasLowercase)
+                    RuleRow(title: "auth.password.rule.upper", isMet: rules.hasUppercase)
+                    RuleRow(title: "auth.password.rule.digit", isMet: rules.hasDigit)
+                }
             }
         }
         .animation(.snappy(duration: 0.2), value: strength)

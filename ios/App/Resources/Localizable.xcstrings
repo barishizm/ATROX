@@ -739,107 +739,6 @@
         }
       }
     },
-    "auth.intro.continue" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No... Create account"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hayır... Hesap oluştur"
-          }
-        }
-      }
-    },
-    "auth.intro.greeting" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hey, I'm ATROX! 👋"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selam, ben ATROX! 👋"
-          }
-        }
-      }
-    },
-    "auth.intro.haveAccount" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yes, Sign in"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evet, Giriş yap"
-          }
-        }
-      }
-    },
-    "auth.intro.plan" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "We're gonna train together! But first, I'd love to get to know you a little."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Birlikte antrenman yapacağız! Ama önce seni biraz tanımak istiyorum."
-          }
-        }
-      }
-    },
-    "auth.intro.question" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "So... do we already know each other?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Peki... birbirimizi zaten tanıyor muyuz?"
-          }
-        }
-      }
-    },
-    "auth.intro.tapHint" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap anywhere to continue"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Devam etmek için ekrana dokun"
-          }
-        }
-      }
-    },
     "auth.apple.continue" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11471,13 +11370,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick the one that matters most right now."
+            "value" : "Pick everything that matters to you right now."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şu an en önemli olanı seç."
+            "value" : "Şu an senin için önemli olanların hepsini seç."
           }
         }
       }
@@ -12136,221 +12035,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İlerleme"
-          }
-        }
-      }
-    },
-    "onboarding.result.comment.advanced" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Strong, well ahead of most gym-goers."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Güçlü; çoğu salon kullanıcısının önünde."
-          }
-        }
-      }
-    },
-    "onboarding.result.comment.beginner" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A solid starting point. Every lifter begins here."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sağlam bir başlangıç noktası; herkes buradan başlar."
-          }
-        }
-      }
-    },
-    "onboarding.result.comment.developing" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Building nicely. Steady training moves this fast."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Güzel ilerliyor; düzenli antrenmanla hızlı yükselir."
-          }
-        }
-      }
-    },
-    "onboarding.result.comment.expert" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exceptional strength."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Olağanüstü kuvvet."
-          }
-        }
-      }
-    },
-    "onboarding.result.comment.intermediate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solid strength for a gym regular."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salon müdavimi için sağlam bir kuvvet."
-          }
-        }
-      }
-    },
-    "onboarding.result.disclaimer" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This is a first estimate; it gets sharper as you log workouts."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu ilk tahmin; antrenman kaydettikçe netleşir."
-          }
-        }
-      }
-    },
-    "onboarding.result.edit" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change my sets"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Setlerimi değiştir"
-          }
-        }
-      }
-    },
-    "onboarding.result.empty.message" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You skipped the lifts. Log workouts and your Strength Scores will appear here."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hareketleri atladın. Antrenman kaydettikçe Güç Skorların burada görünecek."
-          }
-        }
-      }
-    },
-    "onboarding.result.empty.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No scores yet"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Henüz skor yok"
-          }
-        }
-      }
-    },
-    "onboarding.result.start" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Let's go"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Başlayalım"
-          }
-        }
-      }
-    },
-    "onboarding.result.templates.hint" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pick one under Workout → Programs → Templates."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Antrenman → Programlar → Şablonlar bölümünden seç."
-          }
-        }
-      }
-    },
-    "onboarding.result.templates.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Programs that fit you"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sana uygun programlar"
-          }
-        }
-      }
-    },
-    "onboarding.result.title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your first scores"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İlk skorların"
           }
         }
       }
@@ -24420,6 +24104,166 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu antrenman günü silinmiş ya da değişmiş. Programlarından bir gün seç."
+          }
+        }
+      }
+    },
+    "auth.intro.getStarted" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get started"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başla"
+          }
+        }
+      }
+    },
+    "auth.intro.page.tracking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Understand your training and improve every day."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenmanını anla, her gün daha iyi ol."
+          }
+        }
+      }
+    },
+    "auth.intro.page.nutrition" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snap your meal and Atrox estimates the calories."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öğününün fotoğrafını çek, Atrox kaloriyi tahmin etsin."
+          }
+        }
+      }
+    },
+    "auth.intro.page.analysis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See how training, nutrition and sleep move your progress."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antrenman, beslenme ve uykunun ilerlemeni nasıl etkilediğini gör."
+          }
+        }
+      }
+    },
+    "auth.intro.skip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atla"
+          }
+        }
+      }
+    },
+    "auth.intro.tapToNext" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to next"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devam etmek için dokun"
+          }
+        }
+      }
+    },
+    "auth.account.or" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "or"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "veya"
+          }
+        }
+      }
+    },
+    "auth.account.noAccount" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't have an account?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabın yok mu?"
+          }
+        }
+      }
+    },
+    "auth.account.register" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt ol"
+          }
+        }
+      }
+    },
+    "auth.account.logIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log in"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yap"
           }
         }
       }

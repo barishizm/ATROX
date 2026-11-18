@@ -1,82 +1,162 @@
 import DesignSystem
 import SwiftUI
 
-/// First screen: the mascot talks the user through the start, one short line at a time.
-/// Tapping anywhere moves to the next line; the last line asks "do you already have an account?"
-/// and is the only step with buttons (→ sign-up methods or sign-in methods).
+/// First screen: a full-bleed, swipeable three-page product intro (workouts, meals, analysis).
+/// The bottom of each image melts into a dark glass blur that carries a two-line caption. Tapping anywhere
+/// (or swiping) moves on, "Skip" jumps to the last page, and the last page's "Get started" opens the
+/// register / log-in screen.
 struct WelcomeView: View {
     let model: AuthFlowModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var step: Step = .greeting
+    @State private var page = 0
 
-    private enum Step { case greeting, plan, question }
+    private struct IntroPage: Identifiable {
+        let image: String
+        let caption: LocalizedStringKey
+        /// Which part of the photo survives the side crop on tall screens (keeps the mascot in view).
+        var focus: Alignment = .center
+        /// A UI graphic rather than a photo: shown whole (never cropped) on this backdrop colour.
+        var fitBackdrop: Color?
+        var id: String { image }
+    }
+
+    private static let pages = [
+        IntroPage(image: "IntroTracking", caption: "auth.intro.page.tracking", focus: .trailing),
+        IntroPage(image: "IntroNutrition", caption: "auth.intro.page.nutrition"),
+        IntroPage(image: "IntroAnalysis", caption: "auth.intro.page.analysis", fitBackdrop: Color(red: 21 / 255, green: 28 / 255, blue: 36 / 255))
+    ]
+
+    private var isLast: Bool { page == Self.pages.count - 1 }
 
     var body: some View {
         GeometryReader { proxy in
-            ScrollView {
-                VStack(spacing: Spacing.xl) {
-                    Spacer(minLength: 0)
-                    content
-                    Spacer(minLength: 0)
-                    footer
-                    #if DEBUG
-                    AuthDebugTools()
-                    #endif
+            ZStack {
+                ZStack {
+                    ForEach(Array(Self.pages.enumerated()), id: \.element.id) { index, item in
+                        (item.fitBackdrop ?? .black)
+                            .overlay(alignment: item.fitBackdrop == nil ? item.focus : .top) {
+                                if item.fitBackdrop == nil {
+                                    Image(item.image).resizable().scaledToFill()
+                                } else {
+                                    Image(item.image).resizable().scaledToFit()
+                                }
+                            }
+                            .clipped()
+                            .opacity(index == page ? 1 : 0)
+                            .accessibilityHidden(true)
+                    }
                 }
-                .padding(Spacing.lg)
-                .frame(maxWidth: 520)
-                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                .ignoresSafeArea()
                 .contentShape(Rectangle())
                 .onTapGesture { advance() }
+                .gesture(
+                    DragGesture(minimumDistance: 24).onEnded { value in
+                        if value.translation.width < -40 { advance() }
+                        else if value.translation.width > 40 { jump(to: max(page - 1, 0)) }
+                    }
+                )
+
+                VStack(spacing: 0) {
+                    HStack {
+                        Spacer()
+                        if !isLast {
+                            Button("auth.intro.skip") { jump(to: Self.pages.count - 1) }
+                                .buttonStyle(.glass)
+                                .foregroundStyle(.white)
+                                .accessibilityIdentifier("welcome-skip")
+                                .transition(.opacity)
+                        }
+                    }
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.top, Spacing.sm)
+                    Spacer()
+                    bottomPanel(height: proxy.size.height)
+                }
             }
-            .scrollBounceBehavior(.basedOnSize)
         }
-        .background(DSColor.background)
+        .background(Color.black)
         .toolbar(.hidden, for: .navigationBar)
         .onAppear { model.clearError() }
         .accessibilityIdentifier("auth-welcome")
     }
 
-    @ViewBuilder private var content: some View {
-        switch step {
-        case .greeting:
-            MascotSpeech(image: "MascotExcited", message: "auth.intro.greeting", mascotWidth: 240)
+    /// Dark progressive blur from the lower half of the screen down, with caption, dots and the action on top.
+    private func bottomPanel(height: CGFloat) -> some View {
+        VStack(spacing: Spacing.md) {
+            Text(Self.pages[page].caption)
+                .font(Font.system(.title3, weight: .semibold))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .id(page)
                 .transition(.opacity)
-        case .plan:
-            MascotSpeech(image: "MascotHappy", message: "auth.intro.plan", mascotWidth: 240)
-                .transition(.opacity)
-        case .question:
-            MascotSpeech(image: "MascotCool", message: "auth.intro.question", mascotWidth: 240)
-                .transition(.opacity)
+            pageDots
+            action
+            #if DEBUG
+            AuthDebugTools().environment(\.colorScheme, .dark)
+            #endif
         }
-    }
-
-    @ViewBuilder private var footer: some View {
-        if step == .question {
-            VStack(spacing: Spacing.md) {
-                PrimaryButton("auth.intro.continue") { model.path.append(.quiz) }
-                    .accessibilityIdentifier("welcome-continue")
-                SecondaryButton("auth.intro.haveAccount") { model.path.append(.methods(.signIn)) }
-                    .accessibilityIdentifier("welcome-have-account")
+        .padding(.horizontal, Spacing.lg)
+        .padding(.top, 72)
+        .padding(.bottom, Spacing.lg)
+        .frame(maxWidth: .infinity)
+        .background(alignment: .bottom) {
+            ZStack {
+                Rectangle().fill(.regularMaterial)
+                LinearGradient(colors: [.black.opacity(0.15), .black.opacity(0.9)], startPoint: .top, endPoint: .bottom)
             }
+            .environment(\.colorScheme, .dark)
+            .mask(
+                LinearGradient(
+                    stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.5)],
+                    startPoint: .top, endPoint: .bottom
+                )
+            )
+            .ignoresSafeArea(edges: .bottom)
+        }
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: page)
+    }
+
+    private var pageDots: some View {
+        HStack(spacing: Spacing.xs) {
+            ForEach(0..<Self.pages.count, id: \.self) { index in
+                Capsule()
+                    .fill(index == page ? Color.white : Color.white.opacity(0.35))
+                    .frame(width: index == page ? 20 : 8, height: 8)
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder private var action: some View {
+        if isLast {
+            Button { model.path.append(.account(.signUp)) } label: {
+                Text("auth.intro.getStarted")
+                    .font(DSFont.headline)
+                    .frame(maxWidth: .infinity, minHeight: HitTarget.button - 16)
+            }
+            .buttonStyle(.glassProminent)
+            .tint(DSColor.accentFill)
+            .accessibilityIdentifier("welcome-continue")
         } else {
-            Text("auth.intro.tapHint")
-                .font(DSFont.callout)
-                .foregroundStyle(DSColor.textTertiary)
-                .frame(minHeight: HitTarget.button)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityAction { advance() }
+            Button { advance() } label: {
+                Text("auth.intro.tapToNext")
+                    .font(DSFont.callout.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .frame(maxWidth: .infinity, minHeight: HitTarget.button - 16)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("welcome-next")
         }
     }
 
-    private func advance() {
-        let next: Step
-        switch step {
-        case .greeting: next = .plan
-        case .plan: next = .question
-        case .question: return
-        }
-        if reduceMotion { step = next } else { withAnimation(.easeInOut(duration: 0.3)) { step = next } }
+    private func advance() { jump(to: min(page + 1, Self.pages.count - 1)) }
+
+    private func jump(to target: Int) {
+        guard target != page else { return }
+        if reduceMotion { page = target } else { withAnimation(.easeInOut(duration: 0.3)) { page = target } }
     }
 }
 

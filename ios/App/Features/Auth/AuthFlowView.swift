@@ -11,6 +11,7 @@ struct AuthFlowView: View {
                 .navigationDestination(for: AuthRoute.self) { route in
                     switch route {
                     case .quiz: PlanQuizView(authModel: model)
+                    case .account(let mode): AuthAccountView(model: model, mode: mode)
                     case .methods(let mode): AuthMethodsView(model: model, mode: mode)
                     case .signUp: EmailSignUpView(model: model)
                     case .signIn(let email): EmailSignInView(model: model, email: email)

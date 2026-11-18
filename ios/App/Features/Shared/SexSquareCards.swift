@@ -5,6 +5,7 @@ import SwiftUI
 /// Two square cards with outlined (line) icons for choosing male or female.
 /// Shared by the onboarding step and the plan quiz.
 struct SexSquareCards: View {
+    @Environment(\.dsGlassSurfaces) private var glass
     let selection: Sex?
     let idPrefix: String
     let onSelect: (Sex) -> Void
@@ -17,8 +18,14 @@ struct SexSquareCards: View {
         .frame(maxWidth: .infinity)
     }
 
+    /// Male stays brand blue, female is pink.
+    private static func tint(for sex: Sex) -> Color {
+        sex == .female ? Color(red: 0.96, green: 0.36, blue: 0.64) : DSColor.accent
+    }
+
     private func square(_ value: Sex, title: LocalizedStringKey) -> some View {
         let isSelected = selection == value
+        let tint = Self.tint(for: value)
         let shape = RoundedRectangle(cornerRadius: Radius.md, style: .continuous)
         return Button {
             Haptics.play(.selection)
@@ -30,7 +37,7 @@ struct SexSquareCards: View {
                     VStack(spacing: Spacing.md) {
                         ZStack {
                             Circle()
-                                .fill(isSelected ? DSColor.accent : DSColor.surfaceRaised)
+                                .fill(isSelected ? tint : DSColor.surfaceRaised)
                                 .overlay(Circle().strokeBorder(isSelected ? Color.clear : DSColor.textPrimary.opacity(0.9), lineWidth: 1))
                                 .shadow(color: .black.opacity(isSelected ? 0 : 0.35), radius: 4, y: 2)
                             SexGlyph(isFemale: value == .female)
@@ -45,13 +52,31 @@ struct SexSquareCards: View {
                             .foregroundStyle(DSColor.textPrimary)
                     }
                 }
-                .background(DSColor.surface, in: shape)
-                .overlay(shape.strokeBorder(isSelected ? DSColor.accent : DSColor.separator, lineWidth: isSelected ? 2 : 1))
+                .modifier(SquareSurface(glass: glass, isSelected: isSelected, tint: tint, shape: shape))
                 .contentShape(shape)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier("\(idPrefix)-\(value.rawValue)")
+    }
+}
+
+private struct SquareSurface: ViewModifier {
+    let glass: Bool
+    let isSelected: Bool
+    let tint: Color
+    let shape: RoundedRectangle
+
+    func body(content: Content) -> some View {
+        if glass {
+            content
+                .dsGlassFill(isSelected ? tint.opacity(0.6) : nil, interactive: true)
+                .overlay(shape.strokeBorder(isSelected ? tint : Color.clear, lineWidth: 2))
+        } else {
+            content
+                .background(DSColor.surface, in: shape)
+                .overlay(shape.strokeBorder(isSelected ? DSColor.accent : DSColor.separator, lineWidth: isSelected ? 2 : 1))
+        }
     }
 }
 

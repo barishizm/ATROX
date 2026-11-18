@@ -4,6 +4,7 @@ import SwiftUI
 public struct Card<Content: View>: View {
     private let padding: CGFloat
     private let content: Content
+    @Environment(\.dsGlassSurfaces) private var glass
 
     public init(padding: CGFloat = Spacing.md, @ViewBuilder content: () -> Content) {
         self.padding = padding
@@ -12,12 +13,17 @@ public struct Card<Content: View>: View {
 
     public var body: some View {
         let shape = RoundedRectangle(cornerRadius: Radius.lg, style: .continuous)
-        content
+        let padded = content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(DSColor.surface, in: shape)
-            .overlay(shape.strokeBorder(DSColor.separator.opacity(0.6), lineWidth: 1))
-            .dsShadow(.card)
+        if glass {
+            padded.glassEffect(Glass.regular.tint(dsGlassDim), in: shape)
+        } else {
+            padded
+                .background(DSColor.surface, in: shape)
+                .overlay(shape.strokeBorder(DSColor.separator.opacity(0.6), lineWidth: 1))
+                .dsShadow(.card)
+        }
     }
 }
 

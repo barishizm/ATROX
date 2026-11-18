@@ -70,7 +70,8 @@ final class OnboardingViewModel {
             self.draft = seeded
         } else {
             var fresh = OnboardingDraft()
-            fresh.unitSystem = OnboardingRules.defaultUnitSystem(for: deviceLocale)
+            fresh.unitSystem = .metric
+            fresh.noLimitations = true  // "No limitations" is the starting answer; picking an area clears it.
             self.draft = fresh
         }
     }
@@ -97,7 +98,7 @@ final class OnboardingViewModel {
         case .sex: return draft.sex != .unspecified
         case .body: return OnboardingRules.isValidHeight(cm: draft.heightCm) && OnboardingRules.isValidWeight(kg: draft.weightKg)
         case .experience: return draft.experience != nil
-        case .goal: return draft.goal != nil
+        case .goal: return !selectedGoals.isEmpty
         case .frequency: return OnboardingRules.weeklyFrequencyRange.contains(draft.weeklyFrequency)
         case .equipment: return draft.equipment != nil
         case .limitations: return draft.noLimitations || !draft.limitations.isEmpty
@@ -214,7 +215,17 @@ final class OnboardingViewModel {
 
     // MARK: Other answers
 
-    func setSex(_ sex: Sex) { draft.sex = sex }
+    /// Picking a sex also moves height and weight to that sex's starting point, unless the user already changed them.
+    func setSex(_ sex: Sex) {
+        draft.sex = sex
+        let starts: [(Double, Double)] = [(170, 70), (180, 80)]
+        guard starts.contains(where: { $0.0 == draft.heightCm && $0.1 == draft.weightKg }) else { return }
+        switch sex {
+        case .male: draft.heightCm = 180; draft.weightKg = 80
+        case .female: draft.heightCm = 170; draft.weightKg = 70
+        case .unspecified: break
+        }
+    }
 
     func setUnitSystem(_ system: UnitSystem) { draft.unitSystem = system }
 
@@ -256,7 +267,21 @@ final class OnboardingViewModel {
 
     func setExperience(_ value: Experience) { draft.experience = value }
 
-    func setGoal(_ value: Goal) { draft.goal = value }
+    /// Goals in the order picked; the first one is the primary goal that is stored on the profile.
+    var selectedGoals: [Goal] { draft.goals ?? draft.goal.map { [$0] } ?? [] }
+
+    func setGoal(_ value: Goal) {
+        draft.goals = [value]
+        draft.goal = value
+    }
+
+    /// Several goals may be picked; at least one stays selected for the flow to continue.
+    func toggleGoal(_ value: Goal) {
+        var goals = selectedGoals
+        if let index = goals.firstIndex(of: value) { goals.remove(at: index) } else { goals.append(value) }
+        draft.goals = goals
+        draft.goal = goals.first
+    }
 
     func setWeeklyFrequency(_ days: Int) {
         draft.weeklyFrequency = Swift.min(Swift.max(days, OnboardingRules.weeklyFrequencyRange.lowerBound),

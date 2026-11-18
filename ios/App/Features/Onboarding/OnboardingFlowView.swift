@@ -50,11 +50,22 @@ private struct OnboardingContent: View {
                 footer
             }
         }
-        .background(DSColor.background)
+        .background { OnboardingBackdrop(step: model.step) }
+        .dsGlassSurfaces()
+        .environment(\.colorScheme, .dark)
         // The name field's keyboard would otherwise stay up over the following (non-text) steps.
+        .onAppear(perform: finishIfDone)
         .onChange(of: model.step) {
+            finishIfDone()
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
         }
+    }
+
+    /// The flow ends right after the consents (the "first scores" screen is gone); sets can be logged later.
+    private func finishIfDone() {
+        guard model.step == .result else { return }
+        model.finish()
+        container.root.didCompleteOnboarding()
     }
 
     /// The consent screens bring their own buttons.
@@ -62,24 +73,32 @@ private struct OnboardingContent: View {
         !model.isBlocked && ![.lifts, .result, .terms, .contribution].contains(model.step)
     }
 
+    /// Glass progress bar centered on the screen; the back button floats at the leading edge.
     private var header: some View {
-        HStack(spacing: Spacing.md) {
-            Button {
-                model.back()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(DSFont.headline)
-                    .frame(width: HitTarget.minimum, height: HitTarget.minimum)
-            }
-            .opacity(model.canGoBack ? 1 : 0)
-            .disabled(!model.canGoBack)
-            .accessibilityLabel("onboarding.back")
-            .accessibilityIdentifier("onboarding-back")
-
-            ProgressBar(value: model.progress)
+        ZStack {
+            GlassProgressBar(value: model.progress)
+                .frame(width: 190)
                 .accessibilityElement()
                 .accessibilityLabel("onboarding.progress")
                 .accessibilityValue(Text(model.progress, format: .percent.precision(.fractionLength(0))))
+            HStack {
+                Button {
+                    model.back()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(DSFont.headline)
+                        .foregroundStyle(.white)
+                        .frame(width: 24, height: 24)
+                }
+                .buttonStyle(.glass)
+                .tint(dsGlassDim)
+                .buttonBorderShape(.circle)
+                .opacity(model.canGoBack ? 1 : 0)
+                .disabled(!model.canGoBack)
+                .accessibilityLabel("onboarding.back")
+                .accessibilityIdentifier("onboarding-back")
+                Spacer()
+            }
         }
         .padding(.horizontal, Spacing.md)
         .padding(.top, Spacing.sm)
@@ -100,7 +119,7 @@ private struct OnboardingContent: View {
         case .terms: TermsStepView(model: model)
         case .contribution: ContributionStepView(model: model)
         case .lifts: LiftsStepView(model: model)
-        case .result: ResultStepView(model: model) { container.root.didCompleteOnboarding() }
+        case .result: Color.clear  // Onboarding ends after the consents; see `onChange` below.
         }
     }
 
@@ -123,6 +142,74 @@ private struct OnboardingContent: View {
     }
 }
 
+/// Determinate progress in a Liquid Glass capsule: a bright fill rides inside a glass track.
+struct GlassProgressBar: View {
+    let value: Double
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.white.opacity(0.12))
+                Capsule()
+                    .fill(LinearGradient(colors: [DSColor.accent, Color.white.opacity(0.95)], startPoint: .leading, endPoint: .trailing))
+                    .frame(width: max(proxy.size.height, proxy.size.width * min(max(value, 0), 1)))
+            }
+        }
+        .frame(height: 8)
+        .padding(7)
+        .glassEffect(Glass.regular.tint(dsGlassDim), in: Capsule())
+        .animation(.snappy, value: value)
+    }
+}
+
+/// Illustrated, blurred and darkened backdrop for the onboarding questions; it cross-fades between steps.
+struct OnboardingBackdrop: View {
+    let step: OnboardingStep
+    private static let images = (1...6).map { "OnboardingBg\($0)" }
+
+    private var index: Int {
+        switch step {
+        case .name, .frequency: 0
+        case .birthDate, .terms: 1
+        case .sex, .limitations: 2
+        case .units, .equipment: 3
+        case .body, .goal: 4
+        case .experience, .contribution: 5
+        default: 0
+        }
+    }
+
+    /// The text-heavy consent screens get a darker backdrop so their copy stays readable.
+    private var extraDim: Double { step == .terms || step == .contribution ? 0.3 : 0 }
+
+    var body: some View {
+        ZStack {
+            DSColor.background
+            ForEach(Self.images.indices, id: \.self) { position in
+                Color.clear
+                    .overlay {
+                        Image(Self.images[position])
+                            .resizable()
+                            .scaledToFill()
+                            .blur(radius: 6)
+                            .scaleEffect(1.05)
+                    }
+                    .clipped()
+                    .opacity(position == index ? 1 : 0)
+            }
+            Color.black.opacity(extraDim)
+            LinearGradient(
+                colors: [Color.black.opacity(0.25), Color.black.opacity(0.4), Color.black.opacity(0.6)],
+                startPoint: .top, endPoint: .bottom
+            )
+        }
+        .animation(.easeInOut(duration: 0.6), value: index)
+        .animation(.easeInOut(duration: 0.4), value: extraDim)
+        .ignoresSafeArea()
+        .accessibilityHidden(true)
+    }
+}
+
 /// Slim determinate bar in the accent color.
 struct ProgressBar: View {
     let value: Double
@@ -140,31 +227,36 @@ struct ProgressBar: View {
     }
 }
 
-/// Shared page layout: title, optional subtitle, content.
+/// Shared page layout: title, optional subtitle, content. Centered both ways unless the step has a keyboard
+/// (`centered: false`), where content stays at the top so the keyboard does not cover it.
 struct OnboardingPage<Content: View>: View {
     let title: LocalizedStringKey
     var subtitle: LocalizedStringKey?
+    var centered = true
     @ViewBuilder let content: Content
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text(title)
-                        .font(DSFont.title)
-                        .foregroundStyle(DSColor.textPrimary)
-                        .accessibilityAddTraits(.isHeader)
-                    if let subtitle {
-                        Text(subtitle).font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(alignment: centered ? .center : .leading, spacing: Spacing.lg) {
+                    VStack(alignment: centered ? .center : .leading, spacing: Spacing.sm) {
+                        Text(title)
+                            .font(DSFont.title)
+                            .foregroundStyle(DSColor.textPrimary)
+                            .accessibilityAddTraits(.isHeader)
+                        if let subtitle {
+                            Text(subtitle).font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                        }
                     }
+                    content
                 }
-                content
+                .multilineTextAlignment(centered ? .center : .leading)
+                .padding(Spacing.lg)
+                .frame(maxWidth: 520, alignment: centered ? .center : .leading)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height, alignment: centered ? .center : .top)
             }
-            .padding(Spacing.lg)
-            .frame(maxWidth: 520, alignment: .leading)
-            .frame(maxWidth: .infinity)
+            .scrollDismissesKeyboard(.interactively)
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .scrollDismissesKeyboard(.interactively)
-        .scrollBounceBehavior(.basedOnSize)
     }
 }
