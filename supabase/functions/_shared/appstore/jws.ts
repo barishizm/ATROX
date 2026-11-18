@@ -26,11 +26,17 @@ export interface JwsVerifierOptions {
   now?: () => number;
 }
 
+/** Chains whose two certificate signatures already verified (keyed by the x5c strings). Apple's chains are public and
+ * rotate rarely, so a flood of requests replaying them pays one ECDSA verify (the payload's) instead of three. Validity
+ * dates are still checked on every request; only the signature math is remembered. Bounded so junk chains cannot grow it. */
+const CHAIN_CACHE_MAX = 16;
+
 export type JwsVerifier = <T = Record<string, unknown>>(jws: string) => Promise<T>;
 
 export function createJwsVerifier(options: JwsVerifierOptions = {}): JwsVerifier {
   const roots = options.roots ?? [base64ToBytes(APPLE_ROOT_CA_G3_BASE64)];
   const now = options.now ?? Date.now;
+  const verifiedChains = new Set<string>();
   return async <T>(jws: string): Promise<T> => {
     const parts = typeof jws === "string" ? jws.split(".") : [];
     if (parts.length !== 3 || parts.some((part) => !/^[A-Za-z0-9_-]+$/.test(part))) throw new JwsError("malformed");
@@ -65,8 +71,13 @@ export function createJwsVerifier(options: JwsVerifierOptions = {}): JwsVerifier
     const signedDate = typeof payload.signedDate === "number" ? payload.signedDate : undefined;
     const effective = signedDate ?? now();
     if (chain.some((c) => effective < c.notBefore || effective > c.notAfter)) throw new JwsError("expired_chain");
-    if (!(await isSignedBy(leaf, intermediate)) || !(await isSignedBy(intermediate, root))) {
-      throw new JwsError("bad_chain_signature");
+    const chainId = (header.x5c as string[]).join(",");
+    if (!verifiedChains.has(chainId)) {
+      if (!(await isSignedBy(leaf, intermediate)) || !(await isSignedBy(intermediate, root))) {
+        throw new JwsError("bad_chain_signature");
+      }
+      if (verifiedChains.size >= CHAIN_CACHE_MAX) verifiedChains.clear();
+      verifiedChains.add(chainId);
     }
 
     let valid = false;
