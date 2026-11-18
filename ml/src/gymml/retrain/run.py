@@ -29,7 +29,7 @@ import yaml
 from gymml import imbalance, progress
 from gymml.export import anchor_tables, golden, keys, params
 from gymml.export.bundle import DIST, EMBEDDED, FORMAT, _dump
-from gymml.retrain import calibration, contributions, curve, gates, ratios, synthetic
+from gymml.retrain import calibration, contributions, curve, gates, integrity, ratios, synthetic
 from gymml.retrain.contributions import InsufficientData
 from gymml.scoring import ML_ROOT, PARAMS_DIR, AnchorModel, Params
 from gymml.scoring_run import TAXONOMY, load_catalog
@@ -129,7 +129,9 @@ def retrain(raw: pl.DataFrame, cfg: dict, version: str | None = None, out_root: 
     version = version or _bump_minor(base_manifest["version"])
     ex_cfg, g_cfg = cfg["export"], cfg["gates"]
 
-    filtered, frep = contributions.k_anonymize(raw, ex_cfg["k_anonymity"], ex_cfg["weight_band_kg"])
+    # Poisoning defences first: a cell only populated enough by fake keys must not pass k-anonymity.
+    clean, irep = integrity.sanitize(raw, cat, model, p, cfg["integrity"], ex_cfg["weight_band_kg"], ex_cfg["seed"])
+    filtered, frep = contributions.k_anonymize(clean, ex_cfg["k_anonymity"], ex_cfg["weight_band_kg"])
     anchor_ids = {e.id for e in cat.values() if e.is_anchor}
     sufficiency = contributions.check_sufficient(filtered, anchor_ids, ex_cfg)  # raises InsufficientData
     if processed_dir is not None:
@@ -168,12 +170,14 @@ def retrain(raw: pl.DataFrame, cfg: dict, version: str | None = None, out_root: 
         new = gates.score_rows(rows, cand)
         gate_list.append(gates.calibration_gate(hold, base, cand, g_cfg))
         gate_list.append(gates.drift_gate(old, new, g_cfg))
+        gate_list.append(gates.shift_gate(old, new, p.calibration, new_cal, cfg["calibration"]["population"], g_cfg))
+        gate_list.append(gates.integrity_gate(irep.as_dict(), cfg["integrity"]))
         gate_list.append(gates.sanity_gate(new, cand, cfg["calibration"]["kappa_bounds"], ratio_problems,
                                            g_cfg["monotonic_grid"]))
         passed = all(x.passed for x in gate_list)
 
         summary = {
-            "filter": frep.as_dict(), "sufficiency": sufficiency,
+            "integrity": irep.as_dict(), "filter": frep.as_dict(), "sufficiency": sufficiency,
             "split": {"train_contributors": train["contribution_key"].n_unique(),
                       "holdout_contributors": hold["contribution_key"].n_unique()},
             "calibration": cal_rep, "ratios": ratios.summary(ratio_rows), "curve": curve.identifiability(train),
@@ -181,7 +185,7 @@ def retrain(raw: pl.DataFrame, cfg: dict, version: str | None = None, out_root: 
         }
         bundle = None
         if passed:
-            metrics = {k: summary[k] for k in ("filter", "split", "ratios")}
+            metrics = {k: summary[k] for k in ("integrity", "filter", "split", "ratios")}
             metrics["gates"] = summary["gates"]
             training = {"source": source, "exported": date.today().isoformat(),
                         "contributors": frep.contributors_out, "rows": frep.rows_out,
@@ -217,6 +221,9 @@ def render(version: str, base_version: str, s: dict, ratio_rows: list[dict], bun
         f"- Sonuç: **{'GEÇTİ — paket yazıldı' if ok else 'KALDI — paket yazılmadı, yayınlanmaz'}** (temel sürüm v{base_version}).",
         f"- Kaynak: `{source}`; {f['contributors_in']} katkıcı / {f['rows_in']} satır → k-anonimlik süzgecinden sonra "
         f"{f['contributors_out']} katkıcı / {f['rows_out']} satır.",
+        f"- Bütünlük süzgeci (zehirlenme savunması): {s['integrity']['duplicate_keys']} yinelenen profil, "
+        f"{s['integrity']['outlier_rows']} aykırı satır, {s['integrity']['density_keys']} yoğunlaşma nedeniyle atılan katkıcı "
+        f"(satırların %{100 * s['integrity']['dropped_row_fraction']:.1f}'i).",
         f"- Süzülen hücre: **{f['cells_dropped']} / {f['cells_in']}** (cinsiyet × yaş bandı × "
         f"{cfg['export']['weight_band_kg']} kg kilo bandı × hareket, hücre başına < {cfg['export']['k_anonymity']} katkıcı).",
         f"- Ayrım: {s['split']['train_contributors']} eğitim / {s['split']['holdout_contributors']} dışarıda tutulan katkıcı (anahtara göre).",

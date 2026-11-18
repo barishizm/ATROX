@@ -12,7 +12,16 @@ import polars as pl
 import pytest
 
 from gymml.export import keys
-from gymml.retrain import calibration, contributions, curve, gates, ratios, run, synthetic
+from gymml.retrain import (
+    calibration,
+    contributions,
+    curve,
+    gates,
+    integrity,
+    ratios,
+    run,
+    synthetic,
+)
 from gymml.retrain.contributions import InsufficientData
 
 
@@ -248,3 +257,103 @@ def test_fetch_pages_through_postgrest():
 
     df = contributions.fetch("https://x.supabase.co/", "svc", page=3, get=get)
     assert df.height == 4 and "offset=3" in seen[1] and math.isfinite(df["best_e1rm_kg"].sum())
+
+
+# --- poisoning defences (integrity filters + shift gate) -------------------------------------------------------
+
+INTEGRITY = run.load_config()["integrity"]
+
+
+def _sanitize(df, base):
+    p, cat, model = base
+    return integrity.sanitize(df, cat, model, p, INTEGRITY, 10, 1)
+
+
+def _evasive(i: int) -> dict:
+    """Bot payloads that differ from each other (no exact duplicates) but all pile onto one ~215 kg e1RM bin."""
+    return {"best_e1rm_kg": round(215.0 + 0.1 * (i % 11), 1), "best_set_reps": 1 + (i // 11) % 30,
+            "sessions_in_month": 1 + (i // 330) % 62}
+
+
+def _bots(n: int, start: int = 0, **kw) -> list[dict]:
+    return [_row(f"bot{start + i:04d}", **kw) for i in range(n)]
+
+
+def test_identical_profiles_collapse_to_one_key(base):
+    honest = [_row(f"h{i}", best_e1rm_kg=90.0 + i) for i in range(40)]
+    out, rep = _sanitize(contributions.frame(honest + _bots(30, best_e1rm_kg=121.5)), base)
+    assert rep.duplicate_keys == 29
+    assert out["contribution_key"].n_unique() == 41
+
+
+def test_absurd_anchor_values_are_dropped_as_outliers(base):
+    honest = [_row(f"h{i}", best_e1rm_kg=100.0 + i) for i in range(60)]
+    fake = [_row(f"f{i}", best_e1rm_kg=690.0 - i * 3) for i in range(10)]
+    out, rep = _sanitize(contributions.frame(honest + fake), base)
+    assert rep.outlier_rows == 10 and out["best_e1rm_kg"].max() < 200
+
+
+def test_piled_up_values_are_thinned_but_honest_spread_is_kept(base):
+    rng = np.random.default_rng(3)
+    honest = [_row(f"h{i}", best_e1rm_kg=round(float(rng.normal(130, 18)), 1)) for i in range(150)]
+    # 100 distinct-looking bots all sitting at ~160 kg (differ by 0.1 kg so they are not exact duplicates).
+    farm = [_row(f"b{i}", **_evasive(i)) for i in range(100)]
+    out, rep = _sanitize(contributions.frame(honest + farm), base)
+    kept_farm = out.filter(pl.col("contribution_key").str.starts_with("b"))["contribution_key"].n_unique()
+    kept_honest = out.filter(pl.col("contribution_key").str.starts_with("h"))["contribution_key"].n_unique()
+    assert rep.density_keys >= 60 and kept_farm <= 0.2 * 250
+    assert kept_honest >= 120  # a few honest keys sharing the farm's bin are thinned with it
+
+
+def test_sanitize_is_deterministic(base):
+    df = contributions.frame([_row(f"h{i}", best_e1rm_kg=100.0 + i % 40) for i in range(120)] + _bots(40))
+    a, _ = _sanitize(df, base)
+    b, _ = _sanitize(df, base)
+    assert a.sort(["contribution_key", "exercise_id"]).equals(b.sort(["contribution_key", "exercise_id"]))
+
+
+def test_honest_synthetic_data_loses_little(base, good):
+    out, rep = _sanitize(good, base)
+    assert rep.dropped_row_fraction < INTEGRITY["max_dropped_fraction"], rep.as_dict()
+
+
+def test_bot_farm_is_neutralised_end_to_end(base, good, cfg, tmp_path):
+    """Thousands of fake keys piled on one lift/value must not get a bundle that moves the population."""
+    p, cat, model = base
+    farm = [_row(f"x{i:05d}", sex="male", age_band=30, bodyweight_kg=80 + i % 10, **_evasive(i))
+            for i in range(1500)]
+    poisoned = pl.concat([good, contributions.frame(farm)])
+    res = run.retrain(poisoned, _small_cfg(cfg), version="1.1.0", out_root=tmp_path / "dist",
+                      report_dir=tmp_path / "reports", processed_dir=None, source="synthetic")
+    rep = res.summary["integrity"]
+    assert rep["density_keys"] + rep["duplicate_keys"] > 1000
+    # What survives is the honest data: the calibration lands where it does without the farm.
+    clean = run.retrain(good, _small_cfg(cfg), version="1.1.0", out_root=tmp_path / "dist2",
+                        report_dir=tmp_path / "reports2", processed_dir=None, source="synthetic")
+    a = res.summary["calibration"]["kappa"]["M"]["posterior"]
+    b = clean.summary["calibration"]["kappa"]["M"]["posterior"]
+    assert a == pytest.approx(b, rel=0.03)
+
+
+def test_shift_gate_flags_systematic_movement_and_big_cells(base):
+    p, _, _ = base
+    cal = p.calibration
+    moved = copy.deepcopy(cal)
+    sex, lift = "M", next(iter(cal["delta"]["gym"]["M"]))
+    band = next(iter(cal["delta"]["gym"][sex][lift]))
+    moved["delta"]["gym"][sex][lift][band] += 0.5
+    moved["kappa"]["gym"]["F"] *= 1.5
+    gcfg = run.load_config()["gates"]
+    old = np.full(100, 50.0)
+    g = gates.shift_gate(old, old + 7.0, cal, moved, "gym", gcfg)
+    assert not g.passed
+    text = " ".join(g.detail["problems"])
+    assert "mean signed" in text and "delta" in text and "kappa F" in text
+    assert gates.shift_gate(old, old + np.array([1.0, -1.0] * 50), cal, cal, "gym", gcfg).passed
+
+
+def test_integrity_gate_fails_when_too_much_is_dropped():
+    cfg = {"max_dropped_fraction": 0.1}
+    rep = {"dropped_row_fraction": 0.3, "duplicate_keys": 5, "outlier_rows": 1, "density_keys": 2}
+    assert not gates.integrity_gate(rep, cfg).passed
+    assert gates.integrity_gate({**rep, "dropped_row_fraction": 0.02}, cfg).passed
