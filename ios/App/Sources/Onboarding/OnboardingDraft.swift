@@ -35,6 +35,8 @@ struct OnboardingDraft: Codable, Equatable, Sendable {
     // Part 2 (training profile). `nil` = not answered yet.
     var experience: Experience?
     var goal: Goal?
+    /// Every goal picked, in order (`goal` is the first). `nil` for drafts saved before several goals were allowed.
+    var goals: [Goal]?
     var weeklyFrequency: Int = OnboardingRules.defaultWeeklyFrequency
     var equipment: EquipmentAccess?
     var limitations: [BodyLimitation] = []

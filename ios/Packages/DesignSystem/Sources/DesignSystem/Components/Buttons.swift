@@ -4,9 +4,28 @@ struct DSButtonStyle: ButtonStyle {
     enum Kind { case primary, secondary }
     let kind: Kind
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.dsGlassSurfaces) private var glass
 
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: Radius.md, style: .continuous)
+        if glass {
+            configuration.label
+                .font(DSFont.headline)
+                .frame(maxWidth: .infinity, minHeight: HitTarget.button)
+                .padding(.horizontal, Spacing.lg)
+                .foregroundStyle(kind == .primary ? DSColor.onAccent : Color.white)
+                .glassEffect(
+                    kind == .primary ? Glass.regular.tint(DSColor.accentFill).interactive() : Glass.regular.tint(dsGlassDim).interactive(),
+                    in: shape
+                )
+                .opacity(isEnabled ? 1 : 0.45)
+                .contentShape(shape)
+        } else {
+            plain(configuration, shape: shape)
+        }
+    }
+
+    private func plain(_ configuration: Configuration, shape: RoundedRectangle) -> some View {
         configuration.label
             .font(DSFont.headline)
             .frame(maxWidth: .infinity, minHeight: HitTarget.button)

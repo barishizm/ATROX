@@ -13,6 +13,7 @@ public struct SelectableCard: View {
     private let isSelected: Bool
     private let indicator: Indicator
     private let action: () -> Void
+    @Environment(\.dsGlassSurfaces) private var glass
 
     public init(
         _ title: LocalizedStringKey,
@@ -66,12 +67,29 @@ public struct SelectableCard: View {
             .padding(.horizontal, Spacing.md)
             .padding(.vertical, Spacing.sm)
             .frame(maxWidth: .infinity, minHeight: HitTarget.button, alignment: .leading)
-            .background(DSColor.surfaceRaised, in: shape)
-            .overlay(shape.strokeBorder(isSelected ? DSColor.accent : DSColor.separator, lineWidth: isSelected ? 2 : 1))
+            .modifier(CardSurface(glass: glass, isSelected: isSelected, shape: shape))
             .contentShape(shape)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+private struct CardSurface: ViewModifier {
+    let glass: Bool
+    let isSelected: Bool
+    let shape: RoundedRectangle
+
+    func body(content: Content) -> some View {
+        if glass {
+            content
+                .glassEffect(isSelected ? Glass.regular.tint(DSColor.accentFill.opacity(0.55)).interactive() : Glass.regular.tint(dsGlassDim).interactive(), in: shape)
+                .overlay(shape.strokeBorder(isSelected ? Color.white.opacity(0.8) : Color.clear, lineWidth: 1.5))
+        } else {
+            content
+                .background(DSColor.surfaceRaised, in: shape)
+                .overlay(shape.strokeBorder(isSelected ? DSColor.accent : DSColor.separator, lineWidth: isSelected ? 2 : 1))
+        }
     }
 }
 

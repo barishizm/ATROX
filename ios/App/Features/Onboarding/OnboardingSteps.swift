@@ -10,7 +10,7 @@ struct NameStepView: View {
     private enum Field { case first, last }
 
     var body: some View {
-        OnboardingPage(title: "onboarding.name.title", subtitle: "onboarding.name.subtitle") {
+        OnboardingPage(title: "onboarding.name.title", subtitle: "onboarding.name.subtitle", centered: false) {
             VStack(spacing: Spacing.md) {
                 field("onboarding.name.first", text: $model.firstName, field: .first, type: .givenName, id: "onboarding-first-name")
                     .submitLabel(.next)
@@ -39,8 +39,8 @@ struct NameStepView: View {
                 .foregroundStyle(DSColor.textPrimary)
                 .padding(.horizontal, Spacing.md)
                 .frame(minHeight: HitTarget.button)
-                .background(DSColor.surfaceRaised, in: shape)
-                .overlay(shape.strokeBorder(isFocused ? DSColor.accent : DSColor.separator, lineWidth: isFocused ? 2 : 1))
+                .dsGlassFill(isFocused ? DSColor.accentFill.opacity(0.35) : nil, interactive: true)
+                .overlay(shape.strokeBorder(isFocused ? Color.white.opacity(0.7) : Color.clear, lineWidth: 1.5))
                 .accessibilityLabel(title)
                 .accessibilityIdentifier(id)
         }
@@ -63,6 +63,7 @@ struct BirthDateStepView: View {
             .datePickerStyle(.wheel)
             .labelsHidden()
             .frame(maxWidth: .infinity)
+            .dsGlassFill(cornerRadius: Radius.lg)
             .accessibilityIdentifier("onboarding-birth-date")
         }
     }
@@ -216,7 +217,9 @@ struct BodyStepView: View {
             Text(title).font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
             content().pickerStyle(.wheel).frame(height: 180).clipped()
         }
+        .padding(.vertical, Spacing.sm)
         .frame(maxWidth: .infinity)
+        .dsGlassFill(cornerRadius: Radius.lg)
     }
 
     @ViewBuilder private var heightWheel: some View {
@@ -329,9 +332,9 @@ struct GoalStepView: View {
                 ForEach(Self.options) { option in
                     SelectableCard(
                         option.title, subtitle: option.detail, systemImage: option.icon,
-                        isSelected: model.draft.goal == option.value
+                        isSelected: model.selectedGoals.contains(option.value), indicator: .checkbox
                     ) {
-                        model.setGoal(option.value)
+                        model.toggleGoal(option.value)
                     }
                     .accessibilityIdentifier("onboarding-goal-\(option.value.rawValue)")
                 }
@@ -350,7 +353,8 @@ struct FrequencyStepView: View {
             VStack(spacing: Spacing.lg) {
                 Text("onboarding.frequency.days \(model.draft.weeklyFrequency)")
                     .font(DSFont.display)
-                    .foregroundStyle(DSColor.accent)
+                    .foregroundStyle(FrequencyPalette.textColor(for: model.draft.weeklyFrequency))
+                    .animation(.snappy, value: model.draft.weeklyFrequency)
                     .frame(maxWidth: .infinity)
                     .accessibilityIdentifier("onboarding-frequency-value")
                 Stepper(
@@ -368,11 +372,11 @@ struct FrequencyStepView: View {
                         } label: {
                             Text("\(day)")
                                 .font(DSFont.headline)
-                                .foregroundStyle(model.draft.weeklyFrequency == day ? DSColor.onAccent : DSColor.textPrimary)
+                                .foregroundStyle(model.draft.weeklyFrequency == day ? FrequencyPalette.labelColor(for: day) : DSColor.textPrimary)
                                 .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
-                                .background(
-                                    model.draft.weeklyFrequency == day ? DSColor.accentFill : DSColor.surfaceRaised,
-                                    in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous)
+                                .dsGlassFill(
+                                    model.draft.weeklyFrequency == day ? FrequencyPalette.color(for: day) : nil,
+                                    cornerRadius: Radius.sm, interactive: true
                                 )
                         }
                         .buttonStyle(.plain)
@@ -382,6 +386,37 @@ struct FrequencyStepView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+/// Colour of the chosen weekly training load: ice blue → green → light yellow → dark orange → lava red.
+private enum FrequencyPalette {
+    static func color(for days: Int) -> Color {
+        switch days {
+        case ...2: Color(red: 0.62, green: 0.86, blue: 1.0)
+        case 3...4: Color(red: 0.07, green: 0.42, blue: 0.22)
+        case 5: Color(red: 1.0, green: 0.92, blue: 0.55)
+        case 6: Color(red: 0.80, green: 0.36, blue: 0.04)
+        default: Color(red: 0.90, green: 0.12, blue: 0.08)
+        }
+    }
+
+    /// The big "N days" number sits straight on the photo, so it uses a brighter shade of the same hue to stay readable.
+    static func textColor(for days: Int) -> Color {
+        switch days {
+        case 3...4: Color(red: 0.25, green: 0.80, blue: 0.46)
+        case 6: Color(red: 0.97, green: 0.52, blue: 0.12)
+        case 7: Color(red: 1.0, green: 0.30, blue: 0.22)
+        default: color(for: days)
+        }
+    }
+
+    /// Dark text on the two light colours, white on the others.
+    static func labelColor(for days: Int) -> Color {
+        switch days {
+        case ...2, 5: Color.black.opacity(0.85)
+        default: .white
         }
     }
 }
@@ -428,7 +463,7 @@ struct LimitationsStepView: View {
     ]
 
     var body: some View {
-        OnboardingPage(title: "onboarding.limits.title", subtitle: "onboarding.limits.subtitle") {
+        OnboardingPage(title: "onboarding.limits.title", subtitle: "onboarding.limits.subtitle", centered: false) {
             VStack(spacing: Spacing.sm) {
                 ForEach(BodyLimitation.allCases, id: \.self) { area in
                     SelectableCard(
@@ -457,8 +492,8 @@ struct LimitationsStepView: View {
                 .font(DSFont.body)
                 .foregroundStyle(DSColor.textPrimary)
                 .padding(Spacing.md)
-                .background(DSColor.surfaceRaised, in: shape)
-                .overlay(shape.strokeBorder(noteFocused ? DSColor.accent : DSColor.separator, lineWidth: noteFocused ? 2 : 1))
+                .dsGlassFill(noteFocused ? DSColor.accentFill.opacity(0.35) : nil, interactive: true)
+                .overlay(shape.strokeBorder(noteFocused ? Color.white.opacity(0.7) : Color.clear, lineWidth: 1.5))
                 .accessibilityLabel("onboarding.limits.note")
                 .accessibilityIdentifier("onboarding-limits-note")
         }

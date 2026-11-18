@@ -66,10 +66,13 @@ struct ContributionStepView: View {
         VStack(spacing: 0) {
             OnboardingPage(title: "onboarding.contribution.title", subtitle: "onboarding.contribution.subtitle") {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
-                    VStack(alignment: .leading, spacing: Spacing.md) {
-                        assurance("person.crop.circle.badge.xmark", "onboarding.contribution.assure.identity")
-                        assurance("chart.bar.xaxis", "onboarding.contribution.assure.data")
-                        assurance("switch.2", "onboarding.contribution.assure.anytime")
+                    Card {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
+                            assurance("person.crop.circle.badge.xmark", "onboarding.contribution.assure.identity")
+                            assurance("chart.bar.xaxis", "onboarding.contribution.assure.data")
+                            assurance("switch.2", "onboarding.contribution.assure.anytime")
+                        }
+                        .multilineTextAlignment(.leading)
                     }
                     ContributionDetailsView()
                 }

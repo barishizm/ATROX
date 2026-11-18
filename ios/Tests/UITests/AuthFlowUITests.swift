@@ -26,31 +26,39 @@ final class AuthFlowUITests: XCTestCase {
     }
 
     @MainActor
-    func testMascotIntroLeadsToSignUpOrSignInMethods() throws {
-        for (button, screen) in [("welcome-continue", "plan-quiz"), ("welcome-have-account", "auth-methods-signin")] {
-            let app = XCUIApplication()
-            app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
-            app.launch()
-            // The hint is exposed as a button (it has an accessibility action), so look it up by label across types.
-            let hint = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "Tap anywhere to continue")).firstMatch
-            XCTAssertTrue(hint.waitForExistence(timeout: 10))
-            // Two taps on empty space (greeting → plan → question); no buttons until the question.
-            XCTAssertFalse(app.buttons["welcome-continue"].exists)
-            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
-            XCTAssertTrue(hint.waitForExistence(timeout: 5))
-            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap()
-            let choice = app.buttons[button]
-            XCTAssertTrue(choice.waitForExistence(timeout: 5))
-            choice.tap()
-            // "Create account" starts the plan questions (the name field is first); "Sign in" goes to the methods.
-            if button == "welcome-continue" {
-                XCTAssertTrue(app.textFields["quiz-name-field"].waitForExistence(timeout: 5))
-            } else {
-                XCTAssertTrue(app.buttons["welcome-apple"].waitForExistence(timeout: 5))
-                XCTAssertTrue(app.descendants(matching: .any)[screen].exists)
-            }
-            app.terminate()
-        }
+    func testIntroLeadsToRegisterAndSwitchesToLogIn() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        // Full-bleed intro: "Tap to next" on the first two pages, "Get started" on the last.
+        let next = app.buttons["welcome-next"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["welcome-skip"].exists)
+        XCTAssertFalse(app.buttons["welcome-continue"].exists)
+        next.tap()
+        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        next.tap()
+        let start = app.buttons["welcome-continue"]
+        XCTAssertTrue(start.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["welcome-skip"].exists)
+        start.tap()
+        // Register form first; the bottom link turns the same screen into the log-in form.
+        XCTAssertTrue(app.descendants(matching: .any)["auth-account-signup"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.textFields["auth-email-field"].exists)
+        app.buttons["auth-switch-mode"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["auth-account-signin"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["auth-forgot"].exists)
+    }
+
+    @MainActor
+    func testIntroSkipJumpsToGetStarted() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        let skip = app.buttons["welcome-skip"]
+        XCTAssertTrue(skip.waitForExistence(timeout: 10))
+        skip.tap()
+        XCTAssertTrue(app.buttons["welcome-continue"].waitForExistence(timeout: 5))
     }
 
     @MainActor
