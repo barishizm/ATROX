@@ -17,6 +17,10 @@ export class FakeStore implements UserDataStore {
   authUsers = new Set<string>();
   deleteOrder: string[] = [];
   failOn?: UserTable;
+  hits = new Map<string, number>();
+  /** Epoch seconds of each token's last sign-in; absent = unknown. */
+  signIns: Record<string, number> = {};
+  limit = 1000;
 
   constructor(public tokens: Record<string, string>) {
     for (const id of Object.values(tokens)) this.authUsers.add(id);
@@ -28,6 +32,17 @@ export class FakeStore implements UserDataStore {
 
   userIdFromToken(jwt: string) {
     return Promise.resolve(this.tokens[jwt] ?? null);
+  }
+
+  signedInAt(jwt: string) {
+    return this.signIns[jwt] ?? null;
+  }
+
+  hit(userId: string, action: string) {
+    const key = `${userId}:${action}`;
+    const n = (this.hits.get(key) ?? 0) + 1;
+    this.hits.set(key, n);
+    return Promise.resolve(n <= this.limit);
   }
 
   rows(table: UserTable, userId: string) {

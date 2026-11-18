@@ -1,5 +1,7 @@
 import { authenticate, json, type Row, USER_TABLES, type UserDataStore } from "../_shared/user-data.ts";
 
+export const EXPORTS_PER_HOUR = 5;
+
 export interface ExportDeps {
   store: UserDataStore;
   now?: () => Date;
@@ -11,7 +13,7 @@ export interface ExportDeps {
  */
 export function createExportHandler({ store, now = () => new Date() }: ExportDeps) {
   return async (request: Request): Promise<Response> => {
-    const userId = await authenticate(request, store);
+    const userId = await authenticate(request, store, { action: "export_data", limit: EXPORTS_PER_HOUR, windowSeconds: 3600 });
     if (userId instanceof Response) return userId;
     try {
       const tables: Record<string, Row[]> = {};

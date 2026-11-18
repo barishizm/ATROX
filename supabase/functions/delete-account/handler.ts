@@ -4,16 +4,23 @@ export interface DeleteDeps {
   store: UserDataStore;
   /** Revokes the user's Sign in with Apple tokens; nil when Apple is not configured. */
   revokeApple?: (authorizationCode: string) => Promise<void>;
+  /** When set, the token's last interactive sign-in must be at most this old (seconds); else 401 `reauth_required`. */
+  maxSignInAgeSeconds?: number;
+  now?: () => number;
 }
+
+export const DELETES_PER_HOUR = 5;
 
 /**
  * delete-account (P045): revoke Apple tokens (when the app sends a fresh authorization code), delete every row of
  * the user — children first — and finally the Auth user. Body: `{ "apple_authorization_code"?: string }`.
  * A failed Apple revocation does not keep the account alive; it is reported as `apple_revoked: false`.
  */
-export function createDeleteHandler({ store, revokeApple }: DeleteDeps) {
+export function createDeleteHandler({ store, revokeApple, maxSignInAgeSeconds, now }: DeleteDeps) {
   return async (request: Request): Promise<Response> => {
-    const userId = await authenticate(request, store);
+    const userId = await authenticate(request, store, {
+      action: "delete_account", limit: DELETES_PER_HOUR, windowSeconds: 3600, maxSignInAgeSeconds, now,
+    });
     if (userId instanceof Response) return userId;
 
     let code: string | undefined;
