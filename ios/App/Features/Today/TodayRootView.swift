@@ -13,6 +13,8 @@ struct TodayRootView: View {
     @State private var failed = false
     @State private var actions = InsightActions()
     @State private var openedExercise: String?
+    /// True when shown inline at the top of the Workout tab: no own scroll view, title or background.
+    var embedded = false
 
     var body: some View {
         Group {
@@ -24,9 +26,9 @@ struct TodayRootView: View {
                 LoadingState()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(DSColor.background.ignoresSafeArea())
-        .navigationTitle("shell.tabbar.today")
+        .frame(maxWidth: .infinity, maxHeight: embedded ? nil : .infinity)
+        .background { if !embedded { DSColor.background.ignoresSafeArea() } }
+        .navigationTitle(embedded ? LocalizedStringKey("shell.tabbar.workout") : LocalizedStringKey("shell.tabbar.today"))
         .howItWorksButton()
         .task(id: container.unitRevision) { await prepare(rebuild: container.unitRevision > 0) }
         .task(id: TodayReload(data: container.dataRevision, plan: model?.planSignature)) { await model?.load() }
@@ -75,21 +77,26 @@ struct TodayRootView: View {
         if model.isLoading {
             LoadingState()
         } else if model.isNewUser && model.overall == nil {
-            newUser(model)
+            if !embedded { newUser(model) }
+        } else if embedded {
+            sections(model)
         } else {
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.lg) {
-                    scoreCard(model)
-                    insightCard(model)
-                    weeklyLink
-                    if model.showsBodyweightReminder && model.insight?.insight.kind != .bodyweightStale { reminderCard }
-                    if !model.bars.isEmpty { patternSection(model) }
-                    planCard(model)
-                    weekSection(model)
-                    highlights(model)
-                }
-                .padding(Spacing.md)
+                sections(model).padding(Spacing.md)
             }
+        }
+    }
+
+    private func sections(_ model: TodayModel) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.lg) {
+            scoreCard(model)
+            insightCard(model)
+            weeklyLink
+            if model.showsBodyweightReminder && model.insight?.insight.kind != .bodyweightStale { reminderCard }
+            if !model.bars.isEmpty { patternSection(model) }
+            planCard(model)
+            weekSection(model)
+            highlights(model)
         }
     }
 

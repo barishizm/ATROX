@@ -37,7 +37,6 @@ struct MainTabView: View {
                             case .history: HistoryView()
                             case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
                             case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
-                            case .today: TodayRootView()
                             case .weeklySummary: WeeklySummaryView()
                             }
                         }

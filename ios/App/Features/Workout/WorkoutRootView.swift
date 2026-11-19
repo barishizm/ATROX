@@ -86,6 +86,7 @@ struct WorkoutRootView: View {
     private func home(_ model: RoutineListModel) -> some View {
         ScrollView {
             VStack(spacing: Spacing.md) {
+                TodayRootView(embedded: true)
                 if presenter.hasActiveWorkout {
                     PrimaryButton("workout.continue", systemImage: "play.fill") { presenter.resume() }
                         .accessibilityIdentifier("continue-workout")
@@ -98,11 +99,6 @@ struct WorkoutRootView: View {
         }
         .safeAreaInset(edge: .bottom) { if model.lastDeleted != nil { undoBar(model) } }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button { router.push(.today) } label: { Image(systemName: "sun.max") }
-                    .accessibilityLabel("shell.tabbar.today")
-                    .accessibilityIdentifier("workout-today")
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button { router.push(.create) } label: { Image(systemName: "plus") }
                     .accessibilityLabel("workout.create.button")
