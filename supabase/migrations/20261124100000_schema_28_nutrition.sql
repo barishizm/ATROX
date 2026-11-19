@@ -1,8 +1,8 @@
 -- Food-photo calorie tracking (docs/superpowers/specs/2026-11-19-food-calorie-tracking-design.md).
 --   food_entries       one logged meal/food per row (synced like workouts: client uuid, soft delete, LWW)
 --   nutrition_targets  one row per user: calorie/macro target, auto (from goal) or manual
---   food_analyses      ledger of successful AI analyses, the source of the daily quota. Service role writes.
---   food_allowance()   free 3/day, Pro 60/day (soft cap)
+--   food_analyses      ledger of AI analyses the model answered, the source of the daily quota. Service role writes.
+--   food_consume()     takes one analysis from the allowance (free 3/day, Pro 60/day, 6/min); food_refund() gives it back
 --   food_has_consent() latest food_ai_sharing consent is granted for the given version
 -- Photos are never stored on the server: only the numbers of the saved entry.
 
@@ -110,31 +110,51 @@ grant select on public.food_analyses to authenticated;
 create policy food_analyses_select_own on public.food_analyses
   for select to authenticated using (user_id = (select auth.uid()));
 
--- {tier, allowed, reason: null | 'daily', used, limit}. Free 3/day, Pro 60/day. Counted on successful analyses.
-create function public.food_allowance(p_user uuid, p_time_zone text default 'UTC')
+-- Takes one analysis from the user's allowance and records it, atomically (per-user advisory lock, so parallel requests
+-- cannot all pass the check). Free 3/day, Pro 60/day, and at most 6 per minute (the coach's per-minute cap).
+-- Returns {allowed, reason: null | 'daily' | 'rate', id, tier, used, limit}; `used` includes this analysis.
+-- The Edge Function calls food_refund(id) when the provider fails, so only answered calls (including "not food") count.
+create function public.food_consume(p_user uuid, p_kind text, p_time_zone text default 'UTC')
 returns jsonb
 language plpgsql
-stable
 security definer
 set search_path = ''
 as $$
 declare
-  v_tz    text := case when exists (select 1 from pg_catalog.pg_timezone_names where name = p_time_zone)
-                       then p_time_zone else 'UTC' end;
-  v_start timestamptz := date_trunc('day', now() at time zone v_tz) at time zone v_tz;
-  v_tier  text;
-  v_limit integer;
-  v_used  integer;
+  v_tz     text := case when exists (select 1 from pg_catalog.pg_timezone_names where name = p_time_zone)
+                        then p_time_zone else 'UTC' end;
+  v_start  timestamptz := date_trunc('day', now() at time zone v_tz) at time zone v_tz;
+  v_tier   text;
+  v_limit  integer;
+  v_used   integer;
+  v_recent integer;
+  v_id     uuid;
 begin
+  perform pg_advisory_xact_lock(hashtextextended('food_consume:' || p_user::text, 0));
   select coalesce((select e.tier from public.entitlements e
                     where e.user_id = p_user and (e.expires_at is null or e.expires_at > now())), 'free')
     into v_tier;
   v_limit := case v_tier when 'pro' then 60 else 3 end;
   select count(*) into v_used from public.food_analyses a where a.user_id = p_user and a.created_at >= v_start;
-  return jsonb_build_object('tier', v_tier, 'allowed', v_used < v_limit,
-    'reason', case when v_used < v_limit then null else 'daily' end, 'used', v_used, 'limit', v_limit);
+  select count(*) into v_recent from public.food_analyses a
+   where a.user_id = p_user and a.created_at > now() - interval '1 minute';
+  if v_recent >= 6 then
+    return jsonb_build_object('allowed', false, 'reason', 'rate', 'tier', v_tier, 'used', v_used, 'limit', v_limit);
+  end if;
+  if v_used >= v_limit then
+    return jsonb_build_object('allowed', false, 'reason', 'daily', 'tier', v_tier, 'used', v_used, 'limit', v_limit);
+  end if;
+  insert into public.food_analyses (user_id, kind) values (p_user, p_kind) returning id into v_id;
+  return jsonb_build_object('allowed', true, 'reason', null, 'id', v_id, 'tier', v_tier, 'used', v_used + 1, 'limit', v_limit);
 end
 $$;
+
+create function public.food_refund(p_id uuid)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$ delete from public.food_analyses where id = p_id; $$;
 
 create function public.food_has_consent(p_version text)
 returns boolean
@@ -151,8 +171,10 @@ as $$
     limit 1), false);
 $$;
 
-revoke all on function public.food_allowance(uuid, text) from public, anon, authenticated;
-grant execute on function public.food_allowance(uuid, text) to service_role;
+revoke all on function public.food_consume(uuid, text, text) from public, anon, authenticated;
+grant execute on function public.food_consume(uuid, text, text) to service_role;
+revoke all on function public.food_refund(uuid) from public, anon, authenticated;
+grant execute on function public.food_refund(uuid) to service_role;
 revoke all on function public.food_has_consent(text) from public, anon;
 grant execute on function public.food_has_consent(text) to authenticated;
 
@@ -171,7 +193,14 @@ declare
   v_days  integer := greatest(least(coalesce(p_days, 7), 30), 1);
   v_start timestamptz := (date_trunc('day', now() at time zone v_tz) - make_interval(days => v_days - 1)) at time zone v_tz;
 begin
+  -- The coach reads food logs only while the user allows sharing meal data (the latest food_ai_sharing answer is granted).
+  if not coalesce((select c.granted from public.consents c
+                    where c.user_id = (select auth.uid()) and c.kind = 'food_ai_sharing'
+                    order by c.created_at desc, c.id desc limit 1), false) then
+    return jsonb_build_object('shared', false);
+  end if;
   return jsonb_build_object(
+    'shared', true,
     'target', (select jsonb_build_object('mode', t.mode, 'calories', t.calories, 'protein_g', t.protein_g,
                                           'carbs_g', t.carbs_g, 'fat_g', t.fat_g)
                from public.nutrition_targets t

@@ -5,12 +5,24 @@ import { createFoodHandler, extractJson, type FoodDeps, normalize } from "./hand
 const PHOTO = "A".repeat(200);
 const photoBody = { kind: "photo", image_base64: PHOTO, locale: "en", time_zone: "UTC" };
 
-function fakeProvider(reply: string, sink: { messages?: unknown } = {}): LLMProvider {
+function failingProvider(): LLMProvider {
   return {
     name: "fake",
     model: "fake",
-    async *streamChat(messages): AsyncGenerator<LLMEvent> {
+    // deno-lint-ignore require-yield
+    async *streamChat(): AsyncGenerator<LLMEvent> {
+      throw new Error("provider down");
+    },
+  };
+}
+
+function fakeProvider(reply: string, sink: { messages?: unknown; options?: unknown } = {}): LLMProvider {
+  return {
+    name: "fake",
+    model: "fake",
+    async *streamChat(messages, _tools, options): AsyncGenerator<LLMEvent> {
       sink.messages = messages;
+      sink.options = options;
       yield { type: "text", text: reply };
       yield { type: "usage", usage: { prompt_tokens: 100, cached_tokens: 0, completion_tokens: 50, reasoning_tokens: 0 } };
     },
@@ -26,25 +38,29 @@ const GOOD = JSON.stringify({
   ],
 });
 
-function setup(options: { consent?: boolean; allowed?: boolean; reply?: string; spend?: number } = {}) {
-  const calls = { recorded: [] as string[], usage: 0, sink: {} as { messages?: unknown } };
+function setup(options: { consent?: boolean; deny?: "daily" | "rate"; reply?: string; spend?: number; fail?: boolean } = {}) {
+  const calls = { consumed: [] as string[], refunded: [] as string[], usage: 0, sink: {} as { messages?: unknown; options?: unknown } };
   const deps: FoodDeps = {
     verify: (jwt) => Promise.resolve(jwt === "tok" ? "user-1" : null),
     userDb: () => ({ rpc: () => Promise.resolve({ data: options.consent ?? true, error: null }) }),
     service: {
-      allowance: () => Promise.resolve({ tier: "free", allowed: options.allowed ?? true, reason: null, used: 1, limit: 3 }),
-      spendTodayUsd: () => Promise.resolve(options.spend ?? 0),
-      recordAnalysis: (_user, kind) => {
-        calls.recorded.push(kind);
+      consume: (_user, kind) => {
+        if (options.deny) return Promise.resolve({ allowed: false, reason: options.deny, tier: "free" as const, used: 3, limit: 3 });
+        calls.consumed.push(kind);
+        return Promise.resolve({ allowed: true, reason: null, id: "ledger-1", tier: "free" as const, used: 2, limit: 3 });
+      },
+      refund: (id) => {
+        calls.refunded.push(id);
         return Promise.resolve();
       },
+      spendTodayUsd: () => Promise.resolve(options.spend ?? 0),
       recordUsage: () => {
         calls.usage++;
         return Promise.resolve();
       },
     },
-    provider: () => fakeProvider(options.reply ?? GOOD, calls.sink),
-    settings: { consentVersion: "2026-11", dailySpendCapUsd: 25, maxOutputTokens: 900, timeoutMs: 5000, prices: {} },
+    provider: () => options.fail ? failingProvider() : fakeProvider(options.reply ?? GOOD, calls.sink),
+    settings: { consentVersion: "2026-11", dailySpendCapUsd: 25, maxOutputTokens: 900, timeoutMs: 5000, prices: {}, jsonMode: { photo: false, text: true } },
   };
   return { handler: createFoodHandler(deps), calls };
 }
@@ -58,7 +74,9 @@ Deno.test("food-analyze: photo → totals, one allowance count, usage row", asyn
   assertEquals(body.items.length, 2);
   assertEquals(body.totals.protein_g, 51);
   assertEquals(body.remaining, 1);
-  assertEquals(calls.recorded, ["photo"]);
+  assertEquals(calls.consumed, ["photo"]);
+  assertEquals(calls.refunded, []);
+  assertEquals((calls.sink.options as { json: boolean }).json, false, "photos do not ask for json mode until verified");
   assertEquals(calls.usage, 1);
   // The image went to the model as a data URL, detail low.
   const messages = calls.sink.messages as { content: unknown }[];
@@ -82,22 +100,40 @@ Deno.test("food-analyze: no consent → 403 and the model is not called", async 
   assertEquals(calls.usage, 0);
 });
 
-Deno.test("food-analyze: quota exceeded → 429, spend cap → 503", async () => {
-  assertEquals((await setup({ allowed: false }).handler(post("food-analyze", "tok", photoBody))).status, 429);
-  assertEquals((await setup({ spend: 99 }).handler(post("food-analyze", "tok", photoBody))).status, 503);
+Deno.test("food-analyze: daily quota and per-minute limit → 429, spend cap → 503 before anything is taken", async () => {
+  const daily = setup({ deny: "daily" });
+  const response = await daily.handler(post("food-analyze", "tok", photoBody));
+  assertEquals(response.status, 429);
+  assertEquals((await response.json()).error.code, "quota_exceeded");
+  assertEquals(daily.calls.usage, 0);
+  const rate = await setup({ deny: "rate" }).handler(post("food-analyze", "tok", photoBody));
+  assertEquals(rate.status, 429);
+  assertEquals((await rate.json()).error.code, "rate_limited");
+  const capped = setup({ spend: 99 });
+  assertEquals((await capped.handler(post("food-analyze", "tok", photoBody))).status, 503);
+  assertEquals(capped.calls.consumed, [], "the spend cap is checked before an analysis is taken");
 });
 
-Deno.test("food-analyze: not food → 422 and no allowance used", async () => {
+Deno.test("food-analyze: a provider failure is refunded and costs nothing", async () => {
+  const { handler, calls } = setup({ fail: true });
+  assertEquals((await handler(post("food-analyze", "tok", photoBody))).status, 503);
+  assertEquals(calls.consumed, ["photo"]);
+  assertEquals(calls.refunded, ["ledger-1"]);
+});
+
+Deno.test("food-analyze: not food → 422 and the analysis still counts (the model call was paid for)", async () => {
   const { handler, calls } = setup({ reply: '{"is_food": false, "items": []}' });
   assertEquals((await handler(post("food-analyze", "tok", photoBody))).status, 422);
-  assertEquals(calls.recorded, []);
-  assertEquals(calls.usage, 1); // the model call is still billed and recorded
+  assertEquals(calls.consumed, ["photo"]);
+  assertEquals(calls.refunded, []);
+  assertEquals(calls.usage, 1);
 });
 
-Deno.test("food-analyze: garbage reply → 503 and no allowance used", async () => {
+Deno.test("food-analyze: an unreadable reply → 503 and the analysis still counts", async () => {
   const { handler, calls } = setup({ reply: "sorry, I cannot help" });
   assertEquals((await handler(post("food-analyze", "tok", photoBody))).status, 503);
-  assertEquals(calls.recorded, []);
+  assertEquals(calls.consumed, ["photo"]);
+  assertEquals(calls.refunded, []);
 });
 
 Deno.test("food-analyze: text request wraps the description as data", async () => {

@@ -169,8 +169,18 @@ Deno.test("limitation areas follow the app's rules", () => {
   assert(Object.keys(CATALOG).length > 0);
 });
 
+Deno.test("get_nutrition_summary tells the model when the user has not allowed meal sharing", async () => {
+  const db = new FakeDb({ coach_nutrition_summary: () => ({ shared: false }) });
+  const result = await getNutritionSummary.run({}, context(db));
+  assert(result.ok);
+  const data = result.data as { shared: boolean; note: string; days?: unknown };
+  assertEquals(data.shared, false);
+  assertEquals(data.days, undefined);
+  assert(data.note.includes("not allowed"));
+});
+
 Deno.test("get_nutrition_summary passes the validated day count and adds the estimate note", async () => {
-  const db = new FakeDb({ coach_nutrition_summary: () => ({ target: { calories: 2400 }, days: [{ day: "2026-11-19", calories: 1800 }] }) });
+  const db = new FakeDb({ coach_nutrition_summary: () => ({ shared: true, target: { calories: 2400 }, days: [{ day: "2026-11-19", calories: 1800 }] }) });
   const result = await getNutritionSummary.run({ days: 3 }, context(db));
   assert(result.ok);
   const data = result.data as { target: { calories: number }; days: unknown[]; note: string };

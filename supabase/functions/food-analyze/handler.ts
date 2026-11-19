@@ -1,10 +1,11 @@
 // food-analyze: estimates calories and macros from a meal photo or a text description.
 //   1. JWT, input schema                                  → 401 / 400
 //   2. current food_ai_sharing consent                     → 403 consent_required
-//   3. daily allowance (free 3, Pro 60)                    → 429 quota_exceeded
-//   4. global daily spend cap                              → 503 food_unavailable
+//   3. global daily spend cap                              → 503 food_unavailable
+//   4. take one analysis (free 3/day, Pro 60/day, 6/min)   → 429 quota_exceeded / rate_limited
 //   5. one LLM call, JSON reply, thinking off              → 200 { meal_name, items, totals }
-// The photo is only forwarded to the model; nothing about the image is stored.
+// Every call the model answered counts, "not food" and unreadable replies included, so garbage photos cannot drain the
+// shared spend cap for free. A provider failure gives the analysis back. The photo is only forwarded; nothing about it is stored.
 import { requireUser, type TokenVerifier } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, preflight } from "../_shared/errors.ts";
 import { type Price } from "../_shared/llm/config.ts";
@@ -12,15 +13,25 @@ import { costUsd } from "../_shared/llm/pricing.ts";
 import { type ChatInput, type LLMProvider, type Usage } from "../_shared/llm/types.ts";
 import { type CoachDb } from "../coach-chat/tools/types.ts";
 import { type UsageRow } from "../coach-chat/handler.ts";
-import { type Allowance } from "../coach-digest/handler.ts";
 import { FOOD_PROMPT } from "./prompts.ts";
 import { type FoodRequest, foodRequest, modelReply, type ModelReply } from "./schema.ts";
 
+/** Result of taking one analysis from the allowance (`food_consume`). `used` includes this analysis. */
+export interface Consumption {
+  allowed: boolean;
+  reason: "daily" | "rate" | null;
+  id?: string;
+  tier: "free" | "pro";
+  used: number;
+  limit: number;
+}
+
 export interface FoodService {
-  allowance(userId: string, timeZone: string): Promise<Allowance>;
+  /** Atomically checks and takes one analysis (free 3/day, Pro 60/day, 6/min) and records it in the ledger. */
+  consume(userId: string, kind: "photo" | "text", timeZone: string): Promise<Consumption>;
+  /** Gives a taken analysis back (the provider failed, so the user got nothing). */
+  refund(id: string): Promise<void>;
   spendTodayUsd(): Promise<number>;
-  /** Counts one successful analysis toward the daily allowance. */
-  recordAnalysis(userId: string, kind: "photo" | "text"): Promise<void>;
   recordUsage(rows: UsageRow[]): Promise<void>;
 }
 
@@ -30,6 +41,11 @@ export interface FoodSettings {
   maxOutputTokens: number;
   timeoutMs: number;
   prices: Record<string, Price>;
+  /**
+   * Ask for `response_format: json_object`. DeepSeek documents it for text; its vision guide does not say whether it
+   * works together with images, so photos default to off (the prompt demands JSON and `extractJson` is tolerant).
+   */
+  jsonMode: { photo: boolean; text: boolean };
 }
 
 export interface FoodDeps {
@@ -150,12 +166,14 @@ export function createFoodHandler(deps: FoodDeps) {
       if (error) throw new Error(`food_has_consent: ${error.message}`);
       if (data !== true) return errorResponse("consent_required", "Food AI sharing consent is needed.", { required_version: settings.consentVersion });
 
-      const allowance = await service.allowance(auth.userId, input.time_zone ?? "UTC");
-      if (!allowance.allowed) {
-        return errorResponse("quota_exceeded", "Today's food analyses are used up.", { tier: allowance.tier, used: allowance.used, limit: allowance.limit });
-      }
       if ((await service.spendTodayUsd()) >= settings.dailySpendCapUsd) {
         return errorResponse("food_unavailable", "Food analysis is resting for today. Please try again tomorrow.");
+      }
+      const taken = await service.consume(auth.userId, input.kind, input.time_zone ?? "UTC");
+      if (!taken.allowed) {
+        return taken.reason === "rate"
+          ? errorResponse("rate_limited", "Too many analyses in a minute. Please wait a moment.")
+          : errorResponse("quota_exceeded", "Today's food analyses are used up.", { tier: taken.tier, used: taken.used, limit: taken.limit });
       }
 
       const provider = deps.provider();
@@ -169,7 +187,7 @@ export function createFoodHandler(deps: FoodDeps) {
           const event of provider.streamChat(
             [{ role: "system", content: FOOD_PROMPT }, userMessage(input)],
             [],
-            { thinking: false, json: true, maxOutputTokens: settings.maxOutputTokens, signal },
+            { thinking: false, json: settings.jsonMode[input.kind], maxOutputTokens: settings.maxOutputTokens, signal },
           )
         ) {
           if (event.type === "text") text += event.text;
@@ -185,7 +203,10 @@ export function createFoodHandler(deps: FoodDeps) {
         prompt_tokens: usage.prompt_tokens, cached_tokens: usage.cached_tokens, completion_tokens: usage.completion_tokens,
         cost_usd: costUsd(usage, provider.name, provider.model, settings.prices), latency_ms: latency, agent_steps: 1, status,
       }]).catch((error) => console.error("food-analyze usage not stored", error instanceof Error ? error.message : error));
-      if (status !== "ok") return errorResponse("food_unavailable", "The meal could not be analyzed. Please try again.");
+      if (status !== "ok") {
+        if (taken.id) await service.refund(taken.id).catch((error) => console.error("food-analyze refund failed", error instanceof Error ? error.message : error));
+        return errorResponse("food_unavailable", "The meal could not be analyzed. Please try again.");
+      }
 
       const reply = modelReply.safeParse(extractJson(text));
       if (!reply.success) return errorResponse("food_unavailable", "The meal could not be analyzed. Please try again.");
@@ -193,8 +214,7 @@ export function createFoodHandler(deps: FoodDeps) {
         return errorResponse("not_food", "No food was found in this " + (input.kind === "photo" ? "photo." : "description."));
       }
 
-      await service.recordAnalysis(auth.userId, input.kind);
-      return jsonResponse({ ...normalize(reply.data), remaining: Math.max(0, allowance.limit - allowance.used - 1), limit: allowance.limit });
+      return jsonResponse({ ...normalize(reply.data), remaining: Math.max(0, taken.limit - taken.used), limit: taken.limit });
     } catch (error) {
       console.error("food-analyze failed", error instanceof Error ? error.message : error);
       return errorResponse("internal", "Something went wrong.");

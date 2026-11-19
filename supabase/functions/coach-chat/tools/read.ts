@@ -162,6 +162,15 @@ export const getNutritionSummary = defineTool({
   schema: z.object({ days: z.number().int().min(1).max(30).default(7) }).strict(),
   run: async (args, context) => {
     const summary = await call(context, "coach_nutrition_summary", { p_days: args.days, p_time_zone: "UTC" }) as Record<string, unknown>;
+    if (summary?.shared === false) {
+      return {
+        ok: true,
+        data: {
+          shared: false,
+          note: "The user has not allowed meal data to be shared with the coach. Do not guess. If it matters, tell them they can turn on meal analysis in the Nutrition screen.",
+        },
+      };
+    }
     return {
       ok: true,
       data: {

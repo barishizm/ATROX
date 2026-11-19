@@ -2,8 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { loadLLMConfig } from "../_shared/llm/config.ts";
 import { deepSeekProvider, withRetry } from "../_shared/llm/providers.ts";
 import { type UsageRow } from "../coach-chat/handler.ts";
-import { type Allowance } from "../coach-digest/handler.ts";
-import { createFoodHandler } from "./handler.ts";
+import { type Consumption, createFoodHandler } from "./handler.ts";
 
 const url = Deno.env.get("SUPABASE_URL");
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -32,31 +31,33 @@ Deno.serve(createFoodHandler({
     } };
   },
   service: {
-    async allowance(userId, timeZone) {
-      const { data, error } = await admin.rpc("food_allowance", { p_user: userId, p_time_zone: timeZone });
-      if (error) throw new Error(`food_allowance: ${error.message}`);
-      return data as Allowance;
+    async consume(userId, kind, timeZone) {
+      const { data, error } = await admin.rpc("food_consume", { p_user: userId, p_kind: kind, p_time_zone: timeZone });
+      if (error) throw new Error(`food_consume: ${error.message}`);
+      return data as Consumption;
+    },
+    async refund(id) {
+      const { error } = await admin.rpc("food_refund", { p_id: id });
+      if (error) throw new Error(`food_refund: ${error.message}`);
     },
     async spendTodayUsd() {
       const { data, error } = await admin.rpc("coach_spend_today");
       if (error) throw new Error(`coach_spend_today: ${error.message}`);
       return Number(data ?? 0);
     },
-    async recordAnalysis(userId, kind) {
-      const { error } = await admin.from("food_analyses").insert({ user_id: userId, kind });
-      if (error) throw new Error(`food_analyses: ${error.message}`);
-    },
     async recordUsage(rows: UsageRow[]) {
       const { error } = await admin.from("coach_usage").insert(rows);
       if (error) throw new Error(`coach_usage: ${error.message}`);
     },
   },
-  provider: () => withRetry(deepSeekProvider({ ...llm.deepseek, timeoutMs: llm.timeoutMs })),
+  // Own model variable: a vision-only model can be switched in without touching the coach.
+  provider: () => withRetry(deepSeekProvider({ ...llm.deepseek, model: Deno.env.get("FOOD_DEEPSEEK_MODEL") || llm.deepseek.model, timeoutMs: llm.timeoutMs })),
   settings: {
     consentVersion: Deno.env.get("FOOD_AI_CONSENT_VERSION") || "2026-11",
     dailySpendCapUsd: number("COACH_DAILY_SPEND_CAP_USD", 25),
     maxOutputTokens: 900,
     timeoutMs: number("FOOD_TIMEOUT_MS", 30_000),
     prices: llm.prices,
+    jsonMode: { photo: Deno.env.get("FOOD_PHOTO_JSON_MODE") === "on", text: true },
   },
 }));
