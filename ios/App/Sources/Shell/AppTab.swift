@@ -1,11 +1,11 @@
 import SwiftUI
 
 enum AppTab: String, CaseIterable, Hashable, Sendable {
-    case today, workout, analysis, coach, profile
+    case nutrition, workout, analysis, coach, profile
 
     var title: LocalizedStringKey {
         switch self {
-        case .today: "shell.tabbar.today"
+        case .nutrition: "shell.tabbar.nutrition"
         case .workout: "shell.tabbar.workout"
         case .analysis: "shell.tabbar.analysis"
         case .coach: "shell.tabbar.coach"
@@ -15,7 +15,7 @@ enum AppTab: String, CaseIterable, Hashable, Sendable {
 
     var systemImage: String {
         switch self {
-        case .today: "sun.max"
+        case .nutrition: "fork.knife"
         case .workout: "dumbbell"
         case .analysis: "chart.line.uptrend.xyaxis"
         case .coach: "bubble.left.and.text.bubble.right"

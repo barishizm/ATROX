@@ -98,6 +98,11 @@ struct WorkoutRootView: View {
         }
         .safeAreaInset(edge: .bottom) { if model.lastDeleted != nil { undoBar(model) } }
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button { router.push(.today) } label: { Image(systemName: "sun.max") }
+                    .accessibilityLabel("shell.tabbar.today")
+                    .accessibilityIdentifier("workout-today")
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button { router.push(.create) } label: { Image(systemName: "plus") }
                     .accessibilityLabel("workout.create.button")

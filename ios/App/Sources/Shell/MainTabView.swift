@@ -2,8 +2,7 @@ import SwiftUI
 
 /// The five-tab shell. Each tab owns a `NavigationStack` driven by its typed route enum.
 struct MainTabView: View {
-    @State private var selection: AppTab = .today
-    @State private var today = TabRouter<TodayRoute>()
+    @State private var selection: AppTab = .nutrition
     @State private var workout = TabRouter<WorkoutRoute>()
     @State private var analysis = TabRouter<AnalysisRoute>()
     @State private var coach = TabRouter<CoachRoute>()
@@ -19,20 +18,9 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            Tab(AppTab.today.title, systemImage: AppTab.today.systemImage, value: AppTab.today) {
-                NavigationStack(path: $today.path) {
-                    TodayRootView()
-                        .navigationDestination(for: TodayRoute.self) { route in
-                            switch route {
-                            case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
-                            case .templates: TemplateListView()
-                            case .weeklySummary: WeeklySummaryView()
-                            case .nutrition: NutritionRootView()
-                            }
-                        }
-                }
-                .environment(\.finishCreation) { [today] in today.popToRoot() }
-                .id(locale.identifier)
+            Tab(AppTab.nutrition.title, systemImage: AppTab.nutrition.systemImage, value: AppTab.nutrition) {
+                NavigationStack { NutritionRootView() }
+                    .id(locale.identifier)
             }
             Tab(AppTab.workout.title, systemImage: AppTab.workout.systemImage, value: AppTab.workout) {
                 NavigationStack(path: $workout.path) {
@@ -49,6 +37,15 @@ struct MainTabView: View {
                             case .history: HistoryView()
                             case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
                             case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
+                            case .today: TodayRootView()
+                            case .weeklySummary: WeeklySummaryView()
+                            }
+                        }
+                        .navigationDestination(for: TodayRoute.self) { route in
+                            switch route {
+                            case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
+                            case .templates: TemplateListView()
+                            case .weeklySummary: WeeklySummaryView()
                             }
                         }
                 }
@@ -129,9 +126,9 @@ struct MainTabView: View {
         switch link {
         case .tab(let tab): selection = tab
         case .weeklySummary:
-            selection = .today
-            today.popToRoot()
-            today.push(.weeklySummary)
+            selection = .workout
+            workout.popToRoot()
+            workout.push(.weeklySummary)
         case .startWorkout(let routineId, let dayId):
             selection = .workout
             Task { await workoutPresenter.start(routineId: routineId, dayId: dayId, container: container) }

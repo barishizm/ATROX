@@ -30,7 +30,7 @@ final class AccessibilityAuditUITests: XCTestCase {
     @MainActor
     func testCriticalTabsPassAudit() throws {
         let app = launch()
-        for tab in ["Today", "Workout", "Analysis", "Coach", "Profile"] {
+        for tab in ["Calories", "Workout", "Analysis", "Coach", "Profile"] {
             select(tab, in: app)
             try app.performAccessibilityAudit(for: Self.auditTypes)
         }

@@ -51,7 +51,8 @@ enum DeepLink: Equatable, Sendable {
             let name = SocialTextPolicy.canonical(parts[1])
             guard SocialTextPolicy.usernameIssue(name) == nil else { return nil }
             self = .friendInvite(username: name)
-        case "today": self = .tab(.today)
+        case "nutrition": self = .tab(.nutrition)
+        case "today": self = .tab(.workout)
         case "workout": self = .tab(.workout)
         case "analysis": self = .tab(.analysis)
         case "coach": self = .tab(.coach)

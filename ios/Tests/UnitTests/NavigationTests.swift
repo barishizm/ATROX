@@ -19,7 +19,7 @@ struct NavigationTests {
     }
 
     @Test func fiveTabsInOrder() {
-        #expect(AppTab.allCases == [.today, .workout, .analysis, .coach, .profile])
+        #expect(AppTab.allCases == [.nutrition, .workout, .analysis, .coach, .profile])
     }
 
     @Test func everyLogCategoryHasALogger() {
