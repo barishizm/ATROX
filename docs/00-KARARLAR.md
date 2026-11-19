@@ -137,8 +137,11 @@ yol olduğu için katılım oranı yüksek kalır. Hukuki metinler yayın önces
 
 ## 6. Bilinçli olarak v1.0 dışında bırakılanlar
 
-Apple Watch uygulaması · kardiyo skoru · kamera ile form analizi · beslenme/kalori takibi · APNs push ·
+Apple Watch uygulaması · kardiyo skoru · kamera ile form analizi · APNs push ·
 herkese açık küresel sıralama · Android · Core AI'a geçiş · antrenör–öğrenci paneli.
+
+> **2026-11-19:** Beslenme/kalori takibi kullanıcı isteğiyle kapsama alındı (yemek fotoğrafından AI ile kalori/makro,
+> hedefe bağlı günlük takip). Tasarım: `docs/superpowers/specs/2026-11-19-food-calorie-tracking-design.md`.
 
 ## 7. Açık riskler
 

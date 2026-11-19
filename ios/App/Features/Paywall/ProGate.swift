@@ -35,6 +35,7 @@ struct LockedFeatureCard: View {
         case .fullInsightHistory: "gate.history.title"
         case .allReferenceGroups: "gate.groups.title"
         case .advancedShareCards: "gate.share.title"
+        case .foodAnalysisUnlimited: "gate.food.title"
         case .coachUnlimited: "gate.coach.title"
         case .proactiveCoach: "gate.proactive.title"
         }
@@ -46,6 +47,7 @@ struct LockedFeatureCard: View {
         case .fullInsightHistory: "gate.history.detail"
         case .allReferenceGroups: "gate.groups.detail"
         case .advancedShareCards: "gate.share.detail"
+        case .foodAnalysisUnlimited: "gate.food.detail"
         case .coachUnlimited: "gate.coach.detail"
         case .proactiveCoach: "gate.proactive.detail"
         }

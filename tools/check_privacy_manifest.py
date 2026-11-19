@@ -19,7 +19,7 @@ from pathlib import Path
 DATA_TYPES = {
     "EmailAddress", "Name", "PhoneNumber", "PhysicalAddress", "OtherUserContactInfo", "Health", "Fitness",
     "PaymentInfo", "CreditInfo", "OtherFinancialInfo", "PreciseLocation", "CoarseLocation", "SensitiveInfo",
-    "Contacts", "EmailsOrTextMessages", "PhotosOrVideos", "AudioData", "GameplayContent", "CustomerSupport",
+    "Contacts", "EmailsOrTextMessages", "PhotosorVideos", "AudioData", "GameplayContent", "CustomerSupport",
     "OtherUserContent", "BrowsingHistory", "SearchHistory", "UserID", "DeviceID", "PurchaseHistory",
     "ProductInteraction", "AdvertisingData", "OtherUsageData", "CrashData", "PerformanceData", "OtherDiagnosticData",
     "EnvironmentScanning", "Hands", "Head", "OtherDataTypes",

@@ -18,6 +18,8 @@ export type ErrorCode =
   | "coach_unavailable"
   | "pro_required"
   | "account_mismatch"
+  | "food_unavailable"
+  | "not_food"
   | "internal";
 
 const STATUS: Record<ErrorCode, number> = {
@@ -31,6 +33,8 @@ const STATUS: Record<ErrorCode, number> = {
   coach_unavailable: 503,
   pro_required: 403,
   account_mismatch: 409,
+  food_unavailable: 503,
+  not_food: 422,
   internal: 500,
 };
 

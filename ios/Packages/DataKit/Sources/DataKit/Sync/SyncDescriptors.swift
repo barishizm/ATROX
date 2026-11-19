@@ -237,3 +237,39 @@ extension InsightRecord {
         }
     }
 }
+
+extension FoodEntry {
+    public static func syncDescriptor(_ filter: SyncFilter) -> FetchDescriptor<FoodEntry> {
+        switch filter {
+        case .state(let state, let userId):
+            let raw = state.rawValue
+            return FetchDescriptor(predicate: #Predicate<FoodEntry> { $0.userId == userId && $0.syncStateRaw == raw })
+        case .id(let id):
+            var descriptor = FetchDescriptor(predicate: #Predicate<FoodEntry> { $0.id == id })
+            descriptor.fetchLimit = 1
+            return descriptor
+        case .user(let userId):
+            return FetchDescriptor(predicate: #Predicate<FoodEntry> { $0.userId == userId })
+        case .all:
+            return FetchDescriptor()
+        }
+    }
+}
+
+extension NutritionTarget {
+    public static func syncDescriptor(_ filter: SyncFilter) -> FetchDescriptor<NutritionTarget> {
+        switch filter {
+        case .state(let state, let userId):
+            let raw = state.rawValue
+            return FetchDescriptor(predicate: #Predicate<NutritionTarget> { $0.userId == userId && $0.syncStateRaw == raw })
+        case .id(let id):
+            var descriptor = FetchDescriptor(predicate: #Predicate<NutritionTarget> { $0.id == id })
+            descriptor.fetchLimit = 1
+            return descriptor
+        case .user(let userId):
+            return FetchDescriptor(predicate: #Predicate<NutritionTarget> { $0.userId == userId })
+        case .all:
+            return FetchDescriptor()
+        }
+    }
+}

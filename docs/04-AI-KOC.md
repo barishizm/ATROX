@@ -199,3 +199,12 @@ isabet bedava ve hak yemez) → Pro + günlük hak (antrenman 10, haftalık 3; s
 (`OnDeviceComment`, Foundation Models, kullanılabilirlik `SystemLanguageModel.default.availability`; yalnızca özet sayıları,
 tıbbi/diyet filtresi; şimdilik yalnızca İngilizce). Hata olursa bölüm sessizce gizlenir; Ayarlar anahtarı ve onay olmadan
 sunucuya hiç istek gitmez.
+
+## 12. Yemek analizi (`food-analyze`)
+
+Tasarım: `docs/superpowers/specs/2026-11-19-food-calorie-tracking-design.md`. Koçtan ayrı bir Edge Function: JWT → şema →
+`food_ai_sharing` onayı (`food_has_consent`) → günlük hak (`food_allowance`: ücretsiz 3, Pro 60) → harcama tavanı → tek LLM çağrısı
+(JSON modu, düşünme kapalı, görsel `detail: low`) → Zod doğrulama → sunucuda toplamlar ve kalori/makro tutarlılığı (4/4/9; %25'ten fazla
+sapan kalori makrolardan türetilir) → `food_analyses` + `coach_usage` kaydı. Fotoğraf saklanmaz, yanıt önbelleğe alınmaz. Koç
+`get_nutrition_summary(days)` aracıyla yalnızca günlük toplamları ve hedefi okur; sistem istemi değişmedi (kilitli) — beslenme
+senaryoları için değerlendirme seti (§9) genişletilmeli (`docs/ERTELENENLER.md`).

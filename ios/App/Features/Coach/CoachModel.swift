@@ -13,17 +13,21 @@ struct CoachDependencies: Sendable {
     let uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)?
     /// How many messages the account has left today, read from the server; nil without a server.
     let loadQuota: (@Sendable (_ userId: UUID) async -> CoachQuota?)?
+    /// Meal photo and text analysis (`food-analyze`); nil when the server is not configured.
+    let food: (any FoodAnalyzeService)?
 
     init(
         chat: any CoachChatService, repository: CoachRepository, digest: (any CoachDigestService)? = nil,
         uploadAISharingConsent: (@Sendable (_ userId: UUID, _ version: String) async -> Bool)? = nil,
-        loadQuota: (@Sendable (_ userId: UUID) async -> CoachQuota?)? = nil
+        loadQuota: (@Sendable (_ userId: UUID) async -> CoachQuota?)? = nil,
+        food: (any FoodAnalyzeService)? = nil
     ) {
         self.chat = chat
         self.repository = repository
         self.digest = digest
         self.uploadAISharingConsent = uploadAISharingConsent
         self.loadQuota = loadQuota
+        self.food = food
     }
 }
 

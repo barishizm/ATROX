@@ -31,7 +31,8 @@ extension AppContainer {
         }
         return CoachDependencies(
             chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest,
-            uploadAISharingConsent: upload, loadQuota: quota
+            uploadAISharingConsent: upload, loadQuota: quota,
+            food: SupabaseFoodAnalyzeService(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken)
         )
     }
 
@@ -40,7 +41,8 @@ extension AppContainer {
     static func uiTestCoach() -> CoachDependencies? {
         guard ProcessInfo.processInfo.arguments.contains("-uitest-fake-coach") else { return nil }
         return CoachDependencies(
-            chat: ScriptedCoachService(), repository: CoachRepository(remote: EmptyCoachRemote(), cache: InMemoryCoachCache())
+            chat: ScriptedCoachService(), repository: CoachRepository(remote: EmptyCoachRemote(), cache: InMemoryCoachCache()),
+            food: ScriptedFoodService()
         )
     }
     #else

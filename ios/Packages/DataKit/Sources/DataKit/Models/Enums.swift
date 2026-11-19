@@ -66,6 +66,8 @@ public enum ConsentKind: String, Sendable, Codable, CaseIterable {
     case terms, privacy
     case aiSharing = "ai_sharing"
     case mlContribution = "ml_contribution"
+    /// Meal photos and food descriptions sent to the AI provider for calorie estimates.
+    case foodAISharing = "food_ai_sharing"
 }
 
 public enum ThemePreference: String, Sendable, Codable, CaseIterable {

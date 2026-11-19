@@ -51,8 +51,11 @@ struct WelcomeView: View {
                 .onTapGesture { advance() }
                 .gesture(
                     DragGesture(minimumDistance: 24).onEnded { value in
-                        if value.translation.width < -40 { advance() }
-                        else if value.translation.width > 40 { jump(to: max(page - 1, 0)) }
+                        if value.translation.width < -40 {
+                            advance()
+                        } else if value.translation.width > 40 {
+                            jump(to: max(page - 1, 0))
+                        }
                     }
                 )
 

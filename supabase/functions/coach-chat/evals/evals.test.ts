@@ -21,7 +21,7 @@ Deno.test("the set has at least 40 scenarios, balanced over the 7 categories, in
 });
 
 Deno.test("every regex in every scenario compiles and every expected tool exists", async () => {
-  const known = new Set(["get_recent_workouts", "get_exercise_history", "get_scores", "get_insights", "get_routine", "search_exercises", "get_weekly_volume", "propose_routine", "propose_routine_edit", "propose_exercise_swap", "propose_goal_update", "save_memory"]);
+  const known = new Set(["get_recent_workouts", "get_exercise_history", "get_scores", "get_insights", "get_routine", "search_exercises", "get_weekly_volume", "get_nutrition_summary", "propose_routine", "propose_routine_edit", "propose_exercise_swap", "propose_goal_update", "save_memory"]);
   for (const scenario of await loadScenarios()) {
     for (const pattern of [...scenario.expect.must_not_match, ...scenario.expect.must_match.flat()]) new RegExp(pattern, "i");
     for (const name of [...scenario.expect.tools_called, ...scenario.expect.tools_not_called, ...Object.keys(scenario.expect.tool_args)]) {

@@ -13,6 +13,8 @@ Kaynaklar: `supabase/migrations/*`, `supabase/functions/*`, `ios/App/**`, `ios/P
 |---|---|---|---|
 | **Supabase** (Postgres, Auth, Edge Functions, Storage) | Veri işleyen | Hesap + tüm senkronize veri (§2) | Bölge proje kurulumunda seçilir; **yayın öncesi AB bölgesi önerilir**, seçilen bölge buraya yazılmalı `[MANUEL]`. AB dışıysa yurt dışı aktarım. |
 | **DeepSeek** (resmi API, `deepseek-flash`) | Veri işleyen / bağımsız sağlayıcı (sözleşmeye bağlı) | Yalnızca AI Koç onayı varken: profil özeti, skorlar, antrenman geçmişi, koça yazılan mesajlar ve koç notları (§2, "Koç") | **Yurt dışı aktarım** — sağlayıcının sunucuları ve saklama/eğitim politikası doğrulanmalı `[HUKUKÇU]`. OpenRouter ve başka aracı **kullanılmıyor** (karar 2026-11-14, `docs/04-AI-KOC.md`). |
+| **DeepSeek** (aynı API, yemek analizi) | Veri işleyen / bağımsız sağlayıcı | Yalnızca **yemek fotoğrafı analizi onayı** (`food_ai_sharing`) varken: kullanıcının analiz etmeyi seçtiği yemek fotoğrafı (küçültülmüş kopya) veya yazdığı yemek açıklaması, isteğe bağlı not ve uygulama dili | Koçla aynı yurt dışı aktarım koşulları `[HUKUKÇU]`. Fotoğraf ATROX sunucusunda **saklanmaz** (`food-analyze` yalnızca iletir); sağlayıcının saklama politikası doğrulanmalı. |
+| **Open Food Facts** (açık veritabanı) | Bağımsız (açık veri projesi) | Barkod numarası veya ürün arama kelimeleri; cihazdan doğrudan HTTPS ile, genel `User-Agent` (hesap verisi yok) | Yapay zekâ onayı gerekmez; uygulama tarama ekranında bunu yazar. Hesapla ilişkilendirilmez. |
 | **Apple** | Bağımsız veri sorumlusu (kendi rolleri için) | Sign in with Apple (e-posta/ad, isteğe bağlı gizli e-posta), StoreKit satın alma, HealthKit (yalnızca cihazda), App Store bildirimleri, çökme raporları (kullanıcı Apple'a izin verdiyse) | Apple politikası |
 | **Google** (Google Sign-In) | Bağımsız veri sorumlusu | Google ile girişte kimlik doğrulama | Google politikası |
 | **TelemetryDeck** | Veri işleyen | Anonim kullanım olayları (§2, "Analitik") | AB'de barındırır (sağlayıcı beyanı; doğrula `[HUKUKÇU]`) |
@@ -47,6 +49,18 @@ Saklama sütunu: "hesap ömrü" = hesap silinene kadar (`delete-account` tüm sa
 | Özel hareketler (`custom_exercises`) | Uygulama işlevi | Sözleşme | Hesap ömrü | Supabase |
 | Skor özetleri ve görüşler (`score_snapshots`, `insights`) | Güç Skoru geçmişi, haftalık özet | Sözleşme | Hesap ömrü (FK cascade) | Supabase |
 | Yerel kopya (SwiftData, app group) | Çevrimdışı çalışma, widget | — (cihazda) | Çıkışta/silmede temizlenir | Yok |
+
+### Beslenme (yemek takibi)
+
+| Veri | Amaç | Dayanak | Saklama | Alıcı |
+|---|---|---|---|---|
+| Yemek kayıtları (`food_entries`: zaman, öğün, ad, kalori, makrolar, porsiyon, kaynak, yiyecek listesi) | Günlük kalori/makro takibi, koç | **Açık rıza** önerisi (beslenme/sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
+| Günlük hedef (`nutrition_targets`: mod, kalori, makrolar, aktivite) | Hedefle karşılaştırma | Sözleşme / açık rıza | Hesap ömrü | Supabase |
+| Analiz sayacı (`food_analyses`: zaman, tür) | Günlük hak (ücretsiz 3 / Pro 60) | Meşru menfaat | Hesap ömrü | Supabase (yalnızca servis rolü yazar) |
+| Yemek fotoğrafı | Analiz | Açık rıza (`food_ai_sharing`) | **Sunucuda saklanmaz**; cihazda yalnızca küçük önizleme (`FoodEntry.thumbnail`, senkronize edilmez) | DeepSeek (yalnızca analiz anında) |
+
+Koç yalnızca `get_nutrition_summary` ile günlük toplamları ve hedefi okur (yemek adları gitmez). Beslenme verisi dışa aktarmaya
+(`export-data`) ve hesap silmeye (`delete-account`) dahildir (`USER_TABLES`). Hedef, 18 yaş altında açık içermez; tabanlar 1500 kcal (erkek) / 1200 kcal.
 
 ### Apple Sağlık (HealthKit) — yalnızca cihazda
 
@@ -121,7 +135,8 @@ için k-anonimlik eşiği (k=20). Onay geri alınınca sunucudaki satırlar anah
 | Bildirim izni ve zamanlama (dinlenme sayacı, haftalık özet) | Yerel bildirimler | Sunucuya bildirim jetonu **gönderilmez** (uzaktan push yok) |
 | Paylaşım kartı görseli | Bellekte üretilir | Yalnızca kullanıcı paylaş/kaydet derse sistem paylaşım sayfasına verilir |
 
-Konum, kamera, mikrofon, kişiler, fotoğraf kitaplığı, reklam tanıtıcısı (IDFA), cihaz parmak izi **kullanılmıyor**.
+Kamera ve fotoğraf seçici **yalnızca yemek fotoğrafı ve barkod için, kullanıcı dokununca** açılır (`NSCameraUsageDescription`; fotoğraf
+seçici izin istemez). Konum, mikrofon, kişiler, fotoğraf kitaplığına toplu erişim, reklam tanıtıcısı (IDFA), cihaz parmak izi **kullanılmıyor**.
 
 ## 3. Haklar ve süreçler
 

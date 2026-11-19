@@ -97,9 +97,7 @@ struct SettingsView: View {
             NavigationLink(value: ProfileRoute.consentHistory) { Text("settings.consentHistory") }
                 .accessibilityIdentifier("settings-consent-history")
         } header: {
-            Text("settings.section.privacy")
-        } footer: {
-            VStack(alignment: .leading, spacing: 8) {
+            SettingsInfoHeader("settings.section.privacy") {
                 Text("settings.contribution.footer")
                 Text("settings.analytics.footer")
             }
@@ -192,6 +190,7 @@ struct ConsentHistoryView: View {
         case .privacy: Text("consent.kind.privacy")
         case .aiSharing: Text("consent.kind.aiSharing")
         case .mlContribution: Text("consent.kind.mlContribution")
+        case .foodAISharing: Text("consent.kind.foodAISharing")
         }
     }
 }
@@ -235,9 +234,9 @@ struct PlateSettingsSection: View {
                 }
             }
         } header: {
-            Text("settings.section.plates")
-        } footer: {
-            Text("settings.plates.footer")
+            SettingsInfoHeader("settings.section.plates") {
+                Text("settings.plates.footer")
+            }
         }
     }
 
@@ -268,9 +267,9 @@ struct WeeklySummarySettingsSection: View {
                     .accessibilityIdentifier("settings-weekly-time")
             }
         } header: {
-            Text("settings.weekly.section")
-        } footer: {
-            Text("settings.weekly.footer")
+            SettingsInfoHeader("settings.weekly.section") {
+                Text("settings.weekly.footer")
+            }
         }
         .onChange(of: enabled) { _, isOn in
             Task {
@@ -291,5 +290,39 @@ struct WeeklySummarySettingsSection: View {
                 minute = parts.minute ?? 0
             }
         )
+    }
+}
+
+/// Section header with a small info button; the explanation opens in a popover instead of a long footer.
+struct SettingsInfoHeader<Info: View>: View {
+    private let title: LocalizedStringKey
+    private let info: Info
+    @State private var isShown = false
+
+    init(_ title: LocalizedStringKey, @ViewBuilder info: () -> Info) {
+        self.title = title
+        self.info = info()
+    }
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(title)
+            Button {
+                isShown = true
+            } label: {
+                Image(systemName: "info.circle")
+                    .imageScale(.small)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("settings.info.label")
+            .popover(isPresented: $isShown) {
+                VStack(alignment: .leading, spacing: 8) { info }
+                    .font(.subheadline)
+                    .textCase(nil)
+                    .padding()
+                    .frame(idealWidth: 280)
+                    .presentationCompactAdaptation(.popover)
+            }
+        }
     }
 }

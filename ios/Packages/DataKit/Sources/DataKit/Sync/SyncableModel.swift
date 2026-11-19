@@ -50,6 +50,8 @@ extension SyncTable {
         case .personalRecords: PersonalRecord.self
         case .scoreSnapshots: ScoreSnapshot.self
         case .insights: InsightRecord.self
+        case .foodEntries: FoodEntry.self
+        case .nutritionTargets: NutritionTarget.self
         }
     }
 }

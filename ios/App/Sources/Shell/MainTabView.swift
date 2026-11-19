@@ -27,6 +27,7 @@ struct MainTabView: View {
                             case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
                             case .templates: TemplateListView()
                             case .weeklySummary: WeeklySummaryView()
+                            case .nutrition: NutritionRootView()
                             }
                         }
                 }

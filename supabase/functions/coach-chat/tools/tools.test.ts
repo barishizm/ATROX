@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "../../_shared/testing.ts";
 import { CATALOG, FakeDb, lookup } from "../fakes.ts";
 import { loadedAreas, PROPOSAL_TOOLS, proposeExerciseSwap, proposeGoalUpdate, proposeRoutine, proposeRoutineEdit, saveMemory } from "./propose.ts";
-import { getExerciseHistory, getRoutine, getScores, READ_TOOLS, searchExercises } from "./read.ts";
+import { getExerciseHistory, getNutritionSummary, getRoutine, getScores, READ_TOOLS, searchExercises } from "./read.ts";
 import { type ToolContext } from "./types.ts";
 
 let ids = 0;
@@ -14,10 +14,10 @@ function context(db: FakeDb, equipment = "home_dumbbell", limitations: string[] 
   };
 }
 
-Deno.test("tool definitions: twelve unique names, object schemas, short descriptions", () => {
+Deno.test("tool definitions: thirteen unique names, object schemas, short descriptions", () => {
   const all = [...READ_TOOLS, ...PROPOSAL_TOOLS];
-  assertEquals(all.length, 12);
-  assertEquals(new Set(all.map((tool) => tool.definition.function.name)).size, 12);
+  assertEquals(all.length, 13);
+  assertEquals(new Set(all.map((tool) => tool.definition.function.name)).size, 13);
   for (const tool of all) {
     assertEquals(tool.definition.function.parameters.type, "object");
     assert(tool.definition.function.description.length <= 240, tool.definition.function.name);
@@ -167,4 +167,27 @@ Deno.test("limitation areas follow the app's rules", () => {
   assertEquals(loadedAreas("goblet-squat", "squat"), ["knee"]);
   assertEquals(loadedAreas("dumbbell-bench-press", "horizontal_push"), []);
   assert(Object.keys(CATALOG).length > 0);
+});
+
+Deno.test("get_nutrition_summary tells the model when the user has not allowed meal sharing", async () => {
+  const db = new FakeDb({ coach_nutrition_summary: () => ({ shared: false }) });
+  const result = await getNutritionSummary.run({}, context(db));
+  assert(result.ok);
+  const data = result.data as { shared: boolean; note: string; days?: unknown };
+  assertEquals(data.shared, false);
+  assertEquals(data.days, undefined);
+  assert(data.note.includes("not allowed"));
+});
+
+Deno.test("get_nutrition_summary passes the validated day count and adds the estimate note", async () => {
+  const db = new FakeDb({ coach_nutrition_summary: () => ({ shared: true, target: { calories: 2400 }, days: [{ day: "2026-11-19", calories: 1800 }] }) });
+  const result = await getNutritionSummary.run({ days: 3 }, context(db));
+  assert(result.ok);
+  const data = result.data as { target: { calories: number }; days: unknown[]; note: string };
+  assertEquals(data.target.calories, 2400);
+  assertEquals(data.days.length, 1);
+  assert(data.note.includes("estimates"));
+  assertEquals(db.called("coach_nutrition_summary")[0].args, { p_days: 3, p_time_zone: "UTC" });
+  const bad = await getNutritionSummary.run({ days: 90 }, context(new FakeDb({})));
+  assert(!bad.ok && bad.error.code === "invalid_arguments");
 });

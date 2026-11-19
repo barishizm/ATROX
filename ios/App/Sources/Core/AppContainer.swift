@@ -66,6 +66,8 @@ final class AppContainer {
     let contribution: ContributionService?
     /// The user's AI-sharing decision (P081), shared by the coach tab and Settings.
     @ObservationIgnored var coachConsentState: CoachConsentModel?
+    /// The user's food-photo AI decision, shared by the nutrition screen and its menu.
+    @ObservationIgnored var foodConsentState: FoodConsentModel?
     @ObservationIgnored private var planStores: [UUID: RoutinePlanStore] = [:]
     @ObservationIgnored var workoutSession: WorkoutSession?
     @ObservationIgnored var isRefreshingWidgets = false
@@ -178,6 +180,7 @@ final class AppContainer {
         clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
+        foodConsentState = nil
         UserDefaultsOnboardingDraftStore().clearAll()
         authFlow.reset()
         await UserNotificationService().cancel(id: WeeklySummaryNotification.identifier)

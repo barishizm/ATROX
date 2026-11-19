@@ -9,12 +9,18 @@ public struct ConsentVersions: Sendable, Equatable {
     /// AI Koç data sharing (P081). Must equal the server's `COACH_AI_CONSENT_VERSION`; change both together
     /// whenever the provider list or the data scope in the consent text changes.
     public var aiSharing: String
+    /// Food photo analysis. Must equal the server's `FOOD_AI_CONSENT_VERSION`.
+    public var foodAISharing: String
 
-    public init(terms: String = "1", privacy: String = "1", mlContribution: String = "1", aiSharing: String = "2026-11") {
+    public init(
+        terms: String = "1", privacy: String = "1", mlContribution: String = "1", aiSharing: String = "2026-11",
+        foodAISharing: String = "2026-11"
+    ) {
         self.terms = terms
         self.privacy = privacy
         self.mlContribution = mlContribution
         self.aiSharing = aiSharing
+        self.foodAISharing = foodAISharing
     }
 
     public static let current = ConsentVersions()
@@ -25,6 +31,7 @@ public struct ConsentVersions: Sendable, Equatable {
         case .privacy: privacy
         case .mlContribution: mlContribution
         case .aiSharing: aiSharing
+        case .foodAISharing: foodAISharing
         }
     }
 }
@@ -122,6 +129,17 @@ public struct ConsentService: Sendable {
     /// Stores the answer to the coach consent screen for the current text version.
     public func setAISharing(_ granted: Bool, userId: UUID) async throws {
         try await repository.record(kind: .aiSharing, version: versions.aiSharing, granted: granted, userId: userId)
+    }
+
+    // MARK: Food photo analysis
+
+    public func foodAISharingStatus(userId: UUID) async throws -> ConsentStatus {
+        try await status(of: .foodAISharing, userId: userId)
+    }
+
+    /// Stores the answer to the food-photo consent screen for the current text version.
+    public func setFoodAISharing(_ granted: Bool, userId: UUID) async throws {
+        try await repository.record(kind: .foodAISharing, version: versions.foodAISharing, granted: granted, userId: userId)
     }
 
     /// Every recorded decision, newest first (the settings "consent history").

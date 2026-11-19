@@ -16,6 +16,8 @@ enum ProFeature: String, CaseIterable, Sendable {
     case allReferenceGroups
     /// Advanced share cards.
     case advancedShareCards
+    /// More than the free daily meal analyses (the server counts them).
+    case foodAnalysisUnlimited
 }
 
 extension ProFeature: Identifiable { var id: String { rawValue } }
