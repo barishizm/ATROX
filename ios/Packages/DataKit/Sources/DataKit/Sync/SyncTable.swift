@@ -16,12 +16,14 @@ public enum SyncTable: String, Sendable, CaseIterable, Codable {
     case personalRecords = "personal_records"
     case scoreSnapshots = "score_snapshots"
     case insights
+    case foodEntries = "food_entries"
+    case nutritionTargets = "nutrition_targets"
 
     /// Foreign keys inside the user's own data (column → referenced table). The fake server enforces them and the
     /// engine relies on `allCases` order to satisfy them.
     public var references: [String: SyncTable] {
         switch self {
-        case .profiles, .userSettings, .bodyMeasurements, .customExercises, .routines, .scoreSnapshots, .insights: [:]
+        case .profiles, .userSettings, .bodyMeasurements, .customExercises, .routines, .scoreSnapshots, .insights, .foodEntries, .nutritionTargets: [:]
         case .routineDays: ["routine_id": .routines]
         case .routineExercises: ["routine_day_id": .routineDays, "custom_exercise_id": .customExercises]
         case .workouts: ["routine_id": .routines, "routine_day_id": .routineDays]

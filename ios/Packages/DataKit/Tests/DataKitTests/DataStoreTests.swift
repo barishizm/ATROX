@@ -26,8 +26,11 @@ import Testing
         let v7 = SchemaV7.models.map { String(describing: $0) }.sorted()
         #expect(v7 == (v6 + ["InsightRecord"]).sorted())
         #expect(SchemaV7.versionIdentifier == Schema.Version(7, 0, 0))
-        #expect(DataMigrationPlan.schemas.count == 7)
-        #expect(DataMigrationPlan.stages.count == 6)
+        let v8 = SchemaV8.models.map { String(describing: $0) }.sorted()
+        #expect(v8 == (v7 + ["FoodEntry", "NutritionTarget"]).sorted())
+        #expect(SchemaV8.versionIdentifier == Schema.Version(8, 0, 0))
+        #expect(DataMigrationPlan.schemas.count == 8)
+        #expect(DataMigrationPlan.stages.count == 7)
     }
 
     @Test func onDiskStorePersistsAcrossContainers() async throws {
@@ -65,7 +68,7 @@ import Testing
         #expect(Goal.allCases.map(\.rawValue) == ["strength", "muscle_gain", "fat_loss", "general_health"])
         #expect(EquipmentAccess.allCases.map(\.rawValue)
             == ["full_gym", "home_barbell", "home_dumbbell", "bodyweight_only"])
-        #expect(ConsentKind.allCases.map(\.rawValue) == ["terms", "privacy", "ai_sharing", "ml_contribution"])
+        #expect(ConsentKind.allCases.map(\.rawValue) == ["terms", "privacy", "ai_sharing", "ml_contribution", "food_ai_sharing"])
         #expect(MeasurementSource.allCases.map(\.rawValue) == ["manual", "healthkit", "import"])
         #expect(LengthUnit.allCases.map(\.rawValue) == ["cm", "in"])
     }

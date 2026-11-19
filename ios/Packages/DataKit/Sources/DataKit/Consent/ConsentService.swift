@@ -9,12 +9,18 @@ public struct ConsentVersions: Sendable, Equatable {
     /// AI Koç data sharing (P081). Must equal the server's `COACH_AI_CONSENT_VERSION`; change both together
     /// whenever the provider list or the data scope in the consent text changes.
     public var aiSharing: String
+    /// Food photo analysis. Must equal the server's `FOOD_AI_CONSENT_VERSION`.
+    public var foodAISharing: String
 
-    public init(terms: String = "1", privacy: String = "1", mlContribution: String = "1", aiSharing: String = "2026-11") {
+    public init(
+        terms: String = "1", privacy: String = "1", mlContribution: String = "1", aiSharing: String = "2026-11",
+        foodAISharing: String = "2026-11"
+    ) {
         self.terms = terms
         self.privacy = privacy
         self.mlContribution = mlContribution
         self.aiSharing = aiSharing
+        self.foodAISharing = foodAISharing
     }
 
     public static let current = ConsentVersions()
@@ -25,6 +31,7 @@ public struct ConsentVersions: Sendable, Equatable {
         case .privacy: privacy
         case .mlContribution: mlContribution
         case .aiSharing: aiSharing
+        case .foodAISharing: foodAISharing
         }
     }
 }
