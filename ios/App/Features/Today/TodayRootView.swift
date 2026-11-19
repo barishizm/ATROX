@@ -28,6 +28,14 @@ struct TodayRootView: View {
         .background(DSColor.background.ignoresSafeArea())
         .navigationTitle("shell.tabbar.today")
         .howItWorksButton()
+        .toolbar {
+            // Reachable from every state of the screen, including a brand-new user with no workouts.
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(value: TodayRoute.nutrition) { Image(systemName: "fork.knife") }
+                    .accessibilityLabel(Text("nutrition.title"))
+                    .accessibilityIdentifier("today-nutrition-toolbar")
+            }
+        }
         .task(id: container.unitRevision) { await prepare(rebuild: container.unitRevision > 0) }
         .task(id: TodayReload(data: container.dataRevision, plan: model?.planSignature)) { await model?.load() }
         .sheet(item: $actions.sheet) { sheet in
@@ -53,6 +61,24 @@ struct TodayRootView: View {
             }
             .accessibilityIdentifier("today-insight")
         }
+    }
+
+    private var nutritionLink: some View {
+        NavigationLink(value: TodayRoute.nutrition) {
+            Card {
+                HStack(spacing: Spacing.md) {
+                    Image(systemName: "fork.knife").foregroundStyle(DSColor.accent).accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                        Text("nutrition.link").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                        Text("nutrition.link.detail").font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(DSFont.caption).foregroundStyle(DSColor.textTertiary).accessibilityHidden(true)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("today-nutrition-link")
     }
 
     private var weeklyLink: some View {
@@ -82,6 +108,7 @@ struct TodayRootView: View {
                     scoreCard(model)
                     insightCard(model)
                     weeklyLink
+                    nutritionLink
                     if model.showsBodyweightReminder && model.insight?.insight.kind != .bodyweightStale { reminderCard }
                     if !model.bars.isEmpty { patternSection(model) }
                     planCard(model)

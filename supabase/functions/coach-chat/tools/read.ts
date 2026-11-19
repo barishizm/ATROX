@@ -150,6 +150,28 @@ export const getWeeklyVolume = defineTool({
   run: async (args, context) => ({ ok: true, data: { weeks: await call(context, "coach_weekly_volume", { p_weeks: args.weeks }) } }),
 });
 
+export const getNutritionSummary = defineTool({
+  name: "get_nutrition_summary",
+  description:
+    "The user's daily calorie and macro target and what they logged per day (kcal, protein/carbs/fat g). Days without entries are absent.",
+  parameters: {
+    type: "object",
+    properties: { days: { type: "integer", minimum: 1, maximum: 30, description: "Default 7, including today." } },
+    additionalProperties: false,
+  },
+  schema: z.object({ days: z.number().int().min(1).max(30).default(7) }).strict(),
+  run: async (args, context) => {
+    const summary = await call(context, "coach_nutrition_summary", { p_days: args.days, p_time_zone: "UTC" }) as Record<string, unknown>;
+    return {
+      ok: true,
+      data: {
+        ...summary,
+        note: "Logged amounts are AI estimates (often off by 10-25%) and days use UTC. A missing day may just be unlogged, not skipped.",
+      },
+    };
+  },
+});
+
 export const READ_TOOLS: CoachTool[] = [
   getRecentWorkouts,
   getExerciseHistory,
@@ -158,4 +180,5 @@ export const READ_TOOLS: CoachTool[] = [
   getRoutine,
   searchExercises,
   getWeeklyVolume,
+  getNutritionSummary,
 ];

@@ -1,6 +1,6 @@
 -- Food tracking: constraints, consent function, daily allowance.
 begin;
-select plan(13);
+select plan(16);
 select tests.create_two_users();
 
 select tests.authenticate_as(tests.user_a());
@@ -48,6 +48,13 @@ insert into public.food_analyses (user_id, kind) select tests.user_a(), 'photo' 
 select is((public.food_allowance(tests.user_a(), 'UTC') ->> 'allowed')::boolean, false, 'free user is stopped after 3');
 insert into public.entitlements (user_id, tier) values (tests.user_a(), 'pro');
 select is((public.food_allowance(tests.user_a(), 'UTC') ->> 'limit')::int, 60, 'pro limit is 60');
+
+-- Coach summary: own rows only, grouped per day, entry names not exposed.
+select tests.authenticate_as(tests.user_a());
+select is(jsonb_array_length(public.coach_nutrition_summary(7, 'UTC') -> 'days'), 1, 'summary has today only');
+select is((public.coach_nutrition_summary(7, 'UTC') -> 'days' -> 0 ->> 'calories')::int, 221, 'summary sums the day (220.5 rounds to 221)');
+select is(public.coach_nutrition_summary(7, 'UTC') -> 'target' ->> 'calories', '2400', 'summary carries the target');
+select tests.clear_authentication();
 
 select * from finish();
 rollback;

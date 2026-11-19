@@ -155,3 +155,42 @@ revoke all on function public.food_allowance(uuid, text) from public, anon, auth
 grant execute on function public.food_allowance(uuid, text) to service_role;
 revoke all on function public.food_has_consent(text) from public, anon;
 grant execute on function public.food_has_consent(text) to authenticated;
+
+-- Coach read tool get_nutrition_summary(days): the user's target and per-day totals. SECURITY INVOKER with the user's
+-- JWT like the other coach_* functions, so RLS applies. Entry names are left out (user text, no need for the coach).
+create function public.coach_nutrition_summary(p_days integer default 7, p_time_zone text default 'UTC')
+returns jsonb
+language plpgsql
+stable
+security invoker
+set search_path = ''
+as $$
+declare
+  v_tz    text := case when exists (select 1 from pg_catalog.pg_timezone_names where name = p_time_zone)
+                       then p_time_zone else 'UTC' end;
+  v_days  integer := greatest(least(coalesce(p_days, 7), 30), 1);
+  v_start timestamptz := (date_trunc('day', now() at time zone v_tz) - make_interval(days => v_days - 1)) at time zone v_tz;
+begin
+  return jsonb_build_object(
+    'target', (select jsonb_build_object('mode', t.mode, 'calories', t.calories, 'protein_g', t.protein_g,
+                                          'carbs_g', t.carbs_g, 'fat_g', t.fat_g)
+               from public.nutrition_targets t
+               where t.user_id = (select auth.uid()) and t.deleted_at is null),
+    'days', coalesce((
+      select jsonb_agg(d order by d.day)
+      from (
+        select (f.eaten_at at time zone v_tz)::date as day,
+               round(sum(f.calories), 0) as calories,
+               round(sum(f.protein_g), 0) as protein_g,
+               round(sum(f.carbs_g), 0) as carbs_g,
+               round(sum(f.fat_g), 0) as fat_g,
+               count(*) as entries
+        from public.food_entries f
+        where f.user_id = (select auth.uid()) and f.deleted_at is null and f.eaten_at >= v_start
+        group by 1
+      ) d), '[]'::jsonb));
+end
+$$;
+
+revoke all on function public.coach_nutrition_summary(integer, text) from public, anon;
+grant execute on function public.coach_nutrition_summary(integer, text) to authenticated;

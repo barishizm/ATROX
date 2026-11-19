@@ -37,7 +37,7 @@ struct PaywallView: View {
         case .coachUnlimited, .proactiveCoach: .coach
         case .forecast, .allReferenceGroups: .scores
         case .fullInsightHistory: .history
-        case .advancedShareCards: .other
+        case .advancedShareCards, .foodAnalysisUnlimited: .other
         case nil: .settings
         }
     }
@@ -83,6 +83,7 @@ struct PaywallView: View {
         case .fullInsightHistory: "paywall.headline.history"
         case .allReferenceGroups: "paywall.headline.groups"
         case .advancedShareCards: "paywall.headline.share"
+        case .foodAnalysisUnlimited: "paywall.headline.food"
         }
     }
 
@@ -93,6 +94,7 @@ struct PaywallView: View {
                 benefit("chart.line.uptrend.xyaxis", "paywall.benefit.forecast")
                 benefit("person.3", "paywall.benefit.groups")
                 benefit("square.and.arrow.up", "paywall.benefit.share")
+                benefit("camera.viewfinder", "paywall.benefit.food")
             }
         }
         .accessibilityIdentifier("paywall-benefits")

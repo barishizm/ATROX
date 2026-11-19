@@ -31,7 +31,8 @@ extension AppContainer {
         }
         return CoachDependencies(
             chat: chat, repository: CoachRepository(remote: remote, cache: cache), digest: digest,
-            uploadAISharingConsent: upload, loadQuota: quota
+            uploadAISharingConsent: upload, loadQuota: quota,
+            food: SupabaseFoodAnalyzeService(baseURL: config.url, anonKey: config.anonKey, accessToken: accessToken, refreshedToken: refreshedToken)
         )
     }
 

@@ -190,6 +190,7 @@ struct ConsentHistoryView: View {
         case .privacy: Text("consent.kind.privacy")
         case .aiSharing: Text("consent.kind.aiSharing")
         case .mlContribution: Text("consent.kind.mlContribution")
+        case .foodAISharing: Text("consent.kind.foodAISharing")
         }
     }
 }

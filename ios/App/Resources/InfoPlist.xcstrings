@@ -34,6 +34,23 @@
           }
         }
       }
+    },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy - Camera Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX uses the camera to photograph your meals for calorie estimates and to scan product barcodes. Photos are only sent for analysis when you tap to analyze."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX, kalori tahmini için yemeklerinin fotoğrafını çekmek ve ürün barkodlarını okumak için kamerayı kullanır. Fotoğraflar yalnızca sen analiz etmeye dokunduğunda analiz için gönderilir."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

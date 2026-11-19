@@ -75,6 +75,8 @@
 	<string>$(LEGAL_PRIVACY_URL)</string>
 	<key>LegalTermsURL</key>
 	<string>$(LEGAL_TERMS_URL)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ATROX uses the camera to photograph your meals for calorie estimates and to scan product barcodes. Photos are only sent for analysis when you tap to analyze.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold.</string>
 	<key>NSHealthUpdateUsageDescription</key>
