@@ -123,7 +123,7 @@ private func snapshot(weekEndsAt: Date = t0.addingTimeInterval(3 * 86_400), scor
         #expect(DeepLink(url: start, configuration: config) == .startWorkout(routineId: routineId, dayId: dayA))
         #expect(DeepLink(url: WidgetLink.tab("workout", scheme: "atrox"), configuration: config) == .tab(.workout))
         #expect(DeepLink(url: WidgetLink.tab("analysis", scheme: "atrox"), configuration: config) == .tab(.analysis))
-        #expect(DeepLink(url: WidgetLink.tab("today", scheme: "atrox"), configuration: config) == .tab(.today))
+        #expect(DeepLink(url: WidgetLink.tab("today", scheme: "atrox"), configuration: config) == .tab(.workout))
         #expect(DeepLink.startWorkout(routineId: routineId, dayId: dayA).url(scheme: "atrox") == start)
     }
 

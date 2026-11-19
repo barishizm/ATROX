@@ -16,7 +16,8 @@ import Testing
 
     @Test func schemeLinksResolveToTypedRoutes() {
         #expect(link("atrox://u/alice") == .friendInvite(username: "alice"))
-        #expect(link("atrox://today") == .tab(.today))
+        #expect(link("atrox://today") == .tab(.workout))
+        #expect(link("atrox://nutrition") == .tab(.nutrition))
         #expect(link("atrox://coach") == .tab(.coach))
         #expect(link("atrox://weekly") == .weeklySummary)
     }
@@ -43,7 +44,7 @@ import Testing
         let url = try #require(DeepLink.inviteLink(username: " Alice ", configuration: config))
         #expect(url.absoluteString == "https://links.example.com/u/alice")
         #expect(DeepLink(url: url, configuration: config) == .friendInvite(username: "alice"))
-        #expect(DeepLink.tab(.today).url(scheme: "atrox")?.absoluteString == "atrox://today")
+        #expect(DeepLink.tab(.nutrition).url(scheme: "atrox")?.absoluteString == "atrox://nutrition")
     }
 
     @Test func linkWaitsInTheRouterUntilConsumed() {
