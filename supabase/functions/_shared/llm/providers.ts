@@ -2,7 +2,7 @@
 // (decision 2026-11-14, docs/00-KARARLAR.md #9); the OpenAI-compatible core stays generic so a provider can be added.
 import { parseChatStream } from "./openai-stream.ts";
 import {
-  type ChatMessage,
+  type ChatInput,
   type ChatOptions,
   type LLMEvent,
   type LLMProvider,
@@ -37,7 +37,7 @@ class OpenAICompatibleProvider implements LLMProvider {
     this.model = spec.model;
   }
 
-  async *streamChat(messages: ChatMessage[], tools: ToolDefinition[], options: ChatOptions): AsyncGenerator<LLMEvent> {
+  async *streamChat(messages: ChatInput[], tools: ToolDefinition[], options: ChatOptions): AsyncGenerator<LLMEvent> {
     const { spec } = this;
     if (!spec.apiKey) throw new ProviderError(`${spec.name}: API key missing`, false);
 
@@ -94,7 +94,10 @@ export function deepSeekProvider(settings: DeepSeekSettings): LLMProvider {
     apiKey: settings.apiKey,
     timeoutMs: settings.timeoutMs,
     fetch: settings.fetch ?? fetch,
-    extraBody: (options) => ({ thinking: { type: options.thinking ? "enabled" : "disabled" } }),
+    extraBody: (options) => ({
+      thinking: { type: options.thinking ? "enabled" : "disabled" },
+      ...(options.json ? { response_format: { type: "json_object" } } : {}),
+    }),
   });
 }
 

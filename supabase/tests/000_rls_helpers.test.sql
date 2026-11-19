@@ -19,14 +19,15 @@ language sql immutable set search_path = '' as $$
     'custom_exercises',
     'routines', 'routine_days', 'routine_exercises',
     'workouts', 'workout_exercises', 'sets', 'personal_records', 'score_snapshots', 'insights',
-    'coach_threads', 'coach_messages', 'coach_memory'
+    'coach_threads', 'coach_messages', 'coach_memory',
+    'food_entries', 'nutrition_targets'
   ]
 $$;
 
 -- Owner-readable tables only the service role writes (the app cannot insert or update).
 create or replace function tests.owner_readonly_tables() returns text[]
 language sql immutable set search_path = '' as $$
-  select array['coach_usage', 'entitlements', 'coach_quota', 'coach_digests', 'social_rate_limits']
+  select array['coach_usage', 'entitlements', 'coach_quota', 'coach_digests', 'social_rate_limits', 'food_analyses']
 $$;
 
 -- Social tables (P085): readable under bespoke rules (discoverable / friends / blocks), written only through
