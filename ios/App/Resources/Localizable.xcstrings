@@ -24267,6 +24267,22 @@
           }
         }
       }
+    },
+    "settings.info.label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More information"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla bilgi"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
