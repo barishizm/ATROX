@@ -14,6 +14,8 @@
 | İletişim → Ad | Evet (isteğe bağlı ad/soyad) | Evet | Hayır | Uygulama işlevselliği | Profil |
 | Sağlık ve Fitness → Sağlık | Evet (vücut ağırlığı, boy, doğum tarihi, cinsiyet, kısıt etiketleri) | Evet | Hayır | Uygulama işlevselliği | Profil/ölçüm; koç onayıyla AI sağlayıcıya |
 | Sağlık ve Fitness → Fitness | Evet (antrenmanlar, setler, rekorlar, skorlar) | Evet | Hayır | Uygulama işlevselliği | Antrenman |
+| Fotoğraf veya Videolar → Fotoğraflar veya Videolar | Evet (yalnızca kullanıcının analiz etmeyi seçtiği yemek fotoğrafı; sunucuda saklanmaz, analiz sağlayıcısına iletilir) | Evet | Hayır | Uygulama işlevselliği | Yemek analizi |
+| Sağlık ve Fitness → Fitness (yemek günlüğü, kalori/makro hedefi) | Evet | Evet | Hayır | Uygulama işlevselliği | Beslenme |
 | Kullanıcı İçeriği → Diğer kullanıcı içeriği | Evet (notlar, koç mesajları, kullanıcı/görünen ad) | Evet | Hayır | Uygulama işlevselliği | Koç, sosyal |
 | Tanımlayıcılar → Kullanıcı kimliği | Evet (hesap UUID'si) | Evet | Hayır | Uygulama işlevselliği | Hesap |
 | Tanımlayıcılar → Cihaz kimliği | Evet (TelemetryDeck'in hash'li tanıtıcısı) | **Hayır** | Hayır | Analitik | Analitik |
@@ -27,7 +29,7 @@ Notlar:
   isterse etiket değişir `[HUKUKÇU]`.
 - **AI sağlayıcıya aktarım** (DeepSeek) App Store etiketinde "üçüncü taraf ortakla paylaşım" olarak değerlendirilmeli; Apple
   tanımına göre hizmet sağlayıcı sayılıp sayılmadığı `[HUKUKÇU]`. 5.1.2(i): kişisel veriyi üçüncü taraf AI ile paylaşmadan önce
-  açık izin gerekir — uygulama bunu `coach.consent.*` ile yapıyor.
+  açık izin gerekir — uygulama bunu `coach.consent.*` (koç) ve `food.consent.*` (yemek fotoğrafı/açıklaması) ile yapıyor.
 - Manifest ↔ etiket tutarlılığı: etiket tablosundaki "Evet" satırları `PrivacyInfo.xcprivacy`'deki `NSPrivacyCollectedDataTypes` ile aynı olmalı
   (CI betiği yalnızca manifestin geçerliliğini denetler; **etiketle eşleşmeyi insan denetler** `[MANUEL]`).
 - Sign in with Apple "gizli e-posta" kullanılırsa e-posta bir aktarma adresidir; yine e-posta toplanıyor sayılır.

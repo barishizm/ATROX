@@ -75,6 +75,19 @@ Gizli olmayan ayarlar (hepsinin varsayılanı var; yalnızca değiştirmek isted
 | `COACH_DAILY_SPEND_CAP_USD` | `25` | Küresel devre kesici: UTC günü içindeki toplam `coach_usage.cost_usd` bu tutarı aşarsa koç kibarca kapanır |
 | `COACH_TURN_TIMEOUT_MS` | `60000` | Bir kullanıcı turunun (tüm ajan adımları) toplam süresi |
 
+### Yemek analizi (`food-analyze`)
+
+Aynı `DEEPSEEK_API_KEY` ve harcama tavanı kullanılır; ek gizli değer yok. Dağıtım: `supabase functions deploy food-analyze` ve
+`supabase db push` (`schema_28`). Gizli olmayan ayarlar:
+
+| Değişken | Varsayılan | Anlamı |
+|---|---|---|
+| `FOOD_AI_CONSENT_VERSION` | `2026-11` | Geçerli `food_ai_sharing` onay sürümü; uygulamadaki `ConsentVersions.foodAISharing` ile birlikte değişir |
+| `FOOD_TIMEOUT_MS` | `30000` | Tek analizin zaman aşımı (görsel girdi koçtan yavaştır) |
+
+Günlük hak (ücretsiz 3, Pro 60) `food_allowance()` içindedir (göç `schema_28`). **Doğrulama `[MANUEL]`:** gerçek anahtarla bir yemek
+fotoğrafı gönderip `deepseek-flash`'ın görsel girdiyi kabul ettiğini ve doğruluğu görmek; kabul etmiyorsa karar #9 yeniden değerlendirilir.
+
 Katman başına sınırlar (günlük mesaj, dakikalık istek, ajan adımı, tur başına çıktı token'ı, düşünme modu)
 `public.coach_limits` tablosundadır; göçle tohumlanır, servis rolüyle güncellenir:
 
