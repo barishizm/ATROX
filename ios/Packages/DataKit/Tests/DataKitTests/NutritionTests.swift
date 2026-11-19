@@ -93,7 +93,10 @@ import Testing
 
     @Test func updateMarksPendingAndKeepsThumbnailWhenNoneGiven() async throws {
         let repo = try makeRepo()
-        let saved = try await repo.add(FoodEntryInput(eatenAt: Date(), meal: .snack, name: "Bar", calories: 200, source: .manual, thumbnail: Data([9])), userId: testUser)
+        let saved = try await repo.add(
+            FoodEntryInput(eatenAt: Date(), meal: .snack, name: "Bar", calories: 200, source: .manual, thumbnail: Data([9])),
+            userId: testUser
+        )
         clock.advance(by: 60)
         let updated = try await repo.update(id: saved.id, with: entry("Bar", at: saved.input.eatenAt, kcal: 250))
         #expect(updated.input.calories == 250)
@@ -121,7 +124,10 @@ import Testing
         #expect(try await repo.target(userId: testUser) == second)
         #expect(try await repo.target(userId: otherUser) == nil)
         await #expect(throws: DataError.self) {
-            try await repo.setTarget(NutritionTargetInput(mode: .manual, values: .init(calories: 300, proteinG: 1, carbsG: 1, fatG: 1), activity: .light), userId: testUser)
+            try await repo.setTarget(
+                NutritionTargetInput(mode: .manual, values: .init(calories: 300, proteinG: 1, carbsG: 1, fatG: 1), activity: .light),
+                userId: testUser
+            )
         }
     }
 
@@ -137,9 +143,16 @@ import Testing
         calendar.timeZone = TimeZone(identifier: "UTC")!
         let noon = Date(timeIntervalSince1970: 1_799_971_200 + 43_200) // 2026-… 00:00 UTC + 12 h
         func snap(_ kcal: Double, at date: Date) -> FoodEntrySnapshot {
-            FoodEntrySnapshot(userId: testUser, input: FoodEntryInput(eatenAt: date, meal: .lunch, name: "x", calories: kcal, proteinG: 10, carbsG: 20, fatG: 5, source: .manual))
+            FoodEntrySnapshot(
+                userId: testUser,
+                input: FoodEntryInput(eatenAt: date, meal: .lunch, name: "x", calories: kcal, proteinG: 10, carbsG: 20, fatG: 5, source: .manual)
+            )
         }
-        let day = NutritionDay.summarize([snap(500, at: noon), snap(300, at: noon.addingTimeInterval(3600)), snap(900, at: noon.addingTimeInterval(86_400))], on: noon, calendar: calendar)
+        let day = NutritionDay.summarize(
+            [snap(500, at: noon), snap(300, at: noon.addingTimeInterval(3600)), snap(900, at: noon.addingTimeInterval(86_400))],
+            on: noon,
+            calendar: calendar
+        )
         #expect(day.calories == 800)
         #expect(day.proteinG == 20)
         #expect(day.entries.count == 2)

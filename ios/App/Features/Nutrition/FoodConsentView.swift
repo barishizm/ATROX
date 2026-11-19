@@ -15,7 +15,10 @@ struct FoodConsentView: View {
                     Text("food.consent.title").font(DSFont.title)
                     Text("food.consent.intro").font(DSFont.body).foregroundStyle(DSColor.textSecondary)
                 }
-                block("food.consent.sent.title", lines: ["food.consent.sent.photo", "food.consent.sent.text", "food.consent.sent.locale", "food.consent.sent.coach"])
+                block(
+                    "food.consent.sent.title",
+                    lines: ["food.consent.sent.photo", "food.consent.sent.text", "food.consent.sent.locale", "food.consent.sent.coach"]
+                )
                 block("food.consent.recipient.title", lines: ["food.consent.recipient.body"])
                 block("food.consent.notsent.title", lines: ["food.consent.notsent.body"])
                 block("food.consent.barcode.title", lines: ["food.consent.barcode.body"])

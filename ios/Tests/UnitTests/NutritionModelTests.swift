@@ -73,7 +73,15 @@ struct FoodAnalyzeModelTests {
     }
 
     @Test func aScannedProductGoesStraightToTheEditor() {
-        let food = PackagedFood(barcode: "3017620422003", name: "Spread", caloriesPer100g: 539, proteinPer100g: 6.3, carbsPer100g: 57.5, fatPer100g: 30.9, servingGrams: 15)
+        let food = PackagedFood(
+            barcode: "3017620422003",
+            name: "Spread",
+            caloriesPer100g: 539,
+            proteinPer100g: 6.3,
+            carbsPer100g: 57.5,
+            fatPer100g: 30.9,
+            servingGrams: 15
+        )
         let model = FoodAnalyzeModel(food: food)
         #expect(model.phase == .result)
         #expect(model.items.first?.grams == 15)

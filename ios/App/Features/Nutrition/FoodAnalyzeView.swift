@@ -76,7 +76,8 @@ struct FoodAnalyzeView: View {
     @ViewBuilder
     private var photoPreview: some View {
         if case .photo(let jpeg, _) = model.source, let image = UIImage(data: jpeg) {
-            Image(uiImage: image).resizable().scaledToFill().frame(maxWidth: .infinity).frame(height: 200).clipShape(RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
+            Image(uiImage: image).resizable().scaledToFill().frame(maxWidth: .infinity).frame(height: 200)
+                .clipShape(RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
                 .accessibilityHidden(true)
         }
     }
@@ -90,20 +91,40 @@ struct FoodAnalyzeView: View {
                     // Pro already: no upsell, just the limit.
                     EmptyState(systemImage: "clock", title: "nutrition.error.quota.title", message: "nutrition.error.quota.pro.message")
                 } else {
-                    EmptyState(systemImage: "lock.fill", title: "nutrition.error.quota.title", message: "nutrition.error.quota.message", actionTitle: "paywall.seePro") {
+                    EmptyState(
+                        systemImage: "lock.fill",
+                        title: "nutrition.error.quota.title",
+                        message: "nutrition.error.quota.message",
+                        actionTitle: "paywall.seePro"
+                    ) {
                         showsPaywall = true
                     }
                 }
             case .rateLimited:
-                EmptyState(systemImage: "hourglass", title: "nutrition.error.rate.title", message: "nutrition.error.rate.message", actionTitle: "common.retry") { retry() }
+                EmptyState(
+                    systemImage: "hourglass",
+                    title: "nutrition.error.rate.title",
+                    message: "nutrition.error.rate.message",
+                    actionTitle: "common.retry"
+                ) { retry() }
             case .notFood:
                 EmptyState(systemImage: "questionmark.circle", title: "nutrition.error.notfood.title", message: "nutrition.error.notfood.message")
             case .consentRequired:
                 EmptyState(systemImage: "hand.raised", title: "nutrition.error.consent.title", message: "nutrition.error.consent.message")
             case .offline:
-                EmptyState(systemImage: "wifi.slash", title: "nutrition.error.offline.title", message: "nutrition.error.offline.message", actionTitle: "common.retry") { retry() }
+                EmptyState(
+                    systemImage: "wifi.slash",
+                    title: "nutrition.error.offline.title",
+                    message: "nutrition.error.offline.message",
+                    actionTitle: "common.retry"
+                ) { retry() }
             case .unauthorized, .unavailable, .timeout, .cancelled, .failed:
-                EmptyState(systemImage: "exclamationmark.triangle", title: "nutrition.error.failed.title", message: "nutrition.error.failed.message", actionTitle: "common.retry") { retry() }
+                EmptyState(
+                    systemImage: "exclamationmark.triangle",
+                    title: "nutrition.error.failed.title",
+                    message: "nutrition.error.failed.message",
+                    actionTitle: "common.retry"
+                ) { retry() }
             }
             if model.source == .text, error == .notFood {
                 SecondaryButton("nutrition.error.edit") { model.backToInput() }.padding(.horizontal, Spacing.md)

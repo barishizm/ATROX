@@ -11,7 +11,15 @@ struct ScriptedFoodService: FoodAnalyzeService {
         return FoodAnalysis(
             mealName: turkish ? "Tavuk ve pilav" : "Chicken and rice",
             items: [
-                FoodAnalysisItem(name: turkish ? "Izgara tavuk göğsü" : "Grilled chicken breast", grams: 150, calories: 248, proteinG: 46, carbsG: 0, fatG: 5.4, confidence: 0.8),
+                FoodAnalysisItem(
+                    name: turkish ? "Izgara tavuk göğsü" : "Grilled chicken breast",
+                    grams: 150,
+                    calories: 248,
+                    proteinG: 46,
+                    carbsG: 0,
+                    fatG: 5.4,
+                    confidence: 0.8
+                ),
                 FoodAnalysisItem(name: turkish ? "Pirinç pilavı" : "Rice", grams: 200, calories: 260, proteinG: 5, carbsG: 56, fatG: 0.5, confidence: 0.7),
                 FoodAnalysisItem(name: turkish ? "Çoban salata" : "Side salad", grams: 120, calories: 45, proteinG: 1.5, carbsG: 7, fatG: 1.5, confidence: 0.6),
             ],

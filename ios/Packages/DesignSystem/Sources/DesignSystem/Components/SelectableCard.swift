@@ -83,7 +83,10 @@ private struct CardSurface: ViewModifier {
     func body(content: Content) -> some View {
         if glass {
             content
-                .glassEffect(isSelected ? Glass.regular.tint(DSColor.accentFill.opacity(0.55)).interactive() : Glass.regular.tint(dsGlassDim).interactive(), in: shape)
+                .glassEffect(
+                    isSelected ? Glass.regular.tint(DSColor.accentFill.opacity(0.55)).interactive() : Glass.regular.tint(dsGlassDim).interactive(),
+                    in: shape
+                )
                 .overlay(shape.strokeBorder(isSelected ? Color.white.opacity(0.8) : Color.clear, lineWidth: 1.5))
         } else {
             content

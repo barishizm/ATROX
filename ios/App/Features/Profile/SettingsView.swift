@@ -293,7 +293,6 @@ struct WeeklySummarySettingsSection: View {
     }
 }
 
-
 /// Section header with a small info button; the explanation opens in a popover instead of a long footer.
 struct SettingsInfoHeader<Info: View>: View {
     private let title: LocalizedStringKey

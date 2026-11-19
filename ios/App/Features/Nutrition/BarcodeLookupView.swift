@@ -79,7 +79,8 @@ struct BarcodeLookupView: View {
                             HStack {
                                 VStack(alignment: .leading) {
                                     Text(food.displayName).font(DSFont.callout).foregroundStyle(DSColor.textPrimary).lineLimit(2)
-                                    Text(verbatim: "\(Int(food.caloriesPer100g.rounded())) kcal / 100 g").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+                                    Text(verbatim: "\(Int(food.caloriesPer100g.rounded())) kcal / 100 g")
+                                        .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                                 }
                                 Spacer()
                                 Image(systemName: "plus.circle").foregroundStyle(DSColor.accent)

@@ -54,7 +54,10 @@ struct NutritionTargetSetupView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("common.cancel", action: onClose) }
                 if step != .choose {
-                    ToolbarItem(placement: .navigation) { Button { back() } label: { Image(systemName: "chevron.backward") }.accessibilityLabel(Text("common.back")) }
+                    ToolbarItem(placement: .navigation) {
+                        Button { back() } label: { Image(systemName: "chevron.backward") }
+                            .accessibilityLabel(Text("common.back"))
+                    }
                 }
             }
         }
@@ -121,7 +124,12 @@ struct NutritionTargetSetupView: View {
             }
             .accessibilityIdentifier("target-use-auto")
         } else {
-            EmptyState(systemImage: "scalemass", title: "nutrition.target.noweight.title", message: "nutrition.target.noweight.message", actionTitle: "nutrition.target.manual.title") {
+            EmptyState(
+                systemImage: "scalemass",
+                title: "nutrition.target.noweight.title",
+                message: "nutrition.target.noweight.message",
+                actionTitle: "nutrition.target.manual.title"
+            ) {
                 prefillManualIfEmpty()
                 step = .manualCalories
             }
