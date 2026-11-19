@@ -489,6 +489,22 @@
         }
       }
     },
+    "food.consent.sent.coach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you also use the AI coach, it can read your daily calorie and macro totals and your target (never food names or photos)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI koçu da kullanıyorsan koç günlük kalori ve makro toplamlarını ve hedefini okuyabilir (yemek adlarını ve fotoğrafları asla)"
+          }
+        }
+      }
+    },
     "food.consent.sent.locale" : {
       "localizations" : {
         "en" : {
@@ -1433,6 +1449,22 @@
         }
       }
     },
+    "nutrition.error.quota.pro.message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You reached today's analysis limit. Enter the meal manually or try again tomorrow."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünkü analiz sınırına ulaştın. Yemeği elle girebilir veya yarın tekrar deneyebilirsin."
+          }
+        }
+      }
+    },
     "nutrition.error.quota.title" : {
       "localizations" : {
         "en" : {
@@ -1445,6 +1477,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Günlük hakkın doldu"
+          }
+        }
+      }
+    },
+    "nutrition.error.rate.message" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too many analyses in a minute. Wait a moment and try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir dakikada çok fazla analiz yaptın. Biraz bekleyip tekrar dene."
+          }
+        }
+      }
+    },
+    "nutrition.error.rate.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slow down a little"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biraz yavaşla"
           }
         }
       }
@@ -1637,6 +1701,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Protein"
+          }
+        }
+      }
+    },
+    "nutrition.macro.short.carbs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K"
+          }
+        }
+      }
+    },
+    "nutrition.macro.short.fat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "F"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y"
+          }
+        }
+      }
+    },
+    "nutrition.macro.short.protein" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P"
           }
         }
       }
@@ -2309,6 +2421,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Beslenme şu an kullanılamıyor"
+          }
+        }
+      }
+    },
+    "nutrition.unit.kcal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kcal"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kcal"
           }
         }
       }

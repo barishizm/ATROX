@@ -80,6 +80,7 @@ import Testing
         }
         #expect(await run(403, #"{"error":{"code":"consent_required","message":"x"}}"#) == .consentRequired)
         #expect(await run(429, #"{"error":{"code":"quota_exceeded","message":"x","details":{"limit":3}}}"#) == .quotaExceeded(limit: 3))
+        #expect(await run(429, #"{"error":{"code":"rate_limited","message":"x"}}"#) == .rateLimited)
         #expect(await run(422, #"{"error":{"code":"not_food","message":"x"}}"#) == .notFood)
         #expect(await run(503, #"{"error":{"code":"food_unavailable","message":"x"}}"#) == .unavailable)
     }

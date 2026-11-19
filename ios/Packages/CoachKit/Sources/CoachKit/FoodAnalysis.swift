@@ -52,6 +52,8 @@ public enum FoodAnalyzeError: Error, Sendable, Equatable {
     case quotaExceeded(limit: Int?)
     /// The model found no food in the photo or text.
     case notFood
+    /// Too many analyses in a minute.
+    case rateLimited
     /// Spend cap reached, model down or unreadable answer: try again later.
     case unavailable
     case unauthorized
@@ -71,7 +73,8 @@ public enum FoodAnalyzeError: Error, Sendable, Equatable {
         case .cancelled: .cancelled
         case .server(let code, _) where code == "not_food": .notFood
         case .server(let code, _) where code == "food_unavailable": .unavailable
-        case .rateLimited, .duplicateMessage, .invalidResponse, .server: .failed
+        case .rateLimited: .rateLimited
+        case .duplicateMessage, .invalidResponse, .server: .failed
         }
     }
 }

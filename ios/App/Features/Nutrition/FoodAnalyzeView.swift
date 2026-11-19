@@ -85,10 +85,17 @@ struct FoodAnalyzeView: View {
     private func failure(_ error: FoodAnalyzeError) -> some View {
         VStack(spacing: Spacing.md) {
             switch error {
-            case .quotaExceeded:
-                EmptyState(systemImage: "lock.fill", title: "nutrition.error.quota.title", message: "nutrition.error.quota.message", actionTitle: "paywall.seePro") {
-                    showsPaywall = true
+            case .quotaExceeded(let limit):
+                if (limit ?? 0) > 3 {
+                    // Pro already: no upsell, just the limit.
+                    EmptyState(systemImage: "clock", title: "nutrition.error.quota.title", message: "nutrition.error.quota.pro.message")
+                } else {
+                    EmptyState(systemImage: "lock.fill", title: "nutrition.error.quota.title", message: "nutrition.error.quota.message", actionTitle: "paywall.seePro") {
+                        showsPaywall = true
+                    }
                 }
+            case .rateLimited:
+                EmptyState(systemImage: "hourglass", title: "nutrition.error.rate.title", message: "nutrition.error.rate.message", actionTitle: "common.retry") { retry() }
             case .notFood:
                 EmptyState(systemImage: "questionmark.circle", title: "nutrition.error.notfood.title", message: "nutrition.error.notfood.message")
             case .consentRequired:
@@ -115,10 +122,11 @@ struct FoodAnalyzeView: View {
                 photoPreview
                 TextField("nutrition.editor.name", text: $model.mealName).font(DSFont.title).textFieldStyle(.plain)
                     .accessibilityIdentifier("food-name-field")
+                // A menu, not segments: four long Turkish labels do not fit in 393 pt ("Akşam yem…").
                 Picker("nutrition.editor.meal", selection: $model.meal) {
                     ForEach(MealType.allCases, id: \.self) { Text($0.titleKey).tag($0) }
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
                 DatePicker("nutrition.editor.time", selection: $model.eatenAt, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
                 if let notes = model.notes { Label(notes, systemImage: "info.circle").font(DSFont.footnote).foregroundStyle(DSColor.textSecondary) }
                 ForEach(model.items) { item in itemCard(item) }
@@ -153,8 +161,13 @@ struct FoodAnalyzeView: View {
                 NumberField(
                     title: "nutrition.item.grams", value: Binding(get: { item.grams }, set: { model.setGrams($0, for: item.id) }), unit: "g", maximum: 5000
                 )
-                Text(verbatim: "\(Int(item.calories.rounded())) kcal · P \(Int(item.proteinG.rounded())) · C \(Int(item.carbsG.rounded())) · F \(Int(item.fatG.rounded()))")
-                    .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                HStack(spacing: Spacing.xs) {
+                    Text(verbatim: "\(Int(item.calories.rounded()))")
+                    Text("nutrition.unit.kcal")
+                    Text(verbatim: "·")
+                    MacroLine(protein: item.proteinG, carbs: item.carbsG, fat: item.fatG)
+                }
+                .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
             }
         }
     }
@@ -165,15 +178,15 @@ struct FoodAnalyzeView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text("nutrition.editor.total").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
-                    Text(verbatim: "\(Int(totals.calories.rounded())) kcal").font(DSFont.numericLarge).foregroundStyle(DSColor.textPrimary)
+                    HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+                        Text(verbatim: "\(Int(totals.calories.rounded()))").font(DSFont.numericLarge)
+                        Text("nutrition.unit.kcal").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                    }
+                    .foregroundStyle(DSColor.textPrimary)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: Spacing.xxs) {
-                    Text(verbatim: "P \(Int(totals.proteinG.rounded())) g")
-                    Text(verbatim: "C \(Int(totals.carbsG.rounded())) g")
-                    Text(verbatim: "F \(Int(totals.fatG.rounded())) g")
-                }
-                .font(DSFont.numericSmall).foregroundStyle(DSColor.textSecondary)
+                MacroLine(protein: totals.proteinG, carbs: totals.carbsG, fat: totals.fatG)
+                    .font(DSFont.numericSmall).foregroundStyle(DSColor.textSecondary)
             }
         }
         .accessibilityElement(children: .combine)

@@ -129,3 +129,29 @@ struct NumberField: View {
 
     static func format(_ value: Double) -> String { value == 0 ? "" : (value.rounded() == value ? "\(Int(value))" : String(format: "%.1f", value)) }
 }
+
+/// "P 20 · C 30 · F 10" with the short macro names of the app language (TR: P / K / Y).
+struct MacroLine: View {
+    let protein: Double
+    let carbs: Double
+    let fat: Double
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            pair("nutrition.macro.short.protein", protein)
+            Text(verbatim: "·")
+            pair("nutrition.macro.short.carbs", carbs)
+            Text(verbatim: "·")
+            pair("nutrition.macro.short.fat", fat)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(Int(protein.rounded())) g, \(Int(carbs.rounded())) g, \(Int(fat.rounded())) g"))
+    }
+
+    private func pair(_ key: LocalizedStringKey, _ grams: Double) -> some View {
+        HStack(spacing: Spacing.xxs) {
+            Text(key)
+            Text(verbatim: "\(Int(grams.rounded()))")
+        }
+    }
+}

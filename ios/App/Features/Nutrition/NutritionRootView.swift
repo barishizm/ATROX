@@ -14,6 +14,8 @@ struct NutritionRootView: View {
     @State private var showsCamera = false
     @State private var showsLibrary = false
     @State private var photoItem: PhotosPickerItem?
+    /// The photo just taken: analysis starts once the camera has fully left, never in the same update that dismisses it.
+    @State private var capturedImage: UIImage?
     @State private var pending: AIAction?
     @State private var unavailable = false
 
@@ -35,10 +37,14 @@ struct NutritionRootView: View {
         .task { await prepare() }
         .task(id: container.dataRevision) { await model?.load() }
         .sheet(item: $sheet) { sheet in sheetContent(sheet) }
-        .fullScreenCover(isPresented: $showsCamera) {
+        .fullScreenCover(isPresented: $showsCamera, onDismiss: {
+            guard let image = capturedImage else { return }
+            capturedImage = nil
+            startPhoto(image)
+        }) {
             CameraPicker { image in
+                capturedImage = image
                 showsCamera = false
-                if let image { startPhoto(image) }
             }
             .ignoresSafeArea()
         }
@@ -47,7 +53,10 @@ struct NutritionRootView: View {
             guard let item else { return }
             photoItem = nil
             Task {
-                if let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) { startPhoto(image) }
+                guard let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) else { return }
+                // The photo picker is still leaving; a sheet presented in the same moment would be dropped.
+                try? await Task.sleep(for: .milliseconds(450))
+                startPhoto(image)
             }
         }
         .onChange(of: consent?.state) { _, state in
@@ -176,12 +185,12 @@ struct NutritionRootView: View {
                     thumbnail(input)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text(input.name).font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.textPrimary).lineLimit(2)
-                        Text(verbatim: "P \(Int(input.proteinG.rounded())) · C \(Int(input.carbsG.rounded())) · F \(Int(input.fatG.rounded()))")
+                        MacroLine(protein: input.proteinG, carbs: input.carbsG, fat: input.fatG)
                             .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                     }
                     Spacer()
                     Text(verbatim: "\(Int(input.calories.rounded()))").font(DSFont.numericSmall).foregroundStyle(DSColor.textPrimary)
-                    Text(verbatim: "kcal").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+                    Text("nutrition.unit.kcal").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                 }
             }
         }

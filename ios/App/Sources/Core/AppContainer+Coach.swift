@@ -41,7 +41,8 @@ extension AppContainer {
     static func uiTestCoach() -> CoachDependencies? {
         guard ProcessInfo.processInfo.arguments.contains("-uitest-fake-coach") else { return nil }
         return CoachDependencies(
-            chat: ScriptedCoachService(), repository: CoachRepository(remote: EmptyCoachRemote(), cache: InMemoryCoachCache())
+            chat: ScriptedCoachService(), repository: CoachRepository(remote: EmptyCoachRemote(), cache: InMemoryCoachCache()),
+            food: ScriptedFoodService()
         )
     }
     #else

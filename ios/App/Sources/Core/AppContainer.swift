@@ -180,6 +180,7 @@ final class AppContainer {
         clearWidgets()
         await coach?.repository.clear()
         coachConsentState = nil
+        foodConsentState = nil
         UserDefaultsOnboardingDraftStore().clearAll()
         authFlow.reset()
         await UserNotificationService().cancel(id: WeeklySummaryNotification.identifier)
