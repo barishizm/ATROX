@@ -137,3 +137,17 @@ import Testing
         #expect(try await v2.aiSharingStatus(userId: testUser) == .outdated(previous: true))
     }
 }
+
+@Suite struct FoodConsentTests {
+    @Test func foodConsentIsIndependentFromTheCoachConsent() async throws {
+        let service = ConsentService(repository: SwiftDataConsentRepository(modelContainer: try DataStore.inMemory()))
+        #expect(try await service.foodAISharingStatus(userId: testUser) == .notAsked)
+        try await service.setAISharing(true, userId: testUser)
+        #expect(try await service.foodAISharingStatus(userId: testUser) == .notAsked)
+        try await service.setFoodAISharing(true, userId: testUser)
+        #expect(try await service.foodAISharingStatus(userId: testUser) == .granted)
+        try await service.setFoodAISharing(false, userId: testUser)
+        #expect(try await service.foodAISharingStatus(userId: testUser) == .declined)
+        #expect(try await service.aiSharingStatus(userId: testUser) == .granted)
+    }
+}

@@ -131,6 +131,17 @@ public struct ConsentService: Sendable {
         try await repository.record(kind: .aiSharing, version: versions.aiSharing, granted: granted, userId: userId)
     }
 
+    // MARK: Food photo analysis
+
+    public func foodAISharingStatus(userId: UUID) async throws -> ConsentStatus {
+        try await status(of: .foodAISharing, userId: userId)
+    }
+
+    /// Stores the answer to the food-photo consent screen for the current text version.
+    public func setFoodAISharing(_ granted: Bool, userId: UUID) async throws {
+        try await repository.record(kind: .foodAISharing, version: versions.foodAISharing, granted: granted, userId: userId)
+    }
+
     /// Every recorded decision, newest first (the settings "consent history").
     public func history(userId: UUID) async throws -> [ConsentSnapshot] {
         try await repository.history(userId: userId).reversed()
