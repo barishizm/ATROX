@@ -49,26 +49,29 @@ struct NutritionHeader<Options: View>: View {
 /// Diary | Recipes switch under the header, drawn as a glass capsule with a tinted glass thumb.
 struct NutritionTabPicker: View {
     @Binding var selection: NutritionTab
+    @Namespace private var pill
 
     var body: some View {
-        GlassEffectContainer(spacing: Spacing.xs) {
-            HStack(spacing: Spacing.xs) {
-                ForEach(NutritionTab.allCases) { tab in
-                    Button { withAnimation(.snappy) { selection = tab } } label: {
-                        Text(tab.titleKey).font(DSFont.headline)
-                            .foregroundStyle(selection == tab ? DSColor.onAccent : DSColor.textPrimary)
-                            .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
-                    }
-                    .buttonStyle(.plain)
-                    .glassEffect(
-                        selection == tab ? Glass.regular.tint(DSColor.accentFill).interactive() : Glass.regular.tint(dsGlassDim).interactive(),
-                        in: Capsule()
-                    )
-                    .accessibilityAddTraits(selection == tab ? .isSelected : [])
-                    .accessibilityIdentifier("nutrition-tab-\(tab.rawValue)")
+        HStack(spacing: 0) {
+            ForEach(NutritionTab.allCases) { tab in
+                Button { withAnimation(.snappy) { selection = tab } } label: {
+                    Text(tab.titleKey).font(DSFont.headline)
+                        .foregroundStyle(selection == tab ? DSColor.onAccent : DSColor.textPrimary)
+                        .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
+                        .background {
+                            if selection == tab {
+                                Capsule().fill(DSColor.accentFill).matchedGeometryEffect(id: "pill", in: pill)
+                            }
+                        }
+                        .contentShape(Capsule())
                 }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(selection == tab ? .isSelected : [])
+                .accessibilityIdentifier("nutrition-tab-\(tab.rawValue)")
             }
         }
+        .padding(Spacing.xxs)
+        .glassEffect(Glass.regular.tint(dsGlassDim), in: Capsule())
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("nutrition-tabs")
     }

@@ -28,8 +28,8 @@ struct WaterCard: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Spacing.xs), count: 7), spacing: Spacing.sm) {
                     ForEach(0..<max(glasses, filled + 1), id: \.self) { index in
                         Button { Task { index < filled ? await model.removeWater() : await model.addWater() } } label: {
-                            Image(systemName: index < filled ? "cup.and.saucer.fill" : "cup.and.saucer")
-                                .font(.title2).foregroundStyle(index < filled ? DSColor.accent : DSColor.textTertiary)
+                            WaterGlass(isFull: index < filled)
+                                .frame(width: 26, height: 32)
                                 .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
                         }
                         .accessibilityLabel(Text(index < filled ? "nutrition.water.remove" : "nutrition.water.add"))
@@ -43,6 +43,39 @@ struct WaterCard: View {
 
     private func liters(_ ml: Double) -> String {
         (ml / 1000).formatted(.number.precision(.fractionLength(2)).locale(locale)) + " L"
+    }
+}
+
+/// A drinking glass, wider at the top; filled with water when `isFull`.
+private struct WaterGlass: View {
+    let isFull: Bool
+
+    private struct Tumbler: Shape {
+        /// Fraction of the height the water reaches; 1 draws the whole glass.
+        var level: CGFloat = 1
+
+        func path(in rect: CGRect) -> Path {
+            let inset = rect.width * 0.14
+            let top = rect.maxY - rect.height * level
+            // Width of the glass at height y: linear from full at the top to narrower at the bottom.
+            func edge(_ y: CGFloat) -> CGFloat { inset * (y - rect.minY) / rect.height }
+            var path = Path()
+            path.move(to: CGPoint(x: rect.minX + edge(top), y: top))
+            path.addLine(to: CGPoint(x: rect.maxX - edge(top), y: top))
+            path.addLine(to: CGPoint(x: rect.maxX - inset, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX + inset, y: rect.maxY))
+            path.closeSubpath()
+            return path
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            if isFull { Tumbler(level: 0.78).fill(DSColor.accent.opacity(0.85)) }
+            Tumbler().stroke(isFull ? DSColor.accent : DSColor.textTertiary, style: StrokeStyle(lineWidth: 2, lineJoin: .round))
+        }
+        .padding(2)
+        .accessibilityHidden(true)
     }
 }
 
