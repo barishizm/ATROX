@@ -24,6 +24,18 @@ import Testing
         #expect(cut == 2350) // 2759 * 0.85 = 2345 → 2350 (rounded to 10)
     }
 
+    @Test func paceScalesTheAdjustment() {
+        func calories(_ goal: Goal, _ pace: NutritionPace) -> Int {
+            var value = input(goal: goal)
+            value.pace = pace
+            return NutritionTargetCalculator.target(for: value).calories
+        }
+        #expect(calories(.fatLoss, .gentle) > calories(.fatLoss, .steady))
+        #expect(calories(.fatLoss, .steady) > calories(.fatLoss, .fast))
+        #expect(calories(.muscleGain, .fast) > calories(.muscleGain, .steady))
+        #expect(calories(.generalHealth, .fast) == calories(.generalHealth, .gentle))
+    }
+
     @Test func macrosAddUpToTheCalories() {
         let target = NutritionTargetCalculator.target(for: input(goal: .muscleGain))
         let sum = target.proteinG * 4 + target.carbsG * 4 + target.fatG * 9

@@ -10,7 +10,13 @@ struct NutritionRootView: View {
     @State private var model: NutritionModel?
     @State private var consent: FoodConsentModel?
     @State private var sheet: NutritionSheet?
+    @State private var tab: NutritionTab = .diary
     @State private var showsAddMenu = false
+    @State private var showsCalendar = false
+    @State private var showsQuiz = false
+    @State private var detailMeal: MealType?
+    /// The meal the next added food goes to; nil picks one from the time of day.
+    @State private var addMeal: MealType?
     @State private var showsCamera = false
     @State private var showsLibrary = false
     @State private var photoItem: PhotosPickerItem?
@@ -31,12 +37,33 @@ struct NutritionRootView: View {
                 LoadingState()
             }
         }
-        .background(DSColor.background.ignoresSafeArea())
-        .navigationTitle("nutrition.title")
-        .toolbar { if model != nil { ToolbarItem(placement: .primaryAction) { optionsMenu } } }
+        .dsGlassSurfaces()
+        .background(NutritionBackdrop().ignoresSafeArea())
+        .toolbar(.hidden, for: .navigationBar)
         .task { await prepare() }
         .task(id: container.dataRevision) { await model?.load() }
         .sheet(item: $sheet) { sheet in sheetContent(sheet) }
+        .fullScreenCover(isPresented: $showsQuiz) {
+            if let model, let profile = model.profile {
+                NutritionOnboardingView(model: model, profile: profile) { showsQuiz = false }
+            }
+        }
+        .sheet(isPresented: $showsCalendar) {
+            NutritionCalendarSheet(selection: model?.day ?? Date()) { picked in Task { await model?.select(day: picked) } }
+        }
+        .navigationDestination(item: $detailMeal) { meal in
+            if let model {
+                MealDetailView(model: model, meal: meal, onAdd: { addMeal = meal; showsAddMenu = true }, onEdit: { sheet = .manual($0) })
+            }
+        }
+        .confirmationDialog("nutrition.add.more", isPresented: $showsAddMenu) {
+            if CameraPicker.isAvailable { Button("nutrition.add.camera") { request(.camera) } }
+            Button("nutrition.add.library") { request(.library) }
+            Button("nutrition.add.describe") { request(.describe) }
+            Button("nutrition.add.barcode") { sheet = .barcode }
+            Button("nutrition.add.manual") { sheet = .manual(nil) }
+            Button("common.cancel", role: .cancel) {}
+        }
         .fullScreenCover(isPresented: $showsCamera, onDismiss: {
             guard let image = capturedImage else { return }
             capturedImage = nil
@@ -77,71 +104,49 @@ struct NutritionRootView: View {
     private func content(_ model: NutritionModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.lg) {
-                dayHeader(model)
-                if model.isLoading {
-                    LoadingState()
-                } else {
-                    summaryCard(model)
-                    if let left = model.analysesLeft { quotaChip(left) }
-                    mealsSection(model)
+                NutritionHeader(title: dayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
+                NutritionTabPicker(selection: $tab)
+                switch tab {
+                case .diary: diary(model)
+                case .recipes:
+                    EmptyState(systemImage: "book.closed", title: "nutrition.recipes.empty.title", message: "nutrition.recipes.empty.message")
+                        .frame(minHeight: 320).accessibilityIdentifier("nutrition-recipes")
                 }
             }
             .padding(Spacing.md)
-            .padding(.bottom, 80)
+            .padding(.bottom, Spacing.xl)
         }
-        .safeAreaInset(edge: .bottom) { addBar }
         .refreshable { await model.load() }
     }
 
-    private func dayHeader(_ model: NutritionModel) -> some View {
-        HStack {
-            Button { Task { await model.shiftDay(by: -1) } } label: { Image(systemName: "chevron.left") }
-                .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
-                .accessibilityLabel(Text("nutrition.day.previous"))
-            Spacer()
-            VStack(spacing: Spacing.xxs) {
-                Text(model.isToday ? "nutrition.day.today" : LocalizedStringKey(""))
-                    .font(DSFont.overline).foregroundStyle(DSColor.accent).opacity(model.isToday ? 1 : 0)
-                Text(model.day.formatted(.dateTime.weekday(.wide).day().month(.wide))).font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
-            }
-            .accessibilityElement(children: .combine)
-            Spacer()
-            Button { Task { await model.shiftDay(by: 1) } } label: { Image(systemName: "chevron.right") }
-                .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
-                .disabled(!model.canGoForward)
-                .accessibilityLabel(Text("nutrition.day.next"))
+    @ViewBuilder
+    private func diary(_ model: NutritionModel) -> some View {
+        if model.isLoading {
+            LoadingState()
+        } else {
+            if model.trackedDays.count < 3 { NutritionTrackProgress(trackedDays: model.trackedDays.count) }
+            Text("nutrition.summary.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
+            NutritionSummaryCard(model: model) { sheet = .target }
+            if let left = model.analysesLeft { quotaChip(left) }
+            Text("nutrition.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
+            NutritionMealsCard(model: model, onOpen: { detailMeal = $0 }, onAdd: { addMeal = $0; showsAddMenu = true })
+            DiarySectionTitle(title: "nutrition.water.section")
+            WaterCard(model: model)
+            DiarySectionTitle(title: "nutrition.weight.section")
+            WeightCard(model: model, onGoal: { sheet = .goalWeight }, onEntry: { sheet = .weightEntry }, onProgress: { sheet = .weightProgress })
+            DiarySectionTitle(title: "nutrition.fasting.section")
+            FastingCard(model: model, onStart: { sheet = .fastPlan })
+            DiarySectionTitle(title: "nutrition.activities.section")
+            ActivitiesCard(model: model, onSteps: { sheet = .steps }, onAdd: { sheet = .activity })
+            DiarySectionTitle(title: "nutrition.notes.section")
+            NotesCard(model: model, onEdit: { sheet = .note })
+            Button { sheet = .sources } label: { Text("nutrition.sources.link").font(DSFont.callout).foregroundStyle(DSColor.accent) }
+                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
         }
     }
 
-    private func summaryCard(_ model: NutritionModel) -> some View {
-        Card {
-            VStack(spacing: Spacing.md) {
-                CalorieRing(consumed: model.summary.calories, target: model.target?.values.calories)
-                    .frame(maxWidth: .infinity)
-                HStack(alignment: .top, spacing: Spacing.md) {
-                    MacroBar(title: "nutrition.macro.protein", grams: model.summary.proteinG, target: model.target?.values.proteinG, tint: DSColor.accent)
-                    MacroBar(title: "nutrition.macro.carbs", grams: model.summary.carbsG, target: model.target?.values.carbsG, tint: DSColor.highlight)
-                    MacroBar(title: "nutrition.macro.fat", grams: model.summary.fatG, target: model.target?.values.fatG, tint: DSColor.success)
-                }
-                if let target = model.target {
-                    Button { sheet = .target } label: {
-                        Label(
-                            target.mode == .auto ? "nutrition.target.fromprofile" : "nutrition.target.fromyou",
-                            systemImage: target.mode == .auto ? "wand.and.stars" : "slider.horizontal.3"
-                        )
-                        .font(DSFont.footnote)
-                    }
-                    .accessibilityIdentifier("nutrition-target-edit")
-                } else {
-                    VStack(spacing: Spacing.xs) {
-                        Text("nutrition.target.missing").font(DSFont.callout).foregroundStyle(DSColor.textSecondary).multilineTextAlignment(.center)
-                        SecondaryButton("nutrition.target.set", systemImage: "target") { sheet = .target }
-                            .accessibilityIdentifier("nutrition-target-set")
-                    }
-                }
-            }
-        }
-        .accessibilityIdentifier("nutrition-summary")
+    private func dayTitle(_ model: NutritionModel) -> Text {
+        model.isToday ? Text("nutrition.day.today.title") : Text(model.day.formatted(.dateTime.day().month(.abbreviated)))
     }
 
     private func quotaChip(_ left: Int) -> some View {
@@ -153,99 +158,14 @@ struct NutritionRootView: View {
         .font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
     }
 
-    @ViewBuilder
-    private func mealsSection(_ model: NutritionModel) -> some View {
-        if model.summary.entries.isEmpty {
-            EmptyState(systemImage: "fork.knife", title: "nutrition.empty.title", message: "nutrition.empty.message")
-                .frame(minHeight: 220)
-        } else {
-            ForEach(MealType.allCases, id: \.self) { meal in
-                let entries = model.entries(for: meal)
-                if !entries.isEmpty {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        HStack {
-                            Label { Text(meal.titleKey) } icon: { Image(systemName: meal.systemImage) }
-                                .font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
-                            Spacer()
-                            Text(verbatim: "\(Int(entries.reduce(0) { $0 + $1.input.calories }.rounded())) kcal")
-                                .font(DSFont.numericSmall).foregroundStyle(DSColor.textSecondary)
-                        }
-                        ForEach(entries) { entry in entryRow(entry, model) }
-                    }
-                }
-            }
-        }
-    }
-
-    private func entryRow(_ entry: FoodEntrySnapshot, _ model: NutritionModel) -> some View {
-        let input = entry.input
-        return Button { sheet = .manual(entry) } label: {
-            Card(padding: Spacing.sm) {
-                HStack(spacing: Spacing.sm) {
-                    thumbnail(input)
-                    VStack(alignment: .leading, spacing: Spacing.xxs) {
-                        Text(input.name).font(DSFont.callout.weight(.semibold)).foregroundStyle(DSColor.textPrimary).lineLimit(2)
-                        MacroLine(protein: input.proteinG, carbs: input.carbsG, fat: input.fatG)
-                            .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
-                    }
-                    Spacer()
-                    Text(verbatim: "\(Int(input.calories.rounded()))").font(DSFont.numericSmall).foregroundStyle(DSColor.textPrimary)
-                    Text("nutrition.unit.kcal").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-        .contextMenu {
-            Button { sheet = .manual(entry) } label: { Label("nutrition.entry.edit", systemImage: "pencil") }
-            Button(role: .destructive) { Task { await model.delete(id: entry.id) } } label: { Label("nutrition.entry.delete", systemImage: "trash") }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityHint(Text("nutrition.entry.hint"))
-    }
-
-    @ViewBuilder
-    private func thumbnail(_ input: FoodEntryInput) -> some View {
-        if let data = input.thumbnail, let image = UIImage(data: data) {
-            Image(uiImage: image).resizable().scaledToFill().frame(width: 44, height: 44)
-                .clipShape(RoundedRectangle(cornerRadius: Radius.sm, style: .continuous)).accessibilityHidden(true)
-        } else {
-            Image(systemName: input.source.systemImage).frame(width: 44, height: 44).foregroundStyle(DSColor.accent)
-                .background(DSColor.surfaceRaised, in: RoundedRectangle(cornerRadius: Radius.sm, style: .continuous)).accessibilityHidden(true)
-        }
-    }
-
-    // MARK: Add
-
-    private var addBar: some View {
-        HStack(spacing: Spacing.sm) {
-            PrimaryButton("nutrition.add.scan", systemImage: "camera.fill") { request(CameraPicker.isAvailable ? .camera : .library) }
-                .accessibilityIdentifier("nutrition-scan")
-            Button { showsAddMenu = true } label: {
-                Image(systemName: "plus").font(.title3.weight(.semibold)).frame(width: HitTarget.button, height: HitTarget.button)
-                    .background(DSColor.surfaceRaised, in: Circle())
-            }
-            .accessibilityLabel(Text("nutrition.add.more"))
-            .accessibilityIdentifier("nutrition-add-more")
-        }
-        .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
-        .background(.ultraThinMaterial)
-        .confirmationDialog("nutrition.add.more", isPresented: $showsAddMenu) {
-            if CameraPicker.isAvailable { Button("nutrition.add.camera") { request(.camera) } }
-            Button("nutrition.add.library") { request(.library) }
-            Button("nutrition.add.describe") { request(.describe) }
-            Button("nutrition.add.barcode") { sheet = .barcode }
-            Button("nutrition.add.manual") { sheet = .manual(nil) }
-            Button("common.cancel", role: .cancel) {}
-        }
-    }
-
     private var optionsMenu: some View {
         Menu {
             Button { sheet = .target } label: { Label("nutrition.target.set", systemImage: "target") }
+            if model?.profile != nil { Button { showsQuiz = true } label: { Label("nutrition.quiz.restart", systemImage: "list.bullet.clipboard") } }
             if consent?.isGranted == true {
                 Button(role: .destructive) { Task { await consent?.decline() } } label: { Label("nutrition.consent.withdraw", systemImage: "hand.raised") }
             }
-        } label: { Image(systemName: "ellipsis.circle") }
+        } label: { Image(systemName: "ellipsis").font(.title3.weight(.semibold)) }
         .accessibilityLabel(Text("nutrition.options"))
     }
 
@@ -274,7 +194,9 @@ struct NutritionRootView: View {
     }
 
     private func makeModel(_ source: FoodAnalyzeModel.Source) -> AnalyzeLaunch {
-        AnalyzeLaunch(model: FoodAnalyzeModel(source: source, service: container.coach?.food, locale: locale.language.languageCode?.identifier ?? "en"))
+        let analysis = FoodAnalyzeModel(source: source, service: container.coach?.food, locale: locale.language.languageCode?.identifier ?? "en")
+        if let addMeal { analysis.meal = addMeal }
+        return AnalyzeLaunch(model: analysis)
     }
 
     // MARK: Sheets
@@ -287,7 +209,7 @@ struct NutritionRootView: View {
                 .onChange(of: launch.model.remaining) { _, left in if let left { model?.analysesLeft = left } }
         case .manual(let entry):
             ManualFoodView(
-                editing: entry,
+                editing: entry, meal: addMeal,
                 onSave: { input in
                     if let entry { return await model?.update(id: entry.id, with: input) ?? false }
                     return await model?.save(input) ?? false
@@ -297,13 +219,32 @@ struct NutritionRootView: View {
         case .barcode:
             BarcodeLookupView(
                 service: container.packagedFoods, languageCode: locale.language.languageCode?.identifier ?? "en",
-                onSelect: { food in self.sheet = .analyze(AnalyzeLaunch(model: FoodAnalyzeModel(food: food))) },
+                onSelect: { food in
+                    let analysis = FoodAnalyzeModel(food: food)
+                    if let addMeal { analysis.meal = addMeal }
+                    self.sheet = .analyze(AnalyzeLaunch(model: analysis))
+                },
                 onClose: { self.sheet = nil }
             )
         case .target:
             NutritionTargetSetupView(
                 profile: model?.profile, current: model?.target, onSave: { await model?.setTarget($0) ?? false }, onClose: { self.sheet = nil }
             )
+        case .activity: ActivitySheet { name, minutes, kcal in await model?.addActivity(name: name, minutes: minutes, kcal: kcal) ?? false }
+        case .steps: StepsSheet { await model?.addSteps($0) ?? false }
+        case .note: NoteSheet(existing: model?.note) { await model?.saveNote(mood: $0, text: $1) ?? false }
+        case .fastPlan: FastPlanSheet { await model?.startFast(hours: $0, label: $1) ?? false }
+        case .goalWeight:
+            GoalWeightSheet(
+                title: "nutrition.weight.goal.title", field: "nutrition.weight.goal.field", unit: model?.profile?.weightUnit ?? .kilograms,
+                current: model?.goalWeightKg
+            ) { await model?.setGoalWeight(kg: $0) ?? false }
+        case .weightEntry:
+            GoalWeightSheet(
+                title: "nutrition.weight.title", field: "nutrition.weight.field", unit: model?.profile?.weightUnit ?? .kilograms, current: nil
+            ) { await model?.logWeight(kg: $0) ?? false }
+        case .weightProgress: if let model { WeightProgressSheet(model: model) }
+        case .sources: NutritionSourcesSheet()
         case .consent:
             if let consent {
                 FoodConsentView(model: consent) { if !consent.isGranted { pending = nil; self.sheet = nil } }
@@ -320,6 +261,8 @@ struct NutritionRootView: View {
         consent = agreed
         model = made
         await made.load()
+        // First visit: a target is worked out from a short quiz instead of an empty ring.
+        if made.target == nil, made.profile != nil, !NutritionPreferences.quizFinished(userId: made.userId) { showsQuiz = true }
     }
 }
 
@@ -334,6 +277,7 @@ enum NutritionSheet: Identifiable {
     case barcode
     case target
     case consent
+    case activity, steps, note, fastPlan, goalWeight, weightEntry, weightProgress, sources
 
     var id: String {
         switch self {
@@ -342,6 +286,14 @@ enum NutritionSheet: Identifiable {
         case .barcode: "barcode"
         case .target: "target"
         case .consent: "consent"
+        case .activity: "activity"
+        case .steps: "steps"
+        case .note: "note"
+        case .fastPlan: "fast-plan"
+        case .goalWeight: "goal-weight"
+        case .weightEntry: "weight-entry"
+        case .weightProgress: "weight-progress"
+        case .sources: "sources"
         }
     }
 }

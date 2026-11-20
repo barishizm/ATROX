@@ -5,11 +5,15 @@ import SwiftUI
 /// Calories left in the middle of a ring that fills as the day's calories add up.
 struct CalorieRing: View {
     let consumed: Double
+    var burned: Double = 0
     let target: Int?
 
+    /// What is left is the target plus what exercise burned, minus what was eaten.
+    private var allowance: Double { Double(target ?? 0) + burned }
+
     private var progress: Double {
-        guard let target, target > 0 else { return 0 }
-        return consumed / Double(target)
+        guard allowance > 0 else { return 0 }
+        return consumed / allowance
     }
 
     var body: some View {
@@ -21,8 +25,8 @@ struct CalorieRing: View {
                 .rotationEffect(.degrees(-90))
                 .animation(.easeOut(duration: 0.4), value: progress)
             VStack(spacing: Spacing.xxs) {
-                if let target {
-                    let left = Int((Double(target) - consumed).rounded())
+                if target != nil {
+                    let left = Int((allowance - consumed).rounded())
                     Text(verbatim: "\(abs(left))").font(DSFont.numericLarge).foregroundStyle(DSColor.textPrimary)
                     Text(left >= 0 ? "nutrition.ring.left" : "nutrition.ring.over").font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                 } else {
@@ -31,7 +35,7 @@ struct CalorieRing: View {
                 }
             }
         }
-        .frame(width: 170, height: 170)
+        .frame(width: 150, height: 150)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("nutrition.ring.a11y"))
         .accessibilityValue(Text(verbatim: target.map { "\(Int(consumed.rounded())) / \($0) kcal" } ?? "\(Int(consumed.rounded())) kcal"))

@@ -7,13 +7,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ATROX reads your height, weight, birth date and sex from Apple Health to fill in your profile and import weigh-ins. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold."
+            "value" : "ATROX reads your height, weight, birth date, sex and step count from Apple Health to fill in your profile, import weigh-ins and show your steps. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ATROX, profilini doldurmak ve tartı ölçümlerini almak için Apple Sağlık'tan boy, kilo, doğum tarihi ve cinsiyet bilgini okur. Bunlar ATROX hesabına yalnızca güç skorlarını hesaplamak için kaydedilir; reklam için kullanılmaz ve satılmaz."
+            "value" : "ATROX, profilini doldurmak ve tartı ölçümlerini almak ve adımlarını göstermek için Apple Sağlık'tan boy, kilo, doğum tarihi, cinsiyet ve adım sayını okur. Bunlar ATROX hesabına yalnızca güç skorlarını hesaplamak için kaydedilir; reklam için kullanılmaz ve satılmaz."
           }
         }
       }

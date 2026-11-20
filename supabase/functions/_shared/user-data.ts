@@ -24,6 +24,7 @@ export const USER_TABLES = [
   "coach_digests",
   "food_entries",
   "nutrition_targets",
+  "diary_logs",
   "food_analyses",
   // Friendships, requests, blocks and reports reference auth.users with ON DELETE CASCADE, so deleting the auth user
   // removes them; they hold other people's data too and are not part of the export.

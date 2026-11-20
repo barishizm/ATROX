@@ -13,13 +13,27 @@ extension AppContainer {
         let profiles = SwiftDataProfileRepository(modelContainer: modelContainer)
         let measurements = SwiftDataMeasurementRepository(modelContainer: modelContainer)
         let userId = user.id
-        return NutritionModel(userId: userId, repository: SwiftDataNutritionRepository(modelContainer: modelContainer)) {
+        let health = self.health
+        let connectedKey = "nutrition.steps.connected.\(userId.uuidString)"
+        let nutritionHealth = health.isAvailable ? NutritionHealth(
+            isConnected: { UserDefaults.standard.bool(forKey: connectedKey) },
+            connect: {
+                guard await health.requestStepsAuthorization() else { return false }
+                UserDefaults.standard.set(true, forKey: connectedKey)
+                return true
+            },
+            steps: { await health.steps(on: $0) }
+        ) : nil
+        return NutritionModel(
+            userId: userId, repository: SwiftDataNutritionRepository(modelContainer: modelContainer),
+            diary: SwiftDataDiaryRepository(modelContainer: modelContainer, clock: { Date() }), measurements: measurements, health: nutritionHealth
+        ) {
             guard let profile = try? await profiles.profile(userId: userId)?.input else { return nil }
             let weight = try? await measurements.latest(userId: userId)?.input.weightKg
             let age = Calendar.current.dateComponents([.year], from: profile.birthDate, to: Date()).year ?? 30
             return NutritionProfile(
                 sex: profile.sex, ageYears: max(age, 10), heightCm: profile.heightCm, weightKg: weight, goal: profile.goal,
-                weeklyFrequency: profile.weeklyFrequency
+                weeklyFrequency: profile.weeklyFrequency, weightUnit: profile.unitSystem == .imperial ? .pounds : .kilograms
             )
         }
     }

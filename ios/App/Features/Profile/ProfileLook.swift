@@ -55,14 +55,12 @@ enum HeroMascot: String, CaseIterable, Identifiable {
     }
 }
 
-/// The user's profile-look choices and training days, kept on this device per user.
+/// The user's profile-look choices, kept on this device per user.
 @MainActor
 @Observable
 final class ProfileLook {
     var color: HeroColor { didSet { defaults.set(color.rawValue, forKey: key("color")) } }
     var mascot: HeroMascot { didSet { defaults.set(mascot.rawValue, forKey: key("mascot")) } }
-    /// Chosen training weekdays (`Calendar` numbering, 1 = Sunday); nil until the user picks.
-    private(set) var chosenDays: Set<Int>?
 
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let userId: UUID
@@ -73,35 +71,9 @@ final class ProfileLook {
         let prefix = "profile.look.\(userId.uuidString)."
         color = defaults.string(forKey: prefix + "color").flatMap(HeroColor.init(rawValue:)) ?? .blue
         mascot = defaults.string(forKey: prefix + "mascot").flatMap(HeroMascot.init(rawValue:)) ?? .cool
-        chosenDays = (defaults.array(forKey: prefix + "days") as? [Int]).map(Set.init)
     }
 
     private func key(_ name: String) -> String { "profile.look.\(userId.uuidString).\(name)" }
-
-    /// The chosen days, or an even spread over the week matching the weekly frequency from sign-up.
-    func trainingDays(weeklyFrequency: Int) -> Set<Int> {
-        chosenDays ?? Self.defaultDays(count: weeklyFrequency)
-    }
-
-    func toggle(day: Int, current: Set<Int>) {
-        var days = current
-        if days.contains(day) { days.remove(day) } else { days.insert(day) }
-        chosenDays = days
-        defaults.set(days.sorted(), forKey: key("days"))
-    }
-
-    /// Calendar weekday numbers: Monday 2 … Saturday 7, Sunday 1.
-    static func defaultDays(count: Int) -> Set<Int> {
-        switch min(max(count, 1), 7) {
-        case 1: [2]
-        case 2: [2, 5]
-        case 3: [2, 4, 6]
-        case 4: [2, 3, 5, 6]
-        case 5: [2, 3, 4, 5, 6]
-        case 6: [2, 3, 4, 5, 6, 7]
-        default: [1, 2, 3, 4, 5, 6, 7]
-        }
-    }
 }
 
 /// Sheet to pick the hero colour and mascot expression, with a live preview.
