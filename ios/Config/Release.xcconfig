@@ -2,3 +2,6 @@
 #include "Base.xcconfig"
 
 APP_ENVIRONMENT = production
+
+DEVELOPMENT_TEAM = 5222NFFPX7
+CODE_SIGN_STYLE = Automatic
