@@ -20,7 +20,7 @@ language sql immutable set search_path = '' as $$
     'routines', 'routine_days', 'routine_exercises',
     'workouts', 'workout_exercises', 'sets', 'personal_records', 'score_snapshots', 'insights',
     'coach_threads', 'coach_messages', 'coach_memory',
-    'food_entries', 'nutrition_targets'
+    'food_entries', 'nutrition_targets', 'diary_logs'
   ]
 $$;
 

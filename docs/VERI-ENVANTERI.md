@@ -55,6 +55,7 @@ Saklama sütunu: "hesap ömrü" = hesap silinene kadar (`delete-account` tüm sa
 | Veri | Amaç | Dayanak | Saklama | Alıcı |
 |---|---|---|---|---|
 | Yemek kayıtları (`food_entries`: zaman, öğün, ad, kalori, makrolar, porsiyon, kaynak, yiyecek listesi) | Günlük kalori/makro takibi, koç | **Açık rıza** önerisi (beslenme/sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
+| Günlük kayıtlar (`diary_logs`: su, aktivite, adım, not, oruç, hedef kilo) | Günlük takip ekranı | Sözleşme / açık rıza (not ve oruç sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
 | Günlük hedef (`nutrition_targets`: mod, kalori, makrolar, aktivite) | Hedefle karşılaştırma | Sözleşme / açık rıza | Hesap ömrü | Supabase |
 | Analiz sayacı (`food_analyses`: zaman, tür) | Günlük hak (ücretsiz 3 / Pro 60) | Meşru menfaat | Hesap ömrü | Supabase (yalnızca servis rolü yazar) |
 | Yemek fotoğrafı | Analiz | Açık rıza (`food_ai_sharing`) | **Sunucuda saklanmaz**; cihazda yalnızca küçük önizleme (`FoodEntry.thumbnail`, senkronize edilmez) | DeepSeek (yalnızca analiz anında) |

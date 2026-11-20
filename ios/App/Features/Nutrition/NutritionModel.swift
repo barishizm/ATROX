@@ -10,6 +10,7 @@ struct NutritionProfile: Sendable, Equatable {
     var weightKg: Double?
     var goal: Goal
     var weeklyFrequency: Int
+    var weightUnit: WeightUnit = .kilograms
 
     /// The automatic target; nil until there is a weight.
     var autoTarget: NutritionTargetValues? {
@@ -31,9 +32,17 @@ final class NutritionModel {
     private(set) var day: Date
     private(set) var summary: NutritionDay = .empty
     private(set) var target: NutritionTargetInput?
-    private(set) var profile: NutritionProfile?
-    /// Calories burned by logged activities on the shown day.
-    private(set) var burnedCalories: Double = 0
+    var profile: NutritionProfile?
+    /// The shown day's water, activity, step and note logs, oldest first.
+    var dayLogs: [DiaryLogSnapshot] = []
+    /// Recent fasts, newest first.
+    var fasts: [DiaryLogSnapshot] = []
+    var goalWeightKg: Double?
+    /// Weigh-ins, newest day first.
+    var weights: [MeasurementSnapshot] = []
+    /// Steps Apple Health counted on the shown day; nil until connected.
+    var healthSteps: Double?
+    var stepsConnected: Bool
     /// Start-of-day of every day with food logged, for the streak.
     private(set) var trackedDays: Set<Date> = []
     private(set) var isLoading = true
@@ -42,16 +51,25 @@ final class NutritionModel {
     var analysesLeft: Int?
 
     @ObservationIgnored private let repository: any NutritionRepository
-    @ObservationIgnored private let loadProfile: @Sendable () async -> NutritionProfile?
-    @ObservationIgnored private let calendar: Calendar
-    @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored let diary: (any DiaryRepository)?
+    @ObservationIgnored let measurementRepository: (any MeasurementRepository)?
+    @ObservationIgnored let health: NutritionHealth?
+    @ObservationIgnored let loadProfile: @Sendable () async -> NutritionProfile?
+    @ObservationIgnored let calendar: Calendar
+    @ObservationIgnored let now: @Sendable () -> Date
 
     init(
-        userId: UUID, repository: any NutritionRepository, calendar: Calendar = .current, now: @escaping @Sendable () -> Date = { Date() },
+        userId: UUID, repository: any NutritionRepository, diary: (any DiaryRepository)? = nil,
+        measurements: (any MeasurementRepository)? = nil, health: NutritionHealth? = nil,
+        calendar: Calendar = .current, now: @escaping @Sendable () -> Date = { Date() },
         loadProfile: @escaping @Sendable () async -> NutritionProfile?
     ) {
         self.userId = userId
         self.repository = repository
+        self.diary = diary
+        self.measurementRepository = measurements
+        self.health = health
+        stepsConnected = health?.isConnected() ?? false
         self.calendar = calendar
         self.now = now
         self.loadProfile = loadProfile
@@ -83,6 +101,7 @@ final class NutritionModel {
     func load() async {
         failed = false
         profile = await loadProfile()
+        await reloadDiary()
         do {
             target = try await repository.target(userId: userId)
             try await reloadDay()
@@ -150,6 +169,7 @@ final class NutritionModel {
         guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return }
         let entries = try await repository.entries(userId: userId, from: start, to: end)
         summary = NutritionDay.summarize(entries, on: day, calendar: calendar)
+        await reloadDayLogs()
         try await reloadTrackedDays()
     }
 

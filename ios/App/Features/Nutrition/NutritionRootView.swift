@@ -123,6 +123,18 @@ struct NutritionRootView: View {
             if let left = model.analysesLeft { quotaChip(left) }
             Text("nutrition.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
             NutritionMealsCard(model: model, onOpen: { detailMeal = $0 }, onAdd: { addMeal = $0; showsAddMenu = true })
+            DiarySectionTitle(title: "nutrition.water.section")
+            WaterCard(model: model)
+            DiarySectionTitle(title: "nutrition.weight.section")
+            WeightCard(model: model, onGoal: { sheet = .goalWeight }, onEntry: { sheet = .weightEntry }, onProgress: { sheet = .weightProgress })
+            DiarySectionTitle(title: "nutrition.fasting.section")
+            FastingCard(model: model, onStart: { sheet = .fastPlan })
+            DiarySectionTitle(title: "nutrition.activities.section")
+            ActivitiesCard(model: model, onSteps: { sheet = .steps }, onAdd: { sheet = .activity })
+            DiarySectionTitle(title: "nutrition.notes.section")
+            NotesCard(model: model, onEdit: { sheet = .note })
+            Button { sheet = .sources } label: { Text("nutrition.sources.link").font(DSFont.callout).foregroundStyle(DSColor.accent) }
+                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
         }
     }
 
@@ -210,6 +222,21 @@ struct NutritionRootView: View {
             NutritionTargetSetupView(
                 profile: model?.profile, current: model?.target, onSave: { await model?.setTarget($0) ?? false }, onClose: { self.sheet = nil }
             )
+        case .activity: ActivitySheet { name, minutes, kcal in await model?.addActivity(name: name, minutes: minutes, kcal: kcal) ?? false }
+        case .steps: StepsSheet { await model?.addSteps($0) ?? false }
+        case .note: NoteSheet(existing: model?.note) { await model?.saveNote(mood: $0, text: $1) ?? false }
+        case .fastPlan: FastPlanSheet { await model?.startFast(hours: $0, label: $1) ?? false }
+        case .goalWeight:
+            GoalWeightSheet(
+                title: "nutrition.weight.goal.title", field: "nutrition.weight.goal.field", unit: model?.profile?.weightUnit ?? .kilograms,
+                current: model?.goalWeightKg
+            ) { await model?.setGoalWeight(kg: $0) ?? false }
+        case .weightEntry:
+            GoalWeightSheet(
+                title: "nutrition.weight.title", field: "nutrition.weight.field", unit: model?.profile?.weightUnit ?? .kilograms, current: nil
+            ) { await model?.logWeight(kg: $0) ?? false }
+        case .weightProgress: if let model { WeightProgressSheet(model: model) }
+        case .sources: NutritionSourcesSheet()
         case .consent:
             if let consent {
                 FoodConsentView(model: consent) { if !consent.isGranted { pending = nil; self.sheet = nil } }
@@ -240,6 +267,7 @@ enum NutritionSheet: Identifiable {
     case barcode
     case target
     case consent
+    case activity, steps, note, fastPlan, goalWeight, weightEntry, weightProgress, sources
 
     var id: String {
         switch self {
@@ -248,6 +276,14 @@ enum NutritionSheet: Identifiable {
         case .barcode: "barcode"
         case .target: "target"
         case .consent: "consent"
+        case .activity: "activity"
+        case .steps: "steps"
+        case .note: "note"
+        case .fastPlan: "fast-plan"
+        case .goalWeight: "goal-weight"
+        case .weightEntry: "weight-entry"
+        case .weightProgress: "weight-progress"
+        case .sources: "sources"
         }
     }
 }

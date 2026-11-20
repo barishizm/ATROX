@@ -97,7 +97,7 @@ struct MeasurementsView: View {
     }
 }
 
-private struct WeightChart: View {
+struct WeightChart: View {
     let points: [WeightPoint]
     let unit: WeightUnit
     @Environment(\.locale) private var locale
