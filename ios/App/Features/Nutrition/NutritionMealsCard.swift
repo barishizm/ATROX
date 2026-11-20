@@ -26,7 +26,7 @@ struct NutritionMealsCard: View {
             Button { onOpen(meal) } label: {
                 HStack(spacing: Spacing.sm) {
                     Image(systemName: meal.systemImage).font(.title3).foregroundStyle(DSColor.accent)
-                        .frame(width: 44, height: 44).background(DSColor.surfaceRaised, in: Circle()).accessibilityHidden(true)
+                        .frame(width: 44, height: 44).glassEffect(Glass.regular, in: Circle()).accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         HStack(spacing: Spacing.xxs) {
                             Text(meal.titleKey).font(DSFont.headline)
@@ -43,8 +43,8 @@ struct NutritionMealsCard: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("nutrition-meal-\(meal.rawValue)")
             Button { onAdd(meal) } label: {
-                Image(systemName: "plus").font(.title3.weight(.bold)).foregroundStyle(DSColor.onAccent)
-                    .frame(width: 40, height: 40).background(DSColor.accentFill, in: Circle())
+                Image(systemName: "plus").font(.title3.weight(.bold)).foregroundStyle(DSColor.textPrimary)
+                    .frame(width: 40, height: 40).glassEffect(Glass.regular.tint(DSColor.accentFill).interactive(), in: Circle())
                     .frame(width: HitTarget.minimum, height: HitTarget.minimum)
             }
             .accessibilityLabel(Text("nutrition.add.more"))

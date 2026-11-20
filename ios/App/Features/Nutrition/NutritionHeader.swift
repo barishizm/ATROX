@@ -41,21 +41,47 @@ struct NutritionHeader<Options: View>: View {
             .foregroundStyle(DSColor.textPrimary)
             .padding(.horizontal, Spacing.md)
             .frame(minHeight: HitTarget.minimum)
-            .background(DSColor.surfaceRaised, in: Capsule())
+            .glassEffect(Glass.regular.tint(dsGlassDim), in: Capsule())
         }
     }
 }
 
-/// Diary | Recipes switch under the header.
+/// Diary | Recipes switch under the header, drawn as a glass capsule with a tinted glass thumb.
 struct NutritionTabPicker: View {
     @Binding var selection: NutritionTab
 
     var body: some View {
-        Picker("nutrition.tab.picker", selection: $selection) {
-            ForEach(NutritionTab.allCases) { Text($0.titleKey).tag($0) }
+        GlassEffectContainer(spacing: Spacing.xs) {
+            HStack(spacing: Spacing.xs) {
+                ForEach(NutritionTab.allCases) { tab in
+                    Button { withAnimation(.snappy) { selection = tab } } label: {
+                        Text(tab.titleKey).font(DSFont.headline)
+                            .foregroundStyle(selection == tab ? DSColor.onAccent : DSColor.textPrimary)
+                            .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
+                    }
+                    .buttonStyle(.plain)
+                    .glassEffect(
+                        selection == tab ? Glass.regular.tint(DSColor.accentFill).interactive() : Glass.regular.tint(dsGlassDim).interactive(),
+                        in: Capsule()
+                    )
+                    .accessibilityAddTraits(selection == tab ? .isSelected : [])
+                    .accessibilityIdentifier("nutrition-tab-\(tab.rawValue)")
+                }
+            }
         }
-        .pickerStyle(.segmented)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("nutrition-tabs")
+    }
+}
+
+/// Soft brand-colour glows behind the page, so the glass has something to bend.
+struct NutritionBackdrop: View {
+    var body: some View {
+        ZStack {
+            DSColor.background
+            RadialGradient(colors: [DSColor.accentFill.opacity(0.35), .clear], center: .topTrailing, startRadius: 0, endRadius: 380)
+            RadialGradient(colors: [DSColor.highlightFill.opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 420)
+        }
     }
 }
 

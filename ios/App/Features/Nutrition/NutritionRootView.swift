@@ -36,7 +36,8 @@ struct NutritionRootView: View {
                 LoadingState()
             }
         }
-        .background(DSColor.background.ignoresSafeArea())
+        .dsGlassSurfaces()
+        .background(NutritionBackdrop().ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
         .task { await prepare() }
         .task(id: container.dataRevision) { await model?.load() }
