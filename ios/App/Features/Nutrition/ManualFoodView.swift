@@ -19,13 +19,16 @@ struct ManualFoodView: View {
     @State private var saving = false
     @State private var failed = false
 
-    init(editing: FoodEntrySnapshot? = nil, onSave: @escaping (FoodEntryInput) async -> Bool, onClose: @escaping () -> Void) {
+    init(
+        editing: FoodEntrySnapshot? = nil, meal initialMeal: MealType? = nil,
+        onSave: @escaping (FoodEntryInput) async -> Bool, onClose: @escaping () -> Void
+    ) {
         self.editing = editing
         self.onSave = onSave
         self.onClose = onClose
         let input = editing?.input
         _name = State(initialValue: input?.name ?? "")
-        _meal = State(initialValue: input?.meal ?? MealType.suggested(for: Date()))
+        _meal = State(initialValue: input?.meal ?? initialMeal ?? MealType.suggested(for: Date()))
         _eatenAt = State(initialValue: input?.eatenAt ?? Date())
         _calories = State(initialValue: input?.calories ?? 0)
         _protein = State(initialValue: input?.proteinG ?? 0)

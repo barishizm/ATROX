@@ -22,7 +22,6 @@ struct ProfileRootView: View {
                 hero
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     subtitle
-                    streakCard
                     stats
                     if let sync = container.sync, sync.isAvailable { SyncStatusCard(sync: sync) }
                     proBanner
@@ -88,59 +87,6 @@ struct ProfileRootView: View {
             .font(.title3.weight(.semibold))
             .foregroundStyle(look.color.onColor)
             .frame(width: HitTarget.minimum, height: HitTarget.minimum)
-    }
-
-    // MARK: Streak
-
-    private var streakCard: some View {
-        let days = look.trainingDays(weeklyFrequency: model.profile?.input.weeklyFrequency ?? 3)
-        let calendar = model.currentCalendar
-        let streak = DayStreak.current(
-            trainedDates: model.workoutDates, scheduledWeekdays: days, now: model.currentDate, calendar: calendar
-        )
-        let trained = DayStreak.trainedDays(model.workoutDates, calendar: calendar)
-        let today = calendar.startOfDay(for: model.currentDate)
-        let weekStart = calendar.dateInterval(of: .weekOfYear, for: today)?.start ?? today
-        return Card {
-            VStack(alignment: .leading, spacing: Spacing.md) {
-                HStack(spacing: Spacing.sm) {
-                    Image(systemName: "flame.fill").font(.title).foregroundStyle(DSColor.highlight).accessibilityHidden(true)
-                    Text("profile.streak.days \(streak)").font(DSFont.numericLarge).foregroundStyle(DSColor.textPrimary)
-                    Spacer()
-                }
-                HStack(spacing: Spacing.xs) {
-                    ForEach(0..<7, id: \.self) { offset in
-                        let date = calendar.date(byAdding: .day, value: offset, to: weekStart) ?? weekStart
-                        let weekday = calendar.component(.weekday, from: date)
-                        weekdayChip(
-                            symbol: calendar.veryShortWeekdaySymbols[weekday - 1],
-                            chosen: days.contains(weekday), done: trained.contains(calendar.startOfDay(for: date)),
-                            isToday: date == today
-                        ) { look.toggle(day: weekday, current: days) }
-                    }
-                }
-                Text("profile.streak.hint").font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
-            }
-        }
-        .accessibilityIdentifier("profile-streak")
-    }
-
-    private func weekdayChip(symbol: String, chosen: Bool, done: Bool, isToday: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: Spacing.xs) {
-                Text(verbatim: symbol).font(DSFont.overline).foregroundStyle(isToday ? DSColor.textPrimary : DSColor.textSecondary)
-                ZStack {
-                    Circle().fill(done && chosen ? DSColor.highlightFill : (chosen ? DSColor.surfaceRaised : Color.clear))
-                    Circle().stroke(chosen ? Color.clear : DSColor.separator, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
-                    if done && chosen { Image(systemName: "checkmark").font(.footnote.bold()).foregroundStyle(DSColor.onHighlight) }
-                }
-                .frame(width: 34, height: 34)
-            }
-            .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(verbatim: symbol))
-        .accessibilityAddTraits(chosen ? .isSelected : [])
     }
 
     private var subtitle: some View {

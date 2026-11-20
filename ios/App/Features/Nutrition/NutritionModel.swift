@@ -32,6 +32,10 @@ final class NutritionModel {
     private(set) var summary: NutritionDay = .empty
     private(set) var target: NutritionTargetInput?
     private(set) var profile: NutritionProfile?
+    /// Calories burned by logged activities on the shown day.
+    private(set) var burnedCalories: Double = 0
+    /// Start-of-day of every day with food logged, for the streak.
+    private(set) var trackedDays: Set<Date> = []
     private(set) var isLoading = true
     private(set) var failed = false
     /// AI analyses left today, known after the first analysis (the server counts).
@@ -57,13 +61,21 @@ final class NutritionModel {
     var isToday: Bool { calendar.isDate(day, inSameDayAs: now()) }
     var canGoForward: Bool { !isToday }
 
+    /// Days in a row with food logged, ending today (or yesterday while today is still open).
+    var streak: Int { NutritionStreak.current(trackedDays: trackedDays, now: now(), calendar: calendar) }
+
+    /// Calories the day's target allows per meal; nil without a target.
+    var mealBudgets: [MealType: Int]? { target.map { MealBudget.calories(total: $0.values.calories) } }
+
+    func calories(for meal: MealType) -> Double { entries(for: meal).reduce(0) { $0 + $1.input.calories } }
+
     /// Calories left to the target (negative = over); nil without a target.
-    var caloriesLeft: Double? { target.map { Double($0.values.calories) - summary.calories } }
+    var caloriesLeft: Double? { target.map { Double($0.values.calories) + burnedCalories - summary.calories } }
 
     /// Progress of the day toward the calorie target, 0…∞.
     var calorieProgress: Double {
         guard let target, target.values.calories > 0 else { return 0 }
-        return summary.calories / Double(target.values.calories)
+        return summary.calories / (Double(target.values.calories) + burnedCalories)
     }
 
     func entries(for meal: MealType) -> [FoodEntrySnapshot] { summary.entries.filter { $0.input.meal == meal } }
@@ -83,6 +95,11 @@ final class NutritionModel {
     func shiftDay(by days: Int) async {
         guard let next = calendar.date(byAdding: .day, value: days, to: day), next <= now() || days < 0 else { return }
         day = next
+        try? await reloadDay()
+    }
+
+    func select(day newDay: Date) async {
+        day = min(newDay, now())
         try? await reloadDay()
     }
 
@@ -133,5 +150,14 @@ final class NutritionModel {
         guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return }
         let entries = try await repository.entries(userId: userId, from: start, to: end)
         summary = NutritionDay.summarize(entries, on: day, calendar: calendar)
+        try await reloadTrackedDays()
+    }
+
+    /// Logging history is read a year back; a streak longer than that stops growing on screen.
+    private func reloadTrackedDays() async throws {
+        let today = calendar.startOfDay(for: now())
+        guard let from = calendar.date(byAdding: .day, value: -365, to: today), let to = calendar.date(byAdding: .day, value: 1, to: today) else { return }
+        let all = try await repository.entries(userId: userId, from: from, to: to)
+        trackedDays = NutritionStreak.trackedDays(all.map(\.input.eatenAt), calendar: calendar)
     }
 }

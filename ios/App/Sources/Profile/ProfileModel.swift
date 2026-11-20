@@ -24,8 +24,6 @@ final class ProfileModel {
     /// What the anonymous contribution sent (or would send) for last month; nil while loading or when there is nothing.
     private(set) var contributionPreview: (payload: ContributionPayload, wasSent: Bool)?
     private(set) var contributionPreviewLoaded = false
-    /// Start dates of every finished workout, for the day streak.
-    private(set) var workoutDates: [Date] = []
 
     let userId: UUID
     let email: String?
@@ -69,7 +67,6 @@ final class ProfileModel {
             measurements = try await measurementRepository.all(userId: userId)
             settings = try await settingsRepository.settings(userId: userId).input
             try await refreshConsent()
-            workoutDates = (try? await workouts?.finishedDates(userId: userId)) ?? []
             // This device's choice is authoritative until sync exists (Faz 11); keep the stored row in step with it.
             if settings.theme != appearance.theme {
                 let theme = appearance.theme
@@ -105,8 +102,6 @@ final class ProfileModel {
     var latestWeightKg: Double? { measurements.first?.input.weightKg }
     var trendPoints: [WeightPoint] { MeasurementTrend.points(from: measurements) }
     var weightChangeKg: Double? { MeasurementTrend.change(of: trendPoints) }
-    var currentCalendar: Calendar { calendar }
-    var currentDate: Date { now() }
     var isHealthAvailable: Bool { health.isAvailable }
     var isContributing: Bool { contribution.isGranted }
 
