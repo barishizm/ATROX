@@ -13,6 +13,7 @@ struct NutritionRootView: View {
     @State private var tab: NutritionTab = .diary
     @State private var showsAddMenu = false
     @State private var showsCalendar = false
+    @State private var showsQuiz = false
     @State private var detailMeal: MealType?
     /// The meal the next added food goes to; nil picks one from the time of day.
     @State private var addMeal: MealType?
@@ -42,6 +43,11 @@ struct NutritionRootView: View {
         .task { await prepare() }
         .task(id: container.dataRevision) { await model?.load() }
         .sheet(item: $sheet) { sheet in sheetContent(sheet) }
+        .fullScreenCover(isPresented: $showsQuiz) {
+            if let model, let profile = model.profile {
+                NutritionOnboardingView(model: model, profile: profile) { showsQuiz = false }
+            }
+        }
         .sheet(isPresented: $showsCalendar) {
             NutritionCalendarSheet(selection: model?.day ?? Date()) { picked in Task { await model?.select(day: picked) } }
         }
@@ -155,6 +161,7 @@ struct NutritionRootView: View {
     private var optionsMenu: some View {
         Menu {
             Button { sheet = .target } label: { Label("nutrition.target.set", systemImage: "target") }
+            if model?.profile != nil { Button { showsQuiz = true } label: { Label("nutrition.quiz.restart", systemImage: "list.bullet.clipboard") } }
             if consent?.isGranted == true {
                 Button(role: .destructive) { Task { await consent?.decline() } } label: { Label("nutrition.consent.withdraw", systemImage: "hand.raised") }
             }
@@ -254,6 +261,8 @@ struct NutritionRootView: View {
         consent = agreed
         model = made
         await made.load()
+        // First visit: a target is worked out from a short quiz instead of an empty ring.
+        if made.target == nil, made.profile != nil, !NutritionPreferences.quizFinished(userId: made.userId) { showsQuiz = true }
     }
 }
 
