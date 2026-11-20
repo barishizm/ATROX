@@ -14,7 +14,7 @@ APP_GROUP_ID = group.$(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX)
 INFOPLIST_KEY_CFBundleDisplayName = $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
 
 MARKETING_VERSION = 0.1.0
-CURRENT_PROJECT_VERSION = 1
+CURRENT_PROJECT_VERSION = 2
 
 // ---- Non-secret environment values (overridden per configuration) ----
 APP_ENVIRONMENT = local
