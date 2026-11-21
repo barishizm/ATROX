@@ -7,17 +7,24 @@ struct NutritionMealsCard: View {
     let model: NutritionModel
     let onOpen: (MealType) -> Void
     let onAdd: (MealType) -> Void
+    /// Drawn inside a card owned by the caller (shared with the summary) instead of in a card of its own.
+    var embedded = false
 
     var body: some View {
-        Card(padding: 0) {
-            VStack(spacing: 0) {
-                ForEach(Array(MealType.allCases.enumerated()), id: \.element) { index, meal in
-                    if index > 0 { Divider().overlay(DSColor.separator) }
-                    row(meal)
-                }
+        if embedded {
+            rows.accessibilityIdentifier("nutrition-meals")
+        } else {
+            Card(padding: 0) { rows }.accessibilityIdentifier("nutrition-meals")
+        }
+    }
+
+    private var rows: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(MealType.allCases.enumerated()), id: \.element) { index, meal in
+                if index > 0 { Divider().overlay(DSColor.separator) }
+                row(meal)
             }
         }
-        .accessibilityIdentifier("nutrition-meals")
     }
 
     private func row(_ meal: MealType) -> some View {

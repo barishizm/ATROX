@@ -26631,13 +26631,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Summary"
+            "value" : "Log what you eat!"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Özet"
+            "value" : "Ne yediğini kaydet!"
           }
         }
       }
