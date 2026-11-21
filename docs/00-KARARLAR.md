@@ -55,6 +55,9 @@ Antrenman kaydı asla ücretli olmaz. Kapılar tek yerde (`FeatureGate`, `ios/Ap
 | İçgörü geçmişi | Son 14 gün | Tamamı |
 | Referans grupları | Salon | Salon + genel nüfus + yarışmacı |
 | Paylaşım kartları | Temel | Gelişmiş |
+| Yemek fotoğrafı analizi (kamera ve fotoğraf kitaplığı) | Kilitli (Pro tanıtım ekranı) | Açık |
+| Yemek metin/ses analizi | Günlük kotalı | Daha yüksek kota |
+| Hızlı ekleme (25 yaygın yiyecek), barkod, elle giriş | Tam | Tam |
 
 Fiyat ve deneme süresi bu tabloda değil, App Store Connect'te (P092) ve `StoreKit/ATROX.storekit` içinde tutulur.
 
@@ -142,6 +145,10 @@ herkese açık küresel sıralama · Android · Core AI'a geçiş · antrenör�
 
 > **2026-11-19:** Beslenme/kalori takibi kullanıcı isteğiyle kapsama alındı (yemek fotoğrafından AI ile kalori/makro,
 > hedefe bağlı günlük takip). Tasarım: `docs/superpowers/specs/2026-11-19-food-calorie-tracking-design.md`.
+>
+> **2026-11-21:** Kullanıcı isteğiyle fotoğraf analizi (kamera + kitaplık) Pro'ya alındı; önceden ücretsiz kullanıcılara günlük
+> sınırlı analiz veriliyordu. Metin/ses analizi ücretsiz kalır (sunucu kotası, metin en fazla 300 karakter). Öğün "+" ekranı:
+> arama + 25 yaygın yiyecek, kamera, barkod, ses/metin.
 
 ## 7. Açık riskler
 

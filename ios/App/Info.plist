@@ -81,6 +81,10 @@
 	<string>ATROX reads your height, weight, birth date, sex and step count from Apple Health to fill in your profile, import weigh-ins and show your steps. They are saved to your ATROX account only to calculate your strength scores, and are never used for advertising or sold.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>ATROX saves your weigh-ins and workouts to Apple Health.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ATROX uses the microphone only while you dictate what you ate. Nothing is recorded or stored.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>ATROX turns your voice into text when you dictate a meal, so it can estimate the calories.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>SupabaseAnonKey</key>

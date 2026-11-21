@@ -29,7 +29,7 @@ struct FoodAnalyzeView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("common.cancel", action: onClose) }
             }
-            .task { if model.phase == .analyzing { await model.analyze() } }
+            .task { await model.startIfNeeded() }
             .sheet(isPresented: $showsPaywall) { NavigationStack { PaywallView(feature: .foodAnalysisUnlimited) } }
         }
         .interactiveDismissDisabled(saving)
