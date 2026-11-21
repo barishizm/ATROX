@@ -30,7 +30,7 @@ struct NutritionHeader<Options: View>: View {
                 shortTitle.lineLimit(1)
                 shortTitle.lineLimit(1).minimumScaleFactor(0.5)
             }
-            .font(DSFont.display).foregroundStyle(DSColor.textPrimary)
+            .font(DSFont.title).foregroundStyle(DSColor.textPrimary)
             Spacer(minLength: Spacing.sm)
             HStack(spacing: Spacing.md) {
                 HStack(spacing: Spacing.xxs) {
@@ -84,14 +84,10 @@ struct NutritionTabPicker: View {
     }
 }
 
-/// Soft brand-colour glows behind the page, so the glass has something to bend.
+/// Pure black page background.
 struct NutritionBackdrop: View {
     var body: some View {
-        ZStack {
-            DSColor.background
-            RadialGradient(colors: [DSColor.accentFill.opacity(0.35), .clear], center: .topTrailing, startRadius: 0, endRadius: 380)
-            RadialGradient(colors: [DSColor.highlightFill.opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 420)
-        }
+        Color.black
     }
 }
 

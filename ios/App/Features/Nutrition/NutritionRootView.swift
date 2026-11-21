@@ -52,7 +52,6 @@ struct NutritionRootView: View {
     private func content(_ model: NutritionModel) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Spacing.lg) {
-                NutritionHeader(title: dayTitle(model), shortTitle: shortDayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
                 NutritionTabPicker(selection: $tab)
                 switch tab {
                 case .diary: diary(model)
@@ -65,6 +64,16 @@ struct NutritionRootView: View {
             .padding(.bottom, Spacing.xl)
         }
         .refreshable { await model.load() }
+        // Pinned above the scrolling content; the page slides under a translucent blur.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            NutritionHeader(title: dayTitle(model), shortTitle: shortDayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, Spacing.xs)
+                .background {
+                    LinearGradient(colors: [.black, .black.opacity(0.9), .black.opacity(0.6)], startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea(edges: .top)
+                }
+        }
     }
 
     @ViewBuilder
@@ -72,7 +81,6 @@ struct NutritionRootView: View {
         if model.isLoading {
             LoadingState()
         } else {
-            Text("nutrition.summary.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
             Card(padding: 0) {
                 VStack(spacing: 0) {
                     NutritionSummaryCard(model: model, onTarget: { sheet = .target }, embedded: true)
