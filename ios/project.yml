@@ -124,6 +124,9 @@ targets:
         NSHealthUpdateUsageDescription: ATROX saves your weigh-ins and workouts to Apple Health.
         # Meal photos and barcode scanning (food tracking). English default; TR/EN in App/Resources/InfoPlist.xcstrings.
         NSCameraUsageDescription: ATROX uses the camera to photograph your meals for calorie estimates and to scan product barcodes. Photos are only sent for analysis when you tap to analyze.
+        # Dictating a meal description. English defaults; TR/EN in App/Resources/InfoPlist.xcstrings.
+        NSMicrophoneUsageDescription: ATROX uses the microphone only while you dictate what you ate. Nothing is recorded or stored.
+        NSSpeechRecognitionUsageDescription: ATROX turns your voice into text when you dictate a meal, so it can estimate the calories.
         # Google Sign-In (GoogleSignIn-iOS reads these two keys). Values come from xcconfig.
         GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
         GIDServerClientID: $(GOOGLE_WEB_CLIENT_ID)

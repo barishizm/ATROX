@@ -51,6 +51,40 @@
           }
         }
       }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "comment" : "Privacy - Microphone Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX uses the microphone only while you dictate what you ate. Nothing is recorded or stored."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX mikrofonu yalnızca ne yediğini sesle anlatırken kullanır. Hiçbir şey kaydedilmez veya saklanmaz."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "comment" : "Privacy - Speech Recognition Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX turns your voice into text when you dictate a meal, so it can estimate the calories."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATROX, öğününü sesle anlattığında konuşmanı metne çevirir ve kalori tahmini yapar."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

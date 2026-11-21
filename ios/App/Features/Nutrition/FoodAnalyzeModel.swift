@@ -71,6 +71,15 @@ final class FoodAnalyzeModel {
 
     var canSave: Bool { !items.isEmpty && !mealName.trimmingCharacters(in: .whitespaces).isEmpty }
 
+    /// Starts on its own where the input is already there: a photo, or a description typed before the sheet opened.
+    func startIfNeeded() async {
+        switch phase {
+        case .analyzing: await analyze()
+        case .input where source == .text && description.trimmingCharacters(in: .whitespacesAndNewlines).count >= 2: await analyze()
+        default: break
+        }
+    }
+
     /// Runs the analysis for a photo, or for the typed description.
     func analyze() async {
         guard let service else {

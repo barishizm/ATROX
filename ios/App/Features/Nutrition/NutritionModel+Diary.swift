@@ -72,7 +72,7 @@ extension NutritionModel {
     // MARK: Writing
 
     /// When a log made on the shown day happened: now for today, noon for a past day.
-    private func moment() -> Date {
+    func moment() -> Date {
         isToday ? now() : (calendar.date(bySettingHour: 12, minute: 0, second: 0, of: day) ?? day)
     }
 

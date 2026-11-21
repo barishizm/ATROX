@@ -74,6 +74,10 @@ struct MainTabView: View {
                 ProfileTabView(router: profile)
             }
         }
+        // Bottom: no opaque band, content flows under the floating glass tab bar.
+        // Top: a soft fade (no hard line) so scrolled content stays legible behind the status bar and title.
+        .scrollEdgeEffectHidden(true, for: .bottom)
+        .scrollEdgeEffectStyle(.soft, for: .top)
         .modifier(MiniBarAccessory(isEnabled: showsMiniBar) {
             if let model = workoutPresenter.model, model.isActive, !workoutPresenter.isPresented {
                 MiniWorkoutBar(model: model) { workoutPresenter.resume() }
