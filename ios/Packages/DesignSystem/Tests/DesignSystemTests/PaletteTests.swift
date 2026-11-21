@@ -37,7 +37,7 @@ import Testing
 
     /// The three brand colors are exact: #21232E base, #105BFF blue fill, #FE8500 orange fill.
     @Test func brandColorsAreExact() {
-        #expect(Palette.dark.background == RGB(hex: 0x21232E))
+        #expect(Palette.dark.background == RGB(hex: 0x000000))
         #expect(Palette.light.textPrimary == RGB(hex: 0x21232E))
         for p in [Palette.dark, Palette.light] {
             #expect(p.accentFill == RGB(hex: 0x105BFF))

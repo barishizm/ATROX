@@ -2,38 +2,22 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// "Let's get tracking": progress toward the first three logged days.
-struct NutritionTrackProgress: View {
-    let trackedDays: Int
-    private let goal = 3
-
-    var body: some View {
-        Card {
-            HStack(alignment: .top, spacing: Spacing.sm) {
-                Image(systemName: "sparkles").foregroundStyle(DSColor.accent).accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("nutrition.track.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
-                    Text("nutrition.track.subtitle").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                    HStack(spacing: Spacing.xs) {
-                        ForEach(0..<goal, id: \.self) { index in
-                            Capsule().fill(index < trackedDays ? DSColor.accent : DSColor.separator).frame(height: 8)
-                        }
-                    }
-                }
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("nutrition-track")
-    }
-}
-
 /// Eaten, the ring with what is left, burned, and the three macros.
 struct NutritionSummaryCard: View {
     let model: NutritionModel
     let onTarget: () -> Void
+    /// Drawn inside a card owned by the caller (shared with the meals) instead of in a card of its own.
+    var embedded = false
 
     var body: some View {
-        Card {
+        if embedded {
+            content.padding(Spacing.md).accessibilityIdentifier("nutrition-summary")
+        } else {
+            Card { content }.accessibilityIdentifier("nutrition-summary")
+        }
+    }
+
+    private var content: some View {
             VStack(spacing: Spacing.md) {
                 HStack(alignment: .center) {
                     figure(Int(model.summary.calories.rounded()), "nutrition.summary.eaten")
@@ -48,8 +32,6 @@ struct NutritionSummaryCard: View {
                 }
                 targetControl
             }
-        }
-        .accessibilityIdentifier("nutrition-summary")
     }
 
     private func figure(_ value: Int, _ title: LocalizedStringKey) -> some View {

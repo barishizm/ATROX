@@ -17,13 +17,20 @@ enum NutritionTab: String, CaseIterable, Identifiable {
 /// Day title on the left; streak, calendar and options on the right.
 struct NutritionHeader<Options: View>: View {
     let title: Text
+    /// Used when `title` does not fit on one line.
+    let shortTitle: Text
     let streak: Int
     let onCalendar: () -> Void
     @ViewBuilder let options: () -> Options
 
     var body: some View {
         HStack(spacing: Spacing.sm) {
-            title.font(DSFont.display).foregroundStyle(DSColor.textPrimary).lineLimit(1).minimumScaleFactor(0.6)
+            ViewThatFits(in: .horizontal) {
+                title.lineLimit(1)
+                shortTitle.lineLimit(1)
+                shortTitle.lineLimit(1).minimumScaleFactor(0.5)
+            }
+            .font(DSFont.title).foregroundStyle(DSColor.textPrimary)
             Spacer(minLength: Spacing.sm)
             HStack(spacing: Spacing.md) {
                 HStack(spacing: Spacing.xxs) {
@@ -77,14 +84,10 @@ struct NutritionTabPicker: View {
     }
 }
 
-/// Soft brand-colour glows behind the page, so the glass has something to bend.
+/// Pure black page background.
 struct NutritionBackdrop: View {
     var body: some View {
-        ZStack {
-            DSColor.background
-            RadialGradient(colors: [DSColor.accentFill.opacity(0.35), .clear], center: .topTrailing, startRadius: 0, endRadius: 380)
-            RadialGradient(colors: [DSColor.highlightFill.opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 420)
-        }
+        Color.black
     }
 }
 

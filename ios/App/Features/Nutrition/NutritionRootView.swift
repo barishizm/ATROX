@@ -10,6 +10,8 @@ struct NutritionRootView: View {
     @State private var consent: FoodConsentModel?
     @State private var sheet: NutritionSheet?
     @State private var tab: NutritionTab = .diary
+    @State private var summaryHeight: CGFloat = 0
+    @State private var pageID: DiaryPage? = .summary
     @State private var showsCalendar = false
     @State private var showsQuiz = false
     @State private var detailMeal: MealType?
@@ -50,51 +52,100 @@ struct NutritionRootView: View {
     // MARK: Content
 
     private func content(_ model: NutritionModel) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                NutritionHeader(title: dayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
-                NutritionTabPicker(selection: $tab)
-                switch tab {
-                case .diary: diary(model)
-                case .recipes:
-                    EmptyState(systemImage: "book.closed", title: "nutrition.recipes.empty.title", message: "nutrition.recipes.empty.message")
-                        .frame(minHeight: 320).accessibilityIdentifier("nutrition-recipes")
-                }
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            NutritionTabPicker(selection: $tab)
+                .padding(.horizontal, Spacing.md)
+            switch tab {
+            case .diary: pager(model)
+            case .recipes:
+                EmptyState(systemImage: "book.closed", title: "nutrition.recipes.empty.title", message: "nutrition.recipes.empty.message")
+                    .frame(maxHeight: .infinity).accessibilityIdentifier("nutrition-recipes")
             }
-            .padding(Spacing.md)
-            .padding(.bottom, Spacing.xl)
         }
-        .refreshable { await model.load() }
+        // Pinned above the pages; they slide under a black, slightly translucent fade.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            NutritionHeader(title: dayTitle(model), shortTitle: shortDayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, Spacing.xs)
+                .background {
+                    LinearGradient(colors: [.black, .black.opacity(0.9), .black.opacity(0.6)], startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea(edges: .top)
+                }
+        }
     }
 
+    /// The diary does not scroll down as one long page: swipe sideways from the summary to water, fasting and notes.
+    private var page: DiaryPage { pageID ?? .summary }
+
     @ViewBuilder
-    private func diary(_ model: NutritionModel) -> some View {
+    private func pager(_ model: NutritionModel) -> some View {
         if model.isLoading {
             LoadingState()
         } else {
-            if model.trackedDays.count < 3 { NutritionTrackProgress(trackedDays: model.trackedDays.count) }
-            Text("nutrition.summary.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
-            NutritionSummaryCard(model: model) { sheet = .target }
-            if let left = model.analysesLeft { quotaChip(left) }
-            Text("nutrition.title").font(DSFont.title).foregroundStyle(DSColor.textPrimary)
-            NutritionMealsCard(model: model, onOpen: { detailMeal = $0 }, onAdd: { sheet = .addFood($0) })
-            DiarySectionTitle(title: "nutrition.water.section")
-            WaterCard(model: model)
-            DiarySectionTitle(title: "nutrition.weight.section")
-            WeightCard(model: model, onGoal: { sheet = .goalWeight }, onEntry: { sheet = .weightEntry }, onProgress: { sheet = .weightProgress })
-            DiarySectionTitle(title: "nutrition.fasting.section")
-            FastingCard(model: model, onStart: { sheet = .fastPlan })
-            DiarySectionTitle(title: "nutrition.activities.section")
-            ActivitiesCard(model: model, onSteps: { sheet = .steps }, onAdd: { sheet = .activity })
-            DiarySectionTitle(title: "nutrition.notes.section")
-            NotesCard(model: model, onEdit: { sheet = .note })
-            Button { sheet = .sources } label: { Text("nutrition.sources.link").font(DSFont.callout).foregroundStyle(DSColor.accent) }
-                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
+            do {
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(DiaryPage.allCases) { page in
+                            ScrollView {
+                                pageContent(page, model)
+                                    .padding(.horizontal, Spacing.md)
+                                    .padding(.top, Spacing.xs)
+                                    .padding(.bottom, Spacing.md)
+                            }
+                            .scrollBounceBehavior(.basedOnSize)
+                            .refreshable { await model.load() }
+                            .containerRelativeFrame(.horizontal)
+                            .id(page)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .scrollTargetBehavior(.paging)
+                .scrollPosition(id: $pageID)
+                .scrollIndicators(.hidden)
+            }
         }
     }
 
+    @ViewBuilder
+    private func pageContent(_ page: DiaryPage, _ model: NutritionModel) -> some View {
+        VStack(spacing: Spacing.sm) {
+            switch page {
+            case .summary: summaryPage(model)
+            case .water: WaterCard(model: model, minHeight: summaryHeight)
+            case .fasting: FastingCard(model: model, minHeight: summaryHeight, onStart: { sheet = .fastPlan })
+            case .notes: NotesCard(model: model, minHeight: summaryHeight, onEdit: { sheet = .note })
+            }
+            // Travels with the card instead of staying pinned to the screen.
+            HStack(spacing: Spacing.xs) {
+                ForEach(DiaryPage.allCases) { item in
+                    Circle().fill(item == page ? DSColor.textPrimary : DSColor.textTertiary).frame(width: 7, height: 7)
+                }
+            }
+            .accessibilityHidden(true)
+        }
+    }
+
+    @ViewBuilder
+    private func summaryPage(_ model: NutritionModel) -> some View {
+        Card(padding: 0) {
+            VStack(spacing: 0) {
+                NutritionSummaryCard(model: model, onTarget: { sheet = .target }, embedded: true)
+                Divider().overlay(DSColor.separator)
+                NutritionMealsCard(model: model, onOpen: { detailMeal = $0 }, onAdd: { sheet = .addFood($0) }, embedded: true)
+            }
+        }
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { summaryHeight = $0 }
+        if let left = model.analysesLeft { quotaChip(left) }
+    }
+
+    /// "Saturday, November 21"; the header falls back to `shortDayTitle` ("Sat, Nov 21") when this does not fit.
     private func dayTitle(_ model: NutritionModel) -> Text {
-        model.isToday ? Text("nutrition.day.today.title") : Text(model.day.formatted(.dateTime.day().month(.abbreviated)))
+        Text(verbatim: model.day.formatted(.dateTime.weekday(.wide).month(.wide).day().locale(locale)))
+    }
+
+    private func shortDayTitle(_ model: NutritionModel) -> Text {
+        Text(verbatim: model.day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day().locale(locale)))
     }
 
     private func quotaChip(_ left: Int) -> some View {
@@ -109,6 +160,7 @@ struct NutritionRootView: View {
     private var optionsMenu: some View {
         Menu {
             Button { sheet = .target } label: { Label("nutrition.target.set", systemImage: "target") }
+            Button { sheet = .sources } label: { Label("nutrition.sources.link", systemImage: "books.vertical") }
             if model?.profile != nil { Button { showsQuiz = true } label: { Label("nutrition.quiz.restart", systemImage: "list.bullet.clipboard") } }
             if consent?.isGranted == true {
                 Button(role: .destructive) { Task { await consent?.decline() } } label: { Label("nutrition.consent.withdraw", systemImage: "hand.raised") }
@@ -169,6 +221,12 @@ struct NutritionRootView: View {
         // First visit: a target is worked out from a short quiz instead of an empty ring.
         if made.target == nil, made.profile != nil, !NutritionPreferences.quizFinished(userId: made.userId) { showsQuiz = true }
     }
+}
+
+/// The sideways pages of the diary, in swipe order.
+enum DiaryPage: String, CaseIterable, Identifiable {
+    case summary, water, fasting, notes
+    var id: String { rawValue }
 }
 
 struct AnalyzeLaunch: Identifiable {

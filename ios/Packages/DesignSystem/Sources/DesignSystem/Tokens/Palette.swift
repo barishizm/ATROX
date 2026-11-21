@@ -107,9 +107,9 @@ public struct Palette: Sendable {
 
     public func level(_ level: ScoreLevel) -> RGB { levels[level.rawValue] }
 
-    /// Brand palette: #21232E base, #105BFF blue, #FE8500 orange. Surfaces are lighter steps of the base.
+    /// Brand palette: pure black base, #105BFF blue, #FE8500 orange. Surfaces are lighter steps of the base.
     public static let dark = Palette(
-        background: RGB(hex: 0x21232E),
+        background: RGB(hex: 0x000000),
         surface: RGB(hex: 0x2A2D3A),
         surfaceRaised: RGB(hex: 0x343847),
         surfaceOverlay: RGB(hex: 0x3E4354),
