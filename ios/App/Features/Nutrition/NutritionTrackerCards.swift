@@ -11,34 +11,102 @@ struct DiarySectionTitle: View {
     }
 }
 
-/// Today's water: tap a glass to fill it, tap the last full one to take it back.
+/// Today's water: a row per cup size, smallest to largest, each with a + that logs it.
 struct WaterCard: View {
     let model: NutritionModel
+    /// Lets a page match the height of the summary card.
+    var minHeight: CGFloat = 0
     @Environment(\.locale) private var locale
+    /// The cup whose + is showing its green confirmation.
+    @State private var confirmed: Double?
+    @State private var tick = 0
 
-    private var glasses: Int { max(Int((model.waterGoalMl / NutritionModel.glassMl).rounded(.up)), 1) }
-    private var filled: Int { Int((model.waterMl / NutritionModel.glassMl).rounded(.down)) }
+    private static let cups: [(ml: Double, symbol: String, name: LocalizedStringKey, label: String)] = [
+        (125, "cup.and.saucer.fill", "nutrition.water.cup.tea", "125 ml"),
+        (250, "mug.fill", "nutrition.water.cup.glass", "250 ml"),
+        (500, "waterbottle.fill", "nutrition.water.cup.large", "500 ml"),
+        (1000, "flask.fill", "nutrition.water.cup.jug", "1 L")
+    ]
+
+    /// 1 = the goal, where the water reaches the top of the card.
+    private var progress: Double { model.waterMl / max(model.waterGoalMl, 1) }
 
     var body: some View {
-        Card {
-            VStack(spacing: Spacing.sm) {
-                Text("nutrition.water.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
-                Text("nutrition.water.goal \(liters(model.waterGoalMl))").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                Text(verbatim: liters(model.waterMl)).font(DSFont.display).foregroundStyle(DSColor.textPrimary)
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Spacing.xs), count: 7), spacing: Spacing.sm) {
-                    ForEach(0..<max(glasses, filled + 1), id: \.self) { index in
-                        Button { Task { index < filled ? await model.removeWater() : await model.addWater() } } label: {
-                            WaterGlass(isFull: index < filled)
-                                .frame(width: 26, height: 32)
-                                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
-                        }
-                        .accessibilityLabel(Text(index < filled ? "nutrition.water.remove" : "nutrition.water.add"))
-                    }
+        Card(padding: 0) {
+            VStack(spacing: 0) {
+                tank
+                ForEach(Self.cups, id: \.ml) { cup in
+                    Divider().overlay(DSColor.separator)
+                    row(cup)
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, minHeight: minHeight)
         }
+        .sensoryFeedback(.success, trigger: tick)
         .accessibilityIdentifier("nutrition-water")
+    }
+
+    /// The part above the cup rows: water rises in it as the day's total grows, and reaches the top of the card at the goal.
+    private var tank: some View {
+        let level = min(max(progress, 0), 1)
+        let topShape = UnevenRoundedRectangle(topLeadingRadius: Radius.lg, topTrailingRadius: Radius.lg, style: .continuous)
+        return ZStack {
+            TimelineView(.animation) { context in
+                WaterSurface(level: level, phase: context.date.timeIntervalSinceReferenceDate * 2.2)
+                    .fill(LinearGradient(colors: [DSColor.accentFill, DSColor.accentFill.opacity(0.75)], startPoint: .top, endPoint: .bottom))
+                    .animation(.easeInOut(duration: 1.1), value: level)
+            }
+            .clipShape(topShape)
+            VStack(spacing: Spacing.sm) {
+                Text("nutrition.water.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                Text(verbatim: liters(model.waterMl)).font(DSFont.display).foregroundStyle(DSColor.textPrimary)
+                Text("nutrition.water.goal \(liters(model.waterGoalMl))").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+            }
+            .padding(Spacing.md)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if model.waterMl > 0 {
+                Button { Task { await model.removeWater() } } label: {
+                    Image(systemName: "arrow.uturn.backward").font(.callout.weight(.semibold)).foregroundStyle(DSColor.textPrimary)
+                        .frame(width: HitTarget.minimum, height: HitTarget.minimum)
+                }
+                .accessibilityLabel(Text("nutrition.water.undo"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            }
+        }
+        .frame(maxHeight: .infinity)
+        .frame(minHeight: 150)
+    }
+
+    private func row(_ cup: (ml: Double, symbol: String, name: LocalizedStringKey, label: String)) -> some View {
+        let done = confirmed == cup.ml
+        return HStack(spacing: Spacing.sm) {
+            Image(systemName: cup.symbol).font(.title3).foregroundStyle(DSColor.accent)
+                .frame(width: 44, height: 44).glassEffect(Glass.regular, in: Circle()).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text(cup.name).font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                Text(verbatim: cup.label).font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+            }
+            Spacer(minLength: 0)
+            Button { add(cup.ml) } label: {
+                Image(systemName: done ? "checkmark" : "plus").font(.title3.weight(.bold)).foregroundStyle(DSColor.textPrimary)
+                    .contentTransition(.symbolEffect(.replace))
+                    .frame(width: 40, height: 40)
+                    .glassEffect(Glass.regular.tint(done ? DSColor.success : DSColor.accentFill).interactive(), in: Circle())
+                    .frame(width: HitTarget.minimum, height: HitTarget.minimum)
+            }
+            .accessibilityLabel(Text("nutrition.add.more"))
+        }
+        .padding(Spacing.sm)
+    }
+
+    private func add(_ ml: Double) {
+        Task { await model.addWater(ml: ml) }
+        tick += 1
+        withAnimation(.snappy) { confirmed = ml }
+        Task {
+            try? await Task.sleep(for: .seconds(1.2))
+            withAnimation(.snappy) { if confirmed == ml { confirmed = nil } }
+        }
     }
 
     private func liters(_ ml: Double) -> String {
@@ -46,36 +114,29 @@ struct WaterCard: View {
     }
 }
 
-/// A drinking glass, wider at the top; filled with water when `isFull`.
-private struct WaterGlass: View {
-    let isFull: Bool
+/// The water: a wave whose surface sits at `level` (0 empty, 1 full) of the height.
+private struct WaterSurface: Shape {
+    var level: CGFloat
+    var phase: Double
 
-    private struct Tumbler: Shape {
-        /// Fraction of the height the water reaches; 1 draws the whole glass.
-        var level: CGFloat = 1
-
-        func path(in rect: CGRect) -> Path {
-            let inset = rect.width * 0.14
-            let top = rect.maxY - rect.height * level
-            // Width of the glass at height y: linear from full at the top to narrower at the bottom.
-            func edge(_ y: CGFloat) -> CGFloat { inset * (y - rect.minY) / rect.height }
-            var path = Path()
-            path.move(to: CGPoint(x: rect.minX + edge(top), y: top))
-            path.addLine(to: CGPoint(x: rect.maxX - edge(top), y: top))
-            path.addLine(to: CGPoint(x: rect.maxX - inset, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX + inset, y: rect.maxY))
-            path.closeSubpath()
-            return path
-        }
+    var animatableData: CGFloat {
+        get { level }
+        set { level = newValue }
     }
 
-    var body: some View {
-        ZStack {
-            if isFull { Tumbler(level: 0.78).fill(DSColor.accent.opacity(0.85)) }
-            Tumbler().stroke(isFull ? DSColor.accent : DSColor.textTertiary, style: StrokeStyle(lineWidth: 2, lineJoin: .round))
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        guard level > 0.001 else { return path }
+        let top = rect.height * (1 - level)
+        let amplitude = 5 * sin(Double.pi * Double(min(level, 1)))
+        path.move(to: CGPoint(x: rect.minX, y: rect.maxY))
+        for x in stride(from: rect.minX, through: rect.maxX, by: 4) {
+            let y = top + amplitude * sin(Double(x / max(rect.width, 1)) * 2 * .pi * 1.5 + phase)
+            path.addLine(to: CGPoint(x: x, y: y))
         }
-        .padding(2)
-        .accessibilityHidden(true)
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        path.closeSubpath()
+        return path
     }
 }
 
@@ -139,6 +200,8 @@ struct WeightCard: View {
 /// Fasting: start a plan, watch the timer, end it.
 struct FastingCard: View {
     let model: NutritionModel
+    /// Lets a page match the height of the summary card.
+    var minHeight: CGFloat = 0
     let onStart: () -> Void
 
     var body: some View {
@@ -157,7 +220,7 @@ struct FastingCard: View {
                     PrimaryButton("nutrition.fasting.start", action: onStart).accessibilityIdentifier("nutrition-fasting-start")
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, minHeight: max(minHeight - 2 * Spacing.md, 0))
         }
         .accessibilityIdentifier("nutrition-fasting")
     }
@@ -249,6 +312,8 @@ struct ActivitiesCard: View {
 /// How the day went: a mood and a few words.
 struct NotesCard: View {
     let model: NutritionModel
+    /// Lets a page match the height of the summary card.
+    var minHeight: CGFloat = 0
     let onEdit: () -> Void
 
     var body: some View {
@@ -268,7 +333,7 @@ struct NotesCard: View {
                     PrimaryButton("nutrition.note.add", action: onEdit).accessibilityIdentifier("nutrition-note-add")
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, minHeight: max(minHeight - 2 * Spacing.md, 0))
         }
         .accessibilityIdentifier("nutrition-notes")
     }
