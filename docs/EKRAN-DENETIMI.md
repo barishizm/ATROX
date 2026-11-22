@@ -18,11 +18,12 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 | Workout | History, Exercise Library (kısayol + ekranlar) | S | Kısayollar yoktu, geri getirildi; ham anahtarlar düzeltildi |
 | Workout | Haftalık özet | S (deep link) | Temiz |
 | Workout | Aktif antrenman, rest timer, tuş takımı, özet, program kurulumu | K | Aktif antrenman erişilebilirlik boyutunu ele alıyor; rest timer metni sınırlandı |
-| Workout | Rutin editörü / gün, egzersiz skor ekranı, egzersiz detayı | K | `.dynamic` anahtarları kod+katalog betiğiyle doğrulandı, ekranda görülmedi |
+| Workout | Egzersiz detayı (medya, kaslar, talimatlar) | S | Temiz |
+| Workout | Rutin editörü / gün, egzersiz skor ekranı | K | `.dynamic` anahtarları kod+katalog betiğiyle doğrulandı, ekranda görülmedi |
 | Analysis | Muscles, Progress, Insights (boş) | S, TR (Muscles) | Insights dolu hali görülmedi |
 | Analysis | Kas detayı | K | |
-| Coach | Rıza ekranı | S (iki kez) | Rıza kabul edilmedi (kullanıcının kararı); sohbet ekranı görülmedi (U) |
-| Profile | Profil, Ayarlar (tamamı), Paywall | S | "Coming soon" bildirim satırı kaldırıldı; satın alma akışı denenmedi (U) |
+| Coach | Rıza ekranı, boş sohbet, program kartı | S (test modu) | Rıza yalnızca bellek içi test modunda kabul edildi (kullanıcı izniyle); sahte koç yanıtı + Apply/Edit/Reject kartı temiz |
+| Profile | Profil, Ayarlar (tamamı), Paywall | S | Paywall görüldü, temiz; "Coming soon" bildirim satırı kaldırıldı; satın alma akışı denenmedi (U) |
 | Profile | Tema seçici, profil düzenleme, ölçümler, About, rıza geçmişi, hesap silme | K | Hesap silme/çıkış bilerek denenmedi (U) |
 | Social | Davet ekranı, profil formu (test modu) | S | Avatar renk seçicisi gri görünüyordu, düzeltildi; arkadaş listesi ve rapor görülmedi |
 | Diğer | Auth, Onboarding, HowItWorks, paylaşım kartları, widget'lar | K | Widget sürüm uyuşmazlığı düzeltildi; widget görseli doğrulanmadı |
