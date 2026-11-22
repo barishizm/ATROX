@@ -173,6 +173,8 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: $(APP_DISPLAY_NAME)$(APP_DISPLAY_NAME_SUFFIX)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleLocalizations: [en, tr]
         # The widgets read the snapshot from the app group and build atrox:// links (P096).
         AppGroupID: $(APP_GROUP_ID)
