@@ -322,7 +322,7 @@ struct ScoreDistributionChart: View {
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
                     .annotation(position: .top, alignment: .center, spacing: 2) {
                         Text(verbatim: marker.level.localizedName(locale: locale).prefix(3).uppercased())
-                            .font(.system(size: 9, weight: .semibold)).foregroundStyle(DSColor.textTertiary)
+                            .font(.caption2.weight(.semibold)).foregroundStyle(DSColor.textTertiary)
                     }
             }
             if let median = model.medianX {
@@ -330,7 +330,7 @@ struct ScoreDistributionChart: View {
                     .foregroundStyle(DSColor.textSecondary)
                     .lineStyle(StrokeStyle(lineWidth: 1.5))
                     .annotation(position: .bottom, alignment: .center, spacing: 2) {
-                        Text("scorescreen.distribution.median").font(.system(size: 9, weight: .semibold))
+                        Text("scorescreen.distribution.median").font(.caption2.weight(.semibold))
                             .foregroundStyle(DSColor.textSecondary)
                     }
             }
@@ -339,7 +339,7 @@ struct ScoreDistributionChart: View {
                     .foregroundStyle(DSColor.textPrimary)
                     .lineStyle(StrokeStyle(lineWidth: 2.5))
                     .annotation(position: .overlay, alignment: .topLeading, spacing: 4) {
-                        Text("scorescreen.distribution.you").font(.system(size: 11, weight: .bold))
+                        Text("scorescreen.distribution.you").font(.caption.weight(.bold))
                             .foregroundStyle(DSColor.onAccent).padding(.horizontal, 6).padding(.vertical, 2)
                             .background(DSColor.accentFill, in: Capsule())
                     }

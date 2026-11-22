@@ -114,7 +114,6 @@ struct SocialJoinView: View {
 
 struct SocialFriendsView: View {
     @Bindable var model: SocialModel
-    @State private var path: [SocialPerson] = []
     @State private var showsAdd = false
 
     var body: some View {

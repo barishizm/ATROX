@@ -37,7 +37,10 @@ struct FoodProPromoView: View {
             VStack(spacing: Spacing.sm) {
                 ZStack {
                     RoundedRectangle(cornerRadius: Radius.lg, style: .continuous)
-                        .fill(LinearGradient(colors: [DSColor.accentFill.opacity(0.35), DSColor.highlightFill.opacity(0.35)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .fill(LinearGradient(
+                            colors: [DSColor.accentFill.opacity(0.35), DSColor.highlightFill.opacity(0.35)],
+                            startPoint: .topLeading, endPoint: .bottomTrailing
+                        ))
                     Image(systemName: "camera.viewfinder").font(.system(size: 64)).foregroundStyle(DSColor.textPrimary).accessibilityHidden(true)
                 }
                 .frame(height: 150)

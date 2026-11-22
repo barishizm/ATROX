@@ -64,7 +64,10 @@ struct NutritionRootView: View {
         }
         // Pinned above the pages; they slide under a black, slightly translucent fade.
         .safeAreaInset(edge: .top, spacing: 0) {
-            NutritionHeader(title: dayTitle(model), shortTitle: shortDayTitle(model), streak: model.streak, onCalendar: { showsCalendar = true }) { optionsMenu }
+            NutritionHeader(
+                title: dayTitle(model), shortTitle: shortDayTitle(model), streak: model.streak,
+                onCalendar: { showsCalendar = true }
+            ) { optionsMenu }
                 .padding(.horizontal, Spacing.md)
                 .padding(.vertical, Spacing.xs)
                 .background {

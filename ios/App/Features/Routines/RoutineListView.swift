@@ -71,7 +71,7 @@ struct RoutineListView: View {
             Button("routine.action.ok", role: .cancel) {}
         }
         .navigationDestination(item: $opened) { RoutineEditorView(routineId: $0) }
-        .onAppear { Task { await model.load() } }
+        .task { await model.load() }
     }
 
     private var emptyState: some View {
