@@ -282,7 +282,9 @@ struct ActiveWorkoutView: View {
     private var columnHeads: some View {
         HStack(spacing: Spacing.sm) {
             Text("workout.col.set").frame(width: 44)
-            Text("workout.col.previous").frame(maxWidth: .infinity)
+            // The column only gets what the fixed-width fields leave over, so the title shrinks instead of wrapping
+            // letter by letter.
+            Text("workout.col.previous").lineLimit(1).minimumScaleFactor(0.5).frame(maxWidth: .infinity)
             Text(verbatim: model.unit.symbol.uppercased()).frame(width: 72)
             Text("workout.col.reps").frame(width: 56)
             if showsRir { Text("RIR").frame(width: 44) }
