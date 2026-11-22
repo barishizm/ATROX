@@ -138,7 +138,10 @@ struct AddFoodView: View {
             Image(systemName: icon).font(.title2).foregroundStyle(selected ? DSColor.accent : DSColor.textPrimary)
                 .frame(maxWidth: .infinity, minHeight: 60)
                 .background(selected ? DSColor.accentFill.opacity(0.25) : DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.md, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: Radius.md, style: .continuous).strokeBorder(selected ? DSColor.accent : DSColor.separator, lineWidth: selected ? 2 : 1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Radius.md, style: .continuous)
+                        .strokeBorder(selected ? DSColor.accent : DSColor.separator, lineWidth: selected ? 2 : 1)
+                )
                 .overlay(alignment: .top) {
                     if let badge {
                         Text(badge).font(DSFont.overline).foregroundStyle(DSColor.onHighlight).padding(.horizontal, 6).padding(.vertical, 2)
