@@ -47,10 +47,11 @@ public struct SetInput: Sendable, Equatable {
     public var rir: Int?
     public var setType: SetType
     public var isCompleted: Bool
+    public var tag: SetTag?
 
     public init(
         weightKg: Double = 0, reps: Int = 0, rpe: Double? = nil, rir: Int? = nil, setType: SetType = .working,
-        isCompleted: Bool = false
+        isCompleted: Bool = false, tag: SetTag? = nil
     ) {
         self.weightKg = weightKg
         self.reps = reps
@@ -58,6 +59,7 @@ public struct SetInput: Sendable, Equatable {
         self.rir = rir
         self.setType = setType
         self.isCompleted = isCompleted
+        self.tag = tag
     }
 
     /// Only a completed, non-warm-up set with at least one rep feeds Strength Scores and records.

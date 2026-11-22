@@ -19,6 +19,11 @@ final class ExerciseHistoryModel {
     private(set) var name = ""
     private(set) var isLoading = true
     private(set) var failed = false
+    /// Which series the chart shows and how far back it reaches.
+    var metric: ProgressMetric = .weight
+    var range: ProgressRange = .month
+    /// "Today" for the range window; tests pin it.
+    var now: @Sendable () -> Date = { Date() }
 
     init(ref: ExerciseRef, context: HistoryContext) {
         self.ref = ref
@@ -68,5 +73,23 @@ final class ExerciseHistoryModel {
     func setsText(of session: ExerciseSession) -> String {
         let working = session.sets.filter { $0.input.setType != .warmup }
         return (working.isEmpty ? session.sets : working).map { context.setText($0.input) }.joined(separator: ", ")
+    }
+
+    /// The sets a session lists: working sets, or everything when there is nothing else.
+    func visibleSets(of session: ExerciseSession) -> [SetSnapshot] {
+        let working = session.sets.filter { $0.input.setType != .warmup }
+        return working.isEmpty ? session.sets : working
+    }
+
+    /// "60 kg × 5 @ 1.5 RiR"
+    func setLine(_ set: SetSnapshot, locale: Locale) -> String {
+        var line = context.setText(set.input)
+        if let rir = Self.rir(of: set.input) {
+            let text = rir >= 4.5
+                ? "4+"
+                : rir.formatted(FloatingPointFormatStyle<Double>.number.locale(locale).precision(.fractionLength(0...1)))
+            line += " @ " + String(localized: "exprogress.rir \(text)", locale: locale)
+        }
+        return line
     }
 }

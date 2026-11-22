@@ -69,7 +69,7 @@ struct ActiveWorkoutView: View {
             .navigationDestination(for: WorkoutRoute.self) { route in
                 switch route {
                 case .exerciseDetail(let id): ExerciseDetailView(exerciseID: id)
-                case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id)
+                case .exerciseHistory(let id): ExerciseHistoryView(exerciseID: id, allowsLogging: false)
                 case .workoutDetail(let id): WorkoutDetailView(workoutId: id)
                 default: EmptyView()
                 }

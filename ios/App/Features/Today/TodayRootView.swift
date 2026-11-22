@@ -13,7 +13,7 @@ struct TodayRootView: View {
     @State private var failed = false
     @State private var actions = InsightActions()
     @State private var openedExercise: String?
-    /// True when shown inline at the top of the Workout tab: no own scroll view, title or background.
+    /// True when shown inline on the Workout tab: only the 0–100 score card, no own scroll view, title or background.
     var embedded = false
 
     var body: some View {
@@ -76,10 +76,10 @@ struct TodayRootView: View {
     private func content(_ model: TodayModel) -> some View {
         if model.isLoading {
             LoadingState()
-        } else if model.isNewUser && model.overall == nil {
-            if !embedded { newUser(model) }
         } else if embedded {
-            sections(model)
+            scoreCard(model)
+        } else if model.isNewUser && model.overall == nil {
+            newUser(model)
         } else {
             ScrollView {
                 sections(model).padding(Spacing.md)

@@ -41,3 +41,8 @@ public enum WorkoutSource: String, Sendable, Codable, CaseIterable {
 public enum RecordKind: String, Sendable, Codable, CaseIterable {
     case weight, reps, e1rm, volume
 }
+
+/// The colour a lifter can put on a set ("Add tag"); stored by name, nil means no tag.
+public enum SetTag: String, Sendable, Codable, CaseIterable {
+    case green, teal, red, orange
+}

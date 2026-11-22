@@ -52,6 +52,31 @@ public struct WorkoutHistoryEditor: Sendable {
         try await recordsChanged(exercise.ref)
     }
 
+    /// Logs one finished set for an exercise on a given day without an active workout (the "Add Set" of the exercise
+    /// screen). It joins a finished workout of that day that already has the exercise; otherwise it records a new,
+    /// already finished workout holding just this set. Never creates or touches an active workout.
+    @discardableResult
+    public func logSet(ref: ExerciseRef, input: SetInput, on date: Date, calendar: Calendar = .current) async throws -> UUID {
+        var set = input
+        set.isCompleted = true
+        let start = calendar.startOfDay(for: date)
+        let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86_400)
+        let sameDay = try await workouts.workouts(userId: userId, from: start, to: end)
+            .first { $0.endedAt != nil && $0.exercises.contains { $0.ref == ref } }
+        let workoutId: UUID
+        if let sameDay, let row = sameDay.exercises.first(where: { $0.ref == ref }) {
+            try await workouts.addSet(workoutExerciseId: row.id, input: set)
+            workoutId = sameDay.id
+        } else {
+            let draft = WorkoutDraft(
+                startedAt: date, endedAt: date, source: .manual, exercises: [WorkoutExerciseDraft(ref: ref, sets: [set])]
+            )
+            workoutId = try await workouts.start(draft, userId: userId).id
+        }
+        try await recordsChanged(ref)
+        return workoutId
+    }
+
     // MARK: Exercises
 
     /// Adds an exercise with last time's sets, marked as done.
@@ -129,5 +154,20 @@ public struct WorkoutHistoryEditor: Sendable {
     private static func clean(_ text: String?) -> String? {
         let trimmed = text?.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed?.isEmpty == false ? trimmed : nil
+    }
+}
+
+extension SetInput {
+    /// A finished working set as the "Add Set" sheet logs it. `rir` may be a half step (0.5 … 4.5, the last stop
+    /// meaning "4+"): the whole-number part goes to `rir`, rounded down so the 1RM estimate stays conservative, and
+    /// a half step is also kept as `rpe` (10 − RiR) so it can be shown back unchanged.
+    public static func logged(weightKg: Double, reps: Int, rir: Double?, tag: SetTag? = nil) -> SetInput {
+        var input = SetInput(weightKg: weightKg, reps: reps, setType: .working, isCompleted: true, tag: tag)
+        if let rir {
+            let clamped = min(max(rir, 0), 9)
+            input.rir = Int(clamped.rounded(.down))
+            if clamped.rounded(.down) != clamped { input.rpe = 10 - clamped }
+        }
+        return input
     }
 }

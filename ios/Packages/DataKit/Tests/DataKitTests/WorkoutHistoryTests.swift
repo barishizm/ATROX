@@ -120,6 +120,49 @@ private struct Env {
         #expect(stored.positionsAreContiguous)
     }
 
+    @Test func loggedSetCreatesAFinishedWorkoutOrJoinsTheDaysWorkout() async throws {
+        let env = try Env()
+        let day = Date(timeIntervalSince1970: 1_700_000_000)
+        let first = try await env.editor.logSet(ref: bench, input: done(100, 5), on: day)
+        #expect(try await env.workouts.activeWorkout(userId: testUser) == nil)
+        #expect(try await env.record(.weight) == 100)
+        let second = try await env.editor.logSet(ref: bench, input: done(110, 3), on: day.addingTimeInterval(600))
+        #expect(second == first)
+        let stored = try #require(try await env.workouts.workout(id: first))
+        #expect(stored.endedAt != nil && stored.exercises.first?.sets.count == 2)
+        #expect(try await env.record(.weight) == 110)
+        let other = try await env.editor.logSet(ref: bench, input: done(90, 8), on: day.addingTimeInterval(-3 * 86_400))
+        #expect(other != first)
+        let sessions = try await env.workouts.history(userId: testUser, ref: bench, limit: 10)
+        #expect(sessions.count == 2)
+    }
+
+    @Test func loggedHalfStepRirFeedsTheEstimateBetweenItsNeighbours() async throws {
+        func e1rm(_ rir: Double) -> Double {
+            let input = SetInput.logged(weightKg: 100, reps: 5, rir: rir)
+            return E1RMModel.standard.estimate(weightKg: 100, reps: 5, rir: input.rir)?.valueKg ?? 0
+        }
+        #expect(e1rm(2) < e1rm(3))
+        #expect(e1rm(2) <= e1rm(2.5) && e1rm(2.5) <= e1rm(3))
+        let half = SetInput.logged(weightKg: 60, reps: 8, rir: 1.5)
+        #expect(half.rir == 1 && half.rpe == 8.5 && half.isCompleted && half.setType == .working)
+        let whole = SetInput.logged(weightKg: 60, reps: 8, rir: 2)
+        #expect(whole.rir == 2 && whole.rpe == nil)
+        #expect(SetInput.logged(weightKg: 60, reps: 8, rir: nil).rir == nil)
+    }
+
+    @Test func setTagSurvivesStorageAndSync() async throws {
+        let env = try Env()
+        let day = Date(timeIntervalSince1970: 1_700_000_000)
+        _ = try await env.editor.logSet(ref: bench, input: SetInput.logged(weightKg: 80, reps: 5, rir: 1, tag: .teal), on: day)
+        _ = try await env.editor.logSet(ref: bench, input: SetInput.logged(weightKg: 82, reps: 5, rir: 1), on: day)
+        let sets = try #require(try await env.workouts.history(userId: testUser, ref: bench, limit: 5).first).sets
+        #expect(sets.map(\.input.tag) == [.teal, nil])
+        let entry = SetEntry(userId: testUser, workoutExerciseId: UUID(), position: 0, input: SetInput.logged(weightKg: 1, reps: 1, rir: nil, tag: .red))
+        let copy = SetEntry(syncDTO: entry.makeDTO())
+        #expect(copy.tag == .red && entry.makeDTO().tag == "red")
+    }
+
     @Test func editsToWarmupsLeaveRecordsAlone() async throws {
         let env = try Env()
         let workout = try await env.train([(bench, [done(40, 10, .warmup), done(100, 5)])])

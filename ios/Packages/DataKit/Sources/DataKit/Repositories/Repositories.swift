@@ -152,7 +152,7 @@ protocol Positioned: SyncableRecord {
 extension SchemaV4.RoutineDay: Positioned {}
 extension SchemaV4.RoutineExercise: Positioned {}
 extension SchemaV4.WorkoutExercise: Positioned {}
-extension SchemaV4.SetEntry: Positioned {}
+extension SetEntry: Positioned {}
 
 enum Ordering {
     /// Renumbers `items` 0…n-1 in their current order; only changed rows are marked pending.

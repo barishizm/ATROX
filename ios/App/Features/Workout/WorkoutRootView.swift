@@ -2,8 +2,8 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// The Workout tab. Without a program it offers one thing: create. With programs it is a small launchpad:
-/// the active program, start / continue a workout, and the shortcuts to programs, history and the library.
+/// The Workout tab. Without a program it offers one thing: create. With programs it lists them (the active one is
+/// marked) and offers to continue a running workout. Below sits the 0–100 score of everything trained so far.
 struct WorkoutRootView: View {
     let router: TabRouter<WorkoutRoute>
     @Environment(AppContainer.self) private var container
@@ -75,7 +75,7 @@ struct WorkoutRootView: View {
             PrimaryButton("workout.create.button", systemImage: "plus") { router.push(.create) }
                 .padding(.horizontal, Spacing.xl)
                 .accessibilityIdentifier("workout-create")
-            shortcuts.padding(.horizontal, Spacing.md)
+            TodayRootView(embedded: true).padding(.horizontal, Spacing.md)
             Spacer(minLength: 0)
             Spacer(minLength: 0)
         }
@@ -87,7 +87,6 @@ struct WorkoutRootView: View {
     private func home(_ model: RoutineListModel) -> some View {
         ScrollView {
             VStack(spacing: Spacing.md) {
-                TodayRootView(embedded: true)
                 if presenter.hasActiveWorkout {
                     PrimaryButton("workout.continue", systemImage: "play.fill") { presenter.resume() }
                         .accessibilityIdentifier("continue-workout")
@@ -95,7 +94,7 @@ struct WorkoutRootView: View {
                 ForEach(model.routines) { routine in
                     programCard(routine, model: model)
                 }
-                shortcuts
+                TodayRootView(embedded: true)
             }
             .padding(Spacing.md)
         }
@@ -109,38 +108,11 @@ struct WorkoutRootView: View {
         }
     }
 
-    /// Workout history and the exercise library: both screens exist but had no way in from the tab.
-    private var shortcuts: some View {
-        Card {
-            VStack(spacing: 0) {
-                shortcutRow("history.title", systemImage: "calendar", route: .history, identifier: "open-history")
-                Divider().overlay(DSColor.separator)
-                shortcutRow("library.exercises.title", systemImage: "books.vertical", route: .exerciseLibrary, identifier: "open-exercise-library")
-            }
-        }
-    }
-
-    private func shortcutRow(_ title: LocalizedStringKey, systemImage: String, route: WorkoutRoute, identifier: String) -> some View {
-        NavigationLink(value: route) {
-            HStack(spacing: Spacing.sm) {
-                Image(systemName: systemImage).foregroundStyle(DSColor.accent).frame(width: 28).accessibilityHidden(true)
-                Text(title).font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
-                Spacer(minLength: Spacing.sm)
-                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(DSColor.textTertiary)
-                    .accessibilityHidden(true)
-            }
-            .frame(minHeight: HitTarget.minimum)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(identifier)
-    }
-
     private func programCard(_ routine: RoutineSnapshot, model: RoutineListModel) -> some View {
         let isActive = model.plan.activeRoutineId == routine.id
         return Card {
             HStack(spacing: Spacing.sm) {
-                NavigationLink(value: WorkoutRoute.routine(id: routine.id)) {
+                NavigationLink(value: Self.destination(of: routine)) {
                     HStack(spacing: Spacing.md) {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             if isActive { TagChip("routine.badge.active", style: .accent) }
@@ -180,6 +152,12 @@ struct WorkoutRootView: View {
             }
         }
         .accessibilityIdentifier("program-card-\(routine.name)")
+    }
+
+    /// A one-day program opens its day (the exercise list with Start Workout); a longer one opens the program.
+    static func destination(of routine: RoutineSnapshot) -> WorkoutRoute {
+        if routine.days.count == 1, let day = routine.days.first { return .routineDay(routineId: routine.id, dayId: day.id) }
+        return .routine(id: routine.id)
     }
 
     private func undoBar(_ model: RoutineListModel) -> some View {

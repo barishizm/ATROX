@@ -49,6 +49,11 @@ struct SchemaMigrationTests {
         static var stages: [MigrationStage] { [] }
     }
 
+    private enum Only9: SchemaMigrationPlan {
+        static var schemas: [any VersionedSchema.Type] { [SchemaV9.self] }
+        static var stages: [MigrationStage] { [] }
+    }
+
     private static let versions: [MigrationVersion] = [
         MigrationVersion(name: "V1", schema: SchemaV1.self, plan: Only1.self),
         MigrationVersion(name: "V2", schema: SchemaV2.self, plan: Only2.self),
@@ -58,6 +63,7 @@ struct SchemaMigrationTests {
         MigrationVersion(name: "V6", schema: SchemaV6.self, plan: Only6.self),
         MigrationVersion(name: "V7", schema: SchemaV7.self, plan: Only7.self),
         MigrationVersion(name: "V8", schema: SchemaV8.self, plan: Only8.self),
+        MigrationVersion(name: "V9", schema: SchemaV9.self, plan: Only9.self),
     ]
 
     @Test func everyHistoricalVersionIsCoveredByThePlan() {
