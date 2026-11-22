@@ -97,9 +97,7 @@ final class OnboardingUITests: XCTestCase {
 
         let none = card(app, "No limitations")
         XCTAssertTrue(none.waitForExistence(timeout: 5))
-        XCTAssertFalse(next.isEnabled, "Pick an area or 'No limitations'")
-        none.tap()
-        XCTAssertTrue(next.isEnabled)
+        XCTAssertTrue(next.isEnabled, "'No limitations' is the starting answer")
         next.tap()
 
         // Consents (P020): terms first, then the opt-in contribution screen — no pre-ticked box.

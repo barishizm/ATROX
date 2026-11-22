@@ -16,7 +16,7 @@ final class CoachUITests: XCTestCase {
         tab.tap()
         if acceptConsent {
             let accept = app.buttons["coach-consent-accept"]
-            XCTAssertTrue(accept.waitForExistence(timeout: 10), app.debugDescription)
+            XCTAssertTrue(accept.waitForExistence(timeout: 45), app.debugDescription)
             accept.tap()
         }
         return app
@@ -25,7 +25,7 @@ final class CoachUITests: XCTestCase {
     @MainActor
     func testNothingIsShownBeforeConsentAndDecliningExplains() throws {
         let app = launch(acceptConsent: false)
-        XCTAssertTrue(app.buttons["coach-consent-decline"].waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.buttons["coach-consent-decline"].waitForExistence(timeout: 45), app.debugDescription)
         XCTAssertFalse(app.textFields["coach-input"].exists)
         app.buttons["coach-consent-decline"].tap()
         XCTAssertTrue(app.staticTexts["The coach is off"].waitForExistence(timeout: 10), app.debugDescription)

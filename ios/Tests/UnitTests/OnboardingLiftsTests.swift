@@ -31,7 +31,6 @@ struct OnboardingLiftsTests {
         await env.model.advance()
         env.model.setEquipment(equipment)
         await env.model.advance()
-        env.model.toggleNoLimitations()
         await env.model.advance()
         await env.model.acceptLegal()
         await env.model.decideContribution(false)

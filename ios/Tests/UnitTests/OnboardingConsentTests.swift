@@ -23,7 +23,6 @@ struct OnboardingConsentTests {
         await env.model.advance()
         env.model.setEquipment(.fullGym)
         await env.model.advance()
-        env.model.toggleNoLimitations()
         await env.model.advance()
     }
 
