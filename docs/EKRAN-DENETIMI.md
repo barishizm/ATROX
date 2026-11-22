@@ -12,7 +12,8 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 |---|---|---|---|
 | Nutrition | Diary (halka, makrolar, öğünler) | S, TR, büyük yazı | Büyük yazıda yerleşim düzeltildi (dikey yığma) |
 | Nutrition | Başlık (seri, takvim, menü) | S, büyük yazı | Seri sayısı büyük yazıda kayboluyordu, düzeltildi |
-| Nutrition | Pager sayfa 2–4, Recipes, takvim sayfası, "…" menüsü, yemek ekleme akışları, öğün detayı | K | Görülmedi |
+| Nutrition | Pager: Water, Fasting, Notes sayfaları | S | Temiz |
+| Nutrition | Recipes, takvim sayfası, "…" menüsü, yemek ekleme akışları, öğün detayı | K | Görülmedi |
 | Workout | Ana sayfa (skor, örüntüler, plan, öne çıkanlar) | S, TR, büyük yazı | Skor modeli hatası düzeltildi, 38 / Developing görüldü |
 | Workout | Create, Şablonlar | S | Temiz |
 | Workout | History, Exercise Library (kısayol + ekranlar) | S | Kısayollar yoktu, geri getirildi; ham anahtarlar düzeltildi |
@@ -20,7 +21,7 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 | Workout | Aktif antrenman, rest timer, tuş takımı, özet, program kurulumu | K | Aktif antrenman erişilebilirlik boyutunu ele alıyor; rest timer metni sınırlandı |
 | Workout | Egzersiz detayı (medya, kaslar, talimatlar) | S | Temiz |
 | Workout | Rutin editörü / gün, egzersiz skor ekranı | K | `.dynamic` anahtarları kod+katalog betiğiyle doğrulandı, ekranda görülmedi |
-| Analysis | Muscles, Progress, Insights (boş) | S, TR (Muscles) | Insights dolu hali görülmedi |
+| Analysis | Muscles, Progress, Insights (boş) | S, TR (Muscles) | Boş durumlar temiz; dolu hali test modunda veri olmadığı için görülemedi |
 | Analysis | Kas detayı | K | |
 | Coach | Rıza ekranı, boş sohbet, program kartı | S (test modu) | Rıza yalnızca bellek içi test modunda kabul edildi (kullanıcı izniyle); sahte koç yanıtı + Apply/Edit/Reject kartı temiz |
 | Profile | Profil, Ayarlar (tamamı), Paywall | S | Paywall görüldü, temiz; "Coming soon" bildirim satırı kaldırıldı; satın alma akışı denenmedi (U) |
