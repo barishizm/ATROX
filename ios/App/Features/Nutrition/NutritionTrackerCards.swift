@@ -169,7 +169,7 @@ struct WeightCard: View {
                             stepper("plus.circle", "nutrition.weight.more", 1)
                         }
                     } else {
-                        PrimaryButton("nutrition.weight.add", action: onEntry).accessibilityIdentifier("nutrition-weight-add")
+                        PrimaryButton("nutrition.weight.add") { onEntry() }.accessibilityIdentifier("nutrition-weight-add")
                     }
                 }
                 .padding(Spacing.md)
@@ -217,7 +217,7 @@ struct FastingCard: View {
                         Text("nutrition.fasting.last \(Self.duration(end.timeIntervalSince(last.input.at)))")
                             .font(DSFont.footnote).foregroundStyle(DSColor.textSecondary)
                     }
-                    PrimaryButton("nutrition.fasting.start", action: onStart).accessibilityIdentifier("nutrition-fasting-start")
+                    PrimaryButton("nutrition.fasting.start") { onStart() }.accessibilityIdentifier("nutrition-fasting-start")
                 }
             }
             .frame(maxWidth: .infinity, minHeight: max(minHeight - 2 * Spacing.md, 0))
@@ -330,7 +330,7 @@ struct NotesCard: View {
                 } else {
                     Text("nutrition.note.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
                     Text("nutrition.note.subtitle").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                    PrimaryButton("nutrition.note.add", action: onEdit).accessibilityIdentifier("nutrition-note-add")
+                    PrimaryButton("nutrition.note.add") { onEdit() }.accessibilityIdentifier("nutrition-note-add")
                 }
             }
             .frame(maxWidth: .infinity, minHeight: max(minHeight - 2 * Spacing.md, 0))

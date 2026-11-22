@@ -132,6 +132,7 @@ struct LibraryView: View {
                 HStack(spacing: Spacing.xs) {
                     if let muscle = item.primaryMuscle.flatMap(Muscle.init(rawValue:)) {
                         Text(verbatim: muscle.localizedName(locale: locale))
+                        Text(verbatim: "·").foregroundStyle(DSColor.textTertiary).accessibilityHidden(true)
                     }
                     Text(equipmentKey(item.equipment)).foregroundStyle(DSColor.textTertiary)
                     if item.isCustom { TagChip("library.badge.custom", style: .accent) }
@@ -219,7 +220,7 @@ struct LibraryView: View {
 
 /// `LocalizedStringKey` for a catalog equipment value (nil = no equipment).
 func equipmentKey(_ raw: String?) -> LocalizedStringKey {
-    LocalizedStringKey("library.equipment.\(raw ?? ExerciseFilter.noEquipmentToken)")
+    LocalizedStringKey.dynamic("library.equipment.\(raw ?? ExerciseFilter.noEquipmentToken)")
 }
 
 struct LibraryFilterSheet: View {

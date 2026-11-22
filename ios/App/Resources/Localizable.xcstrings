@@ -2409,6 +2409,22 @@
         }
       }
     },
+    "score.unavailable.model" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scoring model couldn't be loaded. Try again later."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skor modeli yüklenemedi. Daha sonra tekrar dene."
+          }
+        }
+      }
+    },
     "workout.stale.title" : {
       "localizations" : {
         "en" : {
@@ -27634,7 +27650,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Protein: 1.8 g per kg of body weight (2.0 g when losing fat), in line with sports nutrition guidance (ISSN, 2017). Fat is 25 % of calories and carbs fill the rest."
+            "value" : "Protein: 1.8 g per kg of body weight (2.0 g when losing fat), in line with sports nutrition guidance (ISSN, 2017). Calories from fat: 25%, and carbs fill the rest."
           }
         },
         "tr" : {
@@ -27651,7 +27667,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meal budgets: breakfast 30 %, lunch 40 %, dinner 25 % and snacks 5 % of your daily calories."
+            "value" : "Daily calorie split across meals: breakfast 30%, lunch 40%, dinner 25%, snacks 5%."
           }
         },
         "tr" : {

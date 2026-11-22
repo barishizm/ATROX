@@ -61,7 +61,10 @@ final class AccessibilityAuditUITests: XCTestCase {
     private func startWorkoutWithExercise(_ app: XCUIApplication) {
         select("Workout", in: app)
         // No program yet: "Create" opens the choices; the quick workout needs no program.
-        app.buttons["workout-create"].firstMatch.tap()
+        // The Workout tab loads slowly on CI (Debug build), so wait for the button before tapping.
+        let create = app.buttons["workout-create"].firstMatch
+        XCTAssertTrue(create.waitForExistence(timeout: 45), app.debugDescription)
+        create.tap()
         app.buttons["create-quick-workout"].firstMatch.tap()
         XCTAssertTrue(app.buttons["workout-add-exercise"].waitForExistence(timeout: 10), app.debugDescription)
         app.buttons["Add exercise"].firstMatch.tap()

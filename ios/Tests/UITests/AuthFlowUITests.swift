@@ -32,7 +32,7 @@ final class AuthFlowUITests: XCTestCase {
         app.launch()
         // Full-bleed intro: "Tap to next" on the first two pages, "Get started" on the last.
         let next = app.buttons["welcome-next"]
-        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        XCTAssertTrue(next.waitForExistence(timeout: 45))
         XCTAssertTrue(app.buttons["welcome-skip"].exists)
         XCTAssertFalse(app.buttons["welcome-continue"].exists)
         next.tap()
@@ -56,7 +56,7 @@ final class AuthFlowUITests: XCTestCase {
         app.launchArguments += ["-uitest-fake-auth", "-uitest-auth-intro", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
         let skip = app.buttons["welcome-skip"]
-        XCTAssertTrue(skip.waitForExistence(timeout: 10))
+        XCTAssertTrue(skip.waitForExistence(timeout: 45))
         skip.tap()
         XCTAssertTrue(app.buttons["welcome-continue"].waitForExistence(timeout: 5))
     }

@@ -3,7 +3,7 @@ import DesignSystem
 import StrengthKit
 import SwiftUI
 
-/// Units, language, theme, notifications (placeholder), privacy and the account actions.
+/// Units, language, theme, privacy and the account actions.
 struct SettingsView: View {
     let model: ProfileModel
     let account: AccountModel
@@ -59,7 +59,6 @@ struct SettingsView: View {
                     Text("settings.theme.light").tag(ThemePreference.light)
                 }
                 .accessibilityIdentifier("settings-theme")
-                LabeledContent("settings.notifications") { Text("settings.notifications.soon").foregroundStyle(DSColor.textSecondary) }
             }
             Section("settings.section.workout") {
                 Toggle("settings.workout.rir", isOn: $showsRir).accessibilityIdentifier("settings-workout-rir")

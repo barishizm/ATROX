@@ -46,6 +46,7 @@ struct NutritionHeader<Options: View>: View {
                 options()
             }
             .foregroundStyle(DSColor.textPrimary)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             .padding(.horizontal, Spacing.md)
             .frame(minHeight: HitTarget.minimum)
             .glassEffect(Glass.regular.tint(dsGlassDim), in: Capsule())

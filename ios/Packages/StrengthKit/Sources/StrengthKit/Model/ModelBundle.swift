@@ -107,14 +107,15 @@ public struct ModelBundle: Sendable {
     }
 }
 
-/// `major.minor.patch` with numeric ordering.
+/// `major.minor.patch` with numeric ordering. Shorter forms such as an app's `1.0` marketing version are padded with
+/// zeros, so `1.0` equals `1.0.0`.
 public struct SemanticVersion: Comparable, Sendable, CustomStringConvertible {
     public let parts: [Int]
 
     public init?(_ text: String) {
-        let parts = text.split(separator: ".").map { Int($0) }
-        guard parts.count == 3, parts.allSatisfy({ ($0 ?? -1) >= 0 }) else { return nil }
-        self.parts = parts.compactMap(\.self)
+        let parts = text.split(separator: ".", omittingEmptySubsequences: false).map { Int($0) }
+        guard (1...3).contains(parts.count), parts.allSatisfy({ ($0 ?? -1) >= 0 }) else { return nil }
+        self.parts = parts.compactMap(\.self) + Array(repeating: 0, count: 3 - parts.count)
     }
 
     private init(parts: [Int]) {

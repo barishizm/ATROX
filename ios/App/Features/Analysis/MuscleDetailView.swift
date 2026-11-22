@@ -116,7 +116,7 @@ struct MuscleDetailView: View {
                                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                                     Text(verbatim: model.name(of: item.exerciseId)).font(DSFont.callout.weight(.semibold))
                                         .foregroundStyle(DSColor.textPrimary).multilineTextAlignment(.leading)
-                                    Text(LocalizedStringKey("muscles.role.\(item.role.rawValue)"))
+                                    Text(LocalizedStringKey.dynamic("muscles.role.\(item.role.rawValue)"))
                                         .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
                                 }
                                 Spacer(minLength: Spacing.sm)

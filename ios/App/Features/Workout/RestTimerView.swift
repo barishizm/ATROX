@@ -42,7 +42,9 @@ struct RestTimerView: View {
                 .rotationEffect(.degrees(-90))
             Text(verbatim: ActiveWorkoutFormat.clock(remaining.rounded(.up)))
                 .font(DSFont.numericSmall)
+                .lineLimit(1).minimumScaleFactor(0.7)
         }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .frame(width: 64, height: 64)
         .task(id: timer.run?.endsAt) { await tickUntilDue() }
         .accessibilityElement(children: .ignore)

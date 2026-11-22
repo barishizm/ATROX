@@ -190,6 +190,7 @@ struct TodayRootView: View {
         switch model.unavailable {
         case .noBodyweight: "today.score.none.weight"
         case .noProfile: "today.score.none.profile"
+        case .noModel: "score.unavailable.model"
         default: "today.score.none"
         }
     }

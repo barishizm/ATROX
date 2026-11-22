@@ -33,6 +33,7 @@ struct NutritionMealsCard: View {
             Button { onOpen(meal) } label: {
                 HStack(spacing: Spacing.sm) {
                     Image(systemName: meal.systemImage).font(.title3).foregroundStyle(DSColor.accent)
+                        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                         .frame(width: 44, height: 44).glassEffect(Glass.regular, in: Circle()).accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         HStack(spacing: Spacing.xxs) {
@@ -51,6 +52,7 @@ struct NutritionMealsCard: View {
             .accessibilityIdentifier("nutrition-meal-\(meal.rawValue)")
             Button { onAdd(meal) } label: {
                 Image(systemName: "plus").font(.title3.weight(.bold)).foregroundStyle(DSColor.textPrimary)
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     .frame(width: 40, height: 40).glassEffect(Glass.regular.tint(DSColor.accentFill).interactive(), in: Circle())
                     .frame(width: HitTarget.minimum, height: HitTarget.minimum)
             }

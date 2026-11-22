@@ -35,6 +35,7 @@ struct CalorieRing: View {
                 }
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .frame(width: 150, height: 150)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("nutrition.ring.a11y"))

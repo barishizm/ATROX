@@ -24,11 +24,19 @@ struct ProgressChartsView: View {
                 BodyweightCard(model: model)
             } else {
                 Card {
-                    Text(model.unavailable == nil ? "progress.empty" : "progress.unavailable")
+                    Text(emptyMessage)
                         .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                 }
                 .accessibilityIdentifier("progress-empty")
             }
+        }
+    }
+
+    private var emptyMessage: LocalizedStringKey {
+        switch model.unavailable {
+        case nil: "progress.empty"
+        case .noModel: "score.unavailable.model"
+        case .noProfile, .noBodyweight: "progress.unavailable"
         }
     }
 }

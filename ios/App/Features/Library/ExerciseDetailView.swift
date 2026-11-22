@@ -114,11 +114,11 @@ struct ExerciseDetailView: View {
             FlowTags {
                 if detail.isCustom { TagChip("exercise.detail.custom", systemImage: "person.fill", style: .accent) }
                 TagChip(equipmentKey(detail.equipment), systemImage: "dumbbell")
-                if let mechanic = detail.mechanic { TagChip(LocalizedStringKey("exercise.mechanic.\(mechanic)")) }
-                TagChip(LocalizedStringKey("exercise.level.\(detail.level)"), systemImage: "chart.bar")
+                if let mechanic = detail.mechanic { TagChip(LocalizedStringKey.dynamic("exercise.mechanic.\(mechanic)")) }
+                TagChip(LocalizedStringKey.dynamic("exercise.level.\(detail.level)"), systemImage: "chart.bar")
                 if detail.isUnilateral { TagChip("exercise.detail.unilateral") }
                 if let load = detail.scoring.loadConvention {
-                    TagChip(LocalizedStringKey("exercise.load.\(load)"), systemImage: "scalemass")
+                    TagChip(LocalizedStringKey.dynamic("exercise.load.\(load)"), systemImage: "scalemass")
                 }
             }
         }
@@ -168,6 +168,7 @@ struct ExerciseDetailView: View {
                     HStack(alignment: .firstTextBaseline, spacing: Spacing.md) {
                         Text(verbatim: "\(offset + 1)")
                             .font(DSFont.numericSmall).foregroundStyle(DSColor.onAccent)
+                            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                             .frame(width: 26, height: 26).background(DSColor.accentFill, in: Circle())
                             .accessibilityHidden(true)
                         Text(verbatim: step).font(DSFont.body).foregroundStyle(DSColor.textPrimary)
@@ -232,7 +233,7 @@ struct ExerciseDetailView: View {
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("exercise.scorenote.title").font(DSFont.callout.weight(.semibold))
                         .foregroundStyle(DSColor.textPrimary)
-                    Text(LocalizedStringKey("exercise.scorenote.\(note.rawValue)"))
+                    Text(LocalizedStringKey.dynamic("exercise.scorenote.\(note.rawValue)"))
                         .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                 }
             }

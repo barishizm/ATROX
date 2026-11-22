@@ -46,12 +46,12 @@ struct CustomExerciseFormView: View {
                     Picker("custom.form.mechanic", selection: $model.mechanic) {
                         Text("custom.form.mechanic.none").tag(String?.none)
                         ForEach(ExerciseVocabulary.mechanics, id: \.self) { raw in
-                            Text(LocalizedStringKey("exercise.mechanic.\(raw)")).tag(Optional(raw))
+                            Text(LocalizedStringKey.dynamic("exercise.mechanic.\(raw)")).tag(Optional(raw))
                         }
                     }
                     Picker("custom.form.level", selection: $model.level) {
                         ForEach(ExerciseVocabulary.levels, id: \.self) { raw in
-                            Text(LocalizedStringKey("exercise.level.\(raw)")).tag(raw)
+                            Text(LocalizedStringKey.dynamic("exercise.level.\(raw)")).tag(raw)
                         }
                     }
                     Toggle("custom.form.unilateral", isOn: $model.isUnilateral)
@@ -59,7 +59,7 @@ struct CustomExerciseFormView: View {
                 Section {
                     Picker("custom.form.load", selection: $model.loadConvention) {
                         ForEach(ExerciseVocabulary.loadConventions, id: \.self) { raw in
-                            Text(LocalizedStringKey("exercise.load.\(raw)")).tag(raw)
+                            Text(LocalizedStringKey.dynamic("exercise.load.\(raw)")).tag(raw)
                         }
                     }
                     .accessibilityIdentifier("custom-load")
