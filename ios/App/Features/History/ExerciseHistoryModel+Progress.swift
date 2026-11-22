@@ -33,10 +33,13 @@ extension ExerciseHistoryModel {
             case .e1rm: point.e1rmKg.map { ChartPoint(date: point.date, value: unit.value(fromKilograms: $0)) }
             }
         }
-        guard let days = range.days, let from = Calendar.current.date(byAdding: .day, value: -days, to: now()) else {
-            return all
-        }
-        return all.filter { $0.date >= from }
+        return Self.window(all, days: range.days, now: now())
+    }
+
+    /// The points that lie within `days` of `now` (all of them when `days` is nil).
+    static func window(_ points: [ChartPoint], days: Int?, now: Date, calendar: Calendar = .current) -> [ChartPoint] {
+        guard let days, let from = calendar.date(byAdding: .day, value: -days, to: now) else { return points }
+        return points.filter { $0.date >= from }
     }
 
     /// The newest value in the window.
@@ -64,11 +67,7 @@ extension ExerciseHistoryModel {
 
     /// Logs a finished set on `date` and reloads, so the chart and the list move at once.
     func addSet(weightKg: Double, reps: Int, rir: Double?, on date: Date) async -> Bool {
-        var input = SetInput(weightKg: weightKg, reps: reps, setType: .working, isCompleted: true)
-        if let rir {
-            input.rpe = max(1, 10 - rir)
-            if rir.rounded(.down) == rir { input.rir = Int(rir) }
-        }
+        let input = SetInput.logged(weightKg: weightKg, reps: reps, rir: rir)
         do {
             try await context.editor.logSet(ref: ref, input: input, on: date)
         } catch {

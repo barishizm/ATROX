@@ -85,7 +85,9 @@ final class ExerciseHistoryModel {
     func setLine(_ set: SetSnapshot, locale: Locale) -> String {
         var line = context.setText(set.input)
         if let rir = Self.rir(of: set.input) {
-            let text = rir.formatted(FloatingPointFormatStyle<Double>.number.locale(locale).precision(.fractionLength(0...1)))
+            let text = rir >= 4.5
+                ? "4+"
+                : rir.formatted(FloatingPointFormatStyle<Double>.number.locale(locale).precision(.fractionLength(0...1)))
             line += " @ " + String(localized: "exprogress.rir \(text)", locale: locale)
         }
         return line

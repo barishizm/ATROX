@@ -114,9 +114,9 @@ struct RoutineDayView: View {
                 Task { await model.update(exercise, with: input) }
             }
         }
-        .alert("routine.day.newTitle", isPresented: $renaming) {
+        .alert("routine.day.rename", isPresented: $renaming) {
             TextField("routine.day.namePrompt", text: $dayName)
-            Button("routine.action.cancel", role: .cancel) { dayName = day.name }
+            Button("routine.action.cancel", role: .cancel) { dayName = Self.title(of: day, routine: model.routine) }
             Button("routine.action.ok") { commitName(model) }
         }
         .alert("routine.error.save", isPresented: Bindable(model).errorOccurred) {
@@ -129,7 +129,7 @@ struct RoutineDayView: View {
 
     private func header(_ day: RoutineDaySnapshot, model: RoutineEditorModel) -> some View {
         VStack(alignment: .leading, spacing: Spacing.sm) {
-            Text(verbatim: day.name)
+            Text(verbatim: Self.title(of: day, routine: model.routine))
                 .font(DSFont.display).foregroundStyle(DSColor.textPrimary)
                 .accessibilityAddTraits(.isHeader)
             Text(verbatim: Self.summary(day, locale: locale))
@@ -189,6 +189,12 @@ struct RoutineDayView: View {
         .accessibilityIdentifier("routine-day-start")
     }
 
+    /// A one-day program is shown (and renamed) by the program's name, the one its card carries.
+    static func title(of day: RoutineDaySnapshot, routine: RoutineSnapshot?) -> String {
+        guard let routine, routine.days.count == 1 else { return day.name }
+        return routine.name
+    }
+
     /// "6 exercises · 71 min"
     static func summary(_ day: RoutineDaySnapshot, locale: Locale) -> String {
         let count = String(localized: "routine.day.exerciseCount \(day.exercises.count)", locale: locale)
@@ -216,7 +222,9 @@ struct RoutineDayView: View {
     @ToolbarContentBuilder
     private func toolbar(_ model: RoutineEditorModel, day: RoutineDaySnapshot) -> some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Button { dayName = day.name; renaming = true } label: { Image(systemName: "pencil") }
+            Button { dayName = Self.title(of: day, routine: model.routine); renaming = true } label: {
+                Image(systemName: "pencil")
+            }
                 .accessibilityLabel("routine.day.rename")
                 .accessibilityIdentifier("routine-day-rename")
         }
@@ -230,6 +238,10 @@ struct RoutineDayView: View {
                 Button { Task { await model.undo() } } label: { Label("routine.action.undo", systemImage: "arrow.uturn.backward") }
                     .disabled(!model.canUndo)
                     .accessibilityIdentifier("routine-undo")
+                NavigationLink(value: WorkoutRoute.routine(id: routineId)) {
+                    Label("routine.day.programSettings", systemImage: "gearshape")
+                }
+                .accessibilityIdentifier("routine-program-settings")
             } label: {
                 Image(systemName: "ellipsis").frame(width: HitTarget.minimum, height: HitTarget.minimum)
             }
@@ -367,10 +379,11 @@ struct RoutineDayView: View {
 
     private func commitName(_ model: RoutineEditorModel) {
         let trimmed = dayName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
-            dayName = model.day(dayId)?.name ?? ""
-            return
+        guard !trimmed.isEmpty else { return }
+        let single = model.routine?.days.count == 1
+        Task {
+            if single { await model.rename(trimmed, notes: model.routine?.notes) }
+            await model.renameDay(dayId, to: trimmed)
         }
-        Task { await model.renameDay(dayId, to: trimmed) }
     }
 }

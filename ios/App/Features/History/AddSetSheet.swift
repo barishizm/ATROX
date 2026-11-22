@@ -6,6 +6,8 @@ import SwiftUI
 /// history without starting a workout.
 struct AddSetSheet: View {
     let model: ExerciseHistoryModel
+    /// Called after a set was saved, so lists elsewhere reload.
+    var onSaved: () -> Void = {}
     @Environment(\.dismiss) private var dismiss
     @Environment(\.locale) private var locale
     @State private var weightText = ""
@@ -148,6 +150,11 @@ struct AddSetSheet: View {
         saving = true
         let saved = await model.addSet(weightKg: weightKg, reps: reps, rir: rir, on: date)
         saving = false
-        if saved { dismiss() } else { failed = true }
+        if saved {
+            onSaved()
+            dismiss()
+        } else {
+            failed = true
+        }
     }
 }

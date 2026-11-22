@@ -8,6 +8,8 @@ import SwiftUI
 /// and every session as a dated list of sets.
 struct ExerciseHistoryView: View {
     let exerciseID: String
+    /// False inside a running workout, where a logged set would land in a different, finished workout.
+    var allowsLogging = true
     @Environment(AppContainer.self) private var container
     @Environment(\.locale) private var locale
     @State private var model: ExerciseHistoryModel?
@@ -29,7 +31,7 @@ struct ExerciseHistoryView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await prepare() }
         .sheet(isPresented: $adding) {
-            if let model { AddSetSheet(model: model) }
+            if let model { AddSetSheet(model: model) { container.historyEvents.changed() } }
         }
         .accessibilityIdentifier("exercise-history-root")
     }
@@ -61,7 +63,7 @@ struct ExerciseHistoryView: View {
                         chart(model)
                         rangePicker(model)
                     }
-                    addSetButton
+                    if allowsLogging { addSetButton }
                     if model.isEmpty {
                         Text("exercisehistory.empty.message")
                             .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
@@ -105,6 +107,14 @@ struct ExerciseHistoryView: View {
         case .weight: "exprogress.tab.weight"
         case .volume: "exprogress.tab.volume"
         case .e1rm: "exprogress.tab.e1rm"
+        }
+    }
+
+    private func descriptorTitle(of metric: ProgressMetric) -> String {
+        switch metric {
+        case .weight: String(localized: "exprogress.tab.weight", locale: locale)
+        case .volume: String(localized: "exprogress.tab.volume", locale: locale)
+        case .e1rm: String(localized: "exprogress.tab.e1rm", locale: locale)
         }
     }
 
@@ -171,9 +181,9 @@ struct ExerciseHistoryView: View {
             .padding(.horizontal, Spacing.md)
             .accessibilityLabel(title(of: model.metric))
             .dsChartDescriptor(ChartAccessibility.descriptor(
-                title: String(localized: "exercisehistory.chart.label", locale: locale),
+                title: descriptorTitle(of: model.metric),
                 points: points.map { ChartSeriesPoint(date: $0.date, value: $0.value) },
-                yTitle: String(localized: "exercisehistory.chart", locale: locale),
+                yTitle: descriptorTitle(of: model.metric),
                 unit: model.metric == .volume ? "" : model.context.unit.symbol, locale: locale))
             .accessibilityIdentifier("exercise-e1rm-chart")
         }

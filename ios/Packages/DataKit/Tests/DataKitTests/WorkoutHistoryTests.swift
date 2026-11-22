@@ -137,6 +137,20 @@ private struct Env {
         #expect(sessions.count == 2)
     }
 
+    @Test func loggedHalfStepRirFeedsTheEstimateBetweenItsNeighbours() async throws {
+        func e1rm(_ rir: Double) -> Double {
+            let input = SetInput.logged(weightKg: 100, reps: 5, rir: rir)
+            return E1RMModel.standard.estimate(weightKg: 100, reps: 5, rir: input.rir)?.valueKg ?? 0
+        }
+        #expect(e1rm(2) < e1rm(3))
+        #expect(e1rm(2) <= e1rm(2.5) && e1rm(2.5) <= e1rm(3))
+        let half = SetInput.logged(weightKg: 60, reps: 8, rir: 1.5)
+        #expect(half.rir == 1 && half.rpe == 8.5 && half.isCompleted && half.setType == .working)
+        let whole = SetInput.logged(weightKg: 60, reps: 8, rir: 2)
+        #expect(whole.rir == 2 && whole.rpe == nil)
+        #expect(SetInput.logged(weightKg: 60, reps: 8, rir: nil).rir == nil)
+    }
+
     @Test func editsToWarmupsLeaveRecordsAlone() async throws {
         let env = try Env()
         let workout = try await env.train([(bench, [done(40, 10, .warmup), done(100, 5)])])

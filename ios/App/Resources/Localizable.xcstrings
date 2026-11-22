@@ -30435,6 +30435,22 @@
           }
         }
       }
+    },
+    "routine.day.programSettings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program settings"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program ayarları"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
