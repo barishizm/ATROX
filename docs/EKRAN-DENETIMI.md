@@ -13,7 +13,8 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 | Nutrition | Diary (halka, makrolar, öğünler) | S, TR, büyük yazı | Büyük yazıda yerleşim düzeltildi (dikey yığma) |
 | Nutrition | Başlık (seri, takvim, menü) | S, büyük yazı | Seri sayısı büyük yazıda kayboluyordu, düzeltildi |
 | Nutrition | Pager: Water, Fasting, Notes sayfaları | S | Temiz |
-| Nutrition | Recipes, takvim sayfası, "…" menüsü, yemek ekleme akışları, öğün detayı | K | Görülmedi |
+| Nutrition | Recipes sekmesi | S | Yalnızca "yakında" yer tutucusu (ürün kararı: sekme boş yayınlanıyor) |
+| Nutrition | Takvim sayfası, "…" menüsü, yemek ekleme akışları, öğün detayı | K | Görülmedi |
 | Workout | Ana sayfa (skor, örüntüler, plan, öne çıkanlar) | S, TR, büyük yazı | Skor modeli hatası düzeltildi, 38 / Developing görüldü |
 | Workout | Create, Şablonlar | S | Temiz |
 | Workout | History, Exercise Library (kısayol + ekranlar) | S | Kısayollar yoktu, geri getirildi; ham anahtarlar düzeltildi |
@@ -26,6 +27,7 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 | Coach | Rıza ekranı, boş sohbet, program kartı | S (test modu) | Rıza yalnızca bellek içi test modunda kabul edildi (kullanıcı izniyle); sahte koç yanıtı + Apply/Edit/Reject kartı temiz |
 | Profile | Profil, Ayarlar (tamamı), Paywall | S | Paywall görüldü, temiz; "Coming soon" bildirim satırı kaldırıldı; satın alma akışı denenmedi (U) |
 | Profile | Tema seçici, profil düzenleme, ölçümler, About, rıza geçmişi, hesap silme | K | Hesap silme/çıkış bilerek denenmedi (U) |
+| Social | Arkadaşlar giriş ekranı | S | Profil sekmesinden giriş yoktu (yalnızca davet linki), "Friends" satırı eklendi |
 | Social | Davet ekranı, profil formu (test modu) | S | Avatar renk seçicisi gri görünüyordu, düzeltildi; arkadaş listesi ve rapor görülmedi |
 | Diğer | Auth, Onboarding, HowItWorks, paylaşım kartları, widget'lar | K | Widget sürüm uyuşmazlığı düzeltildi; widget görseli doğrulanmadı |
 
@@ -41,7 +43,8 @@ Hesaba dokunmadan gezmek için: `xcrun simctl launch <udid> com.barishizm.atrox.
 4. History / Library erişilemez durumdaydı — düzeltildi.
 5. 16 yerde ham yerelleştirme anahtarı riski (`LocalizedStringKey("a.\(x)")`) — düzeltildi.
 6. Sabit boyutlu dairelerde (rest timer, adım numarası) büyük yazı taşması — sınırlandı.
-7. Sosyal profil formunda avatar renk seçicisi renkleri göstermiyordu — düzeltildi.
+7. Arkadaşlar ekranına yalnızca davet linkiyle girilebiliyordu — Profil'e satır eklendi.
+8. Sosyal profil formunda avatar renk seçicisi renkleri göstermiyordu — düzeltildi.
 
 ## Yapılamayanlar
 

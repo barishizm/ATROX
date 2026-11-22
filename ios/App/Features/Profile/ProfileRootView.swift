@@ -25,6 +25,7 @@ struct ProfileRootView: View {
                     stats
                     if let sync = container.sync, sync.isAvailable { SyncStatusCard(sync: sync) }
                     proBanner
+                    friendsRow
                     overview
                 }
                 .padding(Spacing.md)
@@ -120,6 +121,24 @@ struct ProfileRootView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("profile-pro")
+    }
+
+    /// The friends screen had no way in except an invite link.
+    private var friendsRow: some View {
+        NavigationLink(value: ProfileRoute.social) {
+            HStack(spacing: Spacing.md) {
+                Image(systemName: "person.2").foregroundStyle(DSColor.accent).accessibilityHidden(true)
+                Text("social.friends.title").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                Spacer(minLength: Spacing.sm)
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(DSColor.textTertiary)
+                    .accessibilityHidden(true)
+            }
+            .padding(Spacing.md)
+            .frame(minHeight: HitTarget.button)
+            .background(DSColor.surface, in: RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("profile-friends")
     }
 
     private var overview: some View {
