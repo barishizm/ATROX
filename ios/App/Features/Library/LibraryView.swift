@@ -101,6 +101,7 @@ struct LibraryView: View {
             rowContent(item, model: model)
                 .contentShape(Rectangle())
                 .onTapGesture { tap(item, model: model) }
+                .accessibilityAddTraits(.isButton)
         }
     }
 
