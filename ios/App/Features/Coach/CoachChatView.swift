@@ -139,15 +139,13 @@ struct CoachChatView: View {
                     .padding(.leading, Spacing.md).padding(.vertical, Spacing.sm + 2)
                     .accessibilityIdentifier("coach-input")
                 if session.isBusy {
-                    Button { model.stop() } label: { Image(systemName: "stop.fill").font(.system(size: 16, weight: .bold)).frame(width: 36, height: 36) }
+                    Button { model.stop() } label: { composerGlyph("stop.fill") }
                         .foregroundStyle(DSColor.onAccent).background(DSColor.accentFill, in: Circle())
-                        .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
                         .accessibilityLabel(Text("coach.stop")).accessibilityIdentifier("coach-stop")
                 } else {
-                    Button { model.send() } label: { Image(systemName: "arrow.up").font(.system(size: 16, weight: .bold)).frame(width: 36, height: 36) }
+                    Button { model.send() } label: { composerGlyph("arrow.up") }
                         .foregroundStyle(model.canSend ? DSColor.onAccent : DSColor.textTertiary)
                         .background(model.canSend ? DSColor.accentFill : DSColor.surfaceRaised, in: Circle())
-                        .frame(minWidth: HitTarget.minimum, minHeight: HitTarget.minimum)
                         .disabled(!model.canSend)
                         .accessibilityLabel(Text("coach.send")).accessibilityIdentifier("coach-send")
                 }
@@ -273,5 +271,16 @@ struct CoachChatView: View {
         case .timeout: "coach.error.timeout"
         case .quotaExceeded, .cancelled, .invalidResponse, .server: "coach.error.generic"
         }
+    }
+}
+
+private extension CoachChatView {
+    /// 36 pt glyph inside a full 44 pt tappable area (the frame must sit inside the label to count as hit area).
+    func composerGlyph(_ name: String) -> some View {
+        Image(systemName: name)
+            .font(.system(size: 16, weight: .bold))
+            .frame(width: 36, height: 36)
+            .frame(width: HitTarget.minimum, height: HitTarget.minimum)
+            .contentShape(Rectangle())
     }
 }
