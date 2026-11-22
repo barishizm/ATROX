@@ -450,7 +450,7 @@ struct ReportView: View {
     var body: some View {
         Form {
             Picker("social.report.reason", selection: $reason) {
-                ForEach(ReportReason.allCases, id: \.self) { Text(LocalizedStringKey("social.report.reason.\($0.rawValue)")).tag($0) }
+                ForEach(ReportReason.allCases, id: \.self) { Text(LocalizedStringKey.dynamic("social.report.reason.\($0.rawValue)")).tag($0) }
             }
             .pickerStyle(.inline)
             Section("social.report.note") { TextField("social.report.note.hint", text: $note, axis: .vertical).lineLimit(3...6) }

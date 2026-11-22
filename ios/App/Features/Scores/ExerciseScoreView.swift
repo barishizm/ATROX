@@ -150,7 +150,7 @@ struct ExerciseScoreView: View {
             } label: {
                 HStack(spacing: Spacing.sm) {
                     Image(systemName: "checkmark.seal").accessibilityHidden(true)
-                    Text(LocalizedStringKey("scorescreen.confidence.\(model.confidence?.rawValue ?? "low")"))
+                    Text(LocalizedStringKey.dynamic("scorescreen.confidence.\(model.confidence?.rawValue ?? "low")"))
                     Spacer()
                     if !model.reasons.isEmpty {
                         Image(systemName: showsReasons ? "chevron.up" : "chevron.down").accessibilityHidden(true)
@@ -168,7 +168,7 @@ struct ExerciseScoreView: View {
             if showsReasons {
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     ForEach(model.reasons, id: \.self) { reason in
-                        Label(LocalizedStringKey("scorescreen.reason.\(reason.rawValue)"), systemImage: "info.circle")
+                        Label(LocalizedStringKey.dynamic("scorescreen.reason.\(reason.rawValue)"), systemImage: "info.circle")
                             .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
                     }
                 }
@@ -259,8 +259,8 @@ struct ExerciseScoreView: View {
         default: "noData"
         }
         return EmptyState(
-            systemImage: "chart.bar.xaxis", title: LocalizedStringKey("scorescreen.empty.\(key).title"),
-            message: LocalizedStringKey("scorescreen.empty.\(key).message")
+            systemImage: "chart.bar.xaxis", title: LocalizedStringKey.dynamic("scorescreen.empty.\(key).title"),
+            message: LocalizedStringKey.dynamic("scorescreen.empty.\(key).message")
         )
         .accessibilityIdentifier("score-empty")
     }
@@ -272,8 +272,8 @@ struct ExerciseScoreView: View {
         case .noModel: "noModel"
         }
         return EmptyState(
-            systemImage: "person.crop.circle.badge.questionmark", title: LocalizedStringKey("scorescreen.unavailable.\(key).title"),
-            message: LocalizedStringKey("scorescreen.unavailable.\(key).message")
+            systemImage: "person.crop.circle.badge.questionmark", title: LocalizedStringKey.dynamic("scorescreen.unavailable.\(key).title"),
+            message: LocalizedStringKey.dynamic("scorescreen.unavailable.\(key).message")
         )
     }
 
