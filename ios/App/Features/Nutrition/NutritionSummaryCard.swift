@@ -57,7 +57,7 @@ struct NutritionSummaryCard: View {
         } else {
             VStack(spacing: Spacing.xs) {
                 Text("nutrition.target.missing").font(DSFont.callout).foregroundStyle(DSColor.textSecondary).multilineTextAlignment(.center)
-                SecondaryButton("nutrition.target.set", systemImage: "target", action: onTarget)
+                SecondaryButton("nutrition.target.set", systemImage: "target") { onTarget() }
                     .accessibilityIdentifier("nutrition-target-set")
             }
         }
