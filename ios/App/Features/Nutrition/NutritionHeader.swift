@@ -93,9 +93,15 @@ struct NutritionBackdrop: View {
 
 /// Date picker sheet, capped at today.
 struct NutritionCalendarSheet: View {
-    @State var selection: Date
+    /// One-time seed: the picker owns the value after the sheet opens.
+    @State private var selection: Date
     let onSelect: (Date) -> Void
     @Environment(\.dismiss) private var dismiss
+
+    init(selection: Date, onSelect: @escaping (Date) -> Void) {
+        _selection = State(initialValue: selection)
+        self.onSelect = onSelect
+    }
 
     var body: some View {
         NavigationStack {
