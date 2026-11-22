@@ -224,10 +224,21 @@ struct SocialProfileForm: View {
                             .accessibilityLabel(Text(verbatim: item))
                     } }
                 }
-                Picker("social.form.color", selection: $color) {
-                    ForEach(AvatarColor.allCases, id: \.self) { Circle().fill($0.color).frame(width: 18, height: 18).tag($0) }
+                // A segmented Picker draws its labels as template images, which flattened every swatch to grey.
+                HStack(spacing: 0) {
+                    ForEach(AvatarColor.allCases, id: \.self) { option in
+                        Button { color = option } label: {
+                            Circle().fill(option.color).frame(width: 28, height: 28)
+                                .overlay(Circle().stroke(DSColor.textPrimary, lineWidth: option == color ? 3 : 0).padding(-4))
+                                .frame(maxWidth: .infinity, minHeight: HitTarget.minimum)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(verbatim: "\(option)"))
+                        .accessibilityAddTraits(option == color ? .isSelected : [])
+                    }
                 }
-                .pickerStyle(.segmented)
+                .accessibilityElement(children: .contain)
             }
             Section {
                 TextField("social.form.username", text: $username)

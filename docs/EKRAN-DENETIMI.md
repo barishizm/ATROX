@@ -21,11 +21,15 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 | Workout | Rutin editörü / gün, egzersiz skor ekranı, egzersiz detayı | K | `.dynamic` anahtarları kod+katalog betiğiyle doğrulandı, ekranda görülmedi |
 | Analysis | Muscles, Progress, Insights (boş) | S, TR (Muscles) | Insights dolu hali görülmedi |
 | Analysis | Kas detayı | K | |
-| Coach | Rıza ekranı | S | Rıza kabul edilmedi (kullanıcının kararı); sohbet ekranı görülmedi (U) |
+| Coach | Rıza ekranı | S (iki kez) | Rıza kabul edilmedi (kullanıcının kararı); sohbet ekranı görülmedi (U) |
 | Profile | Profil, Ayarlar (tamamı), Paywall | S | "Coming soon" bildirim satırı kaldırıldı; satın alma akışı denenmedi (U) |
 | Profile | Tema seçici, profil düzenleme, ölçümler, About, rıza geçmişi, hesap silme | K | Hesap silme/çıkış bilerek denenmedi (U) |
-| Social | Arkadaşlar, davet, rapor | K | Görülmedi |
+| Social | Davet ekranı, profil formu (test modu) | S | Avatar renk seçicisi gri görünüyordu, düzeltildi; arkadaş listesi ve rapor görülmedi |
 | Diğer | Auth, Onboarding, HowItWorks, paylaşım kartları, widget'lar | K | Widget sürüm uyuşmazlığı düzeltildi; widget görseli doğrulanmadı |
+
+## Hızlı yol
+
+Hesaba dokunmadan gezmek için: `xcrun simctl launch <udid> com.barishizm.atrox.debug -uitest-fake-auth -uitest-onboarded -uitest-fake-social -uitest-fake-coach` (bellek içi, tohumlu veri), ardından `xcrun simctl openurl <udid> atrox://u/bob_lifts` gibi deep link'ler.
 
 ## Bulgular ve durum
 
@@ -34,6 +38,7 @@ Büyük yazı = en büyük erişilebilirlik boyutu (accessibility-extra-large); 
 3. Calories ekranı büyük yazıda bozuluyordu — düzeltildi.
 4. History / Library erişilemez durumdaydı — düzeltildi.
 5. 16 yerde ham yerelleştirme anahtarı riski (`LocalizedStringKey("a.\(x)")`) — düzeltildi.
+7. Sosyal profil formunda avatar renk seçicisi renkleri göstermiyordu — düzeltildi.
 6. Sabit boyutlu dairelerde (rest timer, adım numarası) büyük yazı taşması — sınırlandı.
 
 ## Yapılamayanlar
