@@ -14,6 +14,7 @@ struct AddSetSheet: View {
     @State private var repsText = ""
     @State private var rir = 2.5
     @State private var date = Date()
+    @State private var tag: SetTag?
     @State private var pickingDate = false
     @State private var failed = false
     @State private var saving = false
@@ -49,6 +50,8 @@ struct AddSetSheet: View {
                     inputs
                     Divider().overlay(DSColor.separator)
                     rirSection
+                    Divider().overlay(DSColor.separator)
+                    tagRow
                 }
             }
             .scrollDismissesKeyboard(.interactively)
@@ -136,6 +139,37 @@ struct AddSetSheet: View {
         .padding(Spacing.md)
     }
 
+    private var tagRow: some View {
+        HStack(spacing: Spacing.md) {
+            Text("addset.tag").font(DSFont.body).foregroundStyle(DSColor.textPrimary).lineLimit(1).fixedSize()
+            tagButton(nil)
+            ForEach(SetTag.allCases, id: \.self) { tagButton($0) }
+            Spacer(minLength: 0)
+        }
+        .padding(Spacing.md)
+    }
+
+    private func tagButton(_ value: SetTag?) -> some View {
+        Button { tag = value } label: {
+            ZStack {
+                if let value {
+                    Circle().fill(value.color)
+                } else {
+                    Circle().stroke(DSColor.textSecondary, lineWidth: 2)
+                    Image(systemName: "nosign").font(.title3).foregroundStyle(DSColor.textSecondary)
+                }
+                if tag == value { Circle().stroke(DSColor.textPrimary, lineWidth: 3).padding(-4) }
+            }
+            .frame(width: 32, height: 32)
+            .frame(width: HitTarget.minimum, height: HitTarget.minimum)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(value.map { Text(LocalizedStringKey("addset.tag.\($0.rawValue)")) } ?? Text("addset.tag.none"))
+        .accessibilityAddTraits(tag == value ? .isSelected : [])
+        .accessibilityIdentifier("add-set-tag-\(value?.rawValue ?? "none")")
+    }
+
     private static func valueText(_ value: Double) -> String { value >= 4.5 ? "4+" : value.formatted() }
 
     private var saveButton: some View {
@@ -148,13 +182,25 @@ struct AddSetSheet: View {
     private func save() async {
         guard let weightKg, let reps else { return }
         saving = true
-        let saved = await model.addSet(weightKg: weightKg, reps: reps, rir: rir, on: date)
+        let saved = await model.addSet(weightKg: weightKg, reps: reps, rir: rir, tag: tag, on: date)
         saving = false
         if saved {
             onSaved()
             dismiss()
         } else {
             failed = true
+        }
+    }
+}
+
+extension SetTag {
+    /// The swatch a tag is drawn with.
+    var color: Color {
+        switch self {
+        case .green: Color(red: 0.52, green: 0.80, blue: 0.09)
+        case .teal: Color(red: 0.08, green: 0.78, blue: 0.70)
+        case .red: Color(red: 0.80, green: 0.08, blue: 0.08)
+        case .orange: Color(red: 0.80, green: 0.47, blue: 0.08)
         }
     }
 }

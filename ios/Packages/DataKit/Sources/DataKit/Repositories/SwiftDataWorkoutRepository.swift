@@ -402,7 +402,7 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
             id: set.id, workoutExerciseId: set.workoutExerciseId, position: set.position,
             input: SetInput(
                 weightKg: set.weightKg, reps: set.reps, rpe: set.rpe, rir: set.rir, setType: set.setType,
-                isCompleted: set.isCompleted
+                isCompleted: set.isCompleted, tag: set.tag
             ),
             updatedAt: set.updatedAt
         )

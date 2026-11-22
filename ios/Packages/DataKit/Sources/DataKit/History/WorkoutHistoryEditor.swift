@@ -161,8 +161,8 @@ extension SetInput {
     /// A finished working set as the "Add Set" sheet logs it. `rir` may be a half step (0.5 … 4.5, the last stop
     /// meaning "4+"): the whole-number part goes to `rir`, rounded down so the 1RM estimate stays conservative, and
     /// a half step is also kept as `rpe` (10 − RiR) so it can be shown back unchanged.
-    public static func logged(weightKg: Double, reps: Int, rir: Double?) -> SetInput {
-        var input = SetInput(weightKg: weightKg, reps: reps, setType: .working, isCompleted: true)
+    public static func logged(weightKg: Double, reps: Int, rir: Double?, tag: SetTag? = nil) -> SetInput {
+        var input = SetInput(weightKg: weightKg, reps: reps, setType: .working, isCompleted: true, tag: tag)
         if let rir {
             let clamped = min(max(rir, 0), 9)
             input.rir = Int(clamped.rounded(.down))

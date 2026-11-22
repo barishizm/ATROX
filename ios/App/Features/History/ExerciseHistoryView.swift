@@ -249,7 +249,8 @@ struct ExerciseHistoryView: View {
     }
 
     private func setRow(_ set: SetSnapshot, session: ExerciseSession, model: ExerciseHistoryModel) -> some View {
-        HStack {
+        HStack(spacing: Spacing.sm) {
+            if let tag = set.input.tag { Circle().fill(tag.color).frame(width: 10, height: 10).accessibilityHidden(true) }
             Text(verbatim: model.setLine(set, locale: locale))
                 .font(DSFont.body).foregroundStyle(DSColor.textPrimary)
             Spacer(minLength: Spacing.sm)

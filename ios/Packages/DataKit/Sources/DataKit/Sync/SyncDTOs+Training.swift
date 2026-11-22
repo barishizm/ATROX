@@ -221,6 +221,7 @@ public struct SetDTO: SyncDTO {
     public var rir: Int?
     public var setType: String
     public var isCompleted: Bool
+    public var tag: String?
 }
 
 extension SetEntry: SyncableModel {
@@ -230,7 +231,7 @@ extension SetEntry: SyncableModel {
         SetDTO(
             id: id, userId: userId, createdAt: createdAt, updatedAt: updatedAt, deletedAt: deletedAt,
             workoutExerciseId: workoutExerciseId, position: position, weightKg: weightKg, reps: reps, rpe: rpe, rir: rir,
-            setType: setTypeRaw, isCompleted: isCompleted
+            setType: setTypeRaw, isCompleted: isCompleted, tag: tagRaw
         )
     }
 
@@ -244,6 +245,7 @@ extension SetEntry: SyncableModel {
         rir = dto.rir
         setTypeRaw = dto.setType
         isCompleted = dto.isCompleted
+        tagRaw = dto.tag
     }
 
     public convenience init(syncDTO dto: SetDTO) {

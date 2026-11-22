@@ -66,8 +66,8 @@ extension ExerciseHistoryModel {
     }
 
     /// Logs a finished set on `date` and reloads, so the chart and the list move at once.
-    func addSet(weightKg: Double, reps: Int, rir: Double?, on date: Date) async -> Bool {
-        let input = SetInput.logged(weightKg: weightKg, reps: reps, rir: rir)
+    func addSet(weightKg: Double, reps: Int, rir: Double?, tag: SetTag? = nil, on date: Date) async -> Bool {
+        let input = SetInput.logged(weightKg: weightKg, reps: reps, rir: rir, tag: tag)
         do {
             try await context.editor.logSet(ref: ref, input: input, on: date)
         } catch {

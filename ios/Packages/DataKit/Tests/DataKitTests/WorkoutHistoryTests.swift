@@ -151,6 +151,18 @@ private struct Env {
         #expect(SetInput.logged(weightKg: 60, reps: 8, rir: nil).rir == nil)
     }
 
+    @Test func setTagSurvivesStorageAndSync() async throws {
+        let env = try Env()
+        let day = Date(timeIntervalSince1970: 1_700_000_000)
+        _ = try await env.editor.logSet(ref: bench, input: SetInput.logged(weightKg: 80, reps: 5, rir: 1, tag: .teal), on: day)
+        _ = try await env.editor.logSet(ref: bench, input: SetInput.logged(weightKg: 82, reps: 5, rir: 1), on: day)
+        let sets = try #require(try await env.workouts.history(userId: testUser, ref: bench, limit: 5).first).sets
+        #expect(sets.map(\.input.tag) == [.teal, nil])
+        let entry = SetEntry(userId: testUser, workoutExerciseId: UUID(), position: 0, input: SetInput.logged(weightKg: 1, reps: 1, rir: nil, tag: .red))
+        let copy = SetEntry(syncDTO: entry.makeDTO())
+        #expect(copy.tag == .red && entry.makeDTO().tag == "red")
+    }
+
     @Test func editsToWarmupsLeaveRecordsAlone() async throws {
         let env = try Env()
         let workout = try await env.train([(bench, [done(40, 10, .warmup), done(100, 5)])])
