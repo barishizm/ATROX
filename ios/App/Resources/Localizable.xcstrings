@@ -2414,13 +2414,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The scoring model isn't available right now. Check your connection and try again later."
+            "value" : "The scoring model couldn't be loaded. Try again later."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skor modeli şu an kullanılamıyor. Bağlantını kontrol edip daha sonra tekrar dene."
+            "value" : "Skor modeli yüklenemedi. Daha sonra tekrar dene."
           }
         }
       }
