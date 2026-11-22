@@ -38,8 +38,8 @@ Hesaba dokunmadan gezmek için: `xcrun simctl launch <udid> com.barishizm.atrox.
 3. Calories ekranı büyük yazıda bozuluyordu — düzeltildi.
 4. History / Library erişilemez durumdaydı — düzeltildi.
 5. 16 yerde ham yerelleştirme anahtarı riski (`LocalizedStringKey("a.\(x)")`) — düzeltildi.
-7. Sosyal profil formunda avatar renk seçicisi renkleri göstermiyordu — düzeltildi.
 6. Sabit boyutlu dairelerde (rest timer, adım numarası) büyük yazı taşması — sınırlandı.
+7. Sosyal profil formunda avatar renk seçicisi renkleri göstermiyordu — düzeltildi.
 
 ## Yapılamayanlar
 
