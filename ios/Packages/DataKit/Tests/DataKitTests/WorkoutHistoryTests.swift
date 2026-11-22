@@ -120,6 +120,23 @@ private struct Env {
         #expect(stored.positionsAreContiguous)
     }
 
+    @Test func loggedSetCreatesAFinishedWorkoutOrJoinsTheDaysWorkout() async throws {
+        let env = try Env()
+        let day = Date(timeIntervalSince1970: 1_700_000_000)
+        let first = try await env.editor.logSet(ref: bench, input: done(100, 5), on: day)
+        #expect(try await env.workouts.activeWorkout(userId: testUser) == nil)
+        #expect(try await env.record(.weight) == 100)
+        let second = try await env.editor.logSet(ref: bench, input: done(110, 3), on: day.addingTimeInterval(600))
+        #expect(second == first)
+        let stored = try #require(try await env.workouts.workout(id: first))
+        #expect(stored.endedAt != nil && stored.exercises.first?.sets.count == 2)
+        #expect(try await env.record(.weight) == 110)
+        let other = try await env.editor.logSet(ref: bench, input: done(90, 8), on: day.addingTimeInterval(-3 * 86_400))
+        #expect(other != first)
+        let sessions = try await env.workouts.history(userId: testUser, ref: bench, limit: 10)
+        #expect(sessions.count == 2)
+    }
+
     @Test func editsToWarmupsLeaveRecordsAlone() async throws {
         let env = try Env()
         let workout = try await env.train([(bench, [done(40, 10, .warmup), done(100, 5)])])

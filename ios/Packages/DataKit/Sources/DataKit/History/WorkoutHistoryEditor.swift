@@ -52,6 +52,29 @@ public struct WorkoutHistoryEditor: Sendable {
         try await recordsChanged(exercise.ref)
     }
 
+    /// Logs one finished set for an exercise on a given day without an active workout (the "Add Set" of the exercise
+    /// screen). It joins a finished workout of that day that already has the exercise; otherwise it records a new,
+    /// already finished workout holding just this set. Never creates or touches an active workout.
+    @discardableResult
+    public func logSet(ref: ExerciseRef, input: SetInput, on date: Date, calendar: Calendar = .current) async throws -> UUID {
+        var set = input
+        set.isCompleted = true
+        let sameDay = try await workouts.finishedWorkouts(userId: userId, before: nil, limit: 400)
+            .first { calendar.isDate($0.startedAt, inSameDayAs: date) && $0.exercises.contains { $0.ref == ref } }
+        let workoutId: UUID
+        if let sameDay, let row = sameDay.exercises.first(where: { $0.ref == ref }) {
+            try await workouts.addSet(workoutExerciseId: row.id, input: set)
+            workoutId = sameDay.id
+        } else {
+            let draft = WorkoutDraft(
+                startedAt: date, endedAt: date, source: .manual, exercises: [WorkoutExerciseDraft(ref: ref, sets: [set])]
+            )
+            workoutId = try await workouts.start(draft, userId: userId).id
+        }
+        try await recordsChanged(ref)
+        return workoutId
+    }
+
     // MARK: Exercises
 
     /// Adds an exercise with last time's sets, marked as done.

@@ -17,7 +17,7 @@ struct RoutineDayView: View {
     @State private var editing: RoutineExerciseSnapshot?
     @State private var picking = false
     @State private var dayName = ""
-    @FocusState private var nameFocused: Bool
+    @State private var renaming = false
 
     var body: some View {
         Group {
@@ -30,7 +30,6 @@ struct RoutineDayView: View {
             }
         }
         .background(DSColor.background)
-        .navigationTitle("routine.day.title")
         .navigationBarTitleDisplayMode(.inline)
         .task { await prepare() }
         .accessibilityIdentifier("routine-day-root")
@@ -69,12 +68,12 @@ struct RoutineDayView: View {
     private func list(_ day: RoutineDaySnapshot, model: RoutineEditorModel) -> some View {
         List(selection: $selection) {
             Section {
-                TextField("routine.day.namePrompt", text: $dayName)
-                    .focused($nameFocused)
-                    .submitLabel(.done)
-                    .onSubmit { commitName(model) }
-                    .accessibilityIdentifier("routine-day-name-field")
+                header(day, model: model)
+                analysisCard(day, model: model)
             }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             .selectionDisabled()
             Section {
                 if day.exercises.isEmpty {
@@ -90,17 +89,16 @@ struct RoutineDayView: View {
                 .onMove { source, destination in
                     Task { await model.moveExercises(dayId: dayId, from: source, to: destination) }
                 }
+            } header: {
+                listHeader(day)
             }
-            Section {
-                Button { picking = true } label: { Label("routine.day.addExercise", systemImage: "plus") }
-                    .accessibilityIdentifier("routine-add-exercise")
-            }
-            .selectionDisabled()
+            .listRowBackground(DSColor.surface)
         }
+        .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .environment(\.editMode, $editMode)
-        .scrollDismissesKeyboard(.interactively)
-        .toolbar { toolbar(model) }
+        .safeAreaInset(edge: .bottom) { startBar(day) }
+        .toolbar { toolbar(model, day: day) }
         .sheet(isPresented: $picking) {
             NavigationStack {
                 LibraryView(onAdd: { ids in
@@ -116,34 +114,126 @@ struct RoutineDayView: View {
                 Task { await model.update(exercise, with: input) }
             }
         }
+        .alert("routine.day.newTitle", isPresented: $renaming) {
+            TextField("routine.day.namePrompt", text: $dayName)
+            Button("routine.action.cancel", role: .cancel) { dayName = day.name }
+            Button("routine.action.ok") { commitName(model) }
+        }
         .alert("routine.error.save", isPresented: Bindable(model).errorOccurred) {
             Button("routine.action.ok", role: .cancel) {}
         }
-        .onChange(of: nameFocused) { _, focused in if !focused { commitName(model) } }
         .onChange(of: editMode) { _, mode in if !mode.isEditing { selection = [] } }
-        .onDisappear { commitName(model) }
+    }
+
+    // MARK: Header, analysis, start
+
+    private func header(_ day: RoutineDaySnapshot, model: RoutineEditorModel) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text(verbatim: day.name)
+                .font(DSFont.display).foregroundStyle(DSColor.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+            Text(verbatim: Self.summary(day, locale: locale))
+                .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Spacing.md).padding(.top, Spacing.lg).padding(.bottom, Spacing.md)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// The muscles this day works, shaded by how many sets reach them.
+    private func analysisCard(_ day: RoutineDaySnapshot, model: RoutineEditorModel) -> some View {
+        let intensities = Self.muscleSets(of: day) { model.item(for: $0)?.primaryMuscles ?? [] }
+        return HStack(alignment: .center, spacing: Spacing.md) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Text("routine.day.analysis").font(DSFont.headline).foregroundStyle(DSColor.textPrimary)
+                Spacer(minLength: 0)
+                Text("routine.day.setsTotal").font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+                Text(verbatim: "\(day.exercises.reduce(0) { $0 + $1.input.targetSets })")
+                    .font(DSFont.numericLarge).foregroundStyle(DSColor.textPrimary)
+            }
+            Spacer(minLength: 0)
+            MuscleMapView(intensities: MuscleIntensities.heatmap(intensities), style: .default)
+                .frame(height: 150)
+        }
+        .padding(Spacing.md)
+        .background(DSColor.background, in: RoundedRectangle(cornerRadius: Radius.lg, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Radius.lg, style: .continuous).stroke(DSColor.separator))
+        .padding(.horizontal, Spacing.md).padding(.bottom, Spacing.md)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("routine-day-analysis")
+    }
+
+    private func listHeader(_ day: RoutineDaySnapshot) -> some View {
+        HStack {
+            Text("routine.day.listSummary \(day.exercises.count) \(day.exercises.reduce(0) { $0 + $1.input.targetSets })")
+                .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
+            Spacer()
+            Button { picking = true } label: {
+                Label("routine.day.addExercises", systemImage: "plus").labelStyle(.titleAndIcon)
+                    .font(DSFont.callout.weight(.semibold))
+                    .frame(minHeight: HitTarget.minimum)
+            }
+            .foregroundStyle(DSColor.accent)
+            .accessibilityIdentifier("routine-add-exercise")
+        }
+        .textCase(nil)
+    }
+
+    private func startBar(_ day: RoutineDaySnapshot) -> some View {
+        PrimaryButton("workout.start.day", systemImage: "play.circle") {
+            Task { await presenter.start(routineId: routineId, dayId: dayId, container: container) }
+        }
+        .disabled(day.exercises.isEmpty)
+        .padding(.horizontal, Spacing.md).padding(.vertical, Spacing.sm)
+        .background(.bar)
+        .accessibilityIdentifier("routine-day-start")
+    }
+
+    /// "6 exercises · 71 min"
+    static func summary(_ day: RoutineDaySnapshot, locale: Locale) -> String {
+        let count = String(localized: "routine.day.exerciseCount \(day.exercises.count)", locale: locale)
+        let minutes = String(localized: "routine.day.minutes \(estimatedMinutes(day))", locale: locale)
+        return "\(count) · \(minutes)"
+    }
+
+    /// About 45 s of work per set plus the rest between sets (90 s when a target has none).
+    static func estimatedMinutes(_ day: RoutineDaySnapshot) -> Int {
+        let seconds = day.exercises.reduce(0) { $0 + $1.input.targetSets * (45 + ($1.input.restSeconds ?? 90)) }
+        return Int((Double(seconds) / 60).rounded())
+    }
+
+    /// Sets per muscle, counting each exercise's sets once for every primary muscle it trains.
+    static func muscleSets(of day: RoutineDaySnapshot, muscles: (ExerciseRef) -> [String]) -> [Muscle: Double] {
+        var result: [Muscle: Double] = [:]
+        for exercise in day.exercises {
+            for name in muscles(exercise.ref) {
+                if let muscle = Muscle(rawValue: name) { result[muscle, default: 0] += Double(exercise.input.targetSets) }
+            }
+        }
+        return result
     }
 
     @ToolbarContentBuilder
-    private func toolbar(_ model: RoutineEditorModel) -> some ToolbarContent {
+    private func toolbar(_ model: RoutineEditorModel, day: RoutineDaySnapshot) -> some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                Task { await presenter.start(routineId: routineId, dayId: dayId, container: container) }
-            } label: { Image(systemName: "play.fill") }
-                .accessibilityLabel("workout.start.day")
-                .accessibilityIdentifier("routine-day-start")
+            Button { dayName = day.name; renaming = true } label: { Image(systemName: "pencil") }
+                .accessibilityLabel("routine.day.rename")
+                .accessibilityIdentifier("routine-day-rename")
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Button { Task { await model.undo() } } label: { Image(systemName: "arrow.uturn.backward") }
-                .disabled(!model.canUndo)
-                .accessibilityLabel("routine.action.undo")
-                .accessibilityIdentifier("routine-undo")
-        }
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(editMode.isEditing ? "routine.action.finishEdit" : "routine.action.reorder") {
-                editMode = editMode.isEditing ? .inactive : .active
+            Menu {
+                Button { editMode = editMode.isEditing ? .inactive : .active } label: {
+                    Label(editMode.isEditing ? "routine.action.finishEdit" : "routine.action.reorder",
+                          systemImage: "arrow.up.arrow.down")
+                }
+                .accessibilityIdentifier("routine-reorder")
+                Button { Task { await model.undo() } } label: { Label("routine.action.undo", systemImage: "arrow.uturn.backward") }
+                    .disabled(!model.canUndo)
+                    .accessibilityIdentifier("routine-undo")
+            } label: {
+                Image(systemName: "ellipsis").frame(width: HitTarget.minimum, height: HitTarget.minimum)
             }
-            .accessibilityIdentifier("routine-reorder")
+            .accessibilityLabel("routine.action.more")
         }
         if editMode.isEditing {
             ToolbarItem(placement: .bottomBar) {
@@ -176,7 +266,7 @@ struct RoutineDayView: View {
             ExerciseThumbnail(fileName: model.item(for: exercise.ref)?.thumbnailName)
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(verbatim: model.name(of: exercise.ref))
-                    .font(DSFont.body.weight(.semibold)).foregroundStyle(DSColor.textPrimary).lineLimit(2)
+                    .font(DSFont.headline).foregroundStyle(DSColor.textPrimary).lineLimit(2)
                 targetSummary(exercise.input)
                 if let letter = model.supersetLetter(of: exercise, in: day), !joinsPrevious {
                     TagChip("routine.superset.badge \(letter)", style: .accent)
@@ -184,20 +274,20 @@ struct RoutineDayView: View {
             }
             Spacer(minLength: 0)
             if !editMode.isEditing {
-                Menu {
-                    Button { editing = exercise } label: { Label("routine.action.edit", systemImage: "slider.horizontal.3") }
-                    Button(role: .destructive) { Task { await model.deleteExercise(exercise.id) } } label: {
-                        Label("routine.action.delete", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(.body, weight: .semibold)).foregroundStyle(DSColor.textSecondary)
+                Button { editing = exercise } label: {
+                    Image(systemName: "square.and.pencil").font(.title3).foregroundStyle(DSColor.textPrimary)
                         .frame(width: HitTarget.minimum, height: HitTarget.minimum)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("routine.action.more")
+                .accessibilityLabel("routine.action.edit")
                 .accessibilityIdentifier("routine-exercise-menu-\(index)")
             }
+        }
+        .contentShape(Rectangle())
+        .background {
+            // A hidden link keeps the whole row tappable without the list's disclosure chevron.
+            NavigationLink(value: WorkoutRoute.exerciseHistory(id: HistoryContext.id(of: exercise.ref))) { EmptyView() }
+                .opacity(0)
         }
         .padding(.vertical, Spacing.sm)
         .padding(.leading, group == nil ? 0 : Spacing.sm)
@@ -209,9 +299,7 @@ struct RoutineDayView: View {
                     .accessibilityHidden(true)
             }
         }
-        .contentShape(Rectangle())
-        .simultaneousGesture(TapGesture().onEnded { if !editMode.isEditing { editing = exercise } })
-        .listRowInsets(EdgeInsets(top: 0, leading: Spacing.md, bottom: 0, trailing: Spacing.md))
+        .listRowInsets(EdgeInsets(top: 0, leading: Spacing.md, bottom: 0, trailing: Spacing.sm))
         .listRowSeparator(joinsNext ? .hidden : .visible)
         .tag(exercise.id)
         .swipeActions(edge: .trailing) {
@@ -233,18 +321,37 @@ struct RoutineDayView: View {
                 }
             }
         }
-        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("routine-exercise-\(index)")
     }
 
-    /// "3 × 8–12 · RIR 2 · 1:30"
+    /// "3 sets · 5 reps · 2.0 RiR"; the short form (numbers only) when the row is too narrow.
     private func targetSummary(_ input: RoutineExerciseInput) -> some View {
-        HStack(spacing: Spacing.xs) {
-            Text(verbatim: Self.setsAndReps(input))
-            if let rir = input.targetRir { Text(verbatim: "·"); Text("routine.summary.rir \(rir)") }
-            if let rest = input.restSeconds { Text(verbatim: "·"); Text(verbatim: Self.clock(rest)) }
+        let reps = Self.repsText(input)
+        let rir = input.targetRir.map { Double($0).formatted(.number.precision(.fractionLength(1))) }
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: Spacing.sm) {
+                Label("routine.target.sets \(input.targetSets)", systemImage: "square.stack")
+                if let reps { Label("routine.target.reps \(reps)", systemImage: "repeat") }
+                if let rir { Label("routine.target.rir \(rir)", systemImage: "gauge.medium") }
+            }
+            HStack(spacing: Spacing.sm) {
+                Label { Text(verbatim: "\(input.targetSets)") } icon: { Image(systemName: "square.stack") }
+                if let reps { Label { Text(verbatim: reps) } icon: { Image(systemName: "repeat") } }
+                if let rir { Label { Text(verbatim: rir) } icon: { Image(systemName: "gauge.medium") } }
+            }
         }
+        .labelStyle(.titleAndIcon)
         .font(DSFont.caption).foregroundStyle(DSColor.textSecondary)
+        .lineLimit(1)
+    }
+
+    static func repsText(_ input: RoutineExerciseInput) -> String? {
+        switch (input.targetRepsMin, input.targetRepsMax) {
+        case let (low?, high?): low == high ? "\(low)" : "\(low)–\(high)"
+        case let (low?, nil): "\(low)+"
+        case let (nil, high?): "≤\(high)"
+        case (nil, nil): nil
+        }
     }
 
     static func setsAndReps(_ input: RoutineExerciseInput) -> String {

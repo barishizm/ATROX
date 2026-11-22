@@ -140,7 +140,7 @@ struct WorkoutRootView: View {
         let isActive = model.plan.activeRoutineId == routine.id
         return Card {
             HStack(spacing: Spacing.sm) {
-                NavigationLink(value: WorkoutRoute.routine(id: routine.id)) {
+                NavigationLink(value: Self.destination(of: routine)) {
                     HStack(spacing: Spacing.md) {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             if isActive { TagChip("routine.badge.active", style: .accent) }
@@ -180,6 +180,12 @@ struct WorkoutRootView: View {
             }
         }
         .accessibilityIdentifier("program-card-\(routine.name)")
+    }
+
+    /// A one-day program opens its day (the exercise list with Start Workout); a longer one opens the program.
+    static func destination(of routine: RoutineSnapshot) -> WorkoutRoute {
+        if routine.days.count == 1, let day = routine.days.first { return .routineDay(routineId: routine.id, dayId: day.id) }
+        return .routine(id: routine.id)
     }
 
     private func undoBar(_ model: RoutineListModel) -> some View {
