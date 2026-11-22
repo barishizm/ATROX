@@ -111,7 +111,7 @@ struct RoutineEditorView: View {
         }
         .onChange(of: nameFocused) { _, focused in if !focused { commitName(model) } }
         .onDisappear { commitName(model) }
-        .onAppear { Task { await model.load() } }
+        .task { await model.load() }
     }
 
     // MARK: Sections

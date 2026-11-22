@@ -24,7 +24,7 @@ struct WorkoutRootView: View {
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.workout")
         .task { await prepare() }
-        .onAppear { if let model { Task { await model.load() } } }
+        .task { if let model { await model.load() } }
     }
 
     private func prepare() async {
