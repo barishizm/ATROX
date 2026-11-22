@@ -168,6 +168,7 @@ struct ExerciseDetailView: View {
                     HStack(alignment: .firstTextBaseline, spacing: Spacing.md) {
                         Text(verbatim: "\(offset + 1)")
                             .font(DSFont.numericSmall).foregroundStyle(DSColor.onAccent)
+                            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                             .frame(width: 26, height: 26).background(DSColor.accentFill, in: Circle())
                             .accessibilityHidden(true)
                         Text(verbatim: step).font(DSFont.body).foregroundStyle(DSColor.textPrimary)
