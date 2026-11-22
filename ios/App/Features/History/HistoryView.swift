@@ -91,7 +91,7 @@ struct HistoryView: View {
                 monthTotals(model)
             }
         }
-        .padding(.horizontal, Spacing.md)
+        // The list already supplies the side margin the rows below use.
         .padding(.vertical, Spacing.xs)
     }
 
