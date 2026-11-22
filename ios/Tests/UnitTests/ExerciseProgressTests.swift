@@ -22,6 +22,15 @@ import Testing
         #expect(ExerciseHistoryModel.window([], days: 30, now: now).isEmpty)
     }
 
+    @Test func chartSpanCoversEmptyAndSinglePointHistories() {
+        let empty = ExerciseHistoryView.xDomain([], days: 30, now: now)
+        #expect(empty.upperBound == now && empty.lowerBound == now.addingTimeInterval(-30 * 86_400))
+        let one = ExerciseHistoryView.xDomain([point(daysAgo: 2, 60)], days: 30, now: now)
+        #expect(one.lowerBound < one.upperBound)
+        let two = ExerciseHistoryView.xDomain([point(daysAgo: 9, 50), point(daysAgo: 1, 60)], days: 30, now: now)
+        #expect(two.upperBound.timeIntervalSince(two.lowerBound) == 8 * 86_400)
+    }
+
     @Test func rangesMapToTheirDayCounts() {
         #expect(ProgressRange.month.days == 30)
         #expect(ProgressRange.quarter.days == 90)

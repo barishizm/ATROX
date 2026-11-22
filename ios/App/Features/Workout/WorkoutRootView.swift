@@ -87,7 +87,6 @@ struct WorkoutRootView: View {
     private func home(_ model: RoutineListModel) -> some View {
         ScrollView {
             VStack(spacing: Spacing.md) {
-                TodayRootView(embedded: true)
                 if presenter.hasActiveWorkout {
                     PrimaryButton("workout.continue", systemImage: "play.fill") { presenter.resume() }
                         .accessibilityIdentifier("continue-workout")

@@ -57,20 +57,12 @@ struct ExerciseHistoryView: View {
         } else {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    if !model.isEmpty {
-                        tabs(model)
-                        summary(model)
-                        chart(model)
-                        rangePicker(model)
-                    }
+                    tabs(model)
+                    summary(model)
+                    chart(model)
+                    rangePicker(model)
                     if allowsLogging { addSetButton }
-                    if model.isEmpty {
-                        Text("exercisehistory.empty.message")
-                            .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                            .padding(.horizontal, Spacing.md)
-                    } else {
-                        sessionsSection(model)
-                    }
+                    sessionsSection(model)
                 }
             }
         }
@@ -153,40 +145,47 @@ struct ExerciseHistoryView: View {
         return signed && value > 0 ? "+" + text : text
     }
 
-    @ViewBuilder
+    /// The chart is always there: empty axes before the first log, one dot after it, a line from the second on.
     private func chart(_ model: ExerciseHistoryModel) -> some View {
         let points = model.visiblePoints
-        if points.count < 2 {
-            Text("exprogress.chart.few")
-                .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
-                .frame(maxWidth: .infinity, minHeight: 120, alignment: .center)
-                .padding(.horizontal, Spacing.md)
-        } else {
-            Chart(points) { point in
-                AreaMark(x: .value("Date", point.date), y: .value("Value", point.value))
-                    .foregroundStyle(LinearGradient(
-                        colors: [DSColor.accent.opacity(0.55), DSColor.accent.opacity(0.02)],
-                        startPoint: .top, endPoint: .bottom))
-                    .interpolationMethod(.monotone)
-                LineMark(x: .value("Date", point.date), y: .value("Value", point.value))
-                    .foregroundStyle(DSColor.accent)
-                    .interpolationMethod(.monotone)
-                PointMark(x: .value("Date", point.date), y: .value("Value", point.value))
-                    .foregroundStyle(DSColor.accent)
-                    .symbolSize(points.count > 14 ? 0 : 40)
-            }
-            .chartYScale(domain: .automatic(includesZero: true))
-            .chartYAxis { AxisMarks(position: .trailing) }
-            .frame(height: 260)
-            .padding(.horizontal, Spacing.md)
-            .accessibilityLabel(title(of: model.metric))
-            .dsChartDescriptor(ChartAccessibility.descriptor(
-                title: descriptorTitle(of: model.metric),
-                points: points.map { ChartSeriesPoint(date: $0.date, value: $0.value) },
-                yTitle: descriptorTitle(of: model.metric),
-                unit: model.metric == .volume ? "" : model.context.unit.symbol, locale: locale))
-            .accessibilityIdentifier("exercise-e1rm-chart")
+        let domain = Self.xDomain(points, days: model.range.days ?? 30, now: model.now())
+        let top = (points.map(\.value).max() ?? 0) * 1.15
+        return Chart(points) { point in
+            AreaMark(x: .value("Date", point.date), y: .value("Value", point.value))
+                .foregroundStyle(LinearGradient(
+                    colors: [DSColor.accent.opacity(0.55), DSColor.accent.opacity(0.02)],
+                    startPoint: .top, endPoint: .bottom))
+                .interpolationMethod(.monotone)
+            LineMark(x: .value("Date", point.date), y: .value("Value", point.value))
+                .foregroundStyle(DSColor.accent)
+                .interpolationMethod(.monotone)
+            PointMark(x: .value("Date", point.date), y: .value("Value", point.value))
+                .foregroundStyle(DSColor.accent)
+                .symbolSize(points.count > 14 ? 0 : 40)
         }
+        .chartXScale(domain: domain)
+        .chartYScale(domain: 0...(top > 0 ? top : 100))
+        .chartYAxis { AxisMarks(position: .trailing) }
+        .frame(height: 260)
+        .padding(.horizontal, Spacing.md)
+        .accessibilityLabel(title(of: model.metric))
+        .dsChartDescriptor(ChartAccessibility.descriptor(
+            title: descriptorTitle(of: model.metric),
+            points: points.map { ChartSeriesPoint(date: $0.date, value: $0.value) },
+            yTitle: descriptorTitle(of: model.metric),
+            unit: model.metric == .volume ? "" : model.context.unit.symbol, locale: locale))
+        .accessibilityIdentifier("exercise-e1rm-chart")
+    }
+
+    /// The date span the chart shows: the points' own span, padded around a single point, or the range window
+    /// ending today when there is nothing logged yet.
+    static func xDomain(_ points: [ExerciseHistoryModel.ChartPoint], days: Int, now: Date) -> ClosedRange<Date> {
+        let day: TimeInterval = 86_400
+        guard let first = points.first?.date, let last = points.last?.date else {
+            return now.addingTimeInterval(-Double(days) * day)...now
+        }
+        if first == last { return first.addingTimeInterval(-3 * day)...last.addingTimeInterval(3 * day) }
+        return first...last
     }
 
     private func rangePicker(_ model: ExerciseHistoryModel) -> some View {
