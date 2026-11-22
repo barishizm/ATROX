@@ -2409,6 +2409,22 @@
         }
       }
     },
+    "score.unavailable.model" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scoring model isn't available right now. Check your connection and try again later."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skor modeli şu an kullanılamıyor. Bağlantını kontrol edip daha sonra tekrar dene."
+          }
+        }
+      }
+    },
     "workout.stale.title" : {
       "localizations" : {
         "en" : {

@@ -140,11 +140,19 @@ struct AnalysisRootView: View {
         .foregroundStyle(DSColor.textSecondary)
     }
 
+    private func unavailableMessage(_ reason: ScoreUnavailable) -> LocalizedStringKey {
+        switch reason {
+        case .noBodyweight: "muscles.unavailable.weight"
+        case .noProfile: "muscles.unavailable.profile"
+        case .noModel: "score.unavailable.model"
+        }
+    }
+
     private func unavailableCard(_ reason: ScoreUnavailable) -> some View {
         Card {
             HStack(alignment: .top, spacing: Spacing.sm) {
                 Image(systemName: "info.circle").foregroundStyle(DSColor.accent).accessibilityHidden(true)
-                Text(reason == .noBodyweight ? "muscles.unavailable.weight" : "muscles.unavailable.profile")
+                Text(unavailableMessage(reason))
                     .font(DSFont.callout).foregroundStyle(DSColor.textSecondary)
             }
         }
