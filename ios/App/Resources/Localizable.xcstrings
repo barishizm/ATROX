@@ -27899,6 +27899,57 @@
         }
       }
     },
+    "nutrition.quiz.intro.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now, your food plan"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdi yemek planın"
+          }
+        }
+      }
+    },
+    "nutrition.quiz.intro.badge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PART 2 OF SIGN-UP"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KAYDIN 2. AŞAMASI"
+          }
+        }
+      }
+    },
+    "nutrition.quiz.intro.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In this second step we ask a few questions for food tracking, to set your daily calories and macros. We won't ask again what you already told us."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ikinci aşamada yiyecek takibi için birkaç soru soracağız; günlük kalori ve makro hedeflerini buna göre belirleyeceğiz. Daha önce söylediklerini tekrar sormayacağız."
+          }
+        }
+      }
+    },
     "nutrition.quiz.goalweight.title" : {
       "extractionState" : "manual",
       "localizations" : {

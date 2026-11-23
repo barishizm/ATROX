@@ -183,3 +183,26 @@ struct FoodConsentStateTests {
         #expect(FoodConsentModel.state(for: .outdated(previous: true)) == .needed)
     }
 }
+
+@MainActor
+struct NutritionQuizStepsTests {
+    @Test func startsWithTheIntroAndSkipsAnswersFromSignUp() {
+        let profile = NutritionProfile(sex: .male, ageYears: 30, heightCm: 180, weightKg: 80, goal: .fatLoss, weeklyFrequency: 4)
+        let flow = NutritionOnboardingModel(profile: profile, preferences: nil)
+        #expect(flow.steps == [.intro, .goalWeight, .pace, .activity, .cooking, .time, .diet, .plan])
+    }
+
+    @Test func asksWeightOnlyWhenSignUpHasNone() {
+        let profile = NutritionProfile(sex: .female, ageYears: 25, heightCm: 165, weightKg: nil, goal: .generalHealth, weeklyFrequency: 3)
+        let flow = NutritionOnboardingModel(profile: profile, preferences: nil)
+        #expect(flow.steps == [.intro, .weight, .activity, .cooking, .time, .diet, .plan])
+    }
+
+    @Test func goalWeightDefaultsToAWheelStep() {
+        let profile = NutritionProfile(sex: .male, ageYears: 30, heightCm: 180, weightKg: 83, goal: .fatLoss, weeklyFrequency: 4)
+        let flow = NutritionOnboardingModel(profile: profile, preferences: nil)
+        flow.next()
+        #expect(flow.step == .goalWeight)
+        #expect(flow.goalWeight * 2 == (flow.goalWeight * 2).rounded())
+    }
+}
