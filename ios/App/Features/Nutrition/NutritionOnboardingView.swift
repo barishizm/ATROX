@@ -69,7 +69,7 @@ struct NutritionOnboardingView: View {
     private var header: some View {
         ZStack {
             GlassProgressBar(value: flow.progress)
-                .frame(width: 190)
+                .frame(width: 150)
                 .accessibilityElement()
                 .accessibilityLabel("onboarding.progress")
                 .accessibilityValue(Text(flow.progress, format: .percent.precision(.fractionLength(0))))

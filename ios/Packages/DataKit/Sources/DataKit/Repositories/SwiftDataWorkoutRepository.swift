@@ -295,11 +295,26 @@ public actor SwiftDataWorkoutRepository: WorkoutRepository {
         return try modelContext.fetch(descriptor).first
     }
 
-    private func live<T: PersistentModel & SyncableRecord>(_ type: T.Type, id: UUID) throws -> T {
-        var descriptor = FetchDescriptor<T>(predicate: #Predicate { $0.id == id })
+    /// Fetches one live (not soft-deleted) record. The predicates are written per concrete type on purpose: a
+    /// `#Predicate { $0.id == id }` inside a generic function compiles to a computed key path that SwiftData cannot
+    /// resolve in optimized (Release/TestFlight) builds, which crashed the app on save and delete.
+    private func live<T: PersistentModel & SyncableRecord>(_ descriptor: FetchDescriptor<T>) throws -> T {
+        var descriptor = descriptor
         descriptor.fetchLimit = 1
         guard let model = try modelContext.fetch(descriptor).first, !model.isSoftDeleted else { throw DataError.notFound }
         return model
+    }
+
+    private func live(_ type: Workout.Type, id: UUID) throws -> Workout {
+        try live(FetchDescriptor<Workout>(predicate: #Predicate { $0.id == id }))
+    }
+
+    private func live(_ type: WorkoutExercise.Type, id: UUID) throws -> WorkoutExercise {
+        try live(FetchDescriptor<WorkoutExercise>(predicate: #Predicate { $0.id == id }))
+    }
+
+    private func live(_ type: SetEntry.Type, id: UUID) throws -> SetEntry {
+        try live(FetchDescriptor<SetEntry>(predicate: #Predicate { $0.id == id }))
     }
 
     private func exercises(of workoutId: UUID) throws -> [WorkoutExercise] {
