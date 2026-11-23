@@ -101,7 +101,7 @@ targets:
         # Opportunistic background sync (P045, BackgroundSync.swift).
         UIBackgroundModes: [fetch]
         # Direct share to Instagram Stories (P084); falls back to the share sheet without Instagram.
-        LSApplicationQueriesSchemes: [instagram-stories]
+        LSApplicationQueriesSchemes: [instagram-stories, message, googlegmail, ms-outlook, ymail, readdle-spark, protonmail]
         BGTaskSchedulerPermittedIdentifiers: [com.barishizm.atrox.sync.refresh, com.barishizm.atrox.weekly.refresh]
         # Only HTTPS (URLSession) and Apple CryptoKit: exempt encryption, so App Store Connect skips the export-compliance question.
         ITSAppUsesNonExemptEncryption: false
