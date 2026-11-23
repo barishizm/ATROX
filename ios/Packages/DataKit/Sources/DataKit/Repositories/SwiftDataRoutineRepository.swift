@@ -134,11 +134,26 @@ public actor SwiftDataRoutineRepository: RoutineRepository {
         return trimmed
     }
 
-    private func live<T: PersistentModel & SyncableRecord>(_ type: T.Type, id: UUID) throws -> T {
-        var descriptor = FetchDescriptor<T>(predicate: #Predicate { $0.id == id })
+    /// Fetches one live (not soft-deleted) record. The predicates are written per concrete type on purpose: a
+    /// `#Predicate { $0.id == id }` inside a generic function compiles to a computed key path that SwiftData cannot
+    /// resolve in optimized (Release/TestFlight) builds, which crashed the app on save and delete.
+    private func live<T: PersistentModel & SyncableRecord>(_ descriptor: FetchDescriptor<T>) throws -> T {
+        var descriptor = descriptor
         descriptor.fetchLimit = 1
         guard let model = try modelContext.fetch(descriptor).first, !model.isSoftDeleted else { throw DataError.notFound }
         return model
+    }
+
+    private func live(_ type: Routine.Type, id: UUID) throws -> Routine {
+        try live(FetchDescriptor<Routine>(predicate: #Predicate { $0.id == id }))
+    }
+
+    private func live(_ type: RoutineDay.Type, id: UUID) throws -> RoutineDay {
+        try live(FetchDescriptor<RoutineDay>(predicate: #Predicate { $0.id == id }))
+    }
+
+    private func live(_ type: RoutineExercise.Type, id: UUID) throws -> RoutineExercise {
+        try live(FetchDescriptor<RoutineExercise>(predicate: #Predicate { $0.id == id }))
     }
 
     private func days(of routineId: UUID) throws -> [RoutineDay] {

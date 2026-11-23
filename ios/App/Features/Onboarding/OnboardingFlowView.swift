@@ -164,10 +164,21 @@ struct GlassProgressBar: View {
 
 /// Illustrated, blurred and darkened backdrop for the onboarding questions; it cross-fades between steps.
 struct OnboardingBackdrop: View {
-    let step: OnboardingStep
+    /// Which of the illustrated backgrounds to show (0...5).
+    let index: Int
+    var extraDim: Double = 0
     private static let images = (1...6).map { "OnboardingBg\($0)" }
 
-    private var index: Int {
+    init(index: Int, extraDim: Double = 0) {
+        self.index = index
+        self.extraDim = extraDim
+    }
+
+    init(step: OnboardingStep) {
+        self.init(index: Self.index(for: step), extraDim: step == .terms || step == .contribution ? 0.3 : 0)
+    }
+
+    private static func index(for step: OnboardingStep) -> Int {
         switch step {
         case .name, .frequency: 0
         case .birthDate, .terms: 1
@@ -178,9 +189,6 @@ struct OnboardingBackdrop: View {
         default: 0
         }
     }
-
-    /// The text-heavy consent screens get a darker backdrop so their copy stays readable.
-    private var extraDim: Double { step == .terms || step == .contribution ? 0.3 : 0 }
 
     var body: some View {
         ZStack {

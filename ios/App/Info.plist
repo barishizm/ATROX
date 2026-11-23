@@ -70,6 +70,12 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>instagram-stories</string>
+		<string>message</string>
+		<string>googlegmail</string>
+		<string>ms-outlook</string>
+		<string>ymail</string>
+		<string>readdle-spark</string>
+		<string>protonmail</string>
 	</array>
 	<key>LegalPrivacyURL</key>
 	<string>$(LEGAL_PRIVACY_URL)</string>

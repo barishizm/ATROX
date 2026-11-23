@@ -3,7 +3,7 @@ import Foundation
 import Observation
 
 enum QuizStep: Hashable {
-    case goal, weight, goalWeight, pace, activity, cooking, time, diet, plan
+    case intro, weight, goalWeight, pace, activity, cooking, time, diet, plan
 }
 
 enum CookingSkill: String, Codable, CaseIterable { case beginner, comfortable, expert }
@@ -32,7 +32,7 @@ struct NutritionPreferences: Codable, Equatable {
     }
 }
 
-/// The first-run quiz: up to nine short questions, then a daily plan the user can still edit.
+/// The first-run quiz (part 2 of sign-up): an intro card, then up to seven short questions, then a daily plan the user can still edit.
 @MainActor
 @Observable
 final class NutritionOnboardingModel {
@@ -71,7 +71,9 @@ final class NutritionOnboardingModel {
     var wantsChange: Bool { goal == .fatLoss || goal == .muscleGain }
 
     var steps: [QuizStep] {
-        var list: [QuizStep] = [.goal, .weight]
+        // The goal and the current weight were answered in the sign-up questions; only a missing weight is asked again.
+        var list: [QuizStep] = [.intro]
+        if profile.weightKg == nil { list.append(.weight) }
         if wantsChange { list += [.goalWeight, .pace] }
         return list + [.activity, .cooking, .time, .diet, .plan]
     }
@@ -101,7 +103,11 @@ final class NutritionOnboardingModel {
     func next() {
         guard index < steps.count - 1 else { return }
         index += 1
-        if step == .goalWeight, goalWeight == 0 { goalWeight = (weight * (goal == .fatLoss ? 0.9 : 1.05) * 10).rounded() / 10 }
+        if step == .goalWeight, goalWeight == 0 {
+            // Matches the wheel's steps: half a kilo, or a whole pound.
+            let target = weight * (goal == .fatLoss ? 0.9 : 1.05)
+            goalWeight = unit == .kilograms ? (target * 2).rounded() / 2 : target.rounded()
+        }
         if step == .plan { applySuggestion() }
     }
 
