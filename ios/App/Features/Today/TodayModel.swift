@@ -4,18 +4,11 @@ import Foundation
 import Observation
 import StrengthKit
 
-/// State of the Today dashboard (P067): the overall strength score, pattern bars, the next workout, highlights,
+/// State of the overall score card (P067) and of the widgets (P096): the overall strength score, the next workout,
 /// the weekly goal and the streak.
 @MainActor
 @Observable
 final class TodayModel {
-    struct PatternBar: Identifiable, Equatable {
-        let pattern: String
-        /// nil = pattern not covered yet.
-        let score: Double?
-        var id: String { pattern }
-    }
-
     struct PlannedDay: Equatable {
         let routineId: UUID
         let dayId: UUID
@@ -31,37 +24,18 @@ final class TodayModel {
         case none
     }
 
-    struct RecordLine: Equatable {
-        let exerciseId: String
-        let name: String
-        let kind: RecordKind
-        let valueText: String
-        let date: Date
-    }
-
-    struct ImprovedLine: Equatable {
-        let exerciseId: String
-        let name: String
-        let change: Int
-    }
-
     private(set) var isLoading = true
     private(set) var status: DashboardStatus = .noData
     private(set) var overall: GroupScore?
     /// Reference group the overall score was computed against (shown on the share card).
     private(set) var population: ReferencePopulation = .gym
-    private(set) var bars: [PatternBar] = []
     private(set) var facts: DashboardFacts?
     private(set) var plan: Plan = .none
     /// Every day of the active program (P096: the choices of the "Start workout" shortcut).
     private(set) var programDays: [PlannedDay] = []
-    private(set) var record: RecordLine?
-    private(set) var improved: ImprovedLine?
     private(set) var unavailable: ScoreUnavailable?
-    private(set) var hintExerciseId: String?
+    /// The exercise that would cover a missing pattern of a provisional score.
     private(set) var hintName: String?
-    /// The single most important insight of the day (P069); nil when nothing passes the thresholds.
-    private(set) var insight: InsightItem?
 
     let context: HistoryContext
     @ObservationIgnored private let center: ScoreCenter
@@ -69,14 +43,13 @@ final class TodayModel {
     private let planStore: RoutinePlanStore
     @ObservationIgnored private let profile: ProfileInput?
     @ObservationIgnored private let calendar: Calendar
-    @ObservationIgnored private let insights: InsightService?
     /// Hands the overall score to the social layer (P087); the server drops it while sharing is off.
     @ObservationIgnored private let publishScore: (@Sendable (ScorePublication) async -> Bool)?
     @ObservationIgnored private var lastPublished: ScorePublication?
 
     init(
         context: HistoryContext, center: ScoreCenter, stats: TrainingStats, plan: RoutinePlanStore, profile: ProfileInput?,
-        insights: InsightService? = nil, calendar: Calendar = .current,
+        calendar: Calendar = .current,
         publishScore: (@Sendable (ScorePublication) async -> Bool)? = nil
     ) {
         self.publishScore = publishScore
@@ -85,18 +58,8 @@ final class TodayModel {
         self.stats = stats
         planStore = plan
         self.profile = profile
-        self.insights = insights
         self.calendar = calendar
     }
-
-    var showsBodyweightReminder: Bool { center.showsBodyweightReminder }
-
-    /// A user without any finished workout sees one clear action instead of an empty dashboard.
-    var isNewUser: Bool { (facts?.finishedWorkouts ?? 0) == 0 }
-
-    var weeklyDone: Int { facts?.workoutsThisWeek ?? 0 }
-    var weeklyGoal: Int { facts?.goal ?? 3 }
-    var streakWeeks: Int { facts?.streakWeeks ?? 0 }
 
     func load() async {
         let names = await context.loadNames()
@@ -105,13 +68,10 @@ final class TodayModel {
         population = overview?.population ?? .gym
         unavailable = overview == nil ? center.unavailable : nil
         status = DashboardStatus.make(overall: overview?.overall, allPatterns: overview?.allPatterns ?? [])
-        bars = (overview?.allPatterns ?? []).map { PatternBar(pattern: $0, score: overview?.patterns[$0]?.score) }
         if case .provisional(let missing) = status, let pattern = PatternSuggestion.first(missing: missing),
            let id = PatternSuggestion.exerciseId(for: pattern) {
-            hintExerciseId = id
             hintName = names[id]
         } else {
-            hintExerciseId = nil
             hintName = nil
         }
         let planned = planStore.dayByWeekday.count
@@ -120,14 +80,7 @@ final class TodayModel {
             goal: planned > 0 ? planned : nil
         )
         facts = loaded
-        record = loaded.lastRecord.map {
-            RecordLine(exerciseId: $0.exerciseId, name: names[$0.exerciseId] ?? $0.exerciseId, kind: $0.kind, valueText: valueText($0), date: $0.date)
-        }
-        improved = loaded.mostImproved.map {
-            ImprovedLine(exerciseId: $0.exerciseId, name: names[$0.exerciseId] ?? $0.exerciseId, change: Int($0.change.rounded()))
-        }
         plan = await resolvePlan()
-        await loadInsight(names: names)
         isLoading = false
         await publishOverall(weekly: loaded.workoutsThisWeek)
     }
@@ -142,24 +95,6 @@ final class TodayModel {
         guard publication != lastPublished else { return }
         // Remembered only once the server took it, so a rejected or failed publish is tried again on the next load.
         if await publishScore(publication) { lastPublished = publication }
-    }
-
-    private func loadInsight(names: [String: String]) async {
-        guard let insights else { return }
-        _ = await insights.refresh(userId: context.userId)
-        insight = await insights.topForToday(userId: context.userId)
-            .map { InsightPresenter.item(for: $0, names: names, locale: context.locale) }
-    }
-
-    func dismissInsight() async {
-        guard let insight, let insights else { return }
-        await insights.dismiss(id: insight.id)
-        self.insight = nil
-        await load()
-    }
-
-    private func valueText(_ record: RecordHighlight) -> String {
-        record.kind == .reps ? "\(Int(record.value.rounded()))" : context.weightText(record.value)
     }
 
     /// Changes with the active program and the weekly plan, so the view can reload when either is edited.

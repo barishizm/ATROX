@@ -79,7 +79,7 @@ struct WorkoutRootView: View {
             PrimaryButton("workout.create.button", systemImage: "plus") { router.push(.create) }
                 .padding(.horizontal, Spacing.xl)
                 .accessibilityIdentifier("workout-create")
-            TodayRootView(embedded: true).padding(.horizontal, Spacing.md)
+            TodayRootView().padding(.horizontal, Spacing.md)
             Spacer(minLength: 0)
             Spacer(minLength: 0)
         }
@@ -98,7 +98,7 @@ struct WorkoutRootView: View {
                 ForEach(model.routines) { routine in
                     programCard(routine, model: model)
                 }
-                TodayRootView(embedded: true)
+                TodayRootView()
             }
             .padding(Spacing.md)
         }
