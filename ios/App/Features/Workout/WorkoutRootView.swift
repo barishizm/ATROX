@@ -24,10 +24,14 @@ struct WorkoutRootView: View {
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.workout")
         .task { await prepare() }
-        .task { if let model { await model.load() } }
     }
 
+    /// Builds the model once; coming back to the tab only reloads it, so state such as the undo bar survives.
     private func prepare() async {
+        if let model {
+            await model.load()
+            return
+        }
         failed = false
         if let made = await container.makeRoutineListModel() {
             model = made
