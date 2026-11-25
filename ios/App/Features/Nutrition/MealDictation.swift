@@ -15,6 +15,8 @@ final class MealDictation {
     @ObservationIgnored private let engine = AVAudioEngine()
     @ObservationIgnored private var request: SFSpeechAudioBufferRecognitionRequest?
     @ObservationIgnored private var task: SFSpeechRecognitionTask?
+    /// Counts started sessions, so late answers of a finished one can be told apart.
+    @ObservationIgnored private var session = 0
 
     var isListening: Bool { state == .listening }
 
@@ -46,11 +48,13 @@ final class MealDictation {
         request.requiresOnDeviceRecognition = false
         self.request = request
         do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.record, mode: .measurement, options: .duckOthers)
-            try session.setActive(true, options: .notifyOthersOnDeactivation)
+            let audio = AVAudioSession.sharedInstance()
+            try audio.setCategory(.record, mode: .measurement, options: .duckOthers)
+            try audio.setActive(true, options: .notifyOthersOnDeactivation)
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
+            // No usable microphone (e.g. during a call): installTap would raise an exception do/catch cannot catch.
+            guard Self.isUsable(sampleRate: format.sampleRate, channels: format.channelCount) else { throw DictationError.noInput }
             let sink = AudioSink(request)
             input.installTap(onBus: 0, bufferSize: 1024, format: format, block: Self.tapBlock(sink))
             engine.prepare()
@@ -61,16 +65,24 @@ final class MealDictation {
             return
         }
         state = .listening
-        task = recognizer.recognitionTask(with: request, resultHandler: Self.resultHandler(for: self))
+        session += 1
+        task = recognizer.recognitionTask(with: request, resultHandler: Self.resultHandler(for: self, session: session))
     }
 
-    /// Built outside the main actor: Speech calls it on a background queue.
-    private nonisolated static func resultHandler(for dictation: MealDictation) -> @Sendable (SFSpeechRecognitionResult?, Error?) -> Void {
+    /// A tap needs a real input format; the input node reports 0 Hz / 0 channels while the microphone is unavailable.
+    nonisolated static func isUsable(sampleRate: Double, channels: AVAudioChannelCount) -> Bool { sampleRate > 0 && channels > 0 }
+
+    private enum DictationError: Error { case noInput }
+
+    /// Built outside the main actor: Speech calls it on a background queue. Answers of an earlier session (a cancelled
+    /// task reports an error after the user already started again) are ignored, so they cannot stop the new one.
+    private nonisolated static func resultHandler(for dictation: MealDictation, session: Int)
+        -> @Sendable (SFSpeechRecognitionResult?, Error?) -> Void {
         { [weak dictation] result, error in
             let text = result?.bestTranscription.formattedString
             let finished = result?.isFinal == true || error != nil
             Task { @MainActor in
-                guard let dictation else { return }
+                guard let dictation, dictation.session == session else { return }
                 if let text { dictation.transcript = text }
                 if finished { dictation.stop() }
             }

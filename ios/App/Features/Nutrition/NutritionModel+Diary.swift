@@ -1,18 +1,8 @@
 import DataKit
 import Foundation
 
-/// What the model needs from Apple Health, kept as closures so tests can stub it.
-struct NutritionHealth: Sendable {
-    /// Whether the user already pressed "Connect" on this device.
-    var isConnected: @Sendable () -> Bool
-    /// Asks for permission to read steps and remembers the answer.
-    var connect: @Sendable () async -> Bool
-    var steps: @Sendable (Date) async -> Double?
-}
-
-/// Water, activities, steps, notes, fasting and weight of the nutrition diary.
+/// Water, notes, fasting and weight of the nutrition diary.
 extension NutritionModel {
-    static let kcalPerStep = 0.04
     static let glassMl = 250.0
     static let moods = ["great", "good", "okay", "bad", "awful"]
 
@@ -28,19 +18,6 @@ extension NutritionModel {
         return max((kg * 35 / Self.glassMl).rounded() * Self.glassMl, 1500)
     }
 
-    var activities: [DiaryLogSnapshot] { logs(.activity) }
-
-    var manualSteps: Double { logs(.steps).reduce(0) { $0 + $1.input.quantity } }
-
-    /// Health's count when connected, otherwise what the user typed in.
-    var totalSteps: Double { stepsConnected ? (healthSteps ?? 0) : manualSteps }
-
-    /// Calories burned by activities and steps on the shown day.
-    var burnedCalories: Double {
-        let moved = activities.reduce(0) { $0 + $1.input.amount }
-        return moved + (stepsConnected ? (healthSteps ?? 0) * Self.kcalPerStep : logs(.steps).reduce(0) { $0 + $1.input.amount })
-    }
-
     var note: DiaryLogSnapshot? { logs(.note).last }
 
     var activeFast: DiaryLogSnapshot? { fasts.first { $0.input.endedAt == nil } }
@@ -54,7 +31,6 @@ extension NutritionModel {
     func reloadDiary() async {
         if let measurementRepository { weights = (try? await measurementRepository.all(userId: userId)) ?? [] }
         guard let diary else { return }
-        goalWeightKg = try? await diary.latest(userId: userId, kind: .goalWeight)?.input.amount
         let today = calendar.startOfDay(for: now())
         guard let from = calendar.date(byAdding: .day, value: -60, to: today),
               let to = calendar.date(byAdding: .day, value: 2, to: today) else { return }
@@ -64,9 +40,8 @@ extension NutritionModel {
     func reloadDayLogs() async {
         let start = calendar.startOfDay(for: day)
         if let diary, let end = calendar.date(byAdding: .day, value: 1, to: start) {
-            dayLogs = (try? await diary.logs(userId: userId, kinds: [.water, .activity, .steps, .note], from: start, to: end)) ?? []
+            dayLogs = (try? await diary.logs(userId: userId, kinds: [.water, .note], from: start, to: end)) ?? []
         }
-        healthSteps = stepsConnected ? await health?.steps(day) : nil
     }
 
     // MARK: Writing
@@ -102,20 +77,6 @@ extension NutritionModel {
         await reloadDayLogs()
     }
 
-    func addActivity(name: String, minutes: Double, kcal: Double) async -> Bool {
-        await write(DiaryLogInput(kind: .activity, at: moment(), amount: kcal, quantity: minutes, label: name))
-    }
-
-    func addSteps(_ steps: Double) async -> Bool {
-        await write(DiaryLogInput(kind: .steps, at: moment(), amount: (steps * Self.kcalPerStep).rounded(), quantity: steps))
-    }
-
-    func connectSteps() async {
-        guard let health, await health.connect() else { return }
-        stepsConnected = true
-        await reloadDayLogs()
-    }
-
     func saveNote(mood: String, text: String) async -> Bool {
         let input = DiaryLogInput(kind: .note, at: note?.input.at ?? moment(), label: mood, text: text.trimmingCharacters(in: .whitespacesAndNewlines))
         guard let diary else { return false }
@@ -145,17 +106,10 @@ extension NutritionModel {
         guard let diary else { return false }
         do {
             _ = try await diary.add(DiaryLogInput(kind: .goalWeight, at: now(), amount: kg), userId: userId)
-            goalWeightKg = kg
             return true
         } catch {
             return false
         }
-    }
-
-    /// Changes today's weigh-in by `deltaKg`, starting from the latest known weight.
-    func adjustWeight(by deltaKg: Double) async {
-        guard let base = weightKg else { return }
-        _ = await logWeight(kg: base + deltaKg)
     }
 
     /// Sets today's weigh-in (one per day: an existing one is updated).
@@ -178,10 +132,5 @@ extension NutritionModel {
         } catch {
             return false
         }
-    }
-
-    func deleteWeight(id: UUID) async {
-        try? await measurementRepository?.delete(id: id)
-        await reloadDiary()
     }
 }

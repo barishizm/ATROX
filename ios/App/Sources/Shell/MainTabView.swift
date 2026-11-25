@@ -40,13 +40,6 @@ struct MainTabView: View {
                             case .weeklySummary: WeeklySummaryView()
                             }
                         }
-                        .navigationDestination(for: TodayRoute.self) { route in
-                            switch route {
-                            case .exerciseScore(let id): ExerciseScoreView(exerciseID: id)
-                            case .templates: TemplateListView()
-                            case .weeklySummary: WeeklySummaryView()
-                            }
-                        }
                 }
                 .environment(\.finishCreation) { [workout] in workout.popToRoot() }
                 .id(locale.identifier)

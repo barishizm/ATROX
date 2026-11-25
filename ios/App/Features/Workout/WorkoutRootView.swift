@@ -24,10 +24,14 @@ struct WorkoutRootView: View {
         .background(DSColor.background)
         .navigationTitle("shell.tabbar.workout")
         .task { await prepare() }
-        .task { if let model { await model.load() } }
     }
 
+    /// Builds the model once; coming back to the tab only reloads it, so state such as the undo bar survives.
     private func prepare() async {
+        if let model {
+            await model.load()
+            return
+        }
         failed = false
         if let made = await container.makeRoutineListModel() {
             model = made
@@ -75,7 +79,7 @@ struct WorkoutRootView: View {
             PrimaryButton("workout.create.button", systemImage: "plus") { router.push(.create) }
                 .padding(.horizontal, Spacing.xl)
                 .accessibilityIdentifier("workout-create")
-            TodayRootView(embedded: true).padding(.horizontal, Spacing.md)
+            TodayRootView().padding(.horizontal, Spacing.md)
             Spacer(minLength: 0)
             Spacer(minLength: 0)
         }
@@ -94,7 +98,7 @@ struct WorkoutRootView: View {
                 ForEach(model.routines) { routine in
                     programCard(routine, model: model)
                 }
-                TodayRootView(embedded: true)
+                TodayRootView()
             }
             .padding(Spacing.md)
         }

@@ -82,30 +82,6 @@ final class HealthKitService: HealthService, @unchecked Sendable {
         }
     }
 
-    func requestStepsAuthorization() async -> Bool {
-        guard isAvailable else { return false }
-        do {
-            try await store.requestAuthorization(toShare: [], read: [HKQuantityType(.stepCount)])
-            return true
-        } catch {
-            Log.app.error("Health steps authorization failed: \(error)")
-            return false
-        }
-    }
-
-    func steps(on day: Date) async -> Double? {
-        guard isAvailable else { return nil }
-        let calendar = Calendar.current
-        let start = calendar.startOfDay(for: day)
-        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return nil }
-        let descriptor = HKStatisticsQueryDescriptor(
-            predicate: .quantitySample(type: HKQuantityType(.stepCount), predicate: HKQuery.predicateForSamples(withStart: start, end: end)),
-            options: .cumulativeSum
-        )
-        let statistics = try? await descriptor.result(for: store)
-        return statistics?.sumQuantity()?.doubleValue(for: .count()) ?? 0
-    }
-
     func saveWorkout(id: UUID, start: Date, end: Date) async -> UUID? {
         guard isAvailable, store.authorizationStatus(for: HKObjectType.workoutType()) == .sharingAuthorized else { return nil }
         let configuration = HKWorkoutConfiguration()

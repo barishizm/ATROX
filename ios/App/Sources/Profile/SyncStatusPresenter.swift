@@ -31,6 +31,16 @@ enum SyncStatusPresenter {
         return .normal
     }
 
+    /// The Profile card only shows up when the user has something to know or do: offline, failed, or rows the server
+    /// refused. A normal pass, a short pending moment and the restore (it has its own screen) stay out of sight.
+    static func needsAttention(phase: SyncCoordinator.Phase, failedRows: Int) -> Bool {
+        if failedRows > 0 { return true }
+        switch phase {
+        case .waitingToRetry, .failed: return true
+        case .idle, .syncing, .restoring: return false
+        }
+    }
+
     /// "Sync now" is offered unless a pass is already running.
     static func canSyncNow(phase: SyncCoordinator.Phase) -> Bool {
         switch phase {

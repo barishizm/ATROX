@@ -33,16 +33,12 @@ final class NutritionModel {
     private(set) var summary: NutritionDay = .empty
     private(set) var target: NutritionTargetInput?
     var profile: NutritionProfile?
-    /// The shown day's water, activity, step and note logs, oldest first.
+    /// The shown day's water and note logs, oldest first.
     var dayLogs: [DiaryLogSnapshot] = []
     /// Recent fasts, newest first.
     var fasts: [DiaryLogSnapshot] = []
-    var goalWeightKg: Double?
     /// Weigh-ins, newest day first.
     var weights: [MeasurementSnapshot] = []
-    /// Steps Apple Health counted on the shown day; nil until connected.
-    var healthSteps: Double?
-    var stepsConnected: Bool
     /// Start-of-day of every day with food logged, for the streak.
     private(set) var trackedDays: Set<Date> = []
     private(set) var isLoading = true
@@ -53,14 +49,13 @@ final class NutritionModel {
     @ObservationIgnored private let repository: any NutritionRepository
     @ObservationIgnored let diary: (any DiaryRepository)?
     @ObservationIgnored let measurementRepository: (any MeasurementRepository)?
-    @ObservationIgnored let health: NutritionHealth?
     @ObservationIgnored let loadProfile: @Sendable () async -> NutritionProfile?
     @ObservationIgnored let calendar: Calendar
     @ObservationIgnored let now: @Sendable () -> Date
 
     init(
         userId: UUID, repository: any NutritionRepository, diary: (any DiaryRepository)? = nil,
-        measurements: (any MeasurementRepository)? = nil, health: NutritionHealth? = nil,
+        measurements: (any MeasurementRepository)? = nil,
         calendar: Calendar = .current, now: @escaping @Sendable () -> Date = { Date() },
         loadProfile: @escaping @Sendable () async -> NutritionProfile?
     ) {
@@ -68,8 +63,6 @@ final class NutritionModel {
         self.repository = repository
         self.diary = diary
         self.measurementRepository = measurements
-        self.health = health
-        stepsConnected = health?.isConnected() ?? false
         self.calendar = calendar
         self.now = now
         self.loadProfile = loadProfile
@@ -88,12 +81,12 @@ final class NutritionModel {
     func calories(for meal: MealType) -> Double { entries(for: meal).reduce(0) { $0 + $1.input.calories } }
 
     /// Calories left to the target (negative = over); nil without a target.
-    var caloriesLeft: Double? { target.map { Double($0.values.calories) + burnedCalories - summary.calories } }
+    var caloriesLeft: Double? { target.map { Double($0.values.calories) - summary.calories } }
 
     /// Progress of the day toward the calorie target, 0…∞.
     var calorieProgress: Double {
         guard let target, target.values.calories > 0 else { return 0 }
-        return summary.calories / (Double(target.values.calories) + burnedCalories)
+        return summary.calories / Double(target.values.calories)
     }
 
     func entries(for meal: MealType) -> [FoodEntrySnapshot] { summary.entries.filter { $0.input.meal == meal } }
@@ -105,6 +98,7 @@ final class NutritionModel {
         do {
             target = try await repository.target(userId: userId)
             try await reloadDay()
+            try await reloadTrackedDays()
         } catch {
             failed = true
         }
@@ -133,6 +127,7 @@ final class NutritionModel {
             // Show the day the food was eaten on.
             if !calendar.isDate(input.eatenAt, inSameDayAs: day) { day = input.eatenAt }
             try await reloadDay()
+            try await reloadTrackedDays()
             return true
         } catch {
             return false
@@ -143,6 +138,7 @@ final class NutritionModel {
         do {
             _ = try await repository.update(id: id, with: input)
             try await reloadDay()
+            try await reloadTrackedDays()
             return true
         } catch {
             return false
@@ -152,6 +148,7 @@ final class NutritionModel {
     func delete(id: UUID) async {
         try? await repository.delete(id: id)
         try? await reloadDay()
+        try? await reloadTrackedDays()
     }
 
     @discardableResult
@@ -170,14 +167,14 @@ final class NutritionModel {
         let entries = try await repository.entries(userId: userId, from: start, to: end)
         summary = NutritionDay.summarize(entries, on: day, calendar: calendar)
         await reloadDayLogs()
-        try await reloadTrackedDays()
     }
 
     /// Logging history is read a year back; a streak longer than that stops growing on screen.
+    /// Only after loading and writing: moving between days does not change it. Reads dates only, no thumbnails.
     private func reloadTrackedDays() async throws {
         let today = calendar.startOfDay(for: now())
         guard let from = calendar.date(byAdding: .day, value: -365, to: today), let to = calendar.date(byAdding: .day, value: 1, to: today) else { return }
-        let all = try await repository.entries(userId: userId, from: from, to: to)
-        trackedDays = NutritionStreak.trackedDays(all.map(\.input.eatenAt), calendar: calendar)
+        let dates = try await repository.eatenDates(userId: userId, from: from, to: to)
+        trackedDays = NutritionStreak.trackedDays(dates, calendar: calendar)
     }
 }

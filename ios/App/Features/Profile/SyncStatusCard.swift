@@ -2,7 +2,7 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// Profile card: last sync time, waiting changes, errors and "Sync now" (P045).
+/// Profile card: last sync time, waiting changes, errors and "Sync now" (P045); shown only when sync needs attention.
 struct SyncStatusCard: View {
     let sync: SyncCoordinator
     @Environment(\.locale) private var locale

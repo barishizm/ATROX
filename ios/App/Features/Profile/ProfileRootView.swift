@@ -23,7 +23,10 @@ struct ProfileRootView: View {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     subtitle
                     stats
-                    if let sync = container.sync, sync.isAvailable { SyncStatusCard(sync: sync) }
+                    if let sync = container.sync, sync.isAvailable,
+                       SyncStatusPresenter.needsAttention(phase: sync.phase, failedRows: sync.failedCount) {
+                        SyncStatusCard(sync: sync)
+                    }
                     proBanner
                     friendsRow
                     overview

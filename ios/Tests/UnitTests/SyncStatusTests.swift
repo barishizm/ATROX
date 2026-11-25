@@ -24,6 +24,15 @@ struct SyncStatusTests {
         #expect(SyncStatusPresenter.tone(phase: .waitingToRetry, failedRows: 0) == .warning)
     }
 
+    @Test func theProfileCardShowsOnlyWhenSyncNeedsAttention() {
+        #expect(!SyncStatusPresenter.needsAttention(phase: .idle, failedRows: 0))
+        #expect(!SyncStatusPresenter.needsAttention(phase: .syncing, failedRows: 0))
+        #expect(!SyncStatusPresenter.needsAttention(phase: .restoring(SyncProgress(done: 1, total: 4)), failedRows: 0))
+        #expect(SyncStatusPresenter.needsAttention(phase: .waitingToRetry, failedRows: 0), "offline")
+        #expect(SyncStatusPresenter.needsAttention(phase: .failed("x"), failedRows: 0))
+        #expect(SyncStatusPresenter.needsAttention(phase: .idle, failedRows: 2), "rows the server refused")
+    }
+
     @Test func syncNowIsHiddenWhileAPassRuns() {
         #expect(SyncStatusPresenter.canSyncNow(phase: .idle))
         #expect(SyncStatusPresenter.canSyncNow(phase: .failed("x")))

@@ -55,7 +55,7 @@ Saklama sütunu: "hesap ömrü" = hesap silinene kadar (`delete-account` tüm sa
 | Veri | Amaç | Dayanak | Saklama | Alıcı |
 |---|---|---|---|---|
 | Yemek kayıtları (`food_entries`: zaman, öğün, ad, kalori, makrolar, porsiyon, kaynak, yiyecek listesi) | Günlük kalori/makro takibi, koç | **Açık rıza** önerisi (beslenme/sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
-| Günlük kayıtlar (`diary_logs`: su, aktivite, adım, not, oruç, hedef kilo) | Günlük takip ekranı | Sözleşme / açık rıza (not ve oruç sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
+| Günlük kayıtlar (`diary_logs`: su, not, oruç, hedef kilo; `aktivite`/`adım` türleri şemada duruyor ama uygulama artık yazmıyor) | Günlük takip ekranı | Sözleşme / açık rıza (not ve oruç sağlık verisi sayılabilir) | Hesap ömrü (yumuşak silme + gece temizliği) | Supabase |
 | Günlük hedef (`nutrition_targets`: mod, kalori, makrolar, aktivite) | Hedefle karşılaştırma | Sözleşme / açık rıza | Hesap ömrü | Supabase |
 | Analiz sayacı (`food_analyses`: zaman, tür) | Günlük hak (ücretsiz 3 / Pro 60) | Meşru menfaat | Hesap ömrü | Supabase (yalnızca servis rolü yazar) |
 | Yemek fotoğrafı | Analiz | Açık rıza (`food_ai_sharing`) | **Sunucuda saklanmaz**; cihazda yalnızca küçük önizleme (`FoodEntry.thumbnail`, senkronize edilmez) | DeepSeek (yalnızca analiz anında) |
@@ -77,7 +77,7 @@ gitmez** (onay ekranında yazıyor). Reklam/veri komisyoncusuna kullanım yok (A
 | Profil özeti (yaş, cinsiyet, kilo, hedef, deneyim, sıklık, ekipman), skorlar, antrenman geçmişi, rekorlar | Koç yanıtı/program önerisi | **Açık rıza** (`ai_sharing`, sürümlü) | İstek süresince DeepSeek'te (sağlayıcı saklaması `[HUKUKÇU]`) | Supabase Edge Function → DeepSeek |
 | Koça yazılan mesajlar, koç yanıtları, öneri/araç çağrıları | Sohbet geçmişi | Açık rıza | Kullanıcı silene veya hesap silinene kadar (sert silme) | Supabase (`coach_threads/messages`); metin DeepSeek'e gider |
 | Koç belleği notları (`coach_memory`) | Kişiselleştirilmiş yanıt | Açık rıza | Kullanıcı silene kadar | Supabase; DeepSeek'e gider |
-| Kullanım kaydı: sağlayıcı, model, token, maliyet, gecikme, durum (`coach_usage`), kota (`coach_quota`) | Maliyet, kota, hata izleme, kötüye kullanım | Meşru menfaat | Hesap ömrü | Supabase; **mesaj içeriği içermez** |
+| Kullanım kaydı: sağlayıcı, model, token, maliyet, gecikme, durum (`coach_usage`), kota (`coach_quota`, günün sayıldığı saat dilimi dahil; 24 saatte en fazla bir kez değişir) | Maliyet, kota, hata izleme, kötüye kullanım | Meşru menfaat | Hesap ömrü | Supabase; **mesaj içeriği içermez** |
 | Haftalık/antrenman özeti (`coach_digests`) | Proaktif yorum | Açık rıza | Hesap ömrü | Supabase |
 
 Gönderilmeyenler: ad, e-posta, hesap kimlikleri, ham Apple Sağlık verisi. Koç kapalıyken hiçbir şey gönderilmez.

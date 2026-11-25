@@ -5,11 +5,10 @@ import SwiftUI
 /// Calories left in the middle of a ring that fills as the day's calories add up.
 struct CalorieRing: View {
     let consumed: Double
-    var burned: Double = 0
     let target: Int?
 
-    /// What is left is the target plus what exercise burned, minus what was eaten.
-    private var allowance: Double { Double(target ?? 0) + burned }
+    /// What is left is the target minus what was eaten.
+    private var allowance: Double { Double(target ?? 0) }
 
     private var progress: Double {
         guard allowance > 0 else { return 0 }

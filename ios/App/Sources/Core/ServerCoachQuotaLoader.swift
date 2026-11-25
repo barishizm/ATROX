@@ -11,18 +11,26 @@ struct ServerCoachQuotaLoader: Sendable {
     var session: URLSession = .shared
 
     private struct QuotaRow: Decodable { let day: String; let messages: Int }
-    private struct EntitlementRow: Decodable { let tier: String; let expires_at: Date? }
+    private struct EntitlementRow: Decodable { let tier: String; let expires_at: Date?; let status: String? }
+    static let proStatuses: Set<String> = ["active", "trial", "grace_period"]
+
+    /// One entitlement row gives Pro now (mirrors `entitlement_tier()`).
+    static func grantsPro(tier: String, status: String?, expiresAt: Date?, now: Date) -> Bool {
+        tier == "pro" && proStatuses.contains(status ?? "active") && (expiresAt.map { $0 > now } ?? true)
+    }
+
     private struct LimitRow: Decodable { let tier: String; let daily_messages: Int }
 
     func load(userId: UUID, now: Date = .now, calendar: Calendar = .current) async -> CoachQuota? {
         guard let token = await accessToken() else { return nil }
         let id = userId.uuidString.lowercased()
         async let quota: [QuotaRow]? = fetch("coach_quota", "select=day,messages&user_id=eq.\(id)", token: token)
-        async let entitlement: [EntitlementRow]? = fetch("entitlements", "select=tier,expires_at&user_id=eq.\(id)", token: token)
+        async let entitlement: [EntitlementRow]? = fetch("entitlements", "select=tier,expires_at,status&user_id=eq.\(id)", token: token)
         async let limits: [LimitRow]? = fetch("coach_limits", "select=tier,daily_messages", token: token)
         guard let quotaRows = await quota, let entitlementRows = await entitlement, let limitRows = await limits else { return nil }
 
-        let isPro = entitlementRows.contains { $0.tier == "pro" && ($0.expires_at.map { $0 > now } ?? true) }
+        // Same rule as the server's entitlement_tier(): a refunded or revoked row is not Pro.
+        let isPro = entitlementRows.contains { Self.grantsPro(tier: $0.tier, status: $0.status, expiresAt: $0.expires_at, now: now) }
         let tier: CoachQuota.Tier = isPro ? .pro : .free
         guard let daily = limitRows.first(where: { $0.tier == tier.rawValue })?.daily_messages else { return nil }
 
