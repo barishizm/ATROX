@@ -3,6 +3,7 @@
 -- counter on every message, and picking the zone whose midnight just passed shrank the food window to about an hour.
 -- Now the first valid zone is kept on the user's coach_quota row; another zone is accepted at most once per 24 hours
 -- (travel), otherwise the kept one is used. coach_digest_allowance (Pro only, small caps, STABLE) is left as it is.
+-- food_consume also switches to entitlement_tier() for its Pro check (audit D54).
 
 alter table public.coach_quota
   add column time_zone text,
@@ -135,9 +136,9 @@ begin
   perform pg_advisory_xact_lock(hashtextextended('food_consume:' || p_user::text, 0));
   v_tz := public.quota_time_zone(p_user, p_time_zone);
   v_start := date_trunc('day', now() at time zone v_tz) at time zone v_tz;
-  select coalesce((select e.tier from public.entitlements e
-                    where e.user_id = p_user and (e.expires_at is null or e.expires_at > now())), 'free')
-    into v_tier;
+  -- The single Pro rule (audit D54): the old direct read counted refunded or revoked rows as Pro and failed with
+  -- "more than one row" once a user had two entitlement rows (allowed since schema_20).
+  v_tier := public.entitlement_tier(p_user);
   v_limit := case v_tier when 'pro' then 60 else 3 end;
   select count(*) into v_used from public.food_analyses a where a.user_id = p_user and a.created_at >= v_start;
   select count(*) into v_recent from public.food_analyses a

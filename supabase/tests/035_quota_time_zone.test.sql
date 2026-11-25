@@ -1,6 +1,6 @@
 -- Daily allowances count the day in a time zone kept per user (audit D39): switching zones per request cannot reset them.
 begin;
-select plan(10);
+select plan(11);
 select tests.create_two_users();
 
 select tests.authenticate_as(tests.user_a());
@@ -39,6 +39,15 @@ select is(
   array[true, true, true], 'three free analyses');
 select is(public.food_consume(tests.user_b(), 'photo', 'Etc/GMT+12') ->> 'reason', 'daily',
   'another zone does not open a new food day');
+
+-- Food Pro check uses entitlement_tier(): a refunded row is not Pro, and two rows do not break the count (D54).
+reset role;
+delete from public.food_analyses where user_id = tests.user_b();
+insert into public.entitlements (user_id, tier, status) values (tests.user_b(), 'pro', 'refunded');
+insert into public.entitlements (user_id, tier, status) values (tests.user_b(), 'pro', 'expired');
+set local role service_role;
+select is(public.food_consume(tests.user_b(), 'photo', 'UTC') ->> 'limit', '3',
+  'refunded or expired rows give the free limit, and several rows are fine');
 
 -- Unknown zones count as UTC and are kept as such.
 delete from public.coach_quota where user_id = tests.user_b();
