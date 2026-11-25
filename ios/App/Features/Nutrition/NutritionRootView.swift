@@ -192,20 +192,8 @@ struct NutritionRootView: View {
             NutritionTargetSetupView(
                 profile: model?.profile, current: model?.target, onSave: { await model?.setTarget($0) ?? false }, onClose: { self.sheet = nil }
             )
-        case .activity: ActivitySheet { name, minutes, kcal in await model?.addActivity(name: name, minutes: minutes, kcal: kcal) ?? false }
-        case .steps: StepsSheet { await model?.addSteps($0) ?? false }
         case .note: NoteSheet(existing: model?.note) { await model?.saveNote(mood: $0, text: $1) ?? false }
         case .fastPlan: FastPlanSheet { await model?.startFast(hours: $0, label: $1) ?? false }
-        case .goalWeight:
-            GoalWeightSheet(
-                title: "nutrition.weight.goal.title", field: "nutrition.weight.goal.field", unit: model?.profile?.weightUnit ?? .kilograms,
-                current: model?.goalWeightKg
-            ) { await model?.setGoalWeight(kg: $0) ?? false }
-        case .weightEntry:
-            GoalWeightSheet(
-                title: "nutrition.weight.title", field: "nutrition.weight.field", unit: model?.profile?.weightUnit ?? .kilograms, current: nil
-            ) { await model?.logWeight(kg: $0) ?? false }
-        case .weightProgress: if let model { WeightProgressSheet(model: model) }
         case .sources: NutritionSourcesSheet()
         }
     }
@@ -239,20 +227,15 @@ enum NutritionSheet: Identifiable {
     case addFood(MealType)
     case manual(FoodEntrySnapshot?)
     case target
-    case activity, steps, note, fastPlan, goalWeight, weightEntry, weightProgress, sources
+    case note, fastPlan, sources
 
     var id: String {
         switch self {
         case .addFood(let meal): "add-food-\(meal.rawValue)"
         case .manual(let entry): "manual-\(entry?.id.uuidString ?? "new")"
         case .target: "target"
-        case .activity: "activity"
-        case .steps: "steps"
         case .note: "note"
         case .fastPlan: "fast-plan"
-        case .goalWeight: "goal-weight"
-        case .weightEntry: "weight-entry"
-        case .weightProgress: "weight-progress"
         case .sources: "sources"
         }
     }

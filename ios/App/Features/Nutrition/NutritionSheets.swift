@@ -32,38 +32,6 @@ private struct InputSheet<Content: View>: View {
     }
 }
 
-/// A workout or activity with its length and the calories it burned.
-struct ActivitySheet: View {
-    let onSave: (String, Double, Double) async -> Bool
-    @State private var name = ""
-    @State private var minutes = 0.0
-    @State private var kcal = 0.0
-
-    var body: some View {
-        InputSheet(
-            title: "nutrition.activity.add", canSave: !name.trimmingCharacters(in: .whitespaces).isEmpty && minutes > 0,
-            onSave: { await onSave(name.trimmingCharacters(in: .whitespaces), minutes, kcal) }
-        ) {
-            Section {
-                TextField("nutrition.activity.name", text: $name).accessibilityIdentifier("activity-name")
-                NumberField(title: "nutrition.activity.duration", value: $minutes, unit: "min", maximum: 1440)
-                NumberField(title: "nutrition.activity.burned", value: $kcal, unit: "kcal", maximum: 10_000)
-            }
-        }
-    }
-}
-
-struct StepsSheet: View {
-    let onSave: (Double) async -> Bool
-    @State private var steps = 0.0
-
-    var body: some View {
-        InputSheet(title: "nutrition.steps.addmanual", canSave: steps > 0, onSave: { await onSave(steps) }) {
-            Section { NumberField(title: "nutrition.steps.count", value: $steps, unit: "", maximum: 100_000) }
-        }
-    }
-}
-
 struct NoteSheet: View {
     let existing: DiaryLogSnapshot?
     let onSave: (String, String) async -> Bool
@@ -127,77 +95,6 @@ struct FastPlanSheet: View {
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("common.cancel") { dismiss() } } }
         }
         .presentationDetents([.medium])
-    }
-}
-
-/// A weight typed in the user's unit: the goal weight, or today's weigh-in.
-struct GoalWeightSheet: View {
-    let title: LocalizedStringKey
-    let field: LocalizedStringKey
-    let unit: WeightUnit
-    let current: Double?
-    let onSave: (Double) async -> Bool
-    @State private var value: Double
-
-    init(title: LocalizedStringKey, field: LocalizedStringKey, unit: WeightUnit, current: Double?, onSave: @escaping (Double) async -> Bool) {
-        self.title = title
-        self.field = field
-        self.unit = unit
-        self.current = current
-        self.onSave = onSave
-        _value = State(initialValue: current.map { (unit.value(fromKilograms: $0) * 10).rounded() / 10 } ?? 0)
-    }
-
-    var body: some View {
-        InputSheet(title: title, canSave: value > 0, onSave: { await onSave(unit.kilograms(from: value)) }) {
-            Section { NumberField(title: field, value: $value, unit: unit.symbol, maximum: 900) }
-        }
-    }
-}
-
-/// The weight trend and the weigh-ins, newest first.
-struct WeightProgressSheet: View {
-    let model: NutritionModel
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.locale) private var locale
-
-    private var unit: WeightUnit { model.profile?.weightUnit ?? .kilograms }
-
-    var body: some View {
-        NavigationStack {
-            List {
-                if model.weights.isEmpty {
-                    EmptyState(systemImage: "chart.xyaxis.line", title: "measurements.empty.title", message: "measurements.empty.message")
-                        .listRowBackground(Color.clear)
-                } else {
-                    Section("measurements.chart.title") {
-                        WeightChart(points: MeasurementTrend.points(from: model.weights), unit: unit)
-                    }
-                    .listRowBackground(DSColor.surface)
-                    Section("measurements.history") {
-                        ForEach(model.weights) { row in
-                            HStack {
-                                Text(row.input.date.formatted(.dateTime.day().month().year().locale(locale)))
-                                Spacer()
-                                Text(verbatim: unit.value(fromKilograms: row.input.weightKg)
-                                    .formatted(.number.precision(.fractionLength(0...1)).locale(locale)) + " " + unit.symbol)
-                                    .font(DSFont.numericSmall)
-                            }
-                        }
-                        .onDelete { offsets in
-                            let ids = offsets.map { model.weights[$0].id }
-                            Task { for id in ids { await model.deleteWeight(id: id) } }
-                        }
-                    }
-                    .listRowBackground(DSColor.surface)
-                }
-            }
-            .scrollContentBackground(.hidden)
-            .background(DSColor.background.ignoresSafeArea())
-            .navigationTitle("nutrition.weight.title")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("nutrition.calendar.done") { dismiss() } } }
-        }
     }
 }
 

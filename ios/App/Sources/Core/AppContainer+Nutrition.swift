@@ -13,20 +13,9 @@ extension AppContainer {
         let profiles = SwiftDataProfileRepository(modelContainer: modelContainer)
         let measurements = SwiftDataMeasurementRepository(modelContainer: modelContainer)
         let userId = user.id
-        let health = self.health
-        let connectedKey = "nutrition.steps.connected.\(userId.uuidString)"
-        let nutritionHealth = health.isAvailable ? NutritionHealth(
-            isConnected: { UserDefaults.standard.bool(forKey: connectedKey) },
-            connect: {
-                guard await health.requestStepsAuthorization() else { return false }
-                UserDefaults.standard.set(true, forKey: connectedKey)
-                return true
-            },
-            steps: { await health.steps(on: $0) }
-        ) : nil
         return NutritionModel(
             userId: userId, repository: SwiftDataNutritionRepository(modelContainer: modelContainer),
-            diary: SwiftDataDiaryRepository(modelContainer: modelContainer, clock: { Date() }), measurements: measurements, health: nutritionHealth
+            diary: SwiftDataDiaryRepository(modelContainer: modelContainer, clock: { Date() }), measurements: measurements
         ) {
             guard let profile = try? await profiles.profile(userId: userId)?.input else { return nil }
             let weight = try? await measurements.latest(userId: userId)?.input.weightKg

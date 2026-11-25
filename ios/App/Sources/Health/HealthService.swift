@@ -38,15 +38,6 @@ protocol HealthService: HealthWorkoutWriting {
     func weightSamples(since: Date) async -> [HealthWeightSample]
     @discardableResult
     func saveWeight(kilograms: Double, date: Date) async -> Bool
-    /// Asks to read step counts. Call it only after a button press.
-    func requestStepsAuthorization() async -> Bool
-    /// Steps walked on the calendar day of `day`; nil when Health is unavailable.
-    func steps(on day: Date) async -> Double?
-}
-
-extension HealthService {
-    func requestStepsAuthorization() async -> Bool { false }
-    func steps(on day: Date) async -> Double? { nil }
 }
 
 /// Used where Health does not exist: every button that needs it stays hidden.

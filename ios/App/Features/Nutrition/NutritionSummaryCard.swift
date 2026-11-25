@@ -2,7 +2,7 @@ import DataKit
 import DesignSystem
 import SwiftUI
 
-/// Eaten, the ring with what is left, burned, and the three macros.
+/// Eaten, the ring with what is left, and the three macros.
 struct NutritionSummaryCard: View {
     let model: NutritionModel
     let onTarget: () -> Void
@@ -22,17 +22,14 @@ struct NutritionSummaryCard: View {
             VStack(spacing: Spacing.md) {
                 if typeSize.isAccessibilitySize {
                     ring
-                    HStack(alignment: .top) {
-                        figure(Int(model.summary.calories.rounded()), "nutrition.summary.eaten")
-                        Spacer(minLength: Spacing.sm)
-                        figure(Int(model.burnedCalories.rounded()), "nutrition.summary.burned")
-                    }
+                    figure(Int(model.summary.calories.rounded()), "nutrition.summary.eaten")
                     VStack(alignment: .leading, spacing: Spacing.sm) { macros }
                 } else {
                     HStack(alignment: .center) {
                         figure(Int(model.summary.calories.rounded()), "nutrition.summary.eaten")
                         ring.frame(maxWidth: .infinity)
-                        figure(Int(model.burnedCalories.rounded()), "nutrition.summary.burned")
+                        // Same width as the figure, so the ring stays centred.
+                        Color.clear.frame(width: 56, height: 1).accessibilityHidden(true)
                     }
                     HStack(alignment: .top, spacing: Spacing.md) { macros }
                 }
@@ -41,7 +38,7 @@ struct NutritionSummaryCard: View {
     }
 
     private var ring: some View {
-        CalorieRing(consumed: model.summary.calories, burned: model.burnedCalories, target: model.target?.values.calories)
+        CalorieRing(consumed: model.summary.calories, target: model.target?.values.calories)
     }
 
     @ViewBuilder
