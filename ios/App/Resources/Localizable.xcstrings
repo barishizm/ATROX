@@ -2382,13 +2382,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unlimited AI meal photo analysis"
+            "value" : "60 AI meal photo analyses a day"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sınırsız yapay zekâ yemek fotoğrafı analizi"
+            "value" : "Günde 60 yapay zekâ yemek fotoğrafı analizi"
           }
         }
       }
@@ -14505,13 +14505,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Near-unlimited AI coach, with deeper reasoning for programs"
+            "value" : "100 AI coach messages a day, with deeper reasoning for programs"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neredeyse sınırsız AI koç; programlarda daha derin düşünme"
+            "value" : "Günde 100 AI koç mesajı; programlarda daha derin düşünme"
           }
         }
       }
