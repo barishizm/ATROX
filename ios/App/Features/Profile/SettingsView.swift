@@ -9,6 +9,7 @@ struct SettingsView: View {
     let account: AccountModel
     @Environment(AppContainer.self) private var container
     @Environment(ActiveWorkoutPresenter.self) private var workoutPresenter
+    @Environment(\.locale) private var locale
     @State private var confirmsSignOut = false
     /// Rows that have not reached the server; signing out deletes the device's copy (P045).
     @State private var unsyncedCount = 0
@@ -106,6 +107,7 @@ struct SettingsView: View {
     private var accountSection: some View {
         Section("settings.section.account") {
             if let email = model.email { LabeledContent("settings.account.email") { Text(verbatim: email) } }
+            syncRow
             Button("account.signOut", role: .destructive) {
                 Task {
                     unsyncedCount = await container.sync?.unsyncedCount() ?? 0
@@ -129,6 +131,25 @@ struct SettingsView: View {
                 Text("account.delete").foregroundStyle(DSColor.error)
             }
             .accessibilityIdentifier("settings-delete-account")
+        }
+    }
+
+    /// Manual sync; the Profile card only appears when sync needs attention.
+    @ViewBuilder private var syncRow: some View {
+        if let sync = container.sync, sync.isAvailable {
+            Button { sync.request(.manual) } label: {
+                LabeledContent("sync.action.now") {
+                    if !SyncStatusPresenter.canSyncNow(phase: sync.phase) {
+                        ProgressView()
+                    } else if let date = sync.lastSyncedAt {
+                        Text("sync.status.lastSynced \(date.formatted(.relative(presentation: .named).locale(locale)))")
+                    } else {
+                        Text("sync.status.never")
+                    }
+                }
+            }
+            .disabled(!SyncStatusPresenter.canSyncNow(phase: sync.phase))
+            .accessibilityIdentifier("settings-sync-now")
         }
     }
 
