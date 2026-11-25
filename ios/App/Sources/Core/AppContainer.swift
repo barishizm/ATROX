@@ -338,7 +338,7 @@ final class AppContainer {
     }
 
     /// The Today dashboard (P067); nil without a user, a local store or a score state.
-    /// `forWidgets`: the same numbers without the score publication (P096).
+    /// `forWidgets`: the same numbers without the insight refresh and the score publication (P096).
     func makeTodayModel(forWidgets: Bool = false) async -> TodayModel? {
         guard let modelContainer, let context = await makeHistoryContext(), let center = await scoreCenter() else { return nil }
         let profile = try? await SwiftDataProfileRepository(modelContainer: modelContainer).profile(userId: context.userId)
@@ -351,7 +351,7 @@ final class AppContainer {
         }
         return TodayModel(
             context: context, center: center, stats: TrainingStats(modelContainer: modelContainer),
-            plan: planStore(for: context.userId), profile: profile?.input,
+            plan: planStore(for: context.userId), profile: profile?.input, insights: forWidgets ? nil : insightService(),
             publishScore: publish
         )
     }

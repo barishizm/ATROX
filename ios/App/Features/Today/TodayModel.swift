@@ -43,13 +43,15 @@ final class TodayModel {
     private let planStore: RoutinePlanStore
     @ObservationIgnored private let profile: ProfileInput?
     @ObservationIgnored private let calendar: Calendar
+    /// Keeps the stored insights fresh: the weekly summary and the coach's get_insights read them without refreshing.
+    @ObservationIgnored private let insights: InsightService?
     /// Hands the overall score to the social layer (P087); the server drops it while sharing is off.
     @ObservationIgnored private let publishScore: (@Sendable (ScorePublication) async -> Bool)?
     @ObservationIgnored private var lastPublished: ScorePublication?
 
     init(
         context: HistoryContext, center: ScoreCenter, stats: TrainingStats, plan: RoutinePlanStore, profile: ProfileInput?,
-        calendar: Calendar = .current,
+        insights: InsightService? = nil, calendar: Calendar = .current,
         publishScore: (@Sendable (ScorePublication) async -> Bool)? = nil
     ) {
         self.publishScore = publishScore
@@ -58,6 +60,7 @@ final class TodayModel {
         self.stats = stats
         planStore = plan
         self.profile = profile
+        self.insights = insights
         self.calendar = calendar
     }
 
@@ -82,6 +85,8 @@ final class TodayModel {
         facts = loaded
         plan = await resolvePlan()
         isLoading = false
+        // After the card is shown: nothing on screen waits for it.
+        if let insights { _ = await insights.refresh(userId: context.userId) }
         await publishOverall(weekly: loaded.workoutsThisWeek)
     }
 
