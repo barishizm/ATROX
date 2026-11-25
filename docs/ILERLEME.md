@@ -407,3 +407,5 @@ Adımlar sırasında fark edilen ama kapsam dışı bırakılan işler buraya ya
 - (Denetim 2026-11-25, D39) `schema_31_quota_time_zone` migration'ı staging'e, sonra prod'a uygulanmalı `[MANUEL]`. `coach_digest_allowance` (yalnızca Pro, düşük sınır, STABLE) hâlâ istekteki saat dilimini kullanıyor.
 - (Denetim 2026-11-25, D50) Prod Supabase'de "Leaked Password Protection" kapalı; panelden açılmalı `[MANUEL]`.
 - (Denetim 2026-11-25, D48) `AddFoodView` sheet sırası 400–450 ms `Task.sleep` ile ayarlanıyor; `onDismiss` zincirine geçilebilir.
+- (Denetim 2026-11-25, D55) `ActiveWorkoutPresenter.start` beklenmeyen hatayı `catch {}` ile yutuyor; kullanıcıya hata gösterilmeli.
+- (Denetim 2026-11-25, D56) `appstore-notifications` gövdeyi `MAX_BODY` kontrolünden önce tamamen okuyor; akışla sınırlı okuma yapılabilir.
