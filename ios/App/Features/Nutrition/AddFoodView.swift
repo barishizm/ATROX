@@ -328,8 +328,12 @@ struct AddFoodView: View {
     }
 
     private func startPhoto(_ image: UIImage) {
-        guard let jpeg = FoodImage.jpeg(from: image) else { return }
-        sheet = .analyze(makeLaunch(source: .photo(jpeg: jpeg, thumbnail: FoodImage.thumbnail(from: image))))
+        Task {
+            // Downsizing a camera original blocks for a moment; keep the main thread free while it runs.
+            let prepared = await Task.detached(priority: .userInitiated) { FoodImage.prepare(image) }.value
+            guard let prepared else { return }
+            sheet = .analyze(makeLaunch(source: .photo(jpeg: prepared.jpeg, thumbnail: prepared.thumbnail)))
+        }
     }
 
     private func startText() {
