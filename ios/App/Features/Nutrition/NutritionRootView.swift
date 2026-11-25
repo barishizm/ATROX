@@ -85,28 +85,26 @@ struct NutritionRootView: View {
         if model.isLoading {
             LoadingState()
         } else {
-            do {
-                ScrollView(.horizontal) {
-                    LazyHStack(spacing: 0) {
-                        ForEach(DiaryPage.allCases) { page in
-                            ScrollView {
-                                pageContent(page, model)
-                                    .padding(.horizontal, Spacing.md)
-                                    .padding(.top, Spacing.xs)
-                                    .padding(.bottom, Spacing.md)
-                            }
-                            .scrollBounceBehavior(.basedOnSize)
-                            .refreshable { await model.load() }
-                            .containerRelativeFrame(.horizontal)
-                            .id(page)
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(DiaryPage.allCases) { page in
+                        ScrollView {
+                            pageContent(page, model)
+                                .padding(.horizontal, Spacing.md)
+                                .padding(.top, Spacing.xs)
+                                .padding(.bottom, Spacing.md)
                         }
+                        .scrollBounceBehavior(.basedOnSize)
+                        .refreshable { await model.load() }
+                        .containerRelativeFrame(.horizontal)
+                        .id(page)
                     }
-                    .scrollTargetLayout()
                 }
-                .scrollTargetBehavior(.paging)
-                .scrollPosition(id: $pageID)
-                .scrollIndicators(.hidden)
+                .scrollTargetLayout()
             }
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $pageID)
+            .scrollIndicators(.hidden)
         }
     }
 

@@ -87,6 +87,8 @@ struct FoodAnalyzeModelTests {
         #expect(model.items.first?.grams == 15)
         #expect(model.makeInput().source == .barcode)
         #expect(model.canSave)
+        let picked = FoodAnalyzeModel(food: food, source: .search)
+        #expect(picked.makeInput().source == .manual, "a food picked from the list was not scanned")
     }
 
     @Test func cannotSaveAnEmptyMeal() {

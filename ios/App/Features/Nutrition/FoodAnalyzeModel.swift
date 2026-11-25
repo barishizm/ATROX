@@ -65,7 +65,9 @@ final class FoodAnalyzeModel {
         switch source {
         case .photo: .photo
         case .text: .text
-        case .barcode, .search: .barcode
+        case .barcode: .barcode
+        // Picked from the common foods list: typed in by the user, not scanned.
+        case .search: .manual
         }
     }
 
