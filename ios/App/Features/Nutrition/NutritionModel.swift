@@ -105,6 +105,7 @@ final class NutritionModel {
         do {
             target = try await repository.target(userId: userId)
             try await reloadDay()
+            try await reloadTrackedDays()
         } catch {
             failed = true
         }
@@ -133,6 +134,7 @@ final class NutritionModel {
             // Show the day the food was eaten on.
             if !calendar.isDate(input.eatenAt, inSameDayAs: day) { day = input.eatenAt }
             try await reloadDay()
+            try await reloadTrackedDays()
             return true
         } catch {
             return false
@@ -143,6 +145,7 @@ final class NutritionModel {
         do {
             _ = try await repository.update(id: id, with: input)
             try await reloadDay()
+            try await reloadTrackedDays()
             return true
         } catch {
             return false
@@ -152,6 +155,7 @@ final class NutritionModel {
     func delete(id: UUID) async {
         try? await repository.delete(id: id)
         try? await reloadDay()
+        try? await reloadTrackedDays()
     }
 
     @discardableResult
@@ -170,14 +174,14 @@ final class NutritionModel {
         let entries = try await repository.entries(userId: userId, from: start, to: end)
         summary = NutritionDay.summarize(entries, on: day, calendar: calendar)
         await reloadDayLogs()
-        try await reloadTrackedDays()
     }
 
     /// Logging history is read a year back; a streak longer than that stops growing on screen.
+    /// Only after loading and writing: moving between days does not change it. Reads dates only, no thumbnails.
     private func reloadTrackedDays() async throws {
         let today = calendar.startOfDay(for: now())
         guard let from = calendar.date(byAdding: .day, value: -365, to: today), let to = calendar.date(byAdding: .day, value: 1, to: today) else { return }
-        let all = try await repository.entries(userId: userId, from: from, to: to)
-        trackedDays = NutritionStreak.trackedDays(all.map(\.input.eatenAt), calendar: calendar)
+        let dates = try await repository.eatenDates(userId: userId, from: from, to: to)
+        trackedDays = NutritionStreak.trackedDays(dates, calendar: calendar)
     }
 }

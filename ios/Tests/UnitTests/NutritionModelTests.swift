@@ -162,6 +162,23 @@ struct NutritionModelTests {
         #expect(model.summary.calories == 300)
     }
 
+    @Test func streakFollowsWritesAndSurvivesDayNavigation() async throws {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let model = try make(now: now)
+        await model.load()
+        #expect(model.streak == 0)
+        #expect(await model.save(entry("Yesterday", kcal: 300, at: now.addingTimeInterval(-86_400))))
+        await model.goToToday()
+        #expect(await model.save(entry("Today", kcal: 400, at: now)))
+        #expect(model.streak == 2)
+        await model.shiftDay(by: -3)
+        #expect(model.streak == 2, "moving between days keeps the streak")
+        await model.goToToday()
+        let id = try #require(model.summary.entries.first?.id)
+        await model.delete(id: id)
+        #expect(model.streak == 1, "yesterday still counts while today is open")
+    }
+
     @Test func invalidEntryIsNotSaved() async throws {
         let model = try make()
         await model.load()

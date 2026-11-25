@@ -9,6 +9,8 @@ public protocol NutritionRepository: Sendable {
     func delete(id: UUID) async throws
     /// Entries eaten in `[start, end)`, oldest first.
     func entries(userId: UUID, from start: Date, to end: Date) async throws -> [FoodEntrySnapshot]
+    /// Only the `eatenAt` of the entries in `[start, end)`, oldest first: no thumbnails or items are read (streak history).
+    func eatenDates(userId: UUID, from start: Date, to end: Date) async throws -> [Date]
     func target(userId: UUID) async throws -> NutritionTargetInput?
     @discardableResult
     func setTarget(_ input: NutritionTargetInput, userId: UUID) async throws -> NutritionTargetInput
@@ -55,6 +57,15 @@ public actor SwiftDataNutritionRepository: NutritionRepository {
             sortBy: [SortDescriptor(\.eatenAt)]
         )
         return try modelContext.fetch(descriptor).map(\.snapshot)
+    }
+
+    public func eatenDates(userId: UUID, from start: Date, to end: Date) throws -> [Date] {
+        var descriptor = FetchDescriptor<FoodEntry>(
+            predicate: #Predicate { $0.userId == userId && $0.deletedAt == nil && $0.eatenAt >= start && $0.eatenAt < end },
+            sortBy: [SortDescriptor(\.eatenAt)]
+        )
+        descriptor.propertiesToFetch = [\.eatenAt]
+        return try modelContext.fetch(descriptor).map(\.eatenAt)
     }
 
     public func target(userId: UUID) throws -> NutritionTargetInput? {

@@ -103,6 +103,19 @@ import Testing
         #expect(try await repo.entries(userId: testUser, from: day.addingTimeInterval(-60), to: day.addingTimeInterval(86_400)).count == 1)
     }
 
+    @Test func eatenDatesMatchEntriesWithoutLoadingSnapshots() async throws {
+        let repo = try makeRepo()
+        let day = Date(timeIntervalSince1970: 1_800_000_000)
+        let a = try await repo.add(entry("A", at: day.addingTimeInterval(3600)), userId: testUser)
+        _ = try await repo.add(entry("B", at: day), userId: testUser)
+        _ = try await repo.add(entry("Later", at: day.addingTimeInterval(86_400 * 3)), userId: testUser)
+        _ = try await repo.add(entry("Other user", at: day), userId: otherUser)
+        let to = day.addingTimeInterval(86_400)
+        #expect(try await repo.eatenDates(userId: testUser, from: day, to: to) == [day, day.addingTimeInterval(3600)])
+        try await repo.delete(id: a.id)
+        #expect(try await repo.eatenDates(userId: testUser, from: day, to: to) == [day])
+    }
+
     @Test func updateMarksPendingAndKeepsThumbnailWhenNoneGiven() async throws {
         let repo = try makeRepo()
         let saved = try await repo.add(
