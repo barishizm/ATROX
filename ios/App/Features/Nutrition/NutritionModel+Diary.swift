@@ -133,5 +133,4 @@ extension NutritionModel {
             return false
         }
     }
-
 }
